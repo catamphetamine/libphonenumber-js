@@ -10,4 +10,4 @@ const CHARACTER_CLASS_PATTERN = /\[([^\[\]])*\]/g
 // (8 and 0) are standalone digits, but the rest are not.
 // Two look-aheads are needed because the number following \\d could be a
 // two-digit number, since the phone number can be as long as 15 digits.
-const STANDALONE_DIGIT_PATTERN
+const STANDALONE_DIGIT_PATTERN = '...'
