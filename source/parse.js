@@ -35,7 +35,7 @@ const default_options =
 //    country:
 //    {
 //      restrict - (a two-letter country code)
-//                 assume the phone number is for this country
+//                 the phone number must be in this country
 //
 //      default - (a two-letter country code)
 //                default country to use for phone number parsing and validation
