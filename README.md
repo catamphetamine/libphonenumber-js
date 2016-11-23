@@ -19,7 +19,6 @@ One part of me was curious about how all this phone matching machinery worked, a
 ## Installation
 
 ```
-# not yet finished therefore not yet published to npm
 npm install libphonenumber-js --save
 ```
 

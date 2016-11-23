@@ -1,4 +1,4 @@
-0.1.0 / xx.11.2016
+0.0.1 / 24.11.2016
 ===================
 
-  * Initial release. `parse` and `format` functions are working.
+  * Initial release. `parse`function is working.
