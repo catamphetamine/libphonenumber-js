@@ -6,6 +6,8 @@
 
 A simpler (and smaller) rewrite of Google Android's famous `libphonenumber` library.
 
+**Work in Progress, will be released in the next few days**
+
 ## LibPhoneNumber
 
 `libphonenumber` is a phone number formatting a parsing library released by Google, originally developed for (and currently used in) Google's [Android](https://en.wikipedia.org/wiki/Android_(operating_system)) mobile phone operating system. Obviously, implementing a rigorous phone number formatting and parsing library was crucial for the phone OS overall usability (back then, in the early 2000s, it was originally meant to be a phone after all, not just a SnapChat device).
