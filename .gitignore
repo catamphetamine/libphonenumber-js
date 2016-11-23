@@ -1,0 +1,35 @@
+# testing package
+/libphonenumber-js-*.tgz
+
+# test coverage folder
+/coverage/
+
+# npm modules
+# https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
+/node_modules/
+
+# npm errors
+npm-debug.log
+
+# github pages
+/gh-pages/
+
+# for OS X users
+.DS_Store
+
+# cache files for sublime text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# workspace files are user-specific
+*.sublime-workspace
+
+# webpack build target folder
+/build/
+
+# browser builds
+/bundle/
+
+# intermediary metadata
+/metadata.json
