@@ -6,8 +6,6 @@
 
 A simpler (and smaller) rewrite of Google Android's famous `libphonenumber` library.
 
-**Work in Progress, will be released in the next few days**
-
 ## LibPhoneNumber
 
 `libphonenumber` is a phone number formatting and parsing library released by Google, originally developed for (and currently used in) Google's [Android](https://en.wikipedia.org/wiki/Android_(operating_system)) mobile phone operating system. Obviously, implementing a rigorous phone number formatting and parsing library was crucial for the phone OS overall usability (back then, in the early 2000s, it was originally meant to be a phone after all, not just a SnapChat device).
@@ -37,7 +35,7 @@ npm install libphonenumber-js --save
 ## Usage
 
 ```js
-import { parse } from 'libphonenumber-js'
+import { parse, format } from 'libphonenumber-js'
 
 parse('8 (800) 555 35 35', 'RU') === { country: 'RU', phone: '8005553535' }
 
@@ -84,6 +82,10 @@ Can also be called with the first object argument expanded:
 format('2133734253', 'US', 'International') === '+1-213-373-4253'
 format({ country: 'US', phone: '2133734253' }, 'International') === '+1-213-373-4253'
 ```
+
+<!-- ### isValidNumber(number, country_code)
+
+(aka `is_valid_number`) -->
 
 ## To do
 
