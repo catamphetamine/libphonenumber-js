@@ -89,7 +89,7 @@ format({ country: 'US', phone: '2133734253' }, 'International') === '+1-213-373-
 
 ## To do
 
-* Maybe exclude `national_prefix` from metadata due to it not being used (superseded by the relevant regular expressions)
+* Implement "As you type"
 
 ## Contributing
 
