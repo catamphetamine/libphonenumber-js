@@ -14,7 +14,7 @@ A simpler (and smaller) rewrite of Google Android's famous `libphonenumber` libr
 
 One part of me was curious about how all this phone matching machinery worked, and another part of me was curious if there's a way to reduce those 220 KiloBytes to something more reasonable while also getting rid of the `closure` library and rewrite it all in pure javascript. So, that was my little hackathon for a couple of weeks, and seems that it succeeded. The resulting library does everything a modern web application needs while maintaining a much slimmer size of about 70 KiloBytes.
 
-## Differences from Google's `libphonenumber`
+## Difference from Google's `libphonenumber`
 
   * Weighs less than 70 KiloBytes while `libphonenumber` bundle weighs about 220 KiloBytes
   * When formatting international numbers replaces all braces, dashes, etc with spaces (because that's the logical thing to do, and leaving braces in an international number isn't)

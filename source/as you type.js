@@ -12,7 +12,7 @@ const CHARACTER_CLASS_PATTERN = /\[([^\[\]])*\]/g
 // two-digit number, since the phone number can be as long as 15 digits.
 const STANDALONE_DIGIT_PATTERN = '...'
 
-export default function as_you_type()
+export default function as_you_type(country_code)
 {
-	// ...
+	return function input_digit(digit) {}
 }
