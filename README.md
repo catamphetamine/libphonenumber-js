@@ -18,6 +18,8 @@ One part of me was curious about how all this phone matching machinery worked, a
 
 ## Differences from Google's `libphonenumber`
 
+  * Weighs less than 70 KiloBytes while `libphonenumber` bundle weighs about 220 KiloBytes
+  * When formatting international numbers replaces all braces, dashes, etc with spaces (because that's the logical thing to do, and leaving braces in an international number isn't)
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK` as we don't use telephone sets in the XXIst century that much (and we have phonebooks in your mobile phones)
   * Doesn't handle carrier codes: they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number (the locals surely already know those carrier codes by themselves)
   * Doesn't use `possibleDigits` data to speed up phone number pre-validation (it just skips to the regular expression check itself)
@@ -38,6 +40,8 @@ npm install libphonenumber-js --save
 import { parse } from 'libphonenumber-js'
 
 parse('8 (800) 555 35 35', 'RU') === { country: 'RU', phone: '8005553535' }
+
+format({ country: 'US', phone: '2133734253' }, 'International') === '+1-213-373-4253'
 ```
 
 ## API
@@ -64,7 +68,26 @@ Returns `{ country, phone }` where `country` is a two-letter country code, and `
 
 ```js
 parse('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
+parse('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
 ```
+
+### format(parsed_number, format)
+
+Formats an already parsed phone number in one of the following `format`s:
+  * `International` — e.g. `+1 213 373 4253`
+  * `International_plaintext` — (aka `E.164`) e.g. `+12133734253`
+  * `National` — e.g. `(213) 373-4253`
+
+Can also be called with the first object argument expanded:
+
+```js
+format('2133734253', 'US', 'International') === '+1-213-373-4253'
+format({ country: 'US', phone: '2133734253' }, 'International') === '+1-213-373-4253'
+```
+
+## To do
+
+* Maybe exclude `national_prefix` from metadata due to it not being used (superseded by the relevant regular expressions)
 
 ## Contributing
 

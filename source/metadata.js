@@ -25,7 +25,16 @@ export function get_national_prefix_formatting_rule(country_metadata)
 
 export function get_national_prefix_for_parsing(country_metadata)
 {
-	return country_metadata[5]
+	let national_prefix_for_parsing = country_metadata[5]
+
+	// If `national_prefix_for_parsing` is not set explicitly,
+	// then infer it from `national_prefix` (if any)
+	if (!national_prefix_for_parsing)
+	{
+		national_prefix_for_parsing = get_national_prefix(country_metadata)
+	}
+
+	return national_prefix_for_parsing
 }
 
 export function get_national_prefix_transform_rule(country_metadata)
@@ -58,17 +67,17 @@ export function get_format_leading_digits(format_array)
 	return format_array[2]
 }
 
-export function get_format_national_prefix_formatting_rule(format_array)
+export function get_format_national_prefix_formatting_rule(format_array, country_metadata)
 {
-	return format_array[3]
+	return format_array[3] || get_national_prefix_formatting_rule(country_metadata)
 }
 
-export function get_format_national_prefix_optional_when_formatting(format_array)
+export function get_format_national_prefix_is_optional_when_formatting(format_array, country_metadata)
 {
-	return format_array[4]
+	return format_array[4] || get_national_prefix_is_optional_when_formatting(country_metadata)
 }
 
 export function get_format_international_format(format_array)
 {
-	return format_array[5]
+	return format_array[5] || get_format_format(format_array)
 }

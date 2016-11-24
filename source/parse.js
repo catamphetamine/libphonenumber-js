@@ -3,25 +3,16 @@
 //
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
+import { matches_entirely } from './common'
 import metadata from '../metadata.min'
 
 import
 {
 	get_phone_code,
 	get_national_number_pattern,
-	get_formats,
-	get_national_prefix,
-	get_national_prefix_formatting_rule,
 	get_national_prefix_for_parsing,
 	get_national_prefix_transform_rule,
-	get_national_prefix_is_optional_when_formatting,
-	get_leading_digits,
-	get_format_pattern,
-	get_format_format,
-	get_format_leading_digits,
-	get_format_national_prefix_formatting_rule,
-	get_format_national_prefix_optional_when_formatting,
-	get_format_international_format
+	get_leading_digits
 }
 from './metadata'
 
@@ -249,19 +240,6 @@ export function replace_characters(text, replacements)
 	}
 
 	return replaced
-}
-
-// Checks whether the entire input sequence can be matched
-// against the regular expression.
-export function matches_entirely(regular_expression, text)
-{
-	if (typeof regular_expression === 'string')
-	{
-		regular_expression = '^(?:' + regular_expression + ')$'
-	}
-
-	const matched_groups = text.match(regular_expression)
-	return matched_groups && matched_groups[0].length === text.length
 }
 
 // Attempts to extract a possible number from the string passed in.

@@ -141,7 +141,7 @@ export default function(input)
 				// matching phone number pattern `(\d{2})(\d{6})` with format `$1 $2`
 				// is written as a local phone number `(0xx) xxxxxx`.
 				//
-				national_prefix_formatting_rule: territory.$.nationalPrefixFormattingRule,
+				national_prefix_formatting_rule: national_prefix_formatting_rule(territory.$.nationalPrefixFormattingRule, territory.$.nationalPrefix),
 
 				// Is it possible that a national (significant)
 				// phone number has leading zeroes?
@@ -177,35 +177,34 @@ export default function(input)
 			}
 
 			// Check that national (significant) phone number pattern
-			// is set for this country
+			// is set for this country (no "default" value here)
 			if (!country.national_number_pattern)
 			{
 				throw new Error(`"generalDesc.nationalNumberPattern" is missing for country ${country_code} metadata`)
 			}
 
-			// Some countries don't have `availableFormats` specified
+			// Some countries don't have `availableFormats` specified,
+			// because those formats are inherited from the "main country for region".
 			if (territory.availableFormats)
 			{
 				country.formats = territory.availableFormats[0].numberFormat.map((number_format) =>
 				({
 					pattern: number_format.$.pattern,
 					leading_digits: number_format.leadingDigits ? number_format.leadingDigits.map(leading_digits => leading_digits.replace(/\s/g, '')) : undefined,
-					national_prefix_formatting_rule: number_format.$.nationalPrefixFormattingRule,
+					national_prefix_formatting_rule: national_prefix_formatting_rule(number_format.$.nationalPrefixFormattingRule, territory.$.nationalPrefix),
 					national_prefix_optional_when_formatting: number_format.$.nationalPrefixOptionalWhenFormatting,
 					format: number_format.format[0],
-					intlFormat: (number_format.intlFormat && number_format.intlFormat[0] !== 'NA') ? number_format.intlFormat : undefined
+					international_format: (number_format.intlFormat && number_format.intlFormat[0] !== 'NA') ? number_format.intlFormat : undefined
 				}))
-			}
-			else
-			{
-				country.formats = []
-			}
 
-			// If `national_prefix_for_parsing` is not set explicitly,
-			// then infer it from `national_prefix` (if any)
-			if (!country.national_prefix_for_parsing && country.national_prefix)
-			{
-				country.national_prefix_for_parsing = country.national_prefix
+				// Sanity check (using no "default" for this field)
+				for (let format of country.formats)
+				{
+					if (!format.format)
+					{
+						throw new Error(`No phone number format "format" supplied for pattern ${format.pattern} for ${country_code}`)
+					}
+				}
 			}
 
 			// Add this country's metadata
@@ -238,6 +237,41 @@ export default function(input)
 			}
 		}
 
+		// Some countries don't have `availableFormats` specified,
+		// because those formats are meant to be copied
+		// from the "main country for region".
+		for (let country_code of Object.keys(countries))
+		{
+			const country = countries[country_code]
+
+			const main_country_for_region_code = country_phone_code_to_countries[country.phone_code][0]
+			const main_country_for_region = countries[main_country_for_region_code]
+			country.formats = main_country_for_region.formats
+
+			// Some countries like Saint Helena and Falkland Islands
+			// ('AC', 'FK', 'KI', 'NU', 'SH', 'TA', ...)
+			// don't have any phone number formats
+			// and phone numbers are formatted as a block in those countries.
+			if (!country.formats)
+			{
+				country.formats = []
+			}
+		}
+
 		return { countries, country_phone_code_to_countries }
 	})
+}
+
+// Replaces $NP with national prefix and $FG with the first group ($1)
+function national_prefix_formatting_rule(rule, national_prefix)
+{
+	if (!rule)
+	{
+		return
+	}
+
+	// Replace $NP with national prefix and $FG with the first group ($1)
+	return rule
+		.replace('$NP', national_prefix)
+		.replace('$FG', '$1')
 }

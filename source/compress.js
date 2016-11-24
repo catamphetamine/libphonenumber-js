@@ -22,7 +22,7 @@ export default function compress(input)
 					format.leading_digits,
 					format.national_prefix_formatting_rule,
 					format.national_prefix_optional_when_formatting,
-					format.intlFormat
+					format.international_format
 				]
 
 				trim_array(format_array)

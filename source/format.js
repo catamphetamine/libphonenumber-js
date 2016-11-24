@@ -3,48 +3,117 @@
 //
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
-export default function format(number, options = {})
-{
-  // if (number.getNationalNumber() == 0 && number.hasRawInput()) {
-  //   // Unparseable numbers that kept their raw input just use that.
-  //   // This is the only case where a number can be formatted as E164 without a
-  //   // leading '+' symbol (but the original number wasn't parseable anyway).
-  //   // TODO: Consider removing the 'if' above so that unparseable strings
-  //   // without raw input format to the empty string instead of "+00"
-  //   var rawInput = number.getRawInputOrDefault();
-  //   if (rawInput.length > 0) {
-  //     return rawInput;
-  //   }
-  // }
-  // var countryCallingCode = number.getCountryCodeOrDefault()
-  // var nationalSignificantNumber = this.getNationalSignificantNumber(number)
-  // if (numberFormat == i18n.phonenumbers.PhoneNumberFormat.E164)
-  // {
-  //   // Early exit for E164 case (even if the country calling code is invalid)
-  //   // since no formatting of the national number needs to be applied.
-  //   // Extensions are not formatted.
-  //   return this.prefixNumberWithCountryCallingCode_(
-  //       countryCallingCode, i18n.phonenumbers.PhoneNumberFormat.E164,
-  //       nationalSignificantNumber, '')
-  // }
-  // if (!this.hasValidCountryCallingCode_(countryCallingCode))
-  // {
-  //   return nationalSignificantNumber
-  // }
-  // // Note getRegionCodeForCountryCode() is used because formatting information
-  // // for regions which share a country calling code is contained by only one
-  // // region for performance reasons. For example, for NANPA regions it will be
-  // // contained in the metadata for US.
-  // var regionCode = this.getRegionCodeForCountryCode(countryCallingCode)
+import { matches_entirely } from './common'
+import metadata from '../metadata.min'
 
-  // // Metadata cannot be null because the country calling code is valid (which
-  // // means that the region code cannot be ZZ and must be one of our supported
-  // // region codes).
-  // var metadata = get_metadata_for_region_or_calling_code(countryCallingCode, regionCode)
-  // var formattedExtension = maybeGetFormattedExtension_(number, metadata, numberFormat)
-  // var formattedNationalNumber = formatNsn_(nationalSignificantNumber, metadata, numberFormat)
-  // return this.prefixNumberWithCountryCallingCode_(countryCallingCode,
-  //                                                 numberFormat,
-  //                                                 formattedNationalNumber,
-  //                                                 formattedExtension)
+import
+{
+	get_phone_code,
+	get_formats,
+	get_format_pattern,
+	get_format_format,
+	get_format_leading_digits,
+	get_format_national_prefix_formatting_rule,
+	get_format_national_prefix_is_optional_when_formatting,
+	get_format_international_format
+}
+from './metadata'
+
+export default function format(number, format, third_argument)
+{
+	// If the first argument object is expanded
+	if (typeof number === 'string')
+	{
+		number = { phone: number, country: format }
+		format = third_argument
+	}
+
+	const country_metadata = metadata.countries[number.country]
+
+	switch (format)
+	{
+		case 'International':
+			const national_number = format_national_number(number.phone, 'International', country_metadata)
+			return `+${get_phone_code(country_metadata)} ${national_number}`
+
+		case 'International_plaintext':
+			return `+${get_phone_code(country_metadata)}${number.phone}`
+
+		case 'National':
+			return format_national_number(number.phone, 'National', country_metadata)
+	}
+}
+
+// This was originally set to $1 but there are some countries for which the
+// first group is not used in the national pattern (e.g. Argentina) so the $1
+// group does not match correctly.  Therefore, we use \d, so that the first
+// group actually used in the pattern will be matched.
+const FIRST_GROUP_PATTERN = /(\$\d)/
+
+export function format_national_number(number, format_as, country_metadata)
+{
+	const format = choose_format_for_number(get_formats(country_metadata), number)
+
+	if (!format)
+	{
+		return number
+	}
+
+	const formatting_rule = get_format_international_format(format)
+	const pattern_to_match = new RegExp(get_format_pattern(format))
+
+	const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, country_metadata)
+
+	if (format_as === 'National' &&
+		!get_format_national_prefix_is_optional_when_formatting(format, country_metadata) &&
+		national_prefix_formatting_rule)
+	{
+		return number.replace(pattern_to_match,
+			formatting_rule.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule))
+	}
+
+	const formatted_number = number.replace(pattern_to_match, formatting_rule)
+
+	if (format_as === 'International')
+	{
+		return local_to_international_style(formatted_number)
+	}
+
+	return formatted_number
+}
+
+function choose_format_for_number(available_formats, national_number)
+{
+	for (let format of available_formats)
+	{
+		if (get_format_leading_digits(format))
+		{
+			// The last leading_digits_pattern is used here, as it is the most detailed
+			const last_leading_digits_pattern = get_format_leading_digits(format)[get_format_leading_digits(format).length - 1]
+
+			if (national_number.search(last_leading_digits_pattern) !== 0)
+			{
+				return
+			}
+		}
+
+		if (matches_entirely(new RegExp(get_format_pattern(format)), national_number))
+		{
+			return format
+		}
+	}
+}
+
+// Removes brackets and replaces dashes with spaces.
+//
+// E.g. "(999) 111-22-33" -> "999 111 22 33"
+//
+export function local_to_international_style(local)
+{
+	return local
+		// Remove brackets
+		.replace(/[\(\)]/g, '')
+		// Replace dashes with spaces
+		.replace(/\-/g, ' ')
+		.trim()
 }
