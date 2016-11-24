@@ -30,5 +30,8 @@ describe('parse', () =>
 
 		// Gangster partyline
 		parse('+1-213-373-4253').should.deep.equal({ country: 'US', phone: '2133734253' })
+
+		// Switzerland (just in case)
+		parse('044 668 18 00', 'CH').should.deep.equal({ country: 'CH', phone: '446681800' })
 	})
 })

@@ -201,12 +201,11 @@ export default function(input)
 				country.formats = []
 			}
 
-			// Fix missing `national_prefix_for_parsing` for Mother Russia
-			// https://github.com/googlei18n/libphonenumber/issues/1447
-			if (country_code === 'RU')
+			// If `national_prefix_for_parsing` is not set explicitly,
+			// then infer it from `national_prefix` (if any)
+			if (!country.national_prefix_for_parsing && country.national_prefix)
 			{
-				country.national_prefix_for_parsing = '8?(\\d{10})'
-				country.national_prefix_transform_rule = '$1'
+				country.national_prefix_for_parsing = country.national_prefix
 			}
 
 			// Add this country's metadata
