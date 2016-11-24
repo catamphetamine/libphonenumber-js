@@ -44,6 +44,25 @@ import Promise from 'bluebird'
 //                         whether a phone number format can be used to format
 //                         a particular national (significant) phone number.
 //
+// `libphonenumber/BuildMetadataFromXml.java` was used as a reference.
+// https://github.com/googlei18n/libphonenumber/blob/master/tools/java/common/src/com/google/i18n/phonenumbers/BuildMetadataFromXml.java
+//
+// There are three Xml metadata files in Google's `libphonenumber`:
+//
+//  * PhoneNumberMetadata.xml — core data, used both for parse/format and "as you type"
+//
+//  * PhoneNumberAlternateFormats.xml — alternative phone number formats.
+//                                      is presumably used for parsing phone numbers
+//                                      written in "alternative" formats.
+//                                      is not used by "as you type"
+//                                      presumably because of formats ambiguity
+//                                      when combined with the core data.
+//                                      this metadata is not used in this library
+//                                      as there's no clear description on what to do with it
+//                                      and how it works in the original `libphonenumber` code.
+//
+//  * ShortNumberMetadata.xml — emergency numbers, etc. not used in this library.
+//
 export default function(input)
 {
 	return Promise.promisify(parseString)(input).then((xml) =>
