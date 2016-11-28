@@ -120,7 +120,8 @@ new asYouType('US').input('2133734') === '(213) 373-4'
 
 ## To do
 
-* Implement "As you type"
+* Maybe fix the "miniumum of 3 characters" limit for "As you type" formatter
+* Maybe fix braces for "As you type" formatter (don't cut off closing braces)
 
 ## Contributing
 
