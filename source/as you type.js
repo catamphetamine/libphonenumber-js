@@ -633,12 +633,7 @@ export default class as_you_type
 			this.last_match_position = digit_pattern_start
 
 			// Return the formatted phone number so far
-			return this.formatting_template.slice(0, digit_pattern_start + 1)
-
-
-			close_dangling_braces()
-
-
+			return close_dangling_braces(this.formatting_template, digit_pattern_start + 1)
 		}
 
 		// More digits are entered than the current format could handle
@@ -668,22 +663,23 @@ export default class as_you_type
 
 export function close_dangling_braces(template, cut_before)
 {
-	// Split template into two parts:
-	// one with trunk prefix and the other without trunk prefix.
 	const retained_template = template.slice(0, cut_before)
-	template = template.slice(cut_before + 1)
-
-	// Fix dangling braces (e.g. for UK numbers: "(0AA) BBBB BBBB")
 
 	const opening_braces = count_occurences('(', retained_template)
 	const closing_braces = count_occurences(')', retained_template)
 
 	let dangling_braces = opening_braces - closing_braces
-	while (dangling_braces > 0)
+
+	while (dangling_braces > 0 && cut_before < template.length)
 	{
-		template = template.replace(')', '')
-		dangling_braces--
+		if (template[cut_before] === ')')
+		{
+			dangling_braces--
+		}
+		cut_before++
 	}
+
+	return template.slice(0, cut_before)
 }
 
 // Counts all occurences of a symbol in a string

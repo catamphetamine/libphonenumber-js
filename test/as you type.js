@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import as_you_type from '../source/as you type'
+import as_you_type, { close_dangling_braces } from '../source/as you type'
 
 describe('as you type', () =>
 {
@@ -65,10 +65,10 @@ describe('as you type', () =>
 		formatter = new as_you_type('RU')
 
 		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('8 (9')
-		formatter.input('9').should.equal('8 (99')
-		formatter.input('9').should.equal('8 (999')
-		formatter.input('-').should.equal('8 (999')
+		formatter.input('9').should.equal('8 (9  )')
+		formatter.input('9').should.equal('8 (99 )')
+		formatter.input('9').should.equal('8 (999)')
+		formatter.input('-').should.equal('8 (999)')
 		formatter.input('1234').should.equal('8 (999) 123-4')
 		formatter.input('567').should.equal('8 (999) 123-45-67')
 		formatter.input('8').should.equal('899912345678')
@@ -82,14 +82,31 @@ describe('as you type', () =>
 		formatter.input('1234').should.equal('999 123-4')
 		formatter.input('567').should.equal('999 123-45-67')
 		formatter.input('8').should.equal('99912345678')
+	})
+
+	it('should close dangling braces', function()
+	{
+		close_dangling_braces('(9)', 2).should.equal('(9)')
+
+		let formatter
 
 		// Test braces (US)
 
 		formatter = new as_you_type('US')
 
-		formatter.input('9').should.equal('(9')
-		formatter.input('9').should.equal('(99')
-		formatter.input('9').should.equal('(999')
+		formatter.input('9').should.equal('(9  )')
+		formatter.input('9').should.equal('(99 )')
+		formatter.input('9').should.equal('(999)')
 		formatter.input('1').should.equal('(999) 1')
+
+		// Test braces (RU)
+
+		formatter = new as_you_type('RU')
+
+		formatter.input('8').should.equal('8')
+		formatter.input('9').should.equal('8 (9  )')
+		formatter.input('9').should.equal('8 (99 )')
+		formatter.input('9').should.equal('8 (999)')
+		formatter.input('1').should.equal('8 (999) 1')
 	})
 })
