@@ -81,8 +81,9 @@ describe('as you type', () =>
 
 		formatter = new as_you_type('US')
 
-		formatter.input('9').should.equal('(9')
-		formatter.input('9').should.equal('(99')
-		formatter.input('9').should.equal('(999)')
+		formatter.input('9').should.equal('9')
+		formatter.input('9').should.equal('99')
+		formatter.input('9').should.equal('(999')
+		formatter.input('1').should.equal('(999) 1')
 	})
 })
