@@ -13,6 +13,11 @@ export function get_formats(country_metadata)
 	return country_metadata[2]
 }
 
+export function get_international_formats(country_metadata)
+{
+	return get_formats(country_metadata).filter(format => get_format_international_format(format) !== 'NA')
+}
+
 export function get_national_prefix(country_metadata)
 {
 	return country_metadata[3]
@@ -62,9 +67,9 @@ export function get_format_format(format_array)
 	return format_array[1]
 }
 
-export function get_format_leading_digits(format_array)
+export function get_format_leading_digits_patterns(format_array)
 {
-	return format_array[2]
+	return format_array[2] || []
 }
 
 export function get_format_national_prefix_formatting_rule(format_array, country_metadata)
@@ -80,4 +85,16 @@ export function get_format_national_prefix_is_optional_when_formatting(format_ar
 export function get_format_international_format(format_array)
 {
 	return format_array[5] || get_format_format(format_array)
+}
+
+// Formatting information for regions which share
+// a country calling code is contained by only one region
+// for performance reasons. For example, for NANPA region
+// ("North American Numbering Plan Administration",
+//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
+// it will be contained in the metadata for `US`.
+export function get_metadata_by_country_phone_code(country_phone_code, metadata)
+{
+	const country_code = metadata.country_phone_code_to_countries[country_phone_code][0]
+	return metadata.countries[country_code]
 }

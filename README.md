@@ -25,6 +25,7 @@ One part of me was curious about how all this phone matching machinery worked, a
   * Doesn't parse phone numbers with extensions (again, this is not the type of phone numbers users should input on websites — they're supposed to input their personal mobile phone numbers, or home stationary phone numbers if they're living in an area where celltowers don't have a good signal, not their business/enterprise stationary phone numbers)
   * Doesn't distinguish between fixed line, mobile, pager, voicemail, toll free and other XXth century bullsh*t
   * Doesn't format phone numbers for "out of country dialing", e.g. `011 ...` in the US (again, just use the `+...` notation accepted worldwide for mobile phones)
+  * Doesn't parse `tel:...` URIs ([RFC 3966](https://www.ietf.org/rfc/rfc3966.txt)) because it's not relevant for user-facing web experience
 
 ## Installation
 
@@ -35,11 +36,18 @@ npm install libphonenumber-js --save
 ## Usage
 
 ```js
-import { parse, format } from 'libphonenumber-js'
+import { parse, format, asYouType } from 'libphonenumber-js'
 
-parse('8 (800) 555 35 35', 'RU') === { country: 'RU', phone: '8005553535' }
+parse('8 (800) 555 35 35', 'RU')
+// { country: 'RU', phone: '8005553535' }
 
-format({ country: 'US', phone: '2133734253' }, 'International') === '+1-213-373-4253'
+format('2133734253', 'US', 'International')
+// '+1-213-373-4253'
+
+new asYouType().input('+12133734')
+// '+1 213 373 4'
+new asYouType('US').input('2133734')
+// '(213) 373-4'
 ```
 
 ## API
@@ -83,9 +91,32 @@ format('2133734253', 'US', 'International') === '+1-213-373-4253'
 format({ country: 'US', phone: '2133734253' }, 'International') === '+1-213-373-4253'
 ```
 
-<!-- ### isValidNumber(number, country_code)
+### isValidNumber(number, country_code)
 
-(aka `is_valid_number`) -->
+(aka `is_valid_number`)
+
+This function is simply a wrapper for `parse`: if `parse` returns an empty object then the phone number is not valid.
+
+```js
+isValidNumber('+1-213-373-4253') === true
+isValidNumber('+1-213-373') === false
+isValidNumber('(213) 373-4253', 'US') === true
+isValidNumber('(213) 37', 'US') === false
+```
+
+### `class` asYouType(country_code)
+
+(aka `as_you_type`)
+
+Creates a formatter for partially entered phone number. The two-letter `country_code` is optional and if specified restricts the phone number being input to the specified country. The instance of this class has two methods:
+
+ * `input(text)` — takes any text and appends it to the input; returns the formatted phone number
+ * `clear()` — clears input
+
+```js
+new asYouType().input('+12133734') === '+1 213 373 4'
+new asYouType('US').input('2133734') === '(213) 373-4'
+```
 
 ## To do
 

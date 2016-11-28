@@ -8,39 +8,73 @@ import metadata from '../metadata.min'
 
 import
 {
+	parse_phone_number_and_country_phone_code
+}
+from './parse'
+
+import
+{
 	get_phone_code,
 	get_formats,
+	get_international_formats,
 	get_format_pattern,
 	get_format_format,
-	get_format_leading_digits,
+	get_format_leading_digits_patterns,
 	get_format_national_prefix_formatting_rule,
 	get_format_national_prefix_is_optional_when_formatting,
-	get_format_international_format
+	get_format_international_format,
+	get_metadata_by_country_phone_code
 }
 from './metadata'
 
-export default function format(number, format, third_argument)
+export default function format(input, format, third_argument)
 {
 	// If the first argument object is expanded
-	if (typeof number === 'string')
+	if (typeof input === 'string')
 	{
-		number = { phone: number, country: format }
-		format = third_argument
+		// If number is passed not as an object
+		if (typeof third_argument === 'string')
+		{
+			input = { phone: input, country: format }
+			format = third_argument
+		}
+		else
+		{
+			input = { phone: input }
+		}
 	}
 
-	const country_metadata = metadata.countries[number.country]
+	let country_metadata = metadata.countries[input.country]
+
+	const { country_phone_code, number } = parse_phone_number_and_country_phone_code(input.phone)
+
+	if (country_phone_code)
+	{
+		// Check country restriction
+		if (input.country && country_phone_code !== get_phone_code(country_metadata))
+		{
+			return input.phone
+		}
+
+		country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
+	}
+
+	if (!country_metadata)
+	{
+		return input.phone
+	}
 
 	switch (format)
 	{
 		case 'International':
-			const national_number = format_national_number(number.phone, 'International', country_metadata)
+			const national_number = format_national_number(number, 'International', country_metadata)
 			return `+${get_phone_code(country_metadata)} ${national_number}`
 
 		case 'International_plaintext':
-			return `+${get_phone_code(country_metadata)}${number.phone}`
+			return `+${get_phone_code(country_metadata)}${input.phone}`
 
 		case 'National':
-			return format_national_number(number.phone, 'National', country_metadata)
+			return format_national_number(number, 'National', country_metadata)
 	}
 }
 
@@ -52,14 +86,22 @@ const FIRST_GROUP_PATTERN = /(\$\d)/
 
 export function format_national_number(number, format_as, country_metadata)
 {
-	const format = choose_format_for_number(get_formats(country_metadata), number)
+	// When the `international_formats` exist, we use that to format national number
+	// for the INTERNATIONAL format instead of using the numberDesc.numberFormats.
+	let available_formats = get_international_formats(country_metadata)
+
+	if (available_formats.length === 0 || format_as === 'National')
+	{
+		available_formats = get_formats(country_metadata)
+	}
+
+	const format = choose_format_for_number(available_formats, number)
 
 	if (!format)
 	{
 		return number
 	}
 
-	const formatting_rule = get_format_international_format(format)
 	const pattern_to_match = new RegExp(get_format_pattern(format))
 
 	const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, country_metadata)
@@ -69,10 +111,10 @@ export function format_national_number(number, format_as, country_metadata)
 		national_prefix_formatting_rule)
 	{
 		return number.replace(pattern_to_match,
-			formatting_rule.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule))
+			get_format_format(format).replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule))
 	}
 
-	const formatted_number = number.replace(pattern_to_match, formatting_rule)
+	const formatted_number = number.replace(pattern_to_match, format_as === 'International' ? get_format_international_format(format) : get_format_format(format))
 
 	if (format_as === 'International')
 	{
@@ -86,10 +128,10 @@ function choose_format_for_number(available_formats, national_number)
 {
 	for (let format of available_formats)
 	{
-		if (get_format_leading_digits(format))
+		if (get_format_leading_digits_patterns(format).length > 0)
 		{
 			// The last leading_digits_pattern is used here, as it is the most detailed
-			const last_leading_digits_pattern = get_format_leading_digits(format)[get_format_leading_digits(format).length - 1]
+			const last_leading_digits_pattern = get_format_leading_digits_patterns(format)[get_format_leading_digits_patterns(format).length - 1]
 
 			if (national_number.search(last_leading_digits_pattern) !== 0)
 			{

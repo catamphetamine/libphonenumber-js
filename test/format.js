@@ -7,7 +7,8 @@ describe('format', () =>
 {
 	it('should work with the first object argument expanded', function()
 	{
-		format('2133734253', 'US', 'International') === '+1-213-373-4253'
+		format('+12133734253', 'National').should.equal('(213) 373-4253')
+		format('2133734253', 'US', 'International').should.equal('+1 213 373 4253')
 	})
 
 	it('should format valid phone numbers', function()

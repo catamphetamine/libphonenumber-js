@@ -12,137 +12,83 @@ import
 	get_national_number_pattern,
 	get_national_prefix_for_parsing,
 	get_national_prefix_transform_rule,
-	get_leading_digits
+	get_leading_digits,
+	get_metadata_by_country_phone_code
 }
 from './metadata'
 
-const default_options =
-{
-	country: {}
-}
-
-// `options`:
-//  {
-//    country:
-//    {
-//      restrict - (a two-letter country code)
-//                 the phone number must be in this country
-//
-//      default - (a two-letter country code)
-//                default country to use for phone number parsing and validation
-//                (if no country code could be derived from the phone number)
-//    }
-//  }
-//
-// Returns `{ country, number }`
-export default function parse(text, options)
-{
-	if (typeof options === 'string')
-	{
-		const restrict_to_country = options
-
-		options =
-		{
-			...default_options,
-
-			country:
-			{
-				restrict: restrict_to_country
-			}
-		}
-	}
-
-	if (!options)
-	{
-		options = { ...default_options }
-	}
-
-	// Parse the phone number
-
-	if (!text || text.length > MAX_INPUT_STRING_LENGTH)
-	{
-		return {}
-	}
-
-	text = extract_possible_number(text)
-
-	let { country_phone_code, number } = extract_country_phone_code(text)
-
-	// Maybe invalid country phone code encountered
-	if (!country_phone_code && !number)
-	{
-		return {}
-	}
-
-	let country
-	let country_metadata
-
-	if (country_phone_code)
-	{
-		// Check country restriction
-		if (options.country.restrict &&
-			country_phone_code !== get_phone_code(metadata.countries[options.country.restrict]))
-		{
-			return {}
-		}
-
-		country_metadata = get_metadata_by_country_phone_code(country_phone_code)
-	}
-	else if (options.country.default || options.country.restrict)
-	{
-		country = options.country.default || options.country.restrict
-		country_metadata = metadata.countries[country]
-		number = normalize(text)
-	}
-
-	if (!country_metadata)
-	{
-		return {}
-	}
-
-	// Sanity check
-	if (number.length < MIN_LENGTH_FOR_NSN)
-	{
-		return {}
-	}
-
-	const national_number = strip_national_prefix(number, country_metadata)
-
-	if (!country)
-	{
-		country = find_country_code(country_phone_code, national_number)
-
-		// Check country restriction
-		if (options.country.restrict && country !== options.country.restrict)
-		{
-			return {}
-		}
-	}
-
-	// They say that sometimes national (significant) numbers
-	// can be longer than `MAX_LENGTH_FOR_NSN` (e.g. in Germany).
-	// https://github.com/googlei18n/libphonenumber/blob/7e1748645552da39c4e1ba731e47969d97bdb539/resources/phonenumber.proto#L36
-	if (national_number.length < MIN_LENGTH_FOR_NSN
-		|| national_number.length > MAX_LENGTH_FOR_NSN)
-	{
-		return { phone: number }
-	}
-
-	const national_number_rule = new RegExp(get_national_number_pattern(country_metadata))
-
-	if (!matches_entirely(national_number_rule, national_number))
-	{
-		return {}
-	}
-
-	return { country, phone: national_number }
-}
-
-const PLUS_CHARS = '+\uFF0B'
+export const PLUS_CHARS = '+\uFF0B'
 
 // Digits accepted in phone numbers
 // (ascii, fullwidth, arabic-indic, and eastern arabic digits).
-const VALID_DIGITS = '0-9\uFF10-\uFF19\u0660-\u0669\u06F0-\u06F9'
+export const VALID_DIGITS = '0-9\uFF10-\uFF19\u0660-\u0669\u06F0-\u06F9'
+
+// Regular expression of acceptable punctuation found in phone numbers. This
+// excludes punctuation found as a leading character only. This consists of dash
+// characters, white space characters, full stops, slashes, square brackets,
+// parentheses and tildes. It also includes the letter 'x' as that is found as a
+// placeholder for carrier information in some phone numbers. Full-width
+// variants are also present.
+export const VALID_PUNCTUATION =
+	'-x\u2010-\u2015\u2212\u30FC\uFF0D-\uFF0F \u00A0\u00AD\u200B\u2060\u3000' +
+	'()\uFF08\uFF09\uFF3B\uFF3D.\\[\\]/~\u2053\u223C\uFF5E'
+
+//  Regular expression of viable phone numbers. This is location independent.
+//  Checks we have at least three leading digits, and only valid punctuation,
+//  alpha characters and digits in the phone number. Does not include extension
+//  data. The symbol 'x' is allowed here as valid punctuation since it is often
+//  used as a placeholder for carrier codes, for example in Brazilian phone
+//  numbers. We also allow multiple '+' characters at the start.
+//
+//  Corresponds to the following:
+//  [digits]{minLengthNsn}|
+//  plus_sign*
+//  (([punctuation]|[star])*[digits]){3,}([punctuation]|[star]|[digits]|[alpha])*
+//
+//  The first reg-ex is to allow short numbers (two digits long) to be parsed if
+//  they are entered as "15" etc, but only if there is no punctuation in them.
+//  The second expression restricts the number of digits to three or more, but
+//  then allows them to be in international form, and to have alpha-characters
+//  and punctuation. We split up the two reg-exes here and combine them when
+//  creating the reg-ex VALID_PHONE_NUMBER_PATTERN itself so we can prefix it
+//  with ^ and append $ to each branch.
+//
+//  Note VALID_PUNCTUATION starts with a -, so must be the first in the range.
+//  (wtf did they mean by saying that; probably nothing)
+//
+const MIN_LENGTH_PHONE_NUMBER_PATTERN = '[' + VALID_DIGITS + ']{' + MIN_LENGTH_FOR_NSN + '}'
+//
+// And this is the second reg-exp:
+// (see MIN_LENGTH_PHONE_NUMBER_PATTERN for a full description of this reg-exp)
+//
+const VALID_PHONE_NUMBER =
+		'[' + PLUS_CHARS + ']{0,1}' +
+		'(?:' +
+			'[' + VALID_PUNCTUATION + ']*' +
+			'[' + VALID_DIGITS + ']' +
+		'){3,}' +
+		'[' +
+			VALID_PUNCTUATION +
+			VALID_DIGITS +
+		']*'
+
+// The combined regular expression for valid phone numbers:
+//
+const VALID_PHONE_NUMBER_PATTERN = new RegExp
+(
+	// Either a short two-digit-only phone number
+	'^' +
+		MIN_LENGTH_PHONE_NUMBER_PATTERN +
+	'$' +
+	'|' +
+	// Or a longer fully parsed phone number (min 3 characters)
+	'^' +
+		VALID_PHONE_NUMBER +
+		// screw phone number extensions
+		// '(?:' + EXTN_PATTERNS_FOR_PARSING + ')?' +
+	'$'
+,
+'i')
 
 // This consists of the plus symbol, digits, and arabic-indic digits.
 const PHONE_NUMBER_START_PATTERN = new RegExp('[' + PLUS_CHARS + VALID_DIGITS + ']')
@@ -215,6 +161,123 @@ const MAX_LENGTH_FOR_NSN = 17
 // This prevents malicious input from consuming CPU.
 const MAX_INPUT_STRING_LENGTH = 250
 
+const default_options =
+{
+	country: {}
+}
+
+// `options`:
+//  {
+//    country:
+//    {
+//      restrict - (a two-letter country code)
+//                 the phone number must be in this country
+//
+//      default - (a two-letter country code)
+//                default country to use for phone number parsing and validation
+//                (if no country code could be derived from the phone number)
+//    }
+//  }
+//
+// Returns `{ country, number }`
+export default function parse(text, options)
+{
+	if (typeof options === 'string')
+	{
+		const restrict_to_country = options
+
+		options =
+		{
+			...default_options,
+
+			country:
+			{
+				restrict: restrict_to_country
+			}
+		}
+	}
+
+	if (!options)
+	{
+		options = { ...default_options }
+	}
+
+	// Parse the phone number
+
+	const formatted_phone_number = extract_formatted_phone_number(text)
+
+	let { country_phone_code, number } = parse_phone_number_and_country_phone_code(formatted_phone_number)
+
+	// Maybe invalid country phone code encountered
+	if (!country_phone_code && !number)
+	{
+		return {}
+	}
+
+	let country
+	let country_metadata
+
+	if (country_phone_code)
+	{
+		// Check country restriction
+		if (options.country.restrict &&
+			country_phone_code !== get_phone_code(metadata.countries[options.country.restrict]))
+		{
+			return {}
+		}
+
+		country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
+	}
+	else if (options.country.default || options.country.restrict)
+	{
+		country = options.country.default || options.country.restrict
+		country_metadata = metadata.countries[country]
+		number = normalize(text)
+	}
+
+	if (!country_metadata)
+	{
+		return {}
+	}
+
+	// Sanity check
+	if (number.length < MIN_LENGTH_FOR_NSN)
+	{
+		return {}
+	}
+
+	const national_number = strip_national_prefix(number, country_metadata)
+
+	if (!country)
+	{
+		country = find_country_code(country_phone_code, national_number)
+
+		// Check country restriction
+		if (options.country.restrict && country !== options.country.restrict)
+		{
+			return {}
+		}
+	}
+
+	// They say that sometimes national (significant) numbers
+	// can be longer than `MAX_LENGTH_FOR_NSN` (e.g. in Germany).
+	// https://github.com/googlei18n/libphonenumber/blob/7e1748645552da39c4e1ba731e47969d97bdb539/resources/phonenumber.proto#L36
+	if (national_number.length < MIN_LENGTH_FOR_NSN
+		|| national_number.length > MAX_LENGTH_FOR_NSN)
+	{
+		return { phone: number }
+	}
+
+	const national_number_rule = new RegExp(get_national_number_pattern(country_metadata))
+
+	if (!matches_entirely(national_number_rule, national_number))
+	{
+		return {}
+	}
+
+	return { country, phone: national_number }
+}
+
 // Normalizes a string of characters representing a phone number.
 // This converts wide-ascii and arabic-indic numerals to European numerals,
 // and strips punctuation and alpha characters.
@@ -259,9 +322,65 @@ export function extract_possible_number(text)
 		.replace(AFTER_PHONE_NUMBER_END_PATTERN, '')
 }
 
-// Tries to extract a country calling code from a number
-export function extract_country_phone_code(number)
+// Checks to see if the string of characters could possibly be a phone number at
+// all. At the moment, checks to see that the string begins with at least 2
+// digits, ignoring any punctuation commonly found in phone numbers. This method
+// does not require the number to be normalized in advance - but does assume
+// that leading non-number symbols have been removed, such as by the method
+// `extract_possible_number`.
+//
+export function is_viable_phone_number(number)
 {
+	return number.length >= MIN_LENGTH_FOR_NSN &&
+		matches_entirely(VALID_PHONE_NUMBER_PATTERN, number)
+}
+
+export function extract_formatted_phone_number(text, is_valid = is_viable_phone_number)
+{
+	if (!text || text.length > MAX_INPUT_STRING_LENGTH)
+	{
+		return
+	}
+
+	// Extracts a piece of text possibly containing a phone number
+	text = extract_possible_number(text)
+
+	if (is_valid(text))
+	{
+		return text
+	}
+}
+
+// Parses a formatted phone number
+// and returns `{ is_international, number }`
+// where `number` is either national (significant) phone number
+// or an international phone number with the leading '+' stripped.
+export function parse_phone_number(number)
+{
+	if (!number)
+	{
+		return {}
+	}
+
+	const is_international = LEADING_PLUS_CHARS_PATTERN.test(number)
+
+	// Remove non-digits
+	// (and strip the possible leading '+')
+	number = normalize(number)
+
+	return { number, is_international }
+}
+
+// Parses a formatted phone number
+// and returns `{ country_phone_code, number }`
+// where `number` is the national (significant) phone number.
+//
+// (aka `maybeExtractCountryPhoneCode`)
+//
+export function parse_phone_number_and_country_phone_code(_number)
+{
+	const { number, is_international } = parse_phone_number(_number)
+
 	if (!number)
 	{
 		return {}
@@ -269,17 +388,9 @@ export function extract_country_phone_code(number)
 
 	// If this is not an international phone number,
 	// then don't extract country phone code.
-	if (!LEADING_PLUS_CHARS_PATTERN.test(number))
+	if (!is_international)
 	{
 		return { number }
-	}
-
-	// Strip the leading '+' and remove non-digits
-	number = normalize(number.replace(LEADING_PLUS_CHARS_PATTERN, ''))
-
-	if (!number)
-	{
-		return {}
 	}
 
 	// Country codes do not begin with a '0'
@@ -311,18 +422,6 @@ export function extract_country_phone_code(number)
 	}
 
 	return {}
-}
-
-// Formatting information for regions which share
-// a country calling code is contained by only one region
-// for performance reasons. For example, for NANPA region
-// ("North American Numbering Plan Administration",
-//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
-// it will be contained in the metadata for `US`.
-export function get_metadata_by_country_phone_code(country_phone_code)
-{
-	const country_code = metadata.country_phone_code_to_countries[country_phone_code][0]
-	return metadata.countries[country_code]
 }
 
 // Strips any national prefix (such as 0, 1) present in the number provided
