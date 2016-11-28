@@ -192,18 +192,18 @@ export default class as_you_type
 		}
 		else
 		{
-			if (!this.national_prefix)
+			// Some national prefixes are substrings of other national prefixes
+			// (for the same country), therefore extract national prefix each time.
+
+			const previous_national_prefix = this.national_prefix
+			this.national_number = this.national_prefix + this.national_number
+
+			// Possibly extract a national prefix
+			this.extract_national_prefix()
+
+			if (this.national_prefix !== previous_national_prefix)
 			{
-				// Possibly extract a national prefix
-				this.extract_national_prefix()
-			}
-			else if (!this.able_to_format)
-			{
-				if (!this.extract_longer_national_prefix())
-				{
-					// Return raw phone number
-					return this.parsed_input
-				}
+				this.reset_formatting()
 			}
 		}
 
@@ -296,16 +296,15 @@ export default class as_you_type
 		if (!this.country_code)
 		{
 			this.country_metadata = undefined
+			this.available_formats = undefined
 		}
 
-		this.clear_formatting()
+		this.reset_formatting()
 	}
 
-	clear_formatting()
+	reset_formatting()
 	{
-		this.able_to_format = true
-
-		this.possible_formats = undefined
+		this.possible_formats = this.available_formats
 
 		this.current_format = undefined
 
@@ -329,13 +328,6 @@ export default class as_you_type
 		}
 
 		return formatted_national_number
-	}
-
-	attempt_to_choose_formatting_pattern_with_national_prefix_extracted()
-	{
-		this.clear_formatting()
-
-		return this.format_national_number()
 	}
 
 	initialize_possible_formats()
