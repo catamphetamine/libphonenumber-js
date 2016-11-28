@@ -16,7 +16,7 @@ One part of me was curious about how all this phone matching machinery worked, a
 
 ## Difference from Google's `libphonenumber`
 
-  * Weighs less than 70 KiloBytes while `libphonenumber` bundle weighs about 220 KiloBytes
+  * Metadata size is just about 70 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes
   * When formatting international numbers replaces all braces, dashes, etc with spaces (because that's the logical thing to do, and leaving braces in an international number isn't)
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK` as we don't use telephone sets in the XXIst century that much (and we have phonebooks in your mobile phones)
   * Doesn't handle carrier codes: they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number (the locals surely already know those carrier codes by themselves)
