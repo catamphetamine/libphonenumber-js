@@ -215,6 +215,8 @@ export default function(input)
 					format: number_format.format[0],
 					international_format: number_format.intlFormat ? number_format.intlFormat[0] : undefined
 				}))
+				// Screw local-only formats
+				.filter(format => format.international_format !== 'NA')
 
 				// Sanity check (using no "default" for this field)
 				for (let format of country.formats)

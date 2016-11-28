@@ -16,7 +16,6 @@ import
 {
 	get_phone_code,
 	get_formats,
-	get_international_formats,
 	get_format_pattern,
 	get_format_format,
 	get_format_leading_digits_patterns,
@@ -86,16 +85,7 @@ const FIRST_GROUP_PATTERN = /(\$\d)/
 
 export function format_national_number(number, format_as, country_metadata)
 {
-	// When the `international_formats` exist, we use that to format national number
-	// for the INTERNATIONAL format instead of using the numberDesc.numberFormats.
-	let available_formats = get_international_formats(country_metadata)
-
-	if (available_formats.length === 0 || format_as === 'National')
-	{
-		available_formats = get_formats(country_metadata)
-	}
-
-	const format = choose_format_for_number(available_formats, number)
+	const format = choose_format_for_number(get_formats(country_metadata), number)
 
 	if (!format)
 	{

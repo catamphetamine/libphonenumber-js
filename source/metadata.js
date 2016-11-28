@@ -13,11 +13,6 @@ export function get_formats(country_metadata)
 	return country_metadata[2]
 }
 
-export function get_international_formats(country_metadata)
-{
-	return get_formats(country_metadata).filter(format => get_format_international_format(format) !== 'NA')
-}
-
 export function get_national_prefix(country_metadata)
 {
 	return country_metadata[3]

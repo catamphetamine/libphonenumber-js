@@ -11,7 +11,6 @@ import
 	get_national_prefix,
 	get_national_prefix_for_parsing,
 	get_formats,
-	get_international_formats,
 	get_format_pattern,
 	get_format_format,
 	get_format_international_format,
@@ -365,14 +364,7 @@ export default class as_you_type
 
 		const national_prefix = get_national_prefix(this.country_metadata)
 
-		let formats = get_international_formats(this.country_metadata)
-
-		if (formats.length === 0)
-		{
-			formats = get_formats(this.country_metadata)
-		}
-
-		this.possible_formats = formats.filter((format) =>
+		this.possible_formats = get_formats(this.country_metadata).filter((format) =>
 		{
 			return ELIGIBLE_FORMAT_PATTERN.test(get_format_international_format(format))
 		})
