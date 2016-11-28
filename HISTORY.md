@@ -1,3 +1,8 @@
+0.1.5 / 29.11.2016
+===================
+
+  * Better `asYouType` (better than Google's original "as you type" formatter)
+
 0.1.0 / 28.11.2016
 ===================
 

@@ -7,8 +7,14 @@ describe('as you type', () =>
 {
 	it('should parse and format phone numbers as you type', function()
 	{
-		new as_you_type().input('+12133734').should.equal('+1 213-373-4')
+		// International number test
+		new as_you_type().input('+12133734').should.equal('+1 213 373 4')
+		// Local number test
 		new as_you_type('US').input('2133734').should.equal('(213) 373-4')
+
+		// With national prefix test
+		new as_you_type('RU').input('88005553535').should.equal('8 (800) 555-35-35')
+		new as_you_type('RU').input('8800555353').should.equal('8 (800) 555-35-3')
 
 		new as_you_type('CH').input('044-668-1').should.equal('044 668 1')
 
@@ -24,13 +30,13 @@ describe('as you type', () =>
 		formatter.input('2').should.equal('+1 22')
 		formatter.input('2').should.equal('+1 222')
 		formatter.input(' ').should.equal('+1 222')
-		formatter.input('3').should.equal('+1 222-3')
-		formatter.input('3').should.equal('+1 222-33')
-		formatter.input('3').should.equal('+1 222-333')
-		formatter.input('4').should.equal('+1 222-333-4')
-		formatter.input('4').should.equal('+1 222-333-44')
-		formatter.input('4').should.equal('+1 222-333-444')
-		formatter.input('4').should.equal('+1 222-333-4444')
+		formatter.input('3').should.equal('+1 222 3')
+		formatter.input('3').should.equal('+1 222 33')
+		formatter.input('3').should.equal('+1 222 333')
+		formatter.input('4').should.equal('+1 222 333 4')
+		formatter.input('4').should.equal('+1 222 333 44')
+		formatter.input('4').should.equal('+1 222 333 444')
+		formatter.input('4').should.equal('+1 222 333 4444')
 		formatter.input('5').should.equal('+122233344445')
 
 		// Test Switzerland phone numbers
@@ -59,12 +65,12 @@ describe('as you type', () =>
 		formatter = new as_you_type('RU')
 
 		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('89')
-		formatter.input('9').should.equal('899')
-		formatter.input('9').should.equal('8 999')
-		formatter.input('-').should.equal('8 999')
-		formatter.input('1234').should.equal('8 999 123-4')
-		formatter.input('567').should.equal('8 999 123-45-67')
+		formatter.input('9').should.equal('8 (9')
+		formatter.input('9').should.equal('8 (99')
+		formatter.input('9').should.equal('8 (999')
+		formatter.input('-').should.equal('8 (999')
+		formatter.input('1234').should.equal('8 (999) 123-4')
+		formatter.input('567').should.equal('8 (999) 123-45-67')
 		formatter.input('8').should.equal('899912345678')
 
 		formatter.clear()
@@ -81,8 +87,8 @@ describe('as you type', () =>
 
 		formatter = new as_you_type('US')
 
-		formatter.input('9').should.equal('9')
-		formatter.input('9').should.equal('99')
+		formatter.input('9').should.equal('(9')
+		formatter.input('9').should.equal('(99')
 		formatter.input('9').should.equal('(999')
 		formatter.input('1').should.equal('(999) 1')
 	})

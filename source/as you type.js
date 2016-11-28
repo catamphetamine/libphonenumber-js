@@ -1,4 +1,4 @@
-// This is a port of Google Android `libphonenumber`'s
+// This is an enhanced port of Google Android `libphonenumber`'s
 // `asyoutypeformatter.js` of 17th November, 2016.
 //
 // https://github.com/googlei18n/libphonenumber/blob/8d21a365061de2ba0675c878a710a7b24f74d2ae/javascript/i18n/phonenumbers/asyoutypeformatter.js
@@ -15,7 +15,6 @@ import
 	get_format_format,
 	get_format_international_format,
 	get_format_national_prefix_formatting_rule,
-	get_format_national_prefix_is_optional_when_formatting,
 	get_format_leading_digits_patterns,
 	get_metadata_by_country_phone_code
 }
@@ -35,6 +34,14 @@ from './parse'
 
 import
 {
+	FIRST_GROUP_PATTERN,
+	format_national_number_using_format,
+	local_to_international_style
+}
+from './format'
+
+import
+{
 	matches_entirely
 }
 from './common'
@@ -42,9 +49,7 @@ from './common'
 // The digits that have not been entered yet will be represented by a \u2008,
 // the punctuation space.
 const DIGIT_PLACEHOLDER = '\u2008'
-const DIGIT_PATTERN = new RegExp(DIGIT_PLACEHOLDER)
-
-const SEPARATOR_BEFORE_NATIONAL_NUMBER = ' '
+const DIGIT_PLACEHOLDER_MATCHER = new RegExp(DIGIT_PLACEHOLDER)
 
 // A pattern that is used to match character classes in regular expressions.
 // An example of a character class is [1-4].
@@ -71,21 +76,10 @@ const ELIGIBLE_FORMAT_PATTERN = new RegExp
     '$'
 )
 
-// A set of characters that, if found in a national prefix formatting rules, are
-// an indicator to us that we should separate the national prefix from the
-// number when formatting.
-const NATIONAL_PREFIX_SEPARATORS_PATTERN = /[- ]/
-
-// This is the minimum length of national number accrued that is required to
-// trigger the formatter. The first element of the leadingDigitsPattern of
-// each numberFormat contains a regular expression that matches up to this
-// number of digits.
+// This is the minimum length of the leading digits of a phone number
+// to guarantee the first "leading digits pattern" for a phone number format
+// to be preemptive.
 const MIN_LEADING_DIGITS_LENGTH = 3
-
-// A pattern that is used to determine if the national prefix formatting rule
-// has the first group only, i.e., does not start with the national prefix.
-// Note that the pattern explicitly allows for unbalanced parentheses.
-const FIRST_GROUP_ONLY_PREFIX_PATTERN = /^\(?\$1\)?$/
 
 const VALID_INCOMPLETE_PHONE_NUMBER =
 		'[' + PLUS_CHARS + ']{0,1}' +
@@ -104,6 +98,7 @@ export default class as_you_type
 		{
 			this.country_code = country_code
 			this.country_metadata = metadata.countries[country_code]
+			this.initialize_possible_formats()
 		}
 
 		this.clear()
@@ -111,7 +106,7 @@ export default class as_you_type
 
 	input(text)
 	{
-		this.original_input += text
+		// this.original_input += text
 
 		// Parse input
 
@@ -152,96 +147,80 @@ export default class as_you_type
 		if (character === '+')
 		{
 			// If an out of position '+' sign detected
-			// (or a second '+' sign)
+			// (or a second '+' sign),
+			// then just don't allow it being input.
 			if (this.parsed_input)
 			{
-				this.able_to_format = false
+				return this.current_output
 			}
-			else
+		}
+		// A digit then
+		else
+		{
+			this.national_number += character
+		}
+
+		this.parsed_input += character
+
+		// Try to format the parsed input
+
+		if (this.is_international())
+		{
+			if (!this.country_phone_code)
 			{
-				this.parsed_input += character
-				this.prefix_before_national_number = '+'
+				// If one looks at country phone codes
+				// then he can notice that no one country phone code
+				// is ever a (leftmost) substring of another country phone code.
+				// So if a valid country code is extracted so far
+				// then it means that this is the country code.
+				if (this.extract_country_phone_code())
+				{
+					// If the possible phone number formats
+					// haven't been initialized during instance creation,
+					// then do it.
+					if (!this.country_code)
+					{
+						this.initialize_possible_formats()
+					}
+
+					return '+' + this.country_phone_code
+				}
+
+				// Return raw phone number
+				return this.parsed_input
 			}
 		}
 		else
 		{
-			this.parsed_input += character
-			this.national_number += character
-		}
-
-		// Try to format the parsed input
-
-		if (!this.able_to_format)
-		{
-			// When we are unable to format because of reasons other than that
-			// formatting chars have been entered, it can be due to really long IDDs or
-			// NDDs. If that is the case, we might be able to do formatting again after
-			// extracting them.
-			if (this.is_international())
+			if (!this.national_prefix)
 			{
-				if (this.extract_country_phone_code())
+				// Possibly extract a national prefix
+				this.extract_national_prefix()
+			}
+			else if (!this.able_to_format)
+			{
+				if (!this.extract_longer_national_prefix())
 				{
-					return this.attempt_to_choose_formatting_pattern_with_national_prefix_extracted()
+					// Return raw phone number
+					return this.parsed_input
 				}
 			}
-			else if (this.extract_longer_national_prefix())
-			{
-				// Add an additional space to separate long NDD and national significant
-				// number for readability. We don't set shouldAddSpaceAfterNationalPrefix_
-				// to true, since we don't want this to change later when we choose
-				// formatting templates.
-				this.prefix_before_national_number += SEPARATOR_BEFORE_NATIONAL_NUMBER
-				return this.attempt_to_choose_formatting_pattern_with_national_prefix_extracted()
-			}
-
-			return this.parsed_input
 		}
 
-		// We start to attempt to format only when at least MIN_LEADING_DIGITS_LENGTH
-		// digits (the plus sign is counted as a digit as well for this purpose) have
-		// been entered.
+		// Format the next phone number digit
+		// since the previously chose phone number format
+		// still holds.
+		//
+		// This is done here because if `attempt_to_format_complete_phone_number`
+		// was placed before this call then the `formatting_template`
+		// wouldn't reflect the situation correctly (and would therefore be inconsistent)
+		//
+		const national_number_formatted_with_previous_format = this.format_next_national_number_digit(character)
 
-		if (this.parsed_input.length < MIN_LEADING_DIGITS_LENGTH)
-		{
-			return this.parsed_input
-		}
-
-		if (this.parsed_input.length === MIN_LEADING_DIGITS_LENGTH)
-		{
-			if (this.is_international())
-			{
-				this.expecting_country_calling_code = true
-			}
-			else
-			{
-				// No IDD or plus sign is found, might be entering in national format.
-				this.national_prefix = this.extract_national_prefix()
-				return this.attempt_to_choose_formatting_pattern()
-			}
-		}
-
-		if (this.expecting_country_calling_code)
-		{
-			if (this.extract_country_phone_code())
-			{
-				this.expecting_country_calling_code = false
-			}
-
-			return this.prefix_before_national_number + this.national_number
-		}
-
-		if (this.possible_formats.length === 0)
-		{
-			return this.attempt_to_choose_formatting_pattern()
-		}
-
-		// The formatting patterns are already chosen.
-
-		const national_number = this.input_national_number_digit(character)
-
-		// See if the accrued digits can be formatted properly already. If not,
-		// use the results from input_national_number_digit(), which does formatting
+		// See if the input digits can be formatted properly already. If not,
+		// use the results from format_next_national_number_digit(), which does formatting
 		// based on the formatting pattern chosen.
+
 		const formatted_number = this.attempt_to_format_complete_phone_number()
 
 		if (formatted_number)
@@ -249,20 +228,56 @@ export default class as_you_type
 			return formatted_number
 		}
 
-		this.narrow_down_possible_formats(this.national_number)
+		this.filter_possible_formats_by_leading_digits()
 
-		if (this.refresh_format())
+		// If the previously chosen phone number format
+		// didn't match the next digit being input
+		// (leading digits).
+		if (this.choose_another_format())
 		{
-			return this.retype_national_number()
+			// And a more appropriate phone number format
+			// has been chosen for these `leading digits`,
+			// then format the national phone number (so far)
+			// using the newly selected phone number pattern.
+
+			const formatted_national_number = this.reformat_national_number()
+
+			if (formatted_national_number)
+			{
+				return this.full_phone_number(formatted_national_number)
+			}
+
+			// Couldn't format the supplied national number
+			// using the selected phone number pattern.
+			// Return raw phone number.
+			return this.parsed_input
 		}
 
-		return this.able_to_format ? this.full_phone_number(national_number) : this.parsed_input
+		// If no new phone number format could be chosen,
+		// then can't format the phone.
+		if (!this.current_format)
+		{
+			this.able_to_format = false
+
+			// Return raw phone number
+			return this.parsed_input
+		}
+
+		if (national_number_formatted_with_previous_format)
+		{
+			return this.full_phone_number(national_number_formatted_with_previous_format)
+		}
+
+		// Couldn't format the supplied national number
+		// using the selected phone number pattern.
+		// Return raw phone number
+		return this.parsed_input
 	}
 
 	clear()
 	{
-		// Input text so far, can contain any characters
-		this.original_input = ''
+		// // Input text so far, can contain any characters
+		// this.original_input = ''
 
 		// Input stripped of non-phone-number characters.
 		// Can only contain a possible leading '+' sign and digits.
@@ -270,113 +285,96 @@ export default class as_you_type
 
 		this.current_output = ''
 
-		this.expecting_country_calling_code = false
-
-		// This contains anything that has been entered so far preceding the national
-		// significant number, and it is formatted (e.g. with space inserted). For
-		// example, this can contain IDD, country code, and/or NDD, etc.
-		this.prefix_before_national_number = ''
-
 		// This contains the national prefix that has been extracted. It contains only
 		// digits without formatting.
 		this.national_prefix = ''
 
-		this.should_add_space_after_national_prefix = false
-
 		this.national_number = ''
+
+		this.country_phone_code = ''
+
+		if (!this.country_code)
+		{
+			this.country_metadata = undefined
+		}
 
 		this.clear_formatting()
 	}
 
 	clear_formatting()
 	{
-		// This indicates whether AsYouTypeFormatter is currently doing the formatting.
 		this.able_to_format = true
 
-		this.possible_formats = []
+		this.possible_formats = undefined
+
+		this.current_format = undefined
 
 		this.last_match_position = 0
 
 		this.formatting_template = undefined
 
-		// The pattern from numberFormat that is currently used to create formattingTemplate.
-		this.current_formatting_pattern = undefined
+		this.national_prefix_is_part_of_formatting_template = false
 	}
 
-	retype_national_number()
+	// Format each digit of national phone number (so far)
+	// using the newly selected phone number pattern.
+	reformat_national_number()
 	{
-		if (!this.national_number)
-		{
-			return this.prefix_before_national_number
-		}
-
-		let national_number
+		// Format each digit of national phone number (so far)
+		// using the selected phone number pattern.
+		let formatted_national_number
 		for (let character of this.national_number)
 		{
-			national_number = this.input_national_number_digit(character)
+			formatted_national_number = this.format_next_national_number_digit(character)
 		}
 
-		return this.able_to_format ? this.full_phone_number(national_number) : this.parsed_input
+		return formatted_national_number
 	}
 
 	attempt_to_choose_formatting_pattern_with_national_prefix_extracted()
 	{
 		this.clear_formatting()
 
-		this.expecting_country_calling_code = false
-
-		return this.attempt_to_choose_formatting_pattern()
+		return this.format_national_number()
 	}
 
-	attempt_to_choose_formatting_pattern()
-	{
-		// We start to attempt to format only when at least MIN_LEADING_DIGITS_LENGTH
-		// digits of national number (excluding national prefix) have been entered.
-		if (this.national_number.length < MIN_LEADING_DIGITS_LENGTH)
-		{
-			return this.full_phone_number(this.national_number)
-		}
-
-		this.refresh_possible_formats(this.national_number)
-
-		// See if the accrued digits can be formatted properly already.
-		const formatted_number = this.attempt_to_format_complete_phone_number()
-
-		if (formatted_number)
-		{
-			return formatted_number
-		}
-
-		if (this.refresh_format())
-		{
-			return this.retype_national_number()
-		}
-
-		return this.parsed_input
-	}
-
-	refresh_possible_formats(leading_digits)
+	initialize_possible_formats()
 	{
 		if (!this.country_metadata)
 		{
 			return
 		}
 
-		const national_prefix = get_national_prefix(this.country_metadata)
-
-		this.possible_formats = get_formats(this.country_metadata).filter((format) =>
+		// Get all "eligible" phone number formats for this country
+		this.available_formats = get_formats(this.country_metadata).filter((format) =>
 		{
 			return ELIGIBLE_FORMAT_PATTERN.test(get_format_international_format(format))
 		})
 
-		this.narrow_down_possible_formats(leading_digits)
+		this.possible_formats = this.available_formats
 	}
 
-	narrow_down_possible_formats(leading_digits)
+	filter_possible_formats_by_leading_digits()
 	{
-		const index_of_leading_digits_pattern = leading_digits.length - MIN_LEADING_DIGITS_LENGTH
+		const leading_digits = this.national_number
 
-		this.possible_formats = this.possible_formats.filter((format) =>
+		// "leading digits" patterns start with a maximum 3 digits,
+		// and then with each additional digit
+		// a more precise "leading digits" pattern is specified.
+		// They could make "leading digits" patterns start
+		// with a maximum of a single digit, but they didn't,
+		// so it's possible that some phone number formats
+		// will be falsely rejected until there are at least
+		// 3 digits in the national (significant) number being input.
+
+		let index_of_leading_digits_pattern = leading_digits.length - MIN_LEADING_DIGITS_LENGTH
+
+		if (index_of_leading_digits_pattern < 0)
+		{
+			index_of_leading_digits_pattern = 0
+		}
+
+		this.possible_formats = this.get_possible_formats().filter((format) =>
 		{
 			const leading_digits_pattern_count = get_format_leading_digits_patterns(format).length
 
@@ -386,10 +384,22 @@ export default class as_you_type
 				return true
 			}
 
-			const suitable_leading_digits_pattern_index = Math.min(index_of_leading_digits_pattern, leading_digits_pattern_count - 1)
-			const leading_digits_pattern = get_format_leading_digits_patterns(format)[suitable_leading_digits_pattern_index]
-			return leading_digits.search(leading_digits_pattern) === 0
+			const leading_digits_pattern_index = Math.min(index_of_leading_digits_pattern, leading_digits_pattern_count - 1)
+			const leading_digits_pattern = get_format_leading_digits_patterns(format)[leading_digits_pattern_index]
+			return new RegExp('^' + leading_digits_pattern).test(leading_digits)
 		})
+	}
+
+	get_possible_formats()
+	{
+		const leading_digits = this.national_number
+
+		if (leading_digits.length <= MIN_LEADING_DIGITS_LENGTH)
+		{
+			return this.available_formats
+		}
+
+		return this.possible_formats
 	}
 
 	// Check to see if there is an exact pattern match for these digits. If so, we
@@ -397,46 +407,40 @@ export default class as_you_type
 	// leadingDigitsPattern also matches the input.
 	attempt_to_format_complete_phone_number()
 	{
-		for (let format of this.possible_formats)
+		for (let format of this.get_possible_formats())
 		{
-			const pattern = get_format_pattern(format)
-			const pattern_matcher = new RegExp('^(?:' + pattern + ')$')
+			const matcher = new RegExp('^(?:' + get_format_pattern(format) + ')$')
 
-			if (pattern_matcher.test(this.national_number))
+			if (matcher.test(this.national_number))
 			{
-				this.should_add_space_after_national_prefix = NATIONAL_PREFIX_SEPARATORS_PATTERN.test(get_format_national_prefix_formatting_rule(format, this.country_metadata))
-
-				const formatted_national_number = this.national_number.replace(new RegExp(pattern, 'g'), this.get_format_format(format))
+				const formatted_national_number = format_national_number_using_format
+				(
+					this.national_number,
+					format,
+					this.is_international(),
+					this.national_prefix,
+					this.country_metadata
+				)
 
 				return this.full_phone_number(formatted_national_number)
 			}
 		}
 	}
 
-	// Combines the national number with any prefix (IDD/+ and country code or
-	// national prefix) that was collected. A space will be inserted between them if
-	// the current formatting template indicates this to be suitable.
+	// Combines the national number with the appropriate prefix
 	full_phone_number(formatted_national_number)
 	{
-		if (this.should_add_space_after_national_prefix &&
-			this.prefix_before_national_number &&
-			this.prefix_before_national_number[this.prefix_before_national_number.length - 1] !== SEPARATOR_BEFORE_NATIONAL_NUMBER)
+		if (this.is_international())
 		{
-			// We want to add a space after the national prefix if the national prefix
-			// formatting rule indicates that this would normally be done, with the
-			// exception of the case where we already appended a space because the NDD
-			// was surprisingly long.
-			return this.prefix_before_national_number +
-				SEPARATOR_BEFORE_NATIONAL_NUMBER +
-				formatted_national_number
+			return '+' + this.country_phone_code + ' ' + formatted_national_number
 		}
 
-		return this.prefix_before_national_number + formatted_national_number
+		return formatted_national_number
 	}
 
-	// Extracts the country calling code from the beginning of nationalNumber to
-	// prefixBeforeNationalNumber when they are available, and places the remaining
-	// input into nationalNumber.
+	// Extracts the country calling code from the beginning
+	// of the entered `national_number` (so far),
+	// and places the remaining input into the `national_number`.
 	extract_country_phone_code()
 	{
 		if (!this.national_number)
@@ -462,14 +466,8 @@ export default class as_you_type
 			}
 		}
 
+		this.country_phone_code = country_phone_code
 		this.national_number = number
-
-		this.prefix_before_national_number += country_phone_code + SEPARATOR_BEFORE_NATIONAL_NUMBER
-
-		// When we have successfully extracted the IDD,
-		// the previously extracted national prefix
-		// should be cleared because it is no longer valid.
-		this.national_prefix = ''
 
 		return this.country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
 	}
@@ -479,33 +477,32 @@ export default class as_you_type
 	// we try to see if we can extract a longer version here.
 	extract_longer_national_prefix()
 	{
-		if (this.national_prefix)
+		if (!this.national_prefix)
 		{
-			// Put the extracted national prefix back to the national number
-			// before attempting to extract a new national prefix.
-			this.national_number = this.national_prefix + this.national_number
-
-			// Remove the previously extracted national prefix from prefixBeforeNationalNumber. We
-			// cannot simply set it to empty string because people sometimes incorrectly
-			// enter national prefix after the country code, e.g. +44 (0)20-1234-5678.
-			const index_of_previous_national_prefix = this.prefix_before_national_number.lastIndexOf(this.national_prefix)
-			this.prefix_before_national_number = this.prefix_before_national_number.slice(0, index_of_previous_national_prefix)
+			return
 		}
 
-		return this.national_prefix !== this.extract_national_prefix()
+		// Put the extracted national prefix back to the national number
+		// before attempting to extract a new national prefix.
+		this.national_number = this.national_prefix + this.national_number
+
+		const previously_extracted_national_prefix = this.national_prefix
+		this.extract_national_prefix()
+		return this.national_prefix !== previously_extracted_national_prefix
 	}
 
-	// Returns the national prefix extracted, or an empty string if it is not present.
 	extract_national_prefix()
 	{
 		let national_number_starts_at = 0
 
 		if (this.country_metadata)
 		{
+			// Small performance optimization for NANPA countries
+			// which can't have `1` (national prefix) as the
+			// first digit of a national (significant) number
 			if (this.is_NANPA_number_with_international_prefix())
 			{
 				national_number_starts_at = 1
-				this.prefix_before_national_number += '1' + SEPARATOR_BEFORE_NATIONAL_NUMBER
 			}
 			else if (get_national_prefix_for_parsing(this.country_metadata))
 			{
@@ -516,13 +513,13 @@ export default class as_you_type
 				if (matches && matches[0])
 				{
 					national_number_starts_at = matches[0].length
-					this.prefix_before_national_number += this.national_number.substring(0, national_number_starts_at)
 				}
 			}
 		}
 
+		this.national_prefix = this.national_number.slice(0, national_number_starts_at)
 		this.national_number = this.national_number.slice(national_number_starts_at)
-		return this.national_number.slice(0, national_number_starts_at)
+		return this.national_prefix
 	}
 
 	// Returns `true` if the current country is a NANPA country and the
@@ -543,34 +540,33 @@ export default class as_you_type
 			this.national_number[1] !== '1'
 	}
 
-	refresh_format()
+	choose_another_format()
 	{
 		// When there are multiple available formats, the formatter uses the first
 		// format where a formatting template could be created.
-		for (let format of this.possible_formats)
+		for (let format of this.get_possible_formats())
 		{
-			const pattern = get_format_pattern(format)
-
-			if (this.current_formatting_pattern === pattern)
+			// If this format is currently being used
+			// and is still possible, then stick to it.
+			if (this.current_format === format)
 			{
-				return false
+				return
 			}
 
+			// If this `format` is suitable for "as you type",
+			// then extract the template from this format
+			// and use it to format the phone number being input.
 			if (this.create_formatting_template(format))
 			{
-				this.current_formatting_pattern = pattern
+				this.current_format = format
 
-				this.should_add_space_after_national_prefix = NATIONAL_PREFIX_SEPARATORS_PATTERN.test(get_format_national_prefix_formatting_rule(format, this.country_metadata))
-
-				// With a new formatting template, the matched position using the old
-				// template needs to be reset.
+				// With a new formatting template, the matched position
+				// using the old template needs to be reset.
 				this.last_match_position = 0
 
 				return true
 			}
 		}
-
-		this.able_to_format = false
 	}
 
 	create_formatting_template(format)
@@ -587,18 +583,24 @@ export default class as_you_type
 		number_pattern = number_pattern
 			// Replace anything in the form of [..] with \d
 			.replace(CHARACTER_CLASS_PATTERN, '\\d')
-			// Replace any standalone digit (not the one in d{}) with \d
+			// Replace any standalone digit (not the one in `{}`) with \d
 			.replace(STANDALONE_DIGIT_PATTERN, '\\d')
 
-		return this.formatting_template = this.get_formatting_template(number_pattern, this.get_format_format(format))
-	}
+		let number_format = this.get_format_format(format)
+		this.national_prefix_is_part_of_formatting_template = false
 
-	// Gets a formatting template which can be used to efficiently format a
-	// partial number where digits are added one by one.
-	get_formatting_template(number_pattern, number_format)
-	{
-		// Creates a phone number consisting only of the digit 9 that matches the
-		// numberPattern by applying the pattern to the longestPhoneNumber string.
+		if (this.national_prefix)
+		{
+			this.national_prefix_is_part_of_formatting_template = true
+			const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
+			number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
+		}
+
+		// Get a formatting template which can be used to efficiently format a
+		// partial number where digits are added one by one.
+
+		// Create a phone number consisting only of the digit 9 that matches the
+		// `number_pattern` by applying the pattern to the "longest phone number" string.
 		const longest_phone_number = '999999999999999'
 
 		const matches = longest_phone_number.match(number_pattern)
@@ -612,34 +614,40 @@ export default class as_you_type
 			return
 		}
 
-		return phone_number
+		return this.formatting_template = phone_number
 			// Formats the number according to numberFormat
 			.replace(new RegExp(number_pattern, 'g'), number_format)
 			// Replaces each digit with character DIGIT_PLACEHOLDER
 			.replace(new RegExp('9', 'g'), DIGIT_PLACEHOLDER)
 	}
 
-	input_national_number_digit(digit)
+	format_next_national_number_digit(digit)
 	{
-		if (this.formatting_template && this.formatting_template.slice(this.last_match_position).search(DIGIT_PATTERN) >= 0)
+		// If there is room for more digits in current `formatting_template`,
+		// then set the next digit in the `formatting_template`,
+		// and return the formatted digits so far.
+		if (this.formatting_template && this.formatting_template.slice(this.last_match_position + 1).search(DIGIT_PLACEHOLDER_MATCHER) >= 0)
 		{
-			const digit_pattern_start = this.formatting_template.search(DIGIT_PATTERN)
-			this.formatting_template = this.formatting_template.replace(DIGIT_PATTERN, digit)
+			const digit_pattern_start = this.formatting_template.search(DIGIT_PLACEHOLDER_MATCHER)
+			this.formatting_template = this.formatting_template.replace(DIGIT_PLACEHOLDER_MATCHER, digit)
 			this.last_match_position = digit_pattern_start
 
+			// Return the formatted phone number so far
 			return this.formatting_template.slice(0, digit_pattern_start + 1)
+
+
+			close_dangling_braces()
+
+
 		}
 
-		if (this.possible_formats.length === 1)
-		{
-			// More digits are entered than we could handle, and there are
-			// no other valid patterns to try.
-			this.able_to_format = false
-		}
-		// else, we just reset the formatting pattern
+		// More digits are entered than the current format could handle
 
-		this.current_formatting_pattern = undefined
-		return this.parsed_input
+		// Reset the current format flag,
+		// so that the new format will be chosen
+		// in a subsequent `this.choose_another_format()` call
+		// later in code.
+		this.current_format = undefined
 	}
 
 	is_international()
@@ -649,16 +657,47 @@ export default class as_you_type
 
 	get_format_format(format)
 	{
-		// // Always prefer international formatting rules over national ones,
-		// // because national formatting rules could contain
-		// // local formatting rules for numbers entered without area code.
-		// get_format_international_format(format)
-
 		if (this.is_international())
 		{
-			return get_format_international_format(format)
+			return local_to_international_style(get_format_international_format(format))
 		}
 
 		return get_format_format(format)
 	}
+}
+
+export function close_dangling_braces(template, cut_before)
+{
+	// Split template into two parts:
+	// one with trunk prefix and the other without trunk prefix.
+	const retained_template = template.slice(0, cut_before)
+	template = template.slice(cut_before + 1)
+
+	// Fix dangling braces (e.g. for UK numbers: "(0AA) BBBB BBBB")
+
+	const opening_braces = count_occurences('(', retained_template)
+	const closing_braces = count_occurences(')', retained_template)
+
+	let dangling_braces = opening_braces - closing_braces
+	while (dangling_braces > 0)
+	{
+		template = template.replace(')', '')
+		dangling_braces--
+	}
+}
+
+// Counts all occurences of a symbol in a string
+export function count_occurences(symbol, string)
+{
+	let count = 0
+
+	for (let character of string)
+	{
+		if (character === symbol)
+		{
+			count++
+		}
+	}
+
+	return count
 }

@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A simpler (and smaller) rewrite of Google Android's famous libphonenumber library",
   "main": "index.common.js",
   "jsnext:main": "index.es6.js",
@@ -28,8 +28,8 @@
     "generate": "babel-node runnable/generate ../PhoneNumberMetadata.xml",
     "compress": "babel-node runnable/compress",
     "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec test/ --recursive",
-    "test-coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/ --recursive",
-    "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/ --recursive",
+    "test-coverage": "istanbul cover -x \"build/**\" node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/ --recursive",
+    "test-travis": "istanbul cover -x \"build/**\" node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/ --recursive",
     "browser-build": "WEBPACK_ENV=build webpack",
     "browser-build-dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
     "clean-for-build": "rimraf ./build/**/*",
