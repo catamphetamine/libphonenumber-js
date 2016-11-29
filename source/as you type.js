@@ -50,6 +50,7 @@ from './common'
 // the punctuation space.
 const DIGIT_PLACEHOLDER = '\u2008'
 const DIGIT_PLACEHOLDER_MATCHER = new RegExp(DIGIT_PLACEHOLDER)
+const DIGIT_PLACEHOLDER_MATCHER_GLOBAL = new RegExp(DIGIT_PLACEHOLDER, 'g')
 
 // A pattern that is used to match character classes in regular expressions.
 // An example of a character class is [1-4].
@@ -602,6 +603,7 @@ export default class as_you_type
 
 			// Return the formatted phone number so far
 			return close_dangling_braces(this.formatting_template, digit_pattern_start + 1)
+				.replace(DIGIT_PLACEHOLDER_MATCHER_GLOBAL, ' ')
 		}
 
 		// More digits are entered than the current format could handle

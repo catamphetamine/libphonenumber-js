@@ -1,3 +1,8 @@
+0.1.9 / 30.11.2016
+===================
+
+  * Small fix for "as you type" formatter: replacing digit placeholders (punctuation spaces) with regular spaces in the output
+
 0.1.8 / 29.11.2016
 ===================
 
