@@ -39,6 +39,16 @@ describe('as you type', () =>
 		formatter.input('4').should.equal('+1 222 333 4444')
 		formatter.input('5').should.equal('+122233344445')
 
+		// Check that clearing an international formatter
+		// also clears country metadata.
+
+		formatter.reset()
+
+		formatter.input('+').should.equal('+')
+		formatter.input('7').should.equal('+7')
+		formatter.input('9').should.equal('+7 9')
+		formatter.input('99 111 22 33').should.equal('+7 999 111 22 33')
+
 		// Test Switzerland phone numbers
 
 		formatter = new as_you_type('CH')
@@ -73,15 +83,20 @@ describe('as you type', () =>
 		formatter.input('567').should.equal('8 (999) 123-45-67')
 		formatter.input('8').should.equal('899912345678')
 
-		formatter.clear()
+		// Check that clearing an national formatter:
+		//  * doesn't clear country metadata
+		//  * clears all other things
 
-		formatter.input('9').should.equal('9')
-		formatter.input('9').should.equal('99')
-		formatter.input('9').should.equal('999')
-		formatter.input('-').should.equal('999')
-		formatter.input('1234').should.equal('999 123-4')
-		formatter.input('567').should.equal('999 123-45-67')
-		formatter.input('8').should.equal('99912345678')
+		formatter.reset()
+
+		formatter.input('8').should.equal('8')
+		formatter.input('9').should.equal('8 (9  )')
+		formatter.input('9').should.equal('8 (99 )')
+		formatter.input('9').should.equal('8 (999)')
+		formatter.input('-').should.equal('8 (999)')
+		formatter.input('1234').should.equal('8 (999) 123-4')
+		formatter.input('567').should.equal('8 (999) 123-45-67')
+		formatter.input('8').should.equal('899912345678')
 	})
 
 	it('should close dangling braces', function()

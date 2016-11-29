@@ -113,7 +113,7 @@ isValidNumber('(213) 37', 'US') === false
 Creates a formatter for partially entered phone number. The two-letter `country_code` is optional and, if specified, restricts the phone number being input to the specified country. The instance of this class has two methods:
 
  * `input(text)` — takes any text and appends it to the input; returns the formatted phone number
- * `clear()` — clears input
+ * `reset()` — resets the input
 
 ```js
 new asYouType().input('+12133734') === '+1 213 373 4'

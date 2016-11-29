@@ -98,10 +98,10 @@ export default class as_you_type
 		{
 			this.country_code = country_code
 			this.country_metadata = metadata.countries[country_code]
-			this.initialize_possible_formats()
+			this.initialize_phone_number_formats_for_this_country()
 		}
 
-		this.clear()
+		this.reset()
 	}
 
 	input(text)
@@ -180,7 +180,7 @@ export default class as_you_type
 					// then do it.
 					if (!this.country_code)
 					{
-						this.initialize_possible_formats()
+						this.initialize_phone_number_formats_for_this_country()
 					}
 
 					return '+' + this.country_phone_code
@@ -193,7 +193,8 @@ export default class as_you_type
 		else
 		{
 			// Some national prefixes are substrings of other national prefixes
-			// (for the same country), therefore extract national prefix each time.
+			// (for the same country), therefore try to extract national prefix each time
+			// because a longer national prefix might be available at some point in time.
 
 			const previous_national_prefix = this.national_prefix
 			this.national_number = this.national_prefix + this.national_number
@@ -203,6 +204,9 @@ export default class as_you_type
 
 			if (this.national_prefix !== previous_national_prefix)
 			{
+				// National number has changed
+				// (due to another national prefix been extracted)
+				// therefore reset all previous formatting data.
 				this.reset_formatting()
 			}
 		}
@@ -228,11 +232,12 @@ export default class as_you_type
 			return formatted_number
 		}
 
-		this.filter_possible_formats_by_leading_digits()
+		// Check if the previously chosen phone number format still holds
+		this.match_formats_by_leading_digits()
 
 		// If the previously chosen phone number format
-		// didn't match the next digit being input
-		// (leading digits).
+		// didn't match the next (current) digit being input
+		// (leading digits pattern didn't match).
 		if (this.choose_another_format())
 		{
 			// And a more appropriate phone number format
@@ -274,7 +279,7 @@ export default class as_you_type
 		return this.parsed_input
 	}
 
-	clear()
+	reset()
 	{
 		// // Input text so far, can contain any characters
 		// this.original_input = ''
@@ -304,7 +309,7 @@ export default class as_you_type
 
 	reset_formatting()
 	{
-		this.possible_formats = this.available_formats
+		this.matching_formats = undefined
 
 		this.current_format = undefined
 
@@ -330,7 +335,7 @@ export default class as_you_type
 		return formatted_national_number
 	}
 
-	initialize_possible_formats()
+	initialize_phone_number_formats_for_this_country()
 	{
 		if (!this.country_metadata)
 		{
@@ -342,11 +347,9 @@ export default class as_you_type
 		{
 			return ELIGIBLE_FORMAT_PATTERN.test(get_format_international_format(format))
 		})
-
-		this.possible_formats = this.available_formats
 	}
 
-	filter_possible_formats_by_leading_digits()
+	match_formats_by_leading_digits()
 	{
 		const leading_digits = this.national_number
 
@@ -366,7 +369,7 @@ export default class as_you_type
 			index_of_leading_digits_pattern = 0
 		}
 
-		this.possible_formats = this.get_possible_formats().filter((format) =>
+		this.matching_formats = this.get_relevant_phone_number_formats().filter((format) =>
 		{
 			const leading_digits_pattern_count = get_format_leading_digits_patterns(format).length
 
@@ -382,16 +385,27 @@ export default class as_you_type
 		})
 	}
 
-	get_possible_formats()
+	get_relevant_phone_number_formats()
 	{
 		const leading_digits = this.national_number
+
+		// "leading digits" patterns start with a maximum 3 digits,
+		// and then with each additional digit
+		// a more precise "leading digits" pattern is specified.
+		// They could make "leading digits" patterns start
+		// with a maximum of a single digit, but they didn't,
+		// so it's possible that some phone number formats
+		// will be falsely rejected until there are at least
+		// 3 digits in the national (significant) number being input.
 
 		if (leading_digits.length <= MIN_LEADING_DIGITS_LENGTH)
 		{
 			return this.available_formats
 		}
 
-		return this.possible_formats
+		// `matching_formats` is `undefined` when formatting has been reset.
+		// It will be set later, in `match_formats_by_leading_digits()` call.
+		return this.matching_formats || this.available_formats
 	}
 
 	// Check to see if there is an exact pattern match for these digits. If so, we
@@ -399,7 +413,7 @@ export default class as_you_type
 	// leadingDigitsPattern also matches the input.
 	attempt_to_format_complete_phone_number()
 	{
-		for (let format of this.get_possible_formats())
+		for (let format of this.get_relevant_phone_number_formats())
 		{
 			const matcher = new RegExp('^(?:' + get_format_pattern(format) + ')$')
 
@@ -536,7 +550,7 @@ export default class as_you_type
 	{
 		// When there are multiple available formats, the formatter uses the first
 		// format where a formatting template could be created.
-		for (let format of this.get_possible_formats())
+		for (let format of this.get_relevant_phone_number_formats())
 		{
 			// If this format is currently being used
 			// and is still possible, then stick to it.

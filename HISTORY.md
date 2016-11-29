@@ -1,3 +1,8 @@
+0.1.7 / 29.11.2016
+===================
+
+  * (may be a breaking change) renamed `.clear()` to `.reset()` for "as you type" formatter
+
 0.1.5 / 29.11.2016
 ===================
 
