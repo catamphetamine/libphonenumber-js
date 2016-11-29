@@ -481,72 +481,42 @@ export default class as_you_type
 		return this.country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
 	}
 
-	// Some national prefixes are a substring of others. If extracting the shorter
-	// national prefix doesn't result in a number we can format,
-	// we try to see if we can extract a longer version here.
-	extract_longer_national_prefix()
+	extract_national_prefix()
 	{
-		if (!this.national_prefix)
+		this.national_prefix = ''
+
+		if (!this.country_metadata)
 		{
 			return
 		}
 
-		// Put the extracted national prefix back to the national number
-		// before attempting to extract a new national prefix.
-		this.national_number = this.national_prefix + this.national_number
+		const national_prefix_for_parsing = get_national_prefix_for_parsing(this.country_metadata)
 
-		const previously_extracted_national_prefix = this.national_prefix
-		this.extract_national_prefix()
-		return this.national_prefix !== previously_extracted_national_prefix
-	}
-
-	extract_national_prefix()
-	{
-		let national_number_starts_at = 0
-
-		if (this.country_metadata)
+		if (!national_prefix_for_parsing)
 		{
-			// Small performance optimization for NANPA countries
-			// which can't have `1` (national prefix) as the
-			// first digit of a national (significant) number
-			if (this.is_NANPA_number_with_international_prefix())
-			{
-				national_number_starts_at = 1
-			}
-			else if (get_national_prefix_for_parsing(this.country_metadata))
-			{
-				var national_prefix_for_parsing = new RegExp('^(?:' + get_national_prefix_for_parsing(this.country_metadata) + ')')
-				var matches = this.national_number.match(national_prefix_for_parsing)
-				// Since some national prefix patterns are entirely optional, check that a
-				// national prefix could actually be extracted.
-				if (matches && matches[0])
-				{
-					national_number_starts_at = matches[0].length
-				}
-			}
+			return
+		}
+
+		const matches = this.national_number.match(new RegExp('^(?:' + national_prefix_for_parsing + ')'))
+
+		// Since some national prefix patterns are entirely optional, check that a
+		// national prefix could actually be extracted.
+		if (!matches || !matches[0])
+		{
+			return
+		}
+
+		const national_number_starts_at = matches[0].length
+
+		if (national_number_starts_at === 0)
+		{
+			return
 		}
 
 		this.national_prefix = this.national_number.slice(0, national_number_starts_at)
 		this.national_number = this.national_number.slice(national_number_starts_at)
+
 		return this.national_prefix
-	}
-
-	// Returns `true` if the current country is a NANPA country and the
-	// national number begins with the national prefix.
-	is_NANPA_number_with_international_prefix()
-	{
-		// For NANPA numbers beginning with 1[2-9], treat the 1 as the national
-		// prefix. The reason is that national significant numbers in NANPA always
-		// start with [2-9] after the national prefix. Numbers beginning with 1[01]
-		// can only be short/emergency numbers, which don't need the national prefix.
-		if (get_phone_code(this.country_metadata) !== 1)
-		{
-			return false
-		}
-
-		return this.national_number[0] === '1' &&
-			this.national_number[1] !== '0' &&
-			this.national_number[1] !== '1'
 	}
 
 	choose_another_format()
