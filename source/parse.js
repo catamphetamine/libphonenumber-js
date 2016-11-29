@@ -206,6 +206,12 @@ export default function parse(text, options)
 
 	const formatted_phone_number = extract_formatted_phone_number(text)
 
+	// If the phone number is not viable, then abort.
+	if (!formatted_phone_number)
+	{
+		return {}
+	}
+
 	let { country_phone_code, number } = parse_phone_number_and_country_phone_code(formatted_phone_number)
 
 	// Maybe invalid country phone code encountered
@@ -227,45 +233,56 @@ export default function parse(text, options)
 		}
 
 		country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
+
+		// `country` will be set later,
+		// because, for example, for NANPA countries
+		// there are several countries corresponding
+		// to the same `1` country phone code.
+		// Therefore, to reliably determine the exact country,
+		// national (significant) number should be parsed first.
 	}
 	else if (options.country.default || options.country.restrict)
 	{
 		country = options.country.default || options.country.restrict
 		country_metadata = metadata.countries[country]
+
+		if (!country_metadata)
+		{
+			return {}
+		}
+
 		number = normalize(text)
 	}
-
-	if (!country_metadata)
-	{
-		return {}
-	}
-
-	// Sanity check
-	if (number.length < MIN_LENGTH_FOR_NSN)
+	else
 	{
 		return {}
 	}
 
 	const national_number = strip_national_prefix(number, country_metadata)
 
+	// Sometimes there are several countries
+	// corresponding to the same country phone code
+	// (e.g. NANPA countries all having `1` country phone code).
+	// Therefore, to reliably determine the exact country,
+	// national (significant) number should have been parsed first.
+	//
 	if (!country)
 	{
 		country = find_country_code(country_phone_code, national_number)
-
-		// Check country restriction
-		if (options.country.restrict && country !== options.country.restrict)
-		{
-			return {}
-		}
 	}
 
+	// Validate national (significant) number length.
+	//
+	// A sidenote:
+	//
 	// They say that sometimes national (significant) numbers
 	// can be longer than `MAX_LENGTH_FOR_NSN` (e.g. in Germany).
 	// https://github.com/googlei18n/libphonenumber/blob/7e1748645552da39c4e1ba731e47969d97bdb539/resources/phonenumber.proto#L36
-	if (national_number.length < MIN_LENGTH_FOR_NSN
-		|| national_number.length > MAX_LENGTH_FOR_NSN)
+	// Such numbers will just be discarded.
+	//
+	if (national_number.length > MAX_LENGTH_FOR_NSN)
 	{
-		return { phone: number }
+		return {}
 	}
 
 	const national_number_rule = new RegExp(get_national_number_pattern(country_metadata))
@@ -393,7 +410,7 @@ export function parse_phone_number_and_country_phone_code(_number)
 		return { number }
 	}
 
-	// Country codes do not begin with a '0'
+	// Fast abortion: country codes do not begin with a '0'
 	if (number[0] === '0')
 	{
 		return {}
@@ -475,20 +492,19 @@ export function strip_national_prefix(number, country_metadata)
 
 export function find_country_code(country_phone_code, national_phone_number)
 {
-	if (!country_phone_code)
-	{
-		return
-	}
-
+	// Is always defined, because `country_phone_code` is always valid
 	const possible_country_codes = metadata.country_phone_code_to_countries[country_phone_code]
 
-	if (!possible_country_codes)
-	{
-		return
-	}
+	// Iterate possible countries backwards
+	// because the first one is the default (main) one.
+	let i
 
-	for (let country_code of possible_country_codes)
+	// Look for leading digits for countries
+	i = possible_country_codes.length - 1
+	while (i > 0)
 	{
+		const country_code = possible_country_codes[i]
+
 		const country = metadata.countries[country_code]
 
 		if (get_leading_digits(country))
@@ -499,19 +515,34 @@ export function find_country_code(country_phone_code, national_phone_number)
 				return country_code
 			}
 		}
-		else if (is_national_phone_number(national_phone_number, country))
+
+		i--
+	}
+
+	// Leading digits not matched,
+	// just phone number validation will do.
+	// Now start from the default one.
+	i = 0
+	while (i < possible_country_codes.length)
+	{
+		const country_code = possible_country_codes[i]
+
+		const country = metadata.countries[country_code]
+
+		if (is_national_phone_number(national_phone_number, country))
 		{
 			return country_code
 		}
+
+		i++
 	}
+
+	// No country matched this national phone number
 }
 
 export function is_national_phone_number(national_number, country_metadata)
 {
-	if (!national_number)
-	{
-		return false
-	}
+	// `national_number` must be defined
 
 	// Faster false positives
 	// const possible_lengths = [...]

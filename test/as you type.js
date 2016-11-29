@@ -130,4 +130,55 @@ describe('as you type', () =>
 		formatter.input('9').should.equal('8 (999)')
 		formatter.input('1').should.equal('8 (999) 1')
 	})
+
+	it('should work in edge cases', function()
+	{
+		let formatter
+
+		// Second '+' sign
+
+		formatter = new as_you_type('RU')
+
+		formatter.input('+').should.equal('+')
+		formatter.input('7').should.equal('+7')
+		formatter.input('+').should.equal('+7')
+
+		// Out-of-position '+' sign
+
+		formatter = new as_you_type('RU')
+
+		formatter.input('8').should.equal('8')
+		formatter.input('+').should.equal('8')
+
+		// No format matched
+
+		formatter = new as_you_type('RU')
+
+		formatter.input('88005553535').should.equal('8 (800) 555-35-35')
+		formatter.input('0').should.equal('880055535350')
+
+		// Invalid country phone code
+
+		formatter = new as_you_type()
+
+		formatter.input('+0123').should.equal('+0123')
+
+		// Explicitly set country and derived country conflict
+
+		formatter = new as_you_type('RU')
+
+		formatter.input('+123').should.equal('+123')
+
+		// No country specified and not an international number
+
+		formatter = new as_you_type()
+
+		formatter.input('88005553535').should.equal('88005553535')
+
+		// Extract national prefix when no `national_prefix` is set
+
+		formatter = new as_you_type('AD')
+
+		formatter.input('155555').should.equal('155 555')
+	})
 })

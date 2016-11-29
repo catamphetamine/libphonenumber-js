@@ -140,7 +140,7 @@ export default function(input)
 				//
 				// E.g. if a country's national numbers are 6-digit
 				// and national prefix is always `0`,
-				// then `national_prefix_for_parsing` could be `0([\d]{6})`
+				// then `national_prefix_for_parsing` could be `0(\d{6})`
 				// and the corresponding `national_prefix_transform_rule` would be `$1`
 				// (which is the default behaviour).
 				//

@@ -33,5 +33,46 @@ describe('parse', () =>
 
 		// Switzerland (just in case)
 		parse('044 668 18 00', 'CH').should.deep.equal({ country: 'CH', phone: '446681800' })
+
+		// China, Beijing
+		parse('010-852644821', 'CN').should.deep.equal({ country: 'CN', phone: '10852644821' })
+	})
+
+	it('should work in edge cases', function()
+	{
+		// No country phone code
+		parse('+').should.deep.equal({})
+
+		// No country at all (non international number and no explicit country code)
+		parse('123').should.deep.equal({})
+
+		// No country metadata for this country code
+		parse('123', 'ZZ').should.deep.equal({})
+
+		// Invalid country phone code
+		parse('+210').should.deep.equal({})
+
+		// Country phone code beginning with a '0'
+		parse('+0123').should.deep.equal({})
+
+		// Barbados NANPA phone number
+		parse('+12460000000').should.deep.equal({ country: 'BB', phone: '2460000000' })
+
+		// A case when country (restricted to) is not equal
+		// to the one parsed out of an international number.
+		parse('+1-213-373-4253', 'RU').should.deep.equal({})
+
+		// National (significant) number too short
+		parse('2', 'US').should.deep.equal({})
+
+		// National (significant) number too long
+		parse('222222222222222222', 'US').should.deep.equal({})
+
+		// No `national_prefix_for_parsing`
+		parse('41111', 'AC').should.deep.equal({ country: 'AC', phone: '41111'})
+
+		// National prefix transform rule (Mexico).
+		// Local cell phone from a land line: 044 -> 1.
+		parse('0445511111111', 'MX').should.deep.equal({ country: 'MX', phone: '15511111111' })
 	})
 })

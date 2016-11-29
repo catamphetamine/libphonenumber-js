@@ -43,7 +43,12 @@ export default function format(input, format, third_argument)
 		}
 	}
 
-	let country_metadata = metadata.countries[input.country]
+	let country_metadata
+
+	if (input.country)
+	{
+		country_metadata = metadata.countries[input.country]
+	}
 
 	const { country_phone_code, number } = parse_phone_number_and_country_phone_code(input.phone)
 

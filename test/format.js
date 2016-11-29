@@ -18,4 +18,15 @@ describe('format', () =>
 		format({ country: 'CH', phone: '446681800' }, 'International_plaintext').should.equal('+41446681800')
 		format({ country: 'CH', phone: '446681800' }, 'National').should.equal('044 668 18 00')
 	})
+
+	it('should work in edge cases', function()
+	{
+		// Explicitly specified country and derived country conflict
+		format('+12133734253', 'RU', 'National').should.equal('+12133734253')
+
+		// No suitable format
+		format('+121337342530', 'US', 'National').should.equal('21337342530')
+		// No suitable format (leading digits mismatch)
+		format('699999', 'AD', 'National').should.equal('699999')
+	})
 })

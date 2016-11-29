@@ -258,25 +258,16 @@ export default class as_you_type
 			return this.parsed_input
 		}
 
-		// If no new phone number format could be chosen,
-		// then can't format the phone.
-		if (!this.current_format)
-		{
-			this.able_to_format = false
-
-			// Return raw phone number
-			return this.parsed_input
-		}
-
 		// If could format the next (current) digit
 		// using the previously chosen phone number format
 		// then return the formatted number so far.
-		if (national_number_formatted_with_previous_format)
+		if (this.current_format)
 		{
 			return this.full_phone_number(national_number_formatted_with_previous_format)
 		}
 
-		// Couldn't format the supplied national number
+		// If no new phone number format could be chosen,
+		// And couldn't format the supplied national number
 		// using the selected phone number pattern.
 		// Return raw phone number
 		return this.parsed_input
@@ -304,7 +295,7 @@ export default class as_you_type
 		if (!this.country_code)
 		{
 			this.country_metadata = undefined
-			this.available_formats = undefined
+			this.available_formats = []
 		}
 
 		this.reset_formatting()
@@ -340,11 +331,6 @@ export default class as_you_type
 
 	initialize_phone_number_formats_for_this_country()
 	{
-		if (!this.country_metadata)
-		{
-			return
-		}
-
 		// Get all "eligible" phone number formats for this country
 		this.available_formats = get_formats(this.country_metadata).filter((format) =>
 		{
@@ -508,11 +494,6 @@ export default class as_you_type
 
 		const national_number_starts_at = matches[0].length
 
-		if (national_number_starts_at === 0)
-		{
-			return
-		}
-
 		this.national_prefix = this.national_number.slice(0, national_number_starts_at)
 		this.national_number = this.national_number.slice(national_number_starts_at)
 
@@ -554,6 +535,8 @@ export default class as_you_type
 
 		// The formatter doesn't format numbers when numberPattern contains '|', e.g.
 		// (20|3)\d{4}. In those cases we quickly return.
+		// (Though there's no such format in current metadata)
+		/* istanbul ignore if */
 		if (number_pattern.indexOf('|') >= 0)
 		{
 			return
