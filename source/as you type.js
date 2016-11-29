@@ -268,6 +268,9 @@ export default class as_you_type
 			return this.parsed_input
 		}
 
+		// If could format the next (current) digit
+		// using the previously chosen phone number format
+		// then return the formatted number so far.
 		if (national_number_formatted_with_previous_format)
 		{
 			return this.full_phone_number(national_number_formatted_with_previous_format)
@@ -599,7 +602,13 @@ export default class as_you_type
 		{
 			this.national_prefix_is_part_of_formatting_template = true
 			const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
-			number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
+
+			// If national prefix formatting rule is set
+			// (e.g. it is not set for US)
+			if (national_prefix_formatting_rule)
+			{
+				number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
+			}
 		}
 
 		// Get a formatting template which can be used to efficiently format a

@@ -1,3 +1,8 @@
+0.1.8 / 29.11.2016
+===================
+
+  * Fixed a bug when national prefix `1` was present in "as you type" formatter for NANPA countries (while it shouldn't have been present)
+
 0.1.7 / 29.11.2016
 ===================
 

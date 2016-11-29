@@ -118,20 +118,13 @@ export default function(input)
 
 				// In some (many) countries the national prefix
 				// is not just a constant digit (like `0` in UK)
-				// but also contains "carrier selection code"
-				// (the phone company providing telephony service).
-				//
-				// E.g. to dial the number `2222-2222` in Fortaleza, Brazil
-				// (area code 85) from within Brazil, using the long distance
-				// carrier Oi (selection code 31), one would dial `0 31 85 2222 2222`.
-				// Assuming the only other possible carrier selection code
-				// is 32, the `national_prefix_for_parsing` field would be
-				// a regular expression: `03[12]`.
+				// but can be different depending on the phone number
+				// (and can be also absent for some phone numbers).
 				//
 				// So `national_prefix_for_parsing` is used when parsing
 				// a national-prefixed (local) phone number
-				// into a national significant phone number.
-				// (e.g. for validating it and storing in in a database)
+				// into a national significant phone number
+				// extracting that possible national prefix out of it.
 				//
 				national_prefix_for_parsing : territory.$.nationalPrefixForParsing ? territory.$.nationalPrefixForParsing.replace(/\s/g, '') : undefined,
 
@@ -139,9 +132,20 @@ export default function(input)
 				// contains "captured groups", then `national_prefix_transform_rule`
 				// defines how the national-prefixed (local) phone number is
 				// parsed into a national significant phone number.
-				// (e.g. for validating it and storing in in a database)
 				//
-				// Currently this feature is only used in Argentina and Brazil
+				// Pseudocode:
+				//
+				// national_prefix_pattern = regular_expression('^(?:' + national_prefix_for_parsing + ')')
+				// national_significant_number = all_digits.replace(national_prefix_pattern, national_prefix_transform_rule)
+				//
+				// E.g. if a country's national numbers are 6-digit
+				// and national prefix is always `0`,
+				// then `national_prefix_for_parsing` could be `0([\d]{6})`
+				// and the corresponding `national_prefix_transform_rule` would be `$1`
+				// (which is the default behaviour).
+				//
+				// Currently this feature is only used in
+				// Argentina, Brazil, Mexico and San Marino
 				// due to their messy telephone numbering plans.
 				//
 				// For example, mobile numbers in Argentina are written in two completely

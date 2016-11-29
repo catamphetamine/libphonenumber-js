@@ -97,6 +97,12 @@ describe('as you type', () =>
 		formatter.input('1234').should.equal('8 (999) 123-4')
 		formatter.input('567').should.equal('8 (999) 123-45-67')
 		formatter.input('8').should.equal('899912345678')
+
+		// National prefix should not be prepended
+		// when formatting local NANPA phone numbers.
+		new as_you_type('US').input('1').should.equal('1')
+		new as_you_type('US').input('12').should.equal('(2  )')
+		new as_you_type('US').input('123').should.equal('(23 )')
 	})
 
 	it('should close dangling braces', function()
