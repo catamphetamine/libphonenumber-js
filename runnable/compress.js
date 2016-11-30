@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 
-import compress from '../source/compress'
+import compress from '../source/tools/compress'
 
 const input = fs.readFileSync(path.join(__dirname, '../metadata.json'), 'utf8')
 

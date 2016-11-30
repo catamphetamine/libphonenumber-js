@@ -196,7 +196,25 @@ export default function(input)
 				// // Without that, most of the carriers won't connect the call.
 				// // These are the only two cases when "carrier codes" are required.
 				// //
-				// carrier_code_formatting_rule: territory.$.carrierCodeFormattingRule
+				// carrier_code_formatting_rule: territory.$.carrierCodeFormattingRule,
+
+				// These `types` will be purged later,
+				// if they're not needed (which is most likely).
+				// See `country_phone_code_to_countries` ambiguity for more info.
+				//
+				types:
+				{
+					fixed_line      : phone_type_pattern(territory, 'fixedLine'),
+					mobile          : phone_type_pattern(territory, 'mobile'),
+					toll_free       : phone_type_pattern(territory, 'tollFree'),
+					premium_rate    : phone_type_pattern(territory, 'premiumRate'),
+					personal_number : phone_type_pattern(territory, 'personalNumber'),
+					voice_mail      : phone_type_pattern(territory, 'voicemail'),
+					uan             : phone_type_pattern(territory, 'uan'),
+					pager           : phone_type_pattern(territory, 'pager'),
+					voip            : phone_type_pattern(territory, 'voip'),
+					shared_cost     : phone_type_pattern(territory, 'fixedLine')
+				}
 			}
 
 			// Check that national (significant) phone number pattern
@@ -283,6 +301,32 @@ export default function(input)
 			}
 		}
 
+		// Turns out that `<generalDesc><nationalNumberPattern/></generalDesc>`
+		// is not preemptive at all: it's too unspecific for the cases
+		// when several countries correspond to the same country phone code
+		// (e.g. NANPA: US, Canada, etc — all correspond to the same `1` country phone code).
+		// For these cases all those bulky `<fixedLine/>`, `<mobile/>`, etc
+		// patterns are required. Therefore retain them for these rare cases.
+		//
+		// This inncreases metadata size by 20 KiloBytes
+		// resulting in a total of 90 KiloBytes for the metadata.
+		//
+		for (let country_phone_code of Object.keys(country_phone_code_to_countries))
+		{
+			const country_codes = country_phone_code_to_countries[country_phone_code]
+
+			if (country_codes.length === 1)
+			{
+				// Purge `types` regular expressions
+				// (they are huge)
+				// because they're not needed
+				// for resolving country phone code to country
+				// phone number matching.
+				delete countries[country_codes[0]].types
+				continue
+			}
+		}
+
 		return { countries, country_phone_code_to_countries }
 	})
 }
@@ -299,4 +343,10 @@ function national_prefix_formatting_rule(rule, national_prefix)
 	return rule
 		.replace('$NP', national_prefix)
 		.replace('$FG', '$1')
+}
+
+// Gets phone type pattern
+function phone_type_pattern(territory, type)
+{
+	return territory[type] ? territory[type][0].nationalNumberPattern[0].replace(/\s/g, '') : undefined
 }

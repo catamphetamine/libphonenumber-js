@@ -1,3 +1,8 @@
+0.1.10 / 30.11.2016
+===================
+
+  * Turned out those numerous bulky regular expressions (`<fixedLine/>`, `<mobile/>`, etc) are actually required to reliably infer country from country calling code and national phone number in cases where there are multiple countries assigned to the same country phone code (e.g. NANPA), so I've included those big regular expressions for those ambiguous cases which increased metadata size by 20 KiloBytes resulting in a total of 90 KiloBytes for the metadata.
+
 0.1.9 / 30.11.2016
 ===================
 

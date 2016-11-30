@@ -13,7 +13,17 @@ import
 	get_national_prefix_for_parsing,
 	get_national_prefix_transform_rule,
 	get_leading_digits,
-	get_metadata_by_country_phone_code
+	get_metadata_by_country_phone_code,
+	get_type_fixed_line,
+	get_type_mobile,
+	get_type_toll_free,
+	get_type_premium_rate,
+	get_type_personal_number,
+	get_type_voice_mail,
+	get_type_uan,
+	get_type_pager,
+	get_type_voip,
+	get_type_shared_cost
 }
 from './metadata'
 
@@ -267,6 +277,13 @@ export default function parse(text, options)
 	if (!country)
 	{
 		country = find_country_code(country_phone_code, national_number)
+
+		// Just in case there's a bug in Google's metadata
+		/* istanbul ignore if */
+		if (!country)
+		{
+			return {}
+		}
 	}
 
 	// Validate national (significant) number length.
@@ -485,21 +502,14 @@ export function strip_national_prefix(number, country_metadata)
 
 export function find_country_code(country_phone_code, national_phone_number)
 {
-	// Is always defined, because `country_phone_code` is always valid
-	const possible_country_codes = metadata.country_phone_code_to_countries[country_phone_code]
+	// Is always non-empty, because `country_phone_code` is always valid
+	const possible_countries = metadata.country_phone_code_to_countries[country_phone_code]
 
-	// Iterate possible countries backwards
-	// because the first one is the default (main) one.
-	let i
-
-	// Look for leading digits for countries
-	i = possible_country_codes.length - 1
-	while (i > 0)
+	for (let country_code of possible_countries)
 	{
-		const country_code = possible_country_codes[i]
-
 		const country = metadata.countries[country_code]
 
+		// Leading digits check would be the simplest one
 		if (get_leading_digits(country))
 		{
 			if (national_phone_number &&
@@ -508,29 +518,13 @@ export function find_country_code(country_phone_code, national_phone_number)
 				return country_code
 			}
 		}
-
-		i--
-	}
-
-	// Leading digits not matched,
-	// just phone number validation will do.
-	// Now start from the default one.
-	i = 0
-	while (i < possible_country_codes.length)
-	{
-		const country_code = possible_country_codes[i]
-
-		const country = metadata.countries[country_code]
-
-		if (is_national_phone_number(national_phone_number, country))
+		// Else perform full validation with all of those bulky
+		// fixed-line/mobile/etc regular expressions.
+		else if (get_number_type(national_phone_number, country))
 		{
 			return country_code
 		}
-
-		i++
 	}
-
-	// No country matched this national phone number
 }
 
 export function is_national_phone_number(national_number, country_metadata)
@@ -545,5 +539,98 @@ export function is_national_phone_number(national_number, country_metadata)
 	// 	return false
 	// }
 
+	// If leading digits are specified, then check them.
+	if (get_leading_digits(country_metadata))
+	{
+		if (national_number.indexOf(get_leading_digits(country_metadata)) !== 0)
+		{
+			return false
+		}
+	}
+
 	return matches_entirely(get_national_number_pattern(country_metadata), national_number)
+}
+
+// Finds out national phone number type (fixed line, mobile, etc)
+export function get_number_type(national_number, country_metadata)
+{
+	// Is this national number even valid for this country
+	if (!is_of_type(national_number, get_national_number_pattern(country_metadata)))
+	{
+		return
+	}
+
+	if (is_of_type(national_number, get_type_mobile(country_metadata)))
+	{
+		if (is_of_type(national_number, get_type_fixed_line(country_metadata)))
+		{
+			return 'FIXED_LINE_OR_MOBILE'
+		}
+
+		return 'MOBILE'
+	}
+
+	// Is it fixed line number
+	if (is_of_type(national_number, get_type_fixed_line(country_metadata)))
+	{
+		return 'FIXED_LINE'
+	}
+
+	if (is_of_type(national_number, get_type_toll_free(country_metadata)))
+	{
+		return 'TOLL_FREE'
+	}
+
+	if (is_of_type(national_number, get_type_premium_rate(country_metadata)))
+	{
+		return 'PREMIUM_RATE'
+	}
+
+	if (is_of_type(national_number, get_type_personal_number(country_metadata)))
+	{
+		return 'PERSONAL_NUMBER'
+	}
+
+	if (is_of_type(national_number, get_type_voice_mail(country_metadata)))
+	{
+		return 'VOICEMAIL'
+	}
+
+	if (is_of_type(national_number, get_type_uan(country_metadata)))
+	{
+		return 'UAN'
+	}
+
+	if (is_of_type(national_number, get_type_pager(country_metadata)))
+	{
+		return 'PAGER'
+	}
+
+	if (is_of_type(national_number, get_type_voip(country_metadata)))
+	{
+		return 'VOIP'
+	}
+
+	if (is_of_type(national_number, get_type_shared_cost(country_metadata)))
+	{
+		return 'SHARED_COST'
+	}
+}
+
+export function is_of_type(national_number, type)
+{
+	// // Check if any possible number lengths are present;
+	// // if so, we use them to avoid checking
+	// // the validation pattern if they don't match.
+	// // If they are absent, this means they match
+	// // the general description, which we have
+	// // already checked before a specific number type.
+	// if (get_possible_lengths(type) &&
+	// 	get_possible_lengths(type).indexOf(national_number.length) === -1)
+	// {
+	// 	return false
+	// }
+
+	// get_type_pattern(type) === type
+	return matches_entirely(type, national_number)
 }

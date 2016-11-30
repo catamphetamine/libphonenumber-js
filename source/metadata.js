@@ -93,3 +93,63 @@ export function get_metadata_by_country_phone_code(country_phone_code, metadata)
 	const country_code = metadata.country_phone_code_to_countries[country_phone_code][0]
 	return metadata.countries[country_code]
 }
+
+export function get_types(country_metadata)
+{
+	return country_metadata[9]
+}
+
+function get_type(country_metadata, index)
+{
+	return get_types(country_metadata) ? get_types(country_metadata)[index] : undefined
+}
+
+export function get_type_fixed_line(country_metadata)
+{
+	return get_type(country_metadata, 0)
+}
+
+export function get_type_mobile(country_metadata)
+{
+	return get_type(country_metadata, 1)
+}
+
+export function get_type_toll_free(country_metadata)
+{
+	return get_type(country_metadata, 2)
+}
+
+export function get_type_premium_rate(country_metadata)
+{
+	return get_type(country_metadata, 3)
+}
+
+export function get_type_personal_number(country_metadata)
+{
+	return get_type(country_metadata, 4)
+}
+
+export function get_type_voice_mail(country_metadata)
+{
+	return get_type(country_metadata, 5)
+}
+
+export function get_type_uan(country_metadata)
+{
+	return get_type(country_metadata, 6)
+}
+
+export function get_type_pager(country_metadata)
+{
+	return get_type(country_metadata, 7)
+}
+
+export function get_type_voip(country_metadata)
+{
+	return get_type(country_metadata, 8)
+}
+
+export function get_type_shared_cost(country_metadata)
+{
+	return get_type(country_metadata, 9)
+}

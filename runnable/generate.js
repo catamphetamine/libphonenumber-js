@@ -1,4 +1,4 @@
-import generate from '../source/generate'
+import generate from '../source/tools/generate'
 
 import path from 'path'
 import fs from 'fs'

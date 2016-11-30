@@ -46,6 +46,16 @@ import
 }
 from './common'
 
+// Used in phone number format template creation.
+// Could be any digit, I guess.
+const DUMMY_DIGIT = '9'
+const DUMMY_DIGIT_MATCHER = new RegExp(DUMMY_DIGIT, 'g')
+// I don't know why is it exactly `15`
+const LONGEST_NATIONAL_PHONE_NUMBER_LENGTH = 15
+// Create a phone number consisting only of the digit 9 that matches the
+// `number_pattern` by applying the pattern to the "longest phone number" string.
+const LONGEST_DUMMY_PHONE_NUMBER = repeat(DUMMY_DIGIT, LONGEST_NATIONAL_PHONE_NUMBER_LENGTH)
+
 // The digits that have not been entered yet will be represented by a \u2008,
 // the punctuation space.
 const DIGIT_PLACEHOLDER = '\u2008'
@@ -304,6 +314,7 @@ export default class as_you_type
 		this.last_match_position = 0
 
 		this.formatting_template = undefined
+		this.partially_populated_formatting_template = undefined
 
 		this.national_prefix_is_part_of_formatting_template = false
 	}
@@ -558,29 +569,30 @@ export default class as_you_type
 			}
 		}
 
-		// Get a formatting template which can be used to efficiently format a
-		// partial number where digits are added one by one.
+		// Get a formatting template which can be used to efficiently format
+		// a partial number where digits are added one by one.
 
-		// Create a phone number consisting only of the digit 9 that matches the
-		// `number_pattern` by applying the pattern to the "longest phone number" string.
-		const longest_phone_number = '999999999999999'
+		// This match will always succeed,
+		// because the "longest dummy phone number"
+		// has enough length to accomodate any possible
+		// national phone number format pattern.
+		const dummy_phone_number_matching_format_pattern = LONGEST_DUMMY_PHONE_NUMBER.match(number_pattern)[0]
 
-		const matches = longest_phone_number.match(number_pattern)
-		// This match will always succeed
-		const phone_number = matches[0]
-
-		// No formatting template can be created if the number of digits entered so
-		// far is longer than the maximum the current formatting rule can accommodate.
-		if (phone_number.length < this.national_number.length)
+		// If the national number entered is too long
+		// for any phone number format, then abort.
+		if (this.national_number.length > dummy_phone_number_matching_format_pattern.length)
 		{
 			return
 		}
 
-		return this.formatting_template = phone_number
-			// Formats the number according to numberFormat
+		// Create formatting template for this phone number format
+		this.formatting_template = dummy_phone_number_matching_format_pattern
+			// Format the dummy phone number according to the format
 			.replace(new RegExp(number_pattern, 'g'), number_format)
-			// Replaces each digit with character DIGIT_PLACEHOLDER
-			.replace(new RegExp('9', 'g'), DIGIT_PLACEHOLDER)
+			// Replace each dummy digit with a DIGIT_PLACEHOLDER
+			.replace(DUMMY_DIGIT_MATCHER, DIGIT_PLACEHOLDER)
+
+		return this.partially_populated_formatting_template = this.formatting_template
 	}
 
 	format_next_national_number_digit(digit)
@@ -588,24 +600,26 @@ export default class as_you_type
 		// If there is room for more digits in current `formatting_template`,
 		// then set the next digit in the `formatting_template`,
 		// and return the formatted digits so far.
-		if (this.formatting_template && this.formatting_template.slice(this.last_match_position + 1).search(DIGIT_PLACEHOLDER_MATCHER) >= 0)
+		if (this.chosen_format && this.partially_populated_formatting_template.slice(this.last_match_position + 1).search(DIGIT_PLACEHOLDER_MATCHER) >= 0)
 		{
-			const digit_pattern_start = this.formatting_template.search(DIGIT_PLACEHOLDER_MATCHER)
-			this.formatting_template = this.formatting_template.replace(DIGIT_PLACEHOLDER_MATCHER, digit)
+			const digit_pattern_start = this.partially_populated_formatting_template.search(DIGIT_PLACEHOLDER_MATCHER)
+			this.partially_populated_formatting_template = this.partially_populated_formatting_template.replace(DIGIT_PLACEHOLDER_MATCHER, digit)
 			this.last_match_position = digit_pattern_start
 
 			// Return the formatted phone number so far
-			return close_dangling_braces(this.formatting_template, digit_pattern_start + 1)
+			return close_dangling_braces(this.partially_populated_formatting_template, digit_pattern_start + 1)
 				.replace(DIGIT_PLACEHOLDER_MATCHER_GLOBAL, ' ')
 		}
 
 		// More digits are entered than the current format could handle
 
-		// Reset the current format flag,
+		// Reset the current format,
 		// so that the new format will be chosen
 		// in a subsequent `this.choose_another_format()` call
 		// later in code.
 		this.chosen_format = undefined
+		this.formatting_template = undefined
+		this.partially_populated_formatting_template = undefined
 	}
 
 	is_international()
@@ -659,4 +673,29 @@ export function count_occurences(symbol, string)
 	}
 
 	return count
+}
+
+// Repeats a string (or a symbol) N times.
+// http://stackoverflow.com/questions/202605/repeat-string-javascript
+export function repeat(string, times)
+{
+	if (times < 1)
+	{
+		return ''
+	}
+
+	let result = ''
+
+	while (times > 1)
+	{
+		if (times & 1)
+		{
+			result += string
+		}
+
+		times >>= 1
+		string += string
+	}
+
+	return result + string
 }

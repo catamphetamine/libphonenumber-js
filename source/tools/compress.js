@@ -25,9 +25,7 @@ export default function compress(input)
 					format.international_format
 				]
 
-				trim_array(format_array)
-
-				return format_array
+				return trim_array(format_array)
 			}),
 
 			country.national_prefix,
@@ -35,13 +33,32 @@ export default function compress(input)
 			country.national_prefix_for_parsing,
 			country.national_prefix_transform_rule,
 			country.national_prefix_is_optional_when_formatting,
-			country.leading_digits,
-			country.is_main_country_for_phone_code
+			country.leading_digits
 		]
 
-		trim_array(country_array)
+		if (country.types)
+		{
+			const types_array =
+			[
+				// These are common
+				country.types.fixed_line,
+				country.types.mobile,
+				country.types.toll_free,
+				country.types.premium_rate,
+				country.types.personal_number,
 
-		countries[country_code] = country_array
+				// These are less common
+				country.types.voice_mail,
+				country.types.uan,
+				country.types.pager,
+				country.types.voip,
+				country.types.shared_cost
+			]
+
+			country_array.push(trim_array(types_array))
+		}
+
+		countries[country_code] = trim_array(country_array)
 	}
 
 	// const output =
@@ -70,8 +87,10 @@ function is_empty(value)
 // Removes trailing empty values from an `array`
 function trim_array(array)
 {
-	while (is_empty(array[array.length - 1]))
+	while (array.length > 0 && is_empty(array[array.length - 1]))
 	{
 		array.pop()
 	}
+
+	return array
 }
