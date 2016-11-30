@@ -93,9 +93,7 @@ const VALID_PHONE_NUMBER_PATTERN = new RegExp
 // This consists of the plus symbol, digits, and arabic-indic digits.
 const PHONE_NUMBER_START_PATTERN = new RegExp('[' + PLUS_CHARS + VALID_DIGITS + ']')
 
-// Regular expression of trailing characters that we want to remove. We remove
-// all characters that are not alpha or numerical characters. The hash character
-// is retained here, as it may signify the previous block was an extension.
+// Regular expression of trailing characters that we want to remove.
 const AFTER_PHONE_NUMBER_END_PATTERN = new RegExp('[^' + VALID_DIGITS + ']+$')
 
 const LEADING_PLUS_CHARS_PATTERN = new RegExp('^[' + PLUS_CHARS + ']+')

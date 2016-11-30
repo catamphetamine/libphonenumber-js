@@ -180,5 +180,11 @@ describe('as you type', () =>
 		formatter = new as_you_type('AD')
 
 		formatter.input('155555').should.equal('155 555')
+
+		// Typing nonsense
+
+		formatter = new as_you_type('RU')
+
+		formatter.input('+1abc2').should.equal('')
 	})
 })
