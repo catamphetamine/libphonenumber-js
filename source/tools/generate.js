@@ -308,8 +308,7 @@ export default function(input)
 		// For these cases all those bulky `<fixedLine/>`, `<mobile/>`, etc
 		// patterns are required. Therefore retain them for these rare cases.
 		//
-		// This inncreases metadata size by 20 KiloBytes
-		// resulting in a total of 90 KiloBytes for the metadata.
+		// This inncreases metadata size by 10 KiloBytes.
 		//
 		for (let country_phone_code of Object.keys(country_phone_code_to_countries))
 		{
@@ -324,6 +323,16 @@ export default function(input)
 				// phone number matching.
 				delete countries[country_codes[0]].types
 				continue
+			}
+
+			for (let country_code of country_codes)
+			{
+				// Leading digits for a country are sufficient
+				// to resolve country phone code ambiguity.
+				if (countries[country_code].leading_digits)
+				{
+					delete countries[country_code].types
+				}
 			}
 		}
 

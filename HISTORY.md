@@ -1,3 +1,8 @@
+0.1.11 / 30.11.2016
+===================
+
+  * Managed to reduce metadata by 10 KiloBytes removing phone number type regular expressions when `leading_digits` are present.
+
 0.1.10 / 30.11.2016
 ===================
 
