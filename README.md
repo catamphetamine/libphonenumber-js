@@ -12,12 +12,12 @@ A simpler (and smaller) rewrite of Google Android's famous `libphonenumber` libr
 
 `libphonenumber-js` is a simplified pure javascript port of the original `libphonenumber` library (written in C++ and Java because those are the programming languages used in Android OS). While `libphonenumber` has an [official javascript port](https://github.com/googlei18n/libphonenumber/tree/master/javascript) which is being maintained by Google, it is tightly coupled to Google's `closure` javascript utility framework. It still can be compiled into [one big bundle](http://stackoverflow.com/questions/18678031/how-to-host-the-google-libphonenumber-locally/) which weighs 220 KiloBytes — quite a size for a phone number input component. It [can be reduced](https://github.com/leodido/i18n.phonenumbers.js) to a specific set of countries only but that wouldn't be an option for a worldwide international solution.
 
-One part of me was curious about how all this phone matching machinery worked, and another part of me was curious if there's a way to reduce those 220 KiloBytes to something more reasonable while also getting rid of the `closure` library and rewriting it all in pure javascript. So, that was my little hackathon for a couple of weeks, and seems that it succeeded. The resulting library does everything a modern web application needs while maintaining a much smaller size of about 80 KiloBytes.
+One part of me was curious about how all this phone matching machinery worked, and another part of me was curious if there's a way to reduce those 220 KiloBytes to something more reasonable while also getting rid of the `closure` library and rewriting it all in pure javascript. So, that was my little hackathon for a couple of weeks, and seems that it succeeded. The resulting library does everything a modern web application needs while maintaining a much smaller size of about 75 KiloBytes.
 
 ## Difference from Google's `libphonenumber`
 
   * Pure javascript, doesn't require any 3rd party libraries
-  * Metadata size is just about 80 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes
+  * Metadata size is just about 75 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes
   * Better "as you type" formatting
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK` as we don't use telephone sets in the XXIst century that much (and we have phonebooks in your mobile phones)
   * Doesn't handle carrier codes: they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number (the locals surely already know those carrier codes by themselves)
@@ -119,6 +119,15 @@ Creates a formatter for partially entered phone number. The two-letter `country_
 new asYouType().input('+12133734') === '+1 213 373 4'
 new asYouType('US').input('2133734') === '(213) 373-4'
 ```
+
+## To do
+
+* On-the-fly country detection for "as you type" in case of ambiguous country phone codes (e.g. NANPA countries) – test "leading digits" for country when available, test phone number types when the phone number is formatted "completely", unite all phone number formats into one big array for this country phone code.
+* Generate "leading digits patterns" alternatives for 1-digit and 2-digit national numbers using national number patterns for the country (and also generate additional (supplemental) leading digits patterns for 3-digit (and more) national numbers from phone number format patterns)
+* Add `valid` variable for "as you type" instance (will be a flag which is gonna be set to `true` in cases when a phone number could be formatted "completely", and reset otherwise)
+* Add `template` variable for "as you type" instance
+* Add `country` variable for "as you type" instance (will be `undefined` in case of ambiguity for the phone number entered so far)
+* Add an ability to input a value for "as you type" formatter not just character-by-character but as a whole (performance optimization)
 
 ## Bug reporting
 

@@ -308,7 +308,7 @@ export default function(input)
 		// For these cases all those bulky `<fixedLine/>`, `<mobile/>`, etc
 		// patterns are required. Therefore retain them for these rare cases.
 		//
-		// This inncreases metadata size by 10 KiloBytes.
+		// This inncreases metadata size by 5 KiloBytes.
 		//
 		for (let country_phone_code of Object.keys(country_phone_code_to_countries))
 		{
@@ -332,6 +332,27 @@ export default function(input)
 				if (countries[country_code].leading_digits)
 				{
 					delete countries[country_code].types
+					continue
+				}
+
+				const types = countries[country_code].types
+
+				// Find duplicate regular expressions for types
+				// and just discard such duplicate types
+				// to reduce metadata size (by 5 KiloBytes).
+				for (let type of Object.keys(types))
+				{
+					// If this type has just been removed due to redundancy
+					if (!types[type])
+					{
+						continue
+					}
+
+					// Remove redundant types
+					// (having the same regular expressions as this one)
+					Object.keys(types)
+						.filter(key => key !== type && types[key] === types[type])
+						.forEach(key => delete types[key])
 				}
 			}
 		}

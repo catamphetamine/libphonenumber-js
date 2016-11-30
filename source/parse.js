@@ -538,6 +538,9 @@ export function get_number_type(national_number, country_metadata)
 
 	if (is_of_type(national_number, get_type_mobile(country_metadata)))
 	{
+		// Because duplicate regular expressions are removed
+		// to reduce metadata size, this `if` condition won't be met.
+		/* istanbul ignore if */
 		if (is_of_type(national_number, get_type_fixed_line(country_metadata)))
 		{
 			return 'FIXED_LINE_OR_MOBILE'
