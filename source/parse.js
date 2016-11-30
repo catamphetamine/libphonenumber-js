@@ -527,30 +527,6 @@ export function find_country_code(country_phone_code, national_phone_number)
 	}
 }
 
-export function is_national_phone_number(national_number, country_metadata)
-{
-	// `national_number` must be defined
-
-	// Faster false positives
-	// const possible_lengths = [...]
-	// if (possible_lengths && possible_lengths.length > 0 &&
-	// 	possible_lengths.indexOf(national_number.length) < 0)
-	// {
-	// 	return false
-	// }
-
-	// If leading digits are specified, then check them.
-	if (get_leading_digits(country_metadata))
-	{
-		if (national_number.indexOf(get_leading_digits(country_metadata)) !== 0)
-		{
-			return false
-		}
-	}
-
-	return matches_entirely(get_national_number_pattern(country_metadata), national_number)
-}
-
 // Finds out national phone number type (fixed line, mobile, etc)
 export function get_number_type(national_number, country_metadata)
 {
@@ -591,26 +567,31 @@ export function get_number_type(national_number, country_metadata)
 		return 'PERSONAL_NUMBER'
 	}
 
+	/* istanbul ignore if */
 	if (is_of_type(national_number, get_type_voice_mail(country_metadata)))
 	{
 		return 'VOICEMAIL'
 	}
 
+	/* istanbul ignore if */
 	if (is_of_type(national_number, get_type_uan(country_metadata)))
 	{
 		return 'UAN'
 	}
 
+	/* istanbul ignore if */
 	if (is_of_type(national_number, get_type_pager(country_metadata)))
 	{
 		return 'PAGER'
 	}
 
+	/* istanbul ignore if */
 	if (is_of_type(national_number, get_type_voip(country_metadata)))
 	{
 		return 'VOIP'
 	}
 
+	/* istanbul ignore if */
 	if (is_of_type(national_number, get_type_shared_cost(country_metadata)))
 	{
 		return 'SHARED_COST'

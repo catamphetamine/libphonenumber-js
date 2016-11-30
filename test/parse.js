@@ -1,7 +1,9 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import parse from '../source/parse'
+import parse, { get_number_type } from '../source/parse'
+
+import metadata from '../metadata.min'
 
 describe('parse', () =>
 {
@@ -74,5 +76,16 @@ describe('parse', () =>
 		// National prefix transform rule (Mexico).
 		// Local cell phone from a land line: 044 -> 1.
 		parse('0445511111111', 'MX').should.deep.equal({ country: 'MX', phone: '15511111111' })
+	})
+
+	it('should infer phone number types', function()
+	{
+		get_number_type('8005553535', metadata.countries.RU).should.equal('TOLL_FREE')
+		get_number_type('4957777777', metadata.countries.RU).should.equal('FIXED_LINE')
+		get_number_type('9150000000', metadata.countries.RU).should.equal('MOBILE')
+		get_number_type('8030000000', metadata.countries.RU).should.equal('PREMIUM_RATE')
+
+		get_number_type('2133734253', metadata.countries.US).should.equal('FIXED_LINE_OR_MOBILE')
+		get_number_type('5002345678', metadata.countries.US).should.equal('PERSONAL_NUMBER')
 	})
 })

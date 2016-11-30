@@ -679,6 +679,7 @@ export function count_occurences(symbol, string)
 // http://stackoverflow.com/questions/202605/repeat-string-javascript
 export function repeat(string, times)
 {
+	/* istanbul ignore if */
 	if (times < 1)
 	{
 		return ''
