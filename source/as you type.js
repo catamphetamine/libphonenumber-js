@@ -87,7 +87,7 @@ const VALID_INCOMPLETE_PHONE_NUMBER =
 		'[' +
 			VALID_PUNCTUATION +
 			VALID_DIGITS +
-		']+'
+		']*'
 
 const VALID_INCOMPLETE_PHONE_NUMBER_PATTERN = new RegExp('^' + VALID_INCOMPLETE_PHONE_NUMBER + '$', 'i')
 
@@ -107,35 +107,28 @@ export default class as_you_type
 
 	input(text)
 	{
-		// this.original_input += text
-
 		// Parse input
 
-		let extracted_number = extract_formatted_phone_number(text, number => matches_entirely(VALID_INCOMPLETE_PHONE_NUMBER_PATTERN, number))
+		let extracted_number = extract_formatted_phone_number(text)
 
-		let { number, is_international } = parse_phone_number(extracted_number)
-
-		// Special case for just the leading '+'
-		if (!extracted_number && text.indexOf('+') >= 0)
+		// Special case for a lone '+' sign
+		// since it's not considered a possible phone number.
+		if (!extracted_number)
 		{
-			is_international = true
+			if (text.indexOf('+') >= 0)
+			{
+				extracted_number = '+'
+			}
 		}
 
-		let parsed_input = ''
-
-		if (is_international)
+		// Validate possible first part of a phone number
+		if (!matches_entirely(VALID_INCOMPLETE_PHONE_NUMBER_PATTERN, extracted_number))
 		{
-			parsed_input += '+'
-		}
-
-		if (number)
-		{
-			parsed_input += number
+			return this.current_output
 		}
 
 		// Feed the parsed input character-by-character
-
-		for (let character of parsed_input)
+		for (let character of parse_phone_number(extracted_number))
 		{
 			this.current_output = this.input_character(character)
 		}
@@ -262,7 +255,7 @@ export default class as_you_type
 		// If could format the next (current) digit
 		// using the previously chosen phone number format
 		// then return the formatted number so far.
-		if (this.current_format)
+		if (national_number_formatted_with_previous_format)
 		{
 			return this.full_phone_number(national_number_formatted_with_previous_format)
 		}
@@ -306,7 +299,7 @@ export default class as_you_type
 	{
 		this.matching_formats = undefined
 
-		this.current_format = undefined
+		this.chosen_format = undefined
 
 		this.last_match_position = 0
 
@@ -509,7 +502,7 @@ export default class as_you_type
 		{
 			// If this format is currently being used
 			// and is still possible, then stick to it.
-			if (this.current_format === format)
+			if (this.chosen_format === format)
 			{
 				return
 			}
@@ -519,7 +512,7 @@ export default class as_you_type
 			// and use it to format the phone number being input.
 			if (this.create_formatting_template(format))
 			{
-				this.current_format = format
+				this.chosen_format = format
 
 				// With a new formatting template, the matched position
 				// using the old template needs to be reset.
@@ -612,7 +605,7 @@ export default class as_you_type
 		// so that the new format will be chosen
 		// in a subsequent `this.choose_another_format()` call
 		// later in code.
-		this.current_format = undefined
+		this.chosen_format = undefined
 	}
 
 	is_international()

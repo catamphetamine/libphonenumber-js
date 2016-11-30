@@ -207,7 +207,7 @@ export default function parse(text, options)
 	const formatted_phone_number = extract_formatted_phone_number(text)
 
 	// If the phone number is not viable, then abort.
-	if (!formatted_phone_number)
+	if (!is_viable_phone_number(formatted_phone_number))
 	{
 		return {}
 	}
@@ -322,9 +322,28 @@ export function replace_characters(text, replacements)
 	return replaced
 }
 
-// Attempts to extract a possible number from the string passed in.
-export function extract_possible_number(text)
+// Checks to see if the string of characters could possibly be a phone number at
+// all. At the moment, checks to see that the string begins with at least 2
+// digits, ignoring any punctuation commonly found in phone numbers. This method
+// does not require the number to be normalized in advance - but does assume
+// that leading non-number symbols have been removed, such as by the method
+// `extract_possible_number`.
+//
+export function is_viable_phone_number(number)
 {
+	return number.length >= MIN_LENGTH_FOR_NSN &&
+		matches_entirely(VALID_PHONE_NUMBER_PATTERN, number)
+}
+
+export function extract_formatted_phone_number(text)
+{
+	if (!text || text.length > MAX_INPUT_STRING_LENGTH)
+	{
+		return ''
+	}
+
+	// Attempt to extract a possible number from the string passed in
+
 	const starts_at = text.search(PHONE_NUMBER_START_PATTERN)
 
 	if (starts_at < 0)
@@ -339,44 +358,12 @@ export function extract_possible_number(text)
 		.replace(AFTER_PHONE_NUMBER_END_PATTERN, '')
 }
 
-// Checks to see if the string of characters could possibly be a phone number at
-// all. At the moment, checks to see that the string begins with at least 2
-// digits, ignoring any punctuation commonly found in phone numbers. This method
-// does not require the number to be normalized in advance - but does assume
-// that leading non-number symbols have been removed, such as by the method
-// `extract_possible_number`.
-//
-export function is_viable_phone_number(number)
-{
-	return number.length >= MIN_LENGTH_FOR_NSN &&
-		matches_entirely(VALID_PHONE_NUMBER_PATTERN, number)
-}
-
-export function extract_formatted_phone_number(text, is_valid = is_viable_phone_number)
-{
-	if (!text || text.length > MAX_INPUT_STRING_LENGTH)
-	{
-		return
-	}
-
-	// Extracts a piece of text possibly containing a phone number
-	text = extract_possible_number(text)
-
-	if (is_valid(text))
-	{
-		return text
-	}
-}
-
-// Parses a formatted phone number
-// and returns `{ is_international, number }`
-// where `number` is either national (significant) phone number
-// or an international phone number with the leading '+' stripped.
+// Parses a formatted phone number.
 export function parse_phone_number(number)
 {
 	if (!number)
 	{
-		return {}
+		return ''
 	}
 
 	const is_international = LEADING_PLUS_CHARS_PATTERN.test(number)
@@ -385,7 +372,12 @@ export function parse_phone_number(number)
 	// (and strip the possible leading '+')
 	number = normalize(number)
 
-	return { number, is_international }
+	if (is_international)
+	{
+		return `+${number}`
+	}
+
+	return number
 }
 
 // Parses a formatted phone number
@@ -394,9 +386,9 @@ export function parse_phone_number(number)
 //
 // (aka `maybeExtractCountryPhoneCode`)
 //
-export function parse_phone_number_and_country_phone_code(_number)
+export function parse_phone_number_and_country_phone_code(number)
 {
-	const { number, is_international } = parse_phone_number(_number)
+	number = parse_phone_number(number)
 
 	if (!number)
 	{
@@ -405,10 +397,13 @@ export function parse_phone_number_and_country_phone_code(_number)
 
 	// If this is not an international phone number,
 	// then don't extract country phone code.
-	if (!is_international)
+	if (number[0] !== '+')
 	{
 		return { number }
 	}
+
+	// Strip the leading '+' sign
+	number = number.slice(1)
 
 	// Fast abortion: country codes do not begin with a '0'
 	if (number[0] === '0')
