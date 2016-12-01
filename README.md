@@ -124,15 +124,25 @@ new asYouType('US').input('2133734') === '(213) 373-4'
 
 Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
 
+To update metadata first download the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one.
+
+Then run these `npm` scripts in succession:
+
 ```sh
-# Creates `metadata.json` from `PhoneNumberMetadata.xml`
+# Creates `metadata.json` from `PhoneNumberMetadata.xml`.
 npm run generate
 
-# Creates `metadata.min.json` from `metadata.json`
+# Creates `metadata.min.json` from `metadata.json`.
+# `metadata.min.json` is then imported by the code.
 npm run compress
 
-# `metadata.min.json` is imported by the code
+# Test the new metadata (just in case).
+npm run test
+
+# Done. Create a Pull Request with the updated metadata.
 ```
+
+Latest metadata update: Nov 30th 2016
 
 ## To do
 
