@@ -18,7 +18,7 @@ One part of me was curious about how all this phone matching machinery worked, a
 
   * Pure javascript, doesn't require any 3rd party libraries
   * Metadata size is just about 75 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes
-  * Better "as you type" formatting (iPhone style)
+  * Better "as you type" formatting (and also more iPhone-alike style)
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK` as we don't use telephone sets in the XXIst century that much (and we have phonebooks in your mobile phones)
   * Doesn't handle carrier codes: they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number (the locals surely already know those carrier codes by themselves)
   * Assumes all phone numbers being `format`ted are internationally diallable, because that's the only type of phone numbers users are supposed to be inputting on websites (no one inputs short codes, emergency telephone numbers like `911`, etc.)
@@ -115,6 +115,12 @@ Creates a formatter for partially entered phone number. The two-letter `country_
  * `input(text)` — takes any text and appends it to the input; returns the formatted phone number
  * `reset()` — resets the input
 
+The instance of this class has also these fields:
+
+ * `valid` — is the phone number being input a valid one already
+ * `country` — a two-letter country code of the country this phone belongs to
+ * `template` — currently used phone number formatting template, where digits (and the plus sign, if present) are denoted by `x`-es
+
 ```js
 new asYouType().input('+12133734') === '+1 213 373 4'
 new asYouType('US').input('2133734') === '(213) 373-4'
@@ -140,6 +146,10 @@ npm run compress
 npm run test
 
 # Done. Create a Pull Request with the updated metadata.
+# Also changes to the original `libphonenumber`'s
+# `phonenumberutil.js` and `asyoutypeformatter.js`
+# should be merged because they may be required
+# for the new metadata to work as intended.
 ```
 
 Latest metadata update: November 30th, 2016
@@ -148,8 +158,6 @@ Latest metadata update: November 30th, 2016
 
 * On-the-fly country detection for "as you type" in case of ambiguous country phone codes (e.g. NANPA countries) – test "leading digits" for country when available, test phone number types when the phone number is formatted "completely", unite all phone number formats into one big array for this country phone code.
 * Generate "leading digits patterns" alternatives for 1-digit and 2-digit national numbers using national number patterns for the country (and also generate additional (supplemental) leading digits patterns for 3-digit (and more) national numbers from phone number format patterns)
-* Add `valid` variable for "as you type" instance (will be a flag which is gonna be set to `true` in cases when a phone number could be formatted "completely", and reset otherwise)
-* Add `template` variable for "as you type" instance
 * Add `country` variable for "as you type" instance (will be `undefined` in case of ambiguity for the phone number entered so far)
 * Add an ability to input a value for "as you type" formatter not just character-by-character but as a whole (performance optimization)
 

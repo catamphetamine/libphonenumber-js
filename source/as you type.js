@@ -28,7 +28,8 @@ import
 	VALID_DIGITS,
 	extract_formatted_phone_number,
 	parse_phone_number,
-	parse_phone_number_and_country_phone_code
+	parse_phone_number_and_country_phone_code,
+	find_country_code
 }
 from './parse'
 
@@ -58,7 +59,7 @@ const LONGEST_DUMMY_PHONE_NUMBER = repeat(DUMMY_DIGIT, LONGEST_NATIONAL_PHONE_NU
 
 // The digits that have not been entered yet will be represented by a \u2008,
 // the punctuation space.
-const DIGIT_PLACEHOLDER = '\u2008'
+const DIGIT_PLACEHOLDER = 'x' // '\u2008' (punctuation space)
 const DIGIT_PLACEHOLDER_MATCHER = new RegExp(DIGIT_PLACEHOLDER)
 const DIGIT_PLACEHOLDER_MATCHER_GLOBAL = new RegExp(DIGIT_PLACEHOLDER, 'g')
 
@@ -107,9 +108,7 @@ export default class as_you_type
 	{
 		if (country_code)
 		{
-			this.country_code = country_code
-			this.country_metadata = metadata.countries[country_code]
-			this.initialize_phone_number_formats_for_this_country()
+			this.default_country = country_code
 		}
 
 		this.reset()
@@ -182,9 +181,10 @@ export default class as_you_type
 					// If the possible phone number formats
 					// haven't been initialized during instance creation,
 					// then do it.
-					if (!this.country_code)
+					if (!this.default_country)
 					{
 						this.initialize_phone_number_formats_for_this_country()
+						this.determine_the_country()
 					}
 
 					return '+' + this.country_phone_code
@@ -192,6 +192,11 @@ export default class as_you_type
 
 				// Return raw phone number
 				return this.parsed_input
+			}
+
+			if (!this.country)
+			{
+				this.determine_the_country()
 			}
 		}
 		else
@@ -220,7 +225,7 @@ export default class as_you_type
 		// still holds.
 		//
 		// This is done here because if `attempt_to_format_complete_phone_number`
-		// was placed before this call then the `formatting_template`
+		// was placed before this call then the `template`
 		// wouldn't reflect the situation correctly (and would therefore be inconsistent)
 		//
 		const national_number_formatted_with_previous_format = this.format_next_national_number_digit(character)
@@ -233,8 +238,11 @@ export default class as_you_type
 
 		if (formatted_number)
 		{
+			this.valid = true
 			return formatted_number
 		}
+
+		this.valid = false
 
 		// Check if the previously chosen phone number format still holds
 		this.match_formats_by_leading_digits()
@@ -270,6 +278,10 @@ export default class as_you_type
 			return this.full_phone_number(national_number_formatted_with_previous_format)
 		}
 
+		// No format matches the phone number,
+		// therefore set `country` to `undefined`.
+		this.country = undefined
+
 		// If no new phone number format could be chosen,
 		// And couldn't format the supplied national number
 		// using the selected phone number pattern.
@@ -279,9 +291,6 @@ export default class as_you_type
 
 	reset()
 	{
-		// // Input text so far, can contain any characters
-		// this.original_input = ''
-
 		// Input stripped of non-phone-number characters.
 		// Can only contain a possible leading '+' sign and digits.
 		this.parsed_input = ''
@@ -296,8 +305,15 @@ export default class as_you_type
 
 		this.country_phone_code = ''
 
-		if (!this.country_code)
+		if (this.default_country)
 		{
+			this.country = this.default_country
+			this.country_metadata = metadata.countries[this.default_country]
+			this.initialize_phone_number_formats_for_this_country()
+		}
+		else
+		{
+			this.country = undefined
 			this.country_metadata = undefined
 			this.available_formats = []
 		}
@@ -308,15 +324,14 @@ export default class as_you_type
 	reset_formatting()
 	{
 		this.matching_formats = undefined
-
 		this.chosen_format = undefined
 
+		this.template = undefined
+		this.partially_populated_template = undefined
 		this.last_match_position = 0
-
-		this.formatting_template = undefined
-		this.partially_populated_formatting_template = undefined
-
 		this.national_prefix_is_part_of_formatting_template = false
+
+		this.valid = false
 	}
 
 	// Format each digit of national phone number (so far)
@@ -456,7 +471,7 @@ export default class as_you_type
 		}
 
 		// Check country restriction
-		if (this.country_code)
+		if (this.default_country)
 		{
 			if (country_phone_code !== get_phone_code(this.country_metadata))
 			{
@@ -558,7 +573,6 @@ export default class as_you_type
 
 		if (this.national_prefix)
 		{
-			this.national_prefix_is_part_of_formatting_template = true
 			const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
 
 			// If national prefix formatting rule is set
@@ -566,6 +580,7 @@ export default class as_you_type
 			if (national_prefix_formatting_rule)
 			{
 				number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
+				this.national_prefix_is_part_of_formatting_template = true
 			}
 		}
 
@@ -586,28 +601,34 @@ export default class as_you_type
 		}
 
 		// Create formatting template for this phone number format
-		this.formatting_template = dummy_phone_number_matching_format_pattern
+		const template = dummy_phone_number_matching_format_pattern
 			// Format the dummy phone number according to the format
 			.replace(new RegExp(number_pattern, 'g'), number_format)
 			// Replace each dummy digit with a DIGIT_PLACEHOLDER
 			.replace(DUMMY_DIGIT_MATCHER, DIGIT_PLACEHOLDER)
 
-		return this.partially_populated_formatting_template = this.formatting_template
+		this.template = template
+		if (this.is_international())
+		{
+			this.template = '+' + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + this.template
+		}
+
+		return this.partially_populated_template = template
 	}
 
 	format_next_national_number_digit(digit)
 	{
-		// If there is room for more digits in current `formatting_template`,
-		// then set the next digit in the `formatting_template`,
+		// If there is room for more digits in current `template`,
+		// then set the next digit in the `template`,
 		// and return the formatted digits so far.
-		if (this.chosen_format && this.partially_populated_formatting_template.slice(this.last_match_position + 1).search(DIGIT_PLACEHOLDER_MATCHER) >= 0)
+		if (this.chosen_format && this.partially_populated_template.slice(this.last_match_position + 1).search(DIGIT_PLACEHOLDER_MATCHER) >= 0)
 		{
-			const digit_pattern_start = this.partially_populated_formatting_template.search(DIGIT_PLACEHOLDER_MATCHER)
-			this.partially_populated_formatting_template = this.partially_populated_formatting_template.replace(DIGIT_PLACEHOLDER_MATCHER, digit)
+			const digit_pattern_start = this.partially_populated_template.search(DIGIT_PLACEHOLDER_MATCHER)
+			this.partially_populated_template = this.partially_populated_template.replace(DIGIT_PLACEHOLDER_MATCHER, digit)
 			this.last_match_position = digit_pattern_start
 
 			// Return the formatted phone number so far
-			return close_dangling_braces(this.partially_populated_formatting_template, digit_pattern_start + 1)
+			return close_dangling_braces(this.partially_populated_template, digit_pattern_start + 1)
 				.replace(DIGIT_PLACEHOLDER_MATCHER_GLOBAL, ' ')
 		}
 
@@ -618,8 +639,8 @@ export default class as_you_type
 		// in a subsequent `this.choose_another_format()` call
 		// later in code.
 		this.chosen_format = undefined
-		this.formatting_template = undefined
-		this.partially_populated_formatting_template = undefined
+		this.template = undefined
+		this.partially_populated_template = undefined
 	}
 
 	is_international()
@@ -636,7 +657,17 @@ export default class as_you_type
 
 		return get_format_format(format)
 	}
+
+	// Determines the country of the phone number
+	// entered so far based on the country phone code
+	// and the national phone number.
+	determine_the_country()
+	{
+		this.country = find_country_code(this.country_phone_code, this.national_number)
+	}
 }
+
+as_you_type.DIGIT_PLACEHOLDER = DIGIT_PLACEHOLDER
 
 export function close_dangling_braces(template, cut_before)
 {

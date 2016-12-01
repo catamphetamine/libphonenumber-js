@@ -254,14 +254,10 @@ export default function parse(text, options)
 		country = options.country.default || options.country.restrict
 		country_metadata = metadata.countries[country]
 
-		if (!country_metadata)
-		{
-			return {}
-		}
-
 		number = normalize(text)
 	}
-	else
+
+	if (!country_metadata)
 	{
 		return {}
 	}

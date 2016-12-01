@@ -1,3 +1,8 @@
+0.1.14 / 01.12.2016
+===================
+
+  * Added `valid`, `country` and `template` fields to "as you type" instance
+
 0.1.12 / 30.11.2016
 ===================
 

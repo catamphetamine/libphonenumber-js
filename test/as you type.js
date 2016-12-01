@@ -24,20 +24,54 @@ describe('as you type', () =>
 
 		formatter = new as_you_type()
 
+		formatter.valid.should.be.false
+		type(formatter.country).should.equal('undefined')
+		type(formatter.formatter).should.equal('undefined')
+
 		formatter.input('+').should.equal('+')
+
+		formatter.valid.should.be.false
+		type(formatter.country).should.equal('undefined')
+		type(formatter.formatter).should.equal('undefined')
 		formatter.input('1').should.equal('+1')
+
+		formatter.valid.should.be.false
+		type(formatter.country).should.equal('undefined')
+		type(formatter.formatter).should.equal('undefined')
+
 		formatter.input('2').should.equal('+1 2')
-		formatter.input('2').should.equal('+1 22')
-		formatter.input('2').should.equal('+1 222')
-		formatter.input(' ').should.equal('+1 222')
-		formatter.input('3').should.equal('+1 222 3')
-		formatter.input('3').should.equal('+1 222 33')
-		formatter.input('3').should.equal('+1 222 333')
-		formatter.input('4').should.equal('+1 222 333 4')
-		formatter.input('4').should.equal('+1 222 333 44')
-		formatter.input('4').should.equal('+1 222 333 444')
-		formatter.input('4').should.equal('+1 222 333 4444')
-		formatter.input('5').should.equal('+122233344445')
+
+		formatter.valid.should.be.false
+		type(formatter.country).should.equal('undefined')
+		type(formatter.formatter).should.equal('undefined')
+
+		formatter.input('1').should.equal('+1 21')
+		formatter.input('3').should.equal('+1 213')
+		formatter.input(' ').should.equal('+1 213')
+		formatter.input('3').should.equal('+1 213 3')
+		formatter.input('3').should.equal('+1 213 33')
+		formatter.input('3').should.equal('+1 213 333')
+		formatter.input('4').should.equal('+1 213 333 4')
+		formatter.input('4').should.equal('+1 213 333 44')
+		formatter.input('4').should.equal('+1 213 333 444')
+
+		formatter.valid.should.be.false
+		type(formatter.country).should.equal('undefined')
+		type(formatter.formatter).should.equal('undefined')
+
+		formatter.input('4').should.equal('+1 213 333 4444')
+
+		formatter.valid.should.be.true
+		formatter.country.should.equal('US')
+		// This one below contains "punctuation spaces"
+		// along with the regular spaces
+		formatter.template.should.equal('+x xxx xxx xxxx')
+
+		formatter.input('5').should.equal('+121333344445')
+
+		formatter.valid.should.be.false
+		type(formatter.country).should.equal('undefined')
+		type(formatter.formatter).should.equal('undefined')
 
 		// Check that clearing an international formatter
 		// also clears country metadata.
@@ -188,3 +222,8 @@ describe('as you type', () =>
 		formatter.input('+1abc2').should.equal('')
 	})
 })
+
+function type(something)
+{
+	return typeof something
+}

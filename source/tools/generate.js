@@ -1,6 +1,8 @@
 import { parseString } from 'xml2js'
 import Promise from 'bluebird'
 
+import as_you_type from '../as you type'
+
 // Excessive fields from "PhoneNumberMetadata.xml"
 // aren't included to reduce code complexity and size:
 //
@@ -243,9 +245,16 @@ export default function(input)
 				// Sanity check (using no "default" for this field)
 				for (let format of country.formats)
 				{
+					// Never happens
 					if (!format.format)
 					{
 						throw new Error(`No phone number format "format" supplied for pattern ${format.pattern} for ${country_code}`)
+					}
+
+					// Never happens
+					if (format.format.indexOf(as_you_type.DIGIT_PLACEHOLDER) >= 0)
+					{
+						throw new Error(`Phone number format "${format.format}" contains a reserved "${as_you_type.DIGIT_PLACEHOLDER}" symbol for pattern ${format.pattern} for ${country_code}`)
 					}
 				}
 			}
