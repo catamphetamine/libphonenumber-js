@@ -156,10 +156,8 @@ Latest metadata update: November 30th, 2016
 
 ## To do
 
-* On-the-fly country detection for "as you type" in case of ambiguous country phone codes (e.g. NANPA countries) – test "leading digits" for country when available, test phone number types when the phone number is formatted "completely", unite all phone number formats into one big array for this country phone code.
-* Generate "leading digits patterns" alternatives for 1-digit and 2-digit national numbers using national number patterns for the country (and also generate additional (supplemental) leading digits patterns for 3-digit (and more) national numbers from phone number format patterns)
-* Add `country` variable for "as you type" instance (will be `undefined` in case of ambiguity for the phone number entered so far)
 * Add an ability to input a value for "as you type" formatter not just character-by-character but as a whole (performance optimization)
+* Maybe: Generate "leading digits patterns" alternatives for 1-digit and 2-digit national numbers using national number `pattern`s for the country (and also generate leading digits patterns for 3-digit national numbers from phone number format `pattern`s, if 3-digit pattern is missing for a given phone number format)
 
 ## Bug reporting
 
