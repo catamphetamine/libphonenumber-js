@@ -120,6 +120,20 @@ new asYouType().input('+12133734') === '+1 213 373 4'
 new asYouType('US').input('2133734') === '(213) 373-4'
 ```
 
+## Metadata generation
+
+Metadata is generated from Google's original `PhoneNumberMetadata.xml` by transforming XML into JSON and removing unnecessary fields.
+
+```
+# Creates `metadata.json` from `PhoneNumberMetadata.xml`
+npm run generate
+
+# Creates `metadata.min.json` from `metadata.json`
+npm run compress
+
+# `metadata.min.json` is imported by the code
+```
+
 ## To do
 
 * On-the-fly country detection for "as you type" in case of ambiguous country phone codes (e.g. NANPA countries) – test "leading digits" for country when available, test phone number types when the phone number is formatted "completely", unite all phone number formats into one big array for this country phone code.
