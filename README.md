@@ -142,7 +142,7 @@ npm run test
 # Done. Create a Pull Request with the updated metadata.
 ```
 
-Latest metadata update: Nov 30th 2016
+Latest metadata update: November 30th, 2016
 
 ## To do
 
