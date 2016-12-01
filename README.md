@@ -126,7 +126,7 @@ Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https:/
 
 To update metadata first download the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one.
 
-Then run these `npm` scripts in succession:
+Then run the following `npm` scripts:
 
 ```sh
 # Creates `metadata.json` from `PhoneNumberMetadata.xml`.
