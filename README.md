@@ -122,9 +122,9 @@ new asYouType('US').input('2133734') === '(213) 373-4'
 
 ## Metadata generation
 
-Metadata is generated from Google's original `PhoneNumberMetadata.xml` by transforming XML into JSON and removing unnecessary fields.
+Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
 
-```
+```sh
 # Creates `metadata.json` from `PhoneNumberMetadata.xml`
 npm run generate
 
