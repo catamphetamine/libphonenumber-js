@@ -64,11 +64,11 @@ const DIGIT_PLACEHOLDER_MATCHER = new RegExp(DIGIT_PLACEHOLDER)
 const DIGIT_PLACEHOLDER_MATCHER_GLOBAL = new RegExp(DIGIT_PLACEHOLDER, 'g')
 
 // A pattern that is used to match character classes in regular expressions.
-// An example of a character class is [1-4].
+// An example of a character class is "[1-4]".
 const CHARACTER_CLASS_PATTERN = /\[([^\[\]])*\]/g
 
 // Any digit in a regular expression that actually denotes a digit. For
-// example, in the regular expression 80[0-2]\d{6,10}, the first 2 digits
+// example, in the regular expression "80[0-2]\d{6,10}", the first 2 digits
 // (8 and 0) are standalone digits, but the rest are not.
 // Two look-aheads are needed because the number following \\d could be a
 // two-digit number, since the phone number can be as long as 15 digits.
@@ -564,6 +564,7 @@ export default class as_you_type
 			return
 		}
 
+		// Now, a very smart trick by the guys at Google
 		number_pattern = number_pattern
 			// Replace anything in the form of [..] with \d
 			.replace(CHARACTER_CLASS_PATTERN, '\\d')
@@ -717,7 +718,6 @@ export function count_occurences(symbol, string)
 // http://stackoverflow.com/questions/202605/repeat-string-javascript
 export function repeat(string, times)
 {
-	/* istanbul ignore if */
 	if (times < 1)
 	{
 		return ''

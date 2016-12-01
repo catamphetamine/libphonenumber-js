@@ -157,7 +157,7 @@ Latest metadata update: November 30th, 2016
 ## To do
 
 * Add an ability to input a value for "as you type" formatter not just character-by-character but as a whole (performance optimization)
-* Maybe: Generate "leading digits patterns" alternatives for 1-digit and 2-digit national numbers using national number `pattern`s for the country (and also generate leading digits patterns for 3-digit national numbers from phone number format `pattern`s, if 3-digit pattern is missing for a given phone number format)
+* When matching phone number formats leading digits, first prefer the ones for which the leading digits pattern returns `true` (over those who don't have leading digits patterns, for example)
 
 ## Bug reporting
 
