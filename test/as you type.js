@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import as_you_type, { close_dangling_braces } from '../source/as you type'
+import as_you_type, { close_dangling_braces, repeat } from '../source/as you type'
 
 describe('as you type', () =>
 {
@@ -220,6 +220,13 @@ describe('as you type', () =>
 		formatter = new as_you_type('RU')
 
 		formatter.input('+1abc2').should.equal('')
+	})
+
+	it('should repeat string N times', function()
+	{
+		repeat('a', 0).should.equal('')
+		repeat('a', 3).should.equal('aaa')
+		repeat('a', 4).should.equal('aaaa')
 	})
 })
 

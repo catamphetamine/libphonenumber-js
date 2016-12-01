@@ -215,6 +215,7 @@ export default class as_you_type
 			{
 				// National number has changed
 				// (due to another national prefix been extracted)
+				// therefore national number has changed
 				// therefore reset all previous formatting data.
 				this.reset_formatting()
 			}
@@ -323,7 +324,7 @@ export default class as_you_type
 
 	reset_formatting()
 	{
-		this.matching_formats = undefined
+		this.matching_formats = this.available_formats
 		this.chosen_format = undefined
 
 		this.template = undefined
@@ -412,9 +413,7 @@ export default class as_you_type
 			return this.available_formats
 		}
 
-		// `matching_formats` is `undefined` when formatting has been reset.
-		// It will be set later, in `match_formats_by_leading_digits()` call.
-		return this.matching_formats || this.available_formats
+		return this.matching_formats
 	}
 
 	// Check to see if there is an exact pattern match for these digits. If so, we
@@ -547,6 +546,9 @@ export default class as_you_type
 				return true
 			}
 		}
+
+		// No format matches the national phone number entered
+		this.reset_formatting()
 	}
 
 	create_formatting_template(format)
@@ -608,11 +610,16 @@ export default class as_you_type
 			.replace(DUMMY_DIGIT_MATCHER, DIGIT_PLACEHOLDER)
 
 		this.template = template
+
+		// For convenience, the public `.template` property
+		// is gonna contain the whole international number
+		// if the phone number being input is international.
 		if (this.is_international())
 		{
 			this.template = '+' + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + this.template
 		}
 
+		// This one is for national number only
 		return this.partially_populated_template = template
 	}
 
