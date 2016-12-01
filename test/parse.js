@@ -85,8 +85,7 @@ describe('parse', () =>
 		get_number_type('9150000000', metadata.countries.RU).should.equal('MOBILE')
 		get_number_type('8030000000', metadata.countries.RU).should.equal('PREMIUM_RATE')
 
-		// Actually it's FIXED_LINE_OR_MOBILE, but because accuracy is not the point in this case
-		get_number_type('2133734253', metadata.countries.US).should.equal('FIXED_LINE')
+		get_number_type('2133734253', metadata.countries.US).should.equal('FIXED_LINE_OR_MOBILE')
 		get_number_type('5002345678', metadata.countries.US).should.equal('PERSONAL_NUMBER')
 	})
 })
