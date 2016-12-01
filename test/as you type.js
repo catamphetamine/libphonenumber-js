@@ -26,27 +26,24 @@ describe('as you type', () =>
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		type(formatter.formatter).should.equal('undefined')
+		type(formatter.template).should.equal('undefined')
 
 		formatter.input('+').should.equal('+')
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		type(formatter.formatter).should.equal('undefined')
+		type(formatter.template).should.equal('undefined')
 
-		console.log('------------------------------------------------')
 		formatter.input('1').should.equal('+1')
-		console.log('------------------------------------------------')
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		type(formatter.formatter).should.equal('undefined')
+		formatter.template.should.equal('+x xxx xxx xxxx')
 
 		formatter.input('2').should.equal('+1 2')
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		type(formatter.formatter).should.equal('undefined')
 
 		formatter.input('1').should.equal('+1 21')
 		formatter.input('3').should.equal('+1 213')
@@ -60,7 +57,6 @@ describe('as you type', () =>
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		type(formatter.formatter).should.equal('undefined')
 
 		formatter.input('4').should.equal('+1 213 333 4444')
 
@@ -74,7 +70,7 @@ describe('as you type', () =>
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		type(formatter.formatter).should.equal('undefined')
+		type(formatter.template).should.equal('undefined')
 
 		// Check that clearing an international formatter
 		// also clears country metadata.
@@ -103,8 +99,22 @@ describe('as you type', () =>
 		formatter.input('-').should.equal('044 668')
 		formatter.input('1').should.equal('044 668 1')
 		formatter.input('8').should.equal('044 668 18')
+
+		formatter.valid.should.be.false
+		formatter.country.should.equal('CH')
+		formatter.template.should.equal('xxx xxx xx xx')
+
 		formatter.input(' 00').should.equal('044 668 18 00')
+
+		formatter.valid.should.be.true
+		formatter.country.should.equal('CH')
+		formatter.template.should.equal('xxx xxx xx xx')
+
 		formatter.input('9').should.equal('04466818009')
+
+		formatter.valid.should.be.false
+		formatter.country.should.equal('CH')
+		type(formatter.template).should.equal('undefined')
 
 		// Test Russian phone numbers
 		// (with optional national prefix `8`)

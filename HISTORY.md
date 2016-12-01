@@ -1,3 +1,8 @@
+0.1.17 / 01.12.2016
+===================
+
+  * "As you type" formatter `template` fix for national prefixes (which weren't replaced with `x`-es)
+
 0.1.16 / 01.12.2016
 ===================
 

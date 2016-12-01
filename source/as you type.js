@@ -237,10 +237,22 @@ export default class as_you_type
 		}
 
 		// Format the phone number (given the next digits)
-		return this.format_phone_number(input)
+		const formatted_national_phone_number = this.format_national_phone_number(input)
+
+		// If the phone number could be formatted,
+		// then return it, possibly prepending with country phone code
+		// (for international phone numbers only)
+		if (formatted_national_phone_number)
+		{
+			return this.full_phone_number(formatted_national_phone_number)
+		}
+
+		// If the phone number couldn't be formatted,
+		// then just fall back to the raw phone number.
+		return this.parsed_input
 	}
 
-	format_phone_number(next_digits)
+	format_national_phone_number(next_digits)
 	{
 		// Format the next phone number digits
 		// using the previously chosen phone number format.
@@ -280,32 +292,23 @@ export default class as_you_type
 			// then format the national phone number (so far)
 			// using the newly selected phone number pattern.
 
-			const formatted_national_number = this.reformat_national_number()
-
-			if (formatted_national_number)
-			{
-				return this.full_phone_number(formatted_national_number)
-			}
-
-			// Couldn't format the supplied national number
+			// Will return `undefined` if it couldn't format
+			// the supplied national number
 			// using the selected phone number pattern.
-			// Return raw phone number.
-			return this.parsed_input
+
+			return this.reformat_national_number()
 		}
 
 		// If could format the next (current) digit
 		// using the previously chosen phone number format
 		// then return the formatted number so far.
-		if (national_number_formatted_with_previous_format)
-		{
-			return this.full_phone_number(national_number_formatted_with_previous_format)
-		}
 
 		// If no new phone number format could be chosen,
-		// And couldn't format the supplied national number
-		// using the selected phone number pattern.
-		// Return raw phone number
-		return this.parsed_input
+		// and couldn't format the supplied national number
+		// using the selected phone number pattern,
+		// then it will return `undefined`.
+
+		return national_number_formatted_with_previous_format
 	}
 
 	reset()
@@ -463,7 +466,7 @@ export default class as_you_type
 
 			if (matcher.test(this.national_number))
 			{
-				const formatted_national_number = format_national_number_using_format
+				return format_national_number_using_format
 				(
 					this.national_number,
 					format,
@@ -471,8 +474,6 @@ export default class as_you_type
 					this.national_prefix,
 					this.country_metadata
 				)
-
-				return this.full_phone_number(formatted_national_number)
 			}
 		}
 	}
@@ -585,7 +586,7 @@ export default class as_you_type
 
 		// No format matches the phone number,
 		// therefore set `country` to `undefined`.
-		this.country = undefined
+		this.country = this.default_country
 
 		// No format matches the national phone number entered
 		this.reset_format()
@@ -658,6 +659,12 @@ export default class as_you_type
 		if (this.is_international())
 		{
 			this.template = '+' + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + this.template
+		}
+		// For local numbers, replace national prefix
+		// with a digit placeholder.
+		else
+		{
+			this.template = this.template.replace(/\d/g, DIGIT_PLACEHOLDER)
 		}
 
 		// This one is for national number only
