@@ -116,8 +116,6 @@ export default class as_you_type
 
 	input(text)
 	{
-		this.valid = false
-
 		// Parse input
 
 		let extracted_number = extract_formatted_phone_number(text)
@@ -138,8 +136,11 @@ export default class as_you_type
 			return this.current_output
 		}
 
-		let input = parse_phone_number(extracted_number)
+		return this.process_input(parse_phone_number(extracted_number))
+	}
 
+	process_input(input)
+	{
 		// If an out of position '+' sign detected
 		// (or a second '+' sign),
 		// then just drop it from the input.
@@ -153,7 +154,11 @@ export default class as_you_type
 			input = input.slice(1)
 		}
 
+		// Raw phone number
 		this.parsed_input += input
+
+		// Reset phone number validation state
+		this.valid = false
 
 		// Add digits to the national number
 		this.national_number += input
@@ -171,7 +176,9 @@ export default class as_you_type
 				// then it means that this is the country code.
 
 				// If no country phone code could be extracted so far,
-				// then just return the raw phone number.
+				// then just return the raw phone number,
+				// because it has no way of knowing
+				// how to format the phone number so far.
 				if (!this.extract_country_phone_code())
 				{
 					// Return raw phone number
@@ -229,6 +236,12 @@ export default class as_you_type
 			}
 		}
 
+		// Format the phone number (given the next digits)
+		return this.format_phone_number(input)
+	}
+
+	format_phone_number(next_digits)
+	{
 		// Format the next phone number digits
 		// using the previously chosen phone number format.
 		//
@@ -239,7 +252,7 @@ export default class as_you_type
 		let national_number_formatted_with_previous_format
 		if (this.chosen_format)
 		{
-			national_number_formatted_with_previous_format = this.format_next_national_number_digits(input)
+			national_number_formatted_with_previous_format = this.format_next_national_number_digits(next_digits)
 		}
 
 		// See if the input digits can be formatted properly already. If not,
@@ -287,10 +300,6 @@ export default class as_you_type
 		{
 			return this.full_phone_number(national_number_formatted_with_previous_format)
 		}
-
-		// No format matches the phone number,
-		// therefore set `country` to `undefined`.
-		this.country = undefined
 
 		// If no new phone number format could be chosen,
 		// And couldn't format the supplied national number
@@ -473,14 +482,7 @@ export default class as_you_type
 	{
 		if (this.is_international())
 		{
-			let result = '+' + this.country_phone_code
-
-			if (formatted_national_number)
-			{
-				result += ' ' + formatted_national_number
-			}
-
-			return result
+			return `+${this.country_phone_code} ${formatted_national_number}`
 		}
 
 		return formatted_national_number
@@ -580,6 +582,10 @@ export default class as_you_type
 				return true
 			}
 		}
+
+		// No format matches the phone number,
+		// therefore set `country` to `undefined`.
+		this.country = undefined
 
 		// No format matches the national phone number entered
 		this.reset_format()

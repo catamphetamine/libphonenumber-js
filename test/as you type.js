@@ -34,7 +34,9 @@ describe('as you type', () =>
 		type(formatter.country).should.equal('undefined')
 		type(formatter.formatter).should.equal('undefined')
 
+		console.log('------------------------------------------------')
 		formatter.input('1').should.equal('+1')
+		console.log('------------------------------------------------')
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
