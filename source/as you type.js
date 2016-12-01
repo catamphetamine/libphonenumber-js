@@ -74,18 +74,18 @@ const CHARACTER_CLASS_PATTERN = /\[([^\[\]])*\]/g
 // two-digit number, since the phone number can be as long as 15 digits.
 const STANDALONE_DIGIT_PATTERN = /\d(?=[^,}][^,}])/g
 
-// A pattern that is used to determine if a numberFormat under availableFormats
-// is eligible to be used by the AYTF. It is eligible when the format element
-// under numberFormat contains groups of the dollar sign followed by a single
-// digit, separated by valid phone number punctuation. This prevents invalid
-// punctuation (such as the star sign in Israeli star numbers) getting into the
-// output of the AYTF.
+// A pattern that is used to determine if a `format` is eligible
+// to be used by the "as you type formatter".
+// It is eligible when the `format` contains groups of the dollar sign
+// followed by a single digit, separated by valid phone number punctuation.
+// This prevents invalid punctuation (such as the star sign in Israeli star numbers)
+// getting into the output of the "as you type formatter".
 const ELIGIBLE_FORMAT_PATTERN = new RegExp
 (
-    '^' +
-    '[' + VALID_PUNCTUATION + ']*' +
-    '(\\$\\d[' + VALID_PUNCTUATION + ']*)+' +
-    '$'
+	'^' +
+	'[' + VALID_PUNCTUATION + ']*' +
+	'(\\$\\d[' + VALID_PUNCTUATION + ']*)+' +
+	'$'
 )
 
 // This is the minimum length of the leading digits of a phone number
@@ -94,11 +94,11 @@ const ELIGIBLE_FORMAT_PATTERN = new RegExp
 const MIN_LEADING_DIGITS_LENGTH = 3
 
 const VALID_INCOMPLETE_PHONE_NUMBER =
-		'[' + PLUS_CHARS + ']{0,1}' +
-		'[' +
-			VALID_PUNCTUATION +
-			VALID_DIGITS +
-		']*'
+	'[' + PLUS_CHARS + ']{0,1}' +
+	'[' +
+		VALID_PUNCTUATION +
+		VALID_DIGITS +
+	']*'
 
 const VALID_INCOMPLETE_PHONE_NUMBER_PATTERN = new RegExp('^' + VALID_INCOMPLETE_PHONE_NUMBER + '$', 'i')
 
@@ -356,6 +356,27 @@ export default class as_you_type
 		this.available_formats = get_formats(this.country_metadata).filter((format) =>
 		{
 			return ELIGIBLE_FORMAT_PATTERN.test(get_format_international_format(format))
+		})
+		// Try the formats with "leading digits" defined first
+		.sort((a, b) =>
+		{
+			// Leading digits are defined for most formats
+			/* istanbul ignore next */
+			if (get_format_leading_digits_patterns(a).length === 0
+				&& get_format_leading_digits_patterns(b).length > 0)
+			{
+				return -1
+			}
+
+			// Leading digits are defined for most formats
+			/* istanbul ignore next */
+			if (get_format_leading_digits_patterns(a).length > 0
+				&& get_format_leading_digits_patterns(b).length === 0)
+			{
+				return 1
+			}
+
+			return 0
 		})
 	}
 

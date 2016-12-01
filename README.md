@@ -157,7 +157,6 @@ Latest metadata update: November 30th, 2016
 ## To do
 
 * Add an ability to input a value for "as you type" formatter not just character-by-character but as a whole (performance optimization)
-* When matching phone number formats leading digits, first prefer the ones for which the leading digits pattern returns `true` (over those who don't have leading digits patterns, for example)
 
 ## Bug reporting
 
