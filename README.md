@@ -154,9 +154,9 @@ npm run test
 
 Latest metadata update: November 30th, 2016
 
-## To do
+<!-- ## To do
 
-* Add an ability to input a value for "as you type" formatter not just character-by-character but as a whole (performance optimization)
+Everything's done -->
 
 ## Bug reporting
 

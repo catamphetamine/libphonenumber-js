@@ -33,6 +33,7 @@ describe('as you type', () =>
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		type(formatter.formatter).should.equal('undefined')
+
 		formatter.input('1').should.equal('+1')
 
 		formatter.valid.should.be.false

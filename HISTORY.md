@@ -1,3 +1,8 @@
+0.1.16 / 01.12.2016
+===================
+
+  * "As you type" formatter now formats the whole input passed to the `.input()` function one at a time without splitting it into individual characters (which yields better performance)
+
 0.1.14 / 01.12.2016
 ===================
 
