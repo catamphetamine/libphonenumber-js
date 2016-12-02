@@ -106,11 +106,11 @@ isValidNumber('(213) 373-4253', 'US') === true
 isValidNumber('(213) 37', 'US') === false
 ```
 
-### `class` asYouType(country_code)
+### `class` asYouType(default_country_code)
 
 (aka `as_you_type`)
 
-Creates a formatter for partially entered phone number. The two-letter `country_code` is optional and, if specified, restricts the phone number being input to the specified country. The instance of this class has two methods:
+Creates a formatter for partially entered phone number. The two-letter `default_country_code` is optional and, if specified, is gonna be the default country for the phone number being input (in case it's not an international one). The instance of this class has two methods:
 
  * `input(text)` — takes any text and appends it to the input; returns the formatted phone number
  * `reset()` — resets the input

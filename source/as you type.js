@@ -185,15 +185,10 @@ export default class as_you_type
 					return this.parsed_input
 				}
 
-				// If the possible phone number formats
-				// haven't been initialized during instance creation,
-				// then do it now.
-				if (!this.default_country)
-				{
-					this.initialize_phone_number_formats_for_this_country()
-					this.reset_format()
-					this.determine_the_country()
-				}
+				// Initialize country-specific data
+				this.initialize_phone_number_formats_for_this_country_phone_code()
+				this.reset_format()
+				this.determine_the_country()
 			}
 			// `this.country` could be `undefined`,
 			// for instance, when there is ambiguity
@@ -332,7 +327,7 @@ export default class as_you_type
 			this.country = this.default_country
 			this.country_metadata = metadata.countries[this.default_country]
 
-			this.initialize_phone_number_formats_for_this_country()
+			this.initialize_phone_number_formats_for_this_country_phone_code()
 		}
 		else
 		{
@@ -366,7 +361,7 @@ export default class as_you_type
 		return this.format_next_national_number_digits(this.national_number)
 	}
 
-	initialize_phone_number_formats_for_this_country()
+	initialize_phone_number_formats_for_this_country_phone_code()
 	{
 		// Get all "eligible" phone number formats for this country
 		this.available_formats = get_formats(this.country_metadata).filter((format) =>
@@ -466,6 +461,12 @@ export default class as_you_type
 
 			if (matcher.test(this.national_number))
 			{
+				// To leave the formatter in a consistent state
+				this.reset_format()
+				this.chosen_format = format
+				this.create_formatting_template(format)
+				this.reformat_national_number()
+
 				return format_national_number_using_format
 				(
 					this.national_number,
@@ -504,17 +505,6 @@ export default class as_you_type
 		if (!country_phone_code)
 		{
 			return
-		}
-
-		// Check country restriction
-		if (this.default_country)
-		{
-			if (country_phone_code !== get_phone_code(this.country_metadata))
-			{
-				// Invalid country phone code for the
-				// international phone number being input.
-				return
-			}
 		}
 
 		this.country_phone_code = country_phone_code
@@ -658,7 +648,7 @@ export default class as_you_type
 		// if the phone number being input is international.
 		if (this.is_international())
 		{
-			this.template = '+' + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + this.template
+			this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + this.template
 		}
 		// For local numbers, replace national prefix
 		// with a digit placeholder.
@@ -673,7 +663,6 @@ export default class as_you_type
 
 	format_next_national_number_digits(digits)
 	{
-
 		for (let digit of digits)
 		{
 			// If there is room for more digits in current `template`,

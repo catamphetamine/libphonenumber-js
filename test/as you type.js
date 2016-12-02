@@ -38,7 +38,7 @@ describe('as you type', () =>
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		formatter.template.should.equal('+x xxx xxx xxxx')
+		formatter.template.should.equal('xx xxx xxx xxxx')
 
 		formatter.input('2').should.equal('+1 2')
 
@@ -64,7 +64,7 @@ describe('as you type', () =>
 		formatter.country.should.equal('US')
 		// This one below contains "punctuation spaces"
 		// along with the regular spaces
-		formatter.template.should.equal('+x xxx xxx xxxx')
+		formatter.template.should.equal('xx xxx xxx xxxx')
 
 		formatter.input('5').should.equal('+121333344445')
 
@@ -178,6 +178,38 @@ describe('as you type', () =>
 		formatter.input('1').should.equal('8 (999) 1')
 	})
 
+	it(`should fall back to the default country`, function()
+	{
+		const formatter = new as_you_type('RU')
+
+		formatter.input('8').should.equal('8')
+		formatter.input('9').should.equal('8 (9  )')
+		formatter.input('9').should.equal('8 (99 )')
+		formatter.input('9').should.equal('8 (999)')
+
+		formatter.valid.should.be.false
+		formatter.template.should.equal('x (xxx) xxx-xx-xx')
+		formatter.country.should.equal('RU')
+
+		formatter.input('000000000000').should.equal('8999000000000000')
+
+		formatter.valid.should.be.false
+		type(formatter.template).should.equal('undefined')
+		formatter.country.should.equal('RU')
+
+		formatter.reset()
+
+		formatter.valid.should.be.false
+		type(formatter.template).should.equal('undefined')
+		formatter.country.should.equal('RU')
+
+		formatter.input('+1-213-373-4253').should.equal('+1 213 373 4253')
+
+		formatter.valid.should.be.true
+		formatter.template.should.equal('xx xxx xxx xxxx')
+		formatter.country.should.equal('US')
+	})
+
 	it('should work in edge cases', function()
 	{
 		let formatter
@@ -209,12 +241,6 @@ describe('as you type', () =>
 		formatter = new as_you_type()
 
 		formatter.input('+0123').should.equal('+0123')
-
-		// Explicitly set country and derived country conflict
-
-		formatter = new as_you_type('RU')
-
-		formatter.input('+123').should.equal('+123')
 
 		// No country specified and not an international number
 

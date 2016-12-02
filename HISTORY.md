@@ -1,3 +1,8 @@
+0.2.0 / 02.12.2016
+===================
+
+  * "As you type" formatter's `country_code` argument is now `default_country_code`, and it doesn't restrict to the specified country anymore.
+
 0.1.17 / 01.12.2016
 ===================
 
