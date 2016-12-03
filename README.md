@@ -81,16 +81,16 @@ parse('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
 
 ### format(parsed_number, format)
 
-Formats an already parsed phone number in one of the following `format`s:
+Formats a phone number using one of the following `format`s:
   * `International` — e.g. `+1 213 373 4253`
   * `International_plaintext` — (aka `E.164`) e.g. `+12133734253`
   * `National` — e.g. `(213) 373-4253`
 
-Can also be called with the first object argument expanded:
+`parsed_number` is the result of the `parse()` function: `{ country, phone }`. `parsed_number` argument can also be expanded into two arguments:
 
 ```js
-format('2133734253', 'US', 'International') === '+1-213-373-4253'
-format({ country: 'US', phone: '2133734253' }, 'International') === '+1-213-373-4253'
+format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
+format('2133734253', 'US', 'International') === '+1 213 373 4253'
 ```
 
 ### isValidNumber(number, country_code)
