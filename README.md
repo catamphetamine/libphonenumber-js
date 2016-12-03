@@ -83,7 +83,7 @@ parse('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
 
 Formats a phone number using one of the following `format`s:
   * `International` — e.g. `+1 213 373 4253`
-  * `International_plaintext` — (aka `E.164`) e.g. `+12133734253`
+  * `International_plaintext` — (aka [`E.164`](https://en.wikipedia.org/wiki/E.164)) e.g. `+12133734253`
   * `National` — e.g. `(213) 373-4253`
 
 `parsed_number` is the result of the `parse()` function: `{ country, phone }`. `parsed_number` argument can also be expanded into two arguments:
