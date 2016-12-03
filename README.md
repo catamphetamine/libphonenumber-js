@@ -86,7 +86,7 @@ Formats a phone number using one of the following `format`s:
   * `International_plaintext` — (aka [`E.164`](https://en.wikipedia.org/wiki/E.164)) e.g. `+12133734253`
   * `National` — e.g. `(213) 373-4253`
 
-`parsed_number` is the result of the `parse()` function: `{ country, phone }`. `parsed_number` argument can also be expanded into two arguments:
+`parsed_number` argument is the result of the `parse()` function call: `{ country, phone }`. `parsed_number` argument can also be expanded into two arguments:
 
 ```js
 format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
