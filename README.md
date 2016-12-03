@@ -56,7 +56,7 @@ new asYouType('US').input('2133734')
 
 ### parse(text, options)
 
-`options` can be
+`options` can be either an object
 
 ```js
 country:
