@@ -126,7 +126,7 @@ new asYouType().input('+12133734') === '+1 213 373 4'
 new asYouType('US').input('2133734') === '(213) 373-4'
 
 const formatter = new asYouType()
-formatter.input('+1-213-373-4253')
+formatter.input('+1-213-373-4253') === '+1 213 373 4253'
 formatter.valid === true
 formatter.country === 'US'
 formatter.template === 'xx xxx xxx xxxx'
