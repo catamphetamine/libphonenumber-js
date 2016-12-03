@@ -72,7 +72,7 @@ country:
 
 or just a two-letter country code which is gonna be `country.restrict`.
 
-Returns `{ country, phone }` where `country` is a two-letter country code, and `phone` is a national (significant) number. If the phone number supplied isn't valid for the corresponding country then an empty object is returned.
+Returns `{ country, phone }` where `country` is a two-letter country code, and `phone` is a national (significant) number. If the phone number supplied isn't valid then an empty object `{}` is returned.
 
 ```js
 parse('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
