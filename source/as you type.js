@@ -320,12 +320,11 @@ export default class as_you_type
 
 		this.national_number = ''
 
-		this.country_phone_code = ''
-
 		if (this.default_country)
 		{
 			this.country = this.default_country
 			this.country_metadata = metadata.countries[this.default_country]
+			this.country_phone_code = this.country_metadata.phone_code
 
 			this.initialize_phone_number_formats_for_this_country_phone_code()
 		}
@@ -333,6 +332,7 @@ export default class as_you_type
 		{
 			this.country = undefined
 			this.country_metadata = undefined
+			this.country_phone_code = undefined
 
 			this.available_formats = []
 			this.matching_formats = this.available_formats

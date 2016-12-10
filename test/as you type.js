@@ -26,18 +26,21 @@ describe('as you type', () =>
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
+		type(formatter.country_phone_code).should.equal('undefined')
 		type(formatter.template).should.equal('undefined')
 
 		formatter.input('+').should.equal('+')
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
+		type(formatter.country_phone_code).should.equal('undefined')
 		type(formatter.template).should.equal('undefined')
 
 		formatter.input('1').should.equal('+1')
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
+		formatter.country_phone_code.should.equal('1')
 		formatter.template.should.equal('xx xxx xxx xxxx')
 
 		formatter.input('2').should.equal('+1 2')
@@ -70,6 +73,7 @@ describe('as you type', () =>
 
 		formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
+		formatter.country_phone_code.should.equal('1')
 		type(formatter.template).should.equal('undefined')
 
 		// Check that clearing an international formatter

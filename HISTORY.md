@@ -1,3 +1,8 @@
+0.2.1 / 10.12.2016
+===================
+
+  * Added `.country_phone_code` readable property to "as you type" formatter
+
 0.2.0 / 02.12.2016
 ===================
 

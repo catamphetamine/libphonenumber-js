@@ -86,7 +86,7 @@ Formats a phone number using one of the following `format`s:
   * `International_plaintext` — (aka [`E.164`](https://en.wikipedia.org/wiki/E.164)) e.g. `+12133734253`
   * `National` — e.g. `(213) 373-4253`
 
-`parsed_number` argument is the result of the `parse()` function call: `{ country, phone }`. `parsed_number` argument can also be expanded into two arguments:
+`parsed_number` argument is the result of the `parse()` function call: `{ country, phone }` (`phone` is a national (significant) number). `parsed_number` argument can also be expanded into two arguments:
 
 ```js
 format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
@@ -119,6 +119,7 @@ The instance of this class has also these fields:
 
  * `valid` — is the phone number being input a valid one already
  * `country` — a two-letter country code of the country this phone belongs to
+ * `country_phone_code` — a phone code of the `country`
  * `template` — currently used phone number formatting template, where digits (and the plus sign, if present) are denoted by `x`-es
 
 ```js
@@ -129,6 +130,7 @@ const formatter = new asYouType()
 formatter.input('+1-213-373-4253') === '+1 213 373 4253'
 formatter.valid === true
 formatter.country === 'US'
+formatter.country_phone_code = '1'
 formatter.template === 'xx xxx xxx xxxx'
 ```
 
