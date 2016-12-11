@@ -1,45 +1,56 @@
-var webpack = require('webpack');
-var path = require('path');
+import webpack from 'webpack'
+import path from 'path'
 
-var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-var env = process.env.WEBPACK_ENV;
+const env = process.env.WEBPACK_ENV
 
-var libraryName = 'libphonenumber-js';
-var outputFile;
+const library_name = 'libphonenumber-js'
+let output_file
 
-var plugins = [];
+const plugins = []
 
-if (env === 'build') {
-  plugins.push(new UglifyJsPlugin({ minimize: true }));
-  outputFile = libraryName + '.min.js';
-} else {
-  outputFile = libraryName + '.js';
+if (env === 'build')
+{
+  plugins.push(new webpack.optimize.UglifyJsPlugin
+  ({
+    minimize  : true,
+    sourceMap : true
+  }))
+
+  output_file = `${library_name}.min.js`
+}
+else
+{
+  output_file = `${library_name}.js`
 }
 
-var config = {
-  entry: __dirname + '/index.es6.js',
+const config =
+{
+  entry: path.join(__dirname, '/index.es6.js'),
   devtool: 'source-map',
-  output: {
-    path: __dirname + '/bundle',
-    filename: outputFile,
-    library: libraryName,
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+  output:
+  {
+    path           : path.join(__dirname, '/bundle'),
+    filename       : output_file,
+    library        : library_name,
+    libraryTarget  : 'umd',
+    umdNamedDefine : true
   },
-  module: {
-    loaders: [
-      {
-        test: /(\.js)$/,
-        loader: 'babel',
-        exclude: /node_modules/
-      }
-    ]
+  module:
+  {
+    loaders:
+    [{
+      test    : /(\.js)$/,
+      loader  : 'babel-loader',
+      exclude : /node_modules/
+    }]
   },
-  externals: {
-      // Use external version of React
-      "react": "React",
-      "react-dom": "ReactDOM"
-  }
-};
+  externals:
+  {
+    // Use external version of React
+    "react"     : "React",
+    "react-dom" : "ReactDOM"
+  },
+  plugins
+}
 
-module.exports = config;
+module.exports = config
