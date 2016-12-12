@@ -46,3 +46,4 @@ npm-debug.log
 
 # intermediary metadata
 /metadata.json
+/PhoneNumberMetadata.xml
