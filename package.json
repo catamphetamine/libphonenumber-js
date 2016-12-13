@@ -18,6 +18,7 @@
     "bluebird": "^3.4.6",
     "chai": "^3.5.0",
     "istanbul": "^1.0.0-alpha.2",
+    "json-loader": "^0.5.4",
     "mocha": "^2.4.5",
     "npm-run-all": "^1.4.0",
     "rimraf": "^2.5.0",
