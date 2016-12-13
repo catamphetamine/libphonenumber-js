@@ -178,6 +178,15 @@ If you're using Webpack (which you most likely are) then make sure that
  * `json-loader` doesn't `exclude` `/node_modules/`
  * If you override `resolve.extensions` in Webpack configuration then make sure `.json` extension is present in the list
 
+## Standalone
+
+For those who aren't using bundlers for some reason there's a way to build a standalone version of the library
+
+ * Clone the repo
+ * `npm install`
+ * `npm run browser-build`
+ * See the `bundle` folder
+
 ## Contributing
 
 After cloning this repo, ensure dependencies are installed by running:
