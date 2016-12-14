@@ -137,7 +137,7 @@
 
 					return (
 						<div>
-							<h2>As you type</h2>
+							<h2>As you type (international)</h2>
 
 							<ReactInput
 								autoFocus
@@ -161,7 +161,13 @@
 										return character
 									}
 								}}
-								format={templateFormatter(as_you_type.template)}/>
+								format={(value) =>
+								{
+									const as_you_type = new libphonenumber.as_you_type()
+									const text = as_you_type.input(value)
+
+									return { text: text, template: as_you_type.template }
+								}}/>
 
 							<div className="section">
 								<div className="section__line">Value: {this.state.value}</div>
