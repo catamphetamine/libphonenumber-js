@@ -1,0 +1,207 @@
+
+
+<html>
+	<head>
+		<title>Input Format</title>
+
+		<script src="https://unpkg.com/react@15.3.1/dist/react.js"></script>
+		<script src="https://unpkg.com/react-dom@15.3.1/dist/react-dom.js"></script>
+		<script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
+
+		<script src="./input-format.min.js"></script>
+		<script src="./libphonenumber-js.min.js"></script>
+	</head>
+
+	<style>
+		body
+		{
+			padding: 40px;
+		}
+
+		body, input, button
+		{
+			font-family: Arial, Helvetica;
+			font-size: 20px;
+		}
+
+		input[type="tel"]
+		{
+			padding-bottom: 4px;
+			border: none;
+			border-bottom: 1px solid #0093C4;
+			outline: none;
+		}
+
+		h2
+		{
+			margin-top: 60px;
+			margin-bottom: 40px;
+			border-bottom: 1px solid #afafaf;
+		}
+
+		h2:first-child
+		{
+			margin-top: 0;
+		}
+
+		.section
+		{
+			margin-top: 20px;
+		}
+
+		a
+		{
+			text-decoration: none;
+			color: #0093C4;
+		}
+
+		a:hover
+		{
+			text-decoration: underline;
+		}
+
+		a.main
+		{
+			display: block;
+			font-size: 32px;
+		}
+
+		p
+		{
+			margin-top: 10px;
+			margin-bottom: 40px;
+		}
+
+		pre
+		{
+			margin-top: 50px;
+			margin-bottom: 40px;
+			padding: 20px;
+			border: 1px solid #cfcfcf;
+			border-radius: 4px;
+			background: #fafafa;
+		}
+
+		button
+		{
+			display: block;
+			margin-top: 10px;
+
+			background : none;
+			border     : none;
+			outline    : none;
+			padding    : 0;
+
+			white-space: nowrap;
+
+			color: #0093C4;
+		}
+
+		.section__line
+		{
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+	</style>
+
+	<body>
+		<a target="_blank" class="main" href="https://github.com/halt-hammerzeit/libphonenumber-js"><code>libphonenumber-js</code></a>
+
+		<p>A simpler (and smaller) rewrite of Google Android's famous <a target="_blank" href="https://github.com/googlei18n/libphonenumber">libphonenumber</a> library</p>
+
+		<div id="content"></div>
+
+		<script type="text/babel">
+			var Content = React.createClass
+			({
+				getInitialState: function()
+				{
+					return {
+						value : '+12133734253',
+						parse : '+1-213-373-4253',
+						format : '2133734253'
+					}
+				},
+
+				render: function()
+				{
+					const libphonenumber = window['libphonenumber-js']
+					const input_format   = window['input-format']
+
+					const ReactInput        = input_format.ReactInput
+					const templateParser    = input_format.templateParser
+					const templateFormatter = input_format.templateFormatter
+
+					const as_you_type = new libphonenumber.as_you_type()
+					as_you_type.input(this.state.value)
+
+					return (
+						<div>
+							<h2>As you type</h2>
+
+							<ReactInput
+								autoFocus
+								type="tel"
+								value={this.state.value}
+								onChange={value => this.setState({ value })}
+								parse={(character, value) =>
+								{
+									// Leading plus is allowed
+									if (character === '+')
+									{
+										if (!value)
+										{
+											return character
+										}
+									}
+
+									// Digits are allowed
+									if (character >= '0' && character <= '9')
+									{
+										return character
+									}
+								}}
+								format={templateFormatter(as_you_type.template)}/>
+
+							<div className="section">
+								<div className="section__line">Value: {this.state.value}</div>
+								<div className="section__line">Country: {as_you_type.country}</div>
+								<div className="section__line">Valid: {String(as_you_type.valid)}</div>
+							</div>
+
+							<h2>Parse</h2>
+
+							International: <input
+								type="tel"
+								value={this.state.parse}
+								onChange={event => this.setState({ parse: event.target.value })}/>
+
+							<div className="section">
+								<code>{JSON.stringify(libphonenumber.parse(this.state.parse))}</code>
+							</div>
+
+							<h2>Format</h2>
+
+							US: <input
+								type="tel"
+								value={this.state.format}
+								onChange={event => this.setState({ format: event.target.value })}/>
+
+							<div className="section">
+								<div className="section__line"><code>National: {libphonenumber.format(libphonenumber.parse(this.state.format, 'US'), 'National')}</code></div>
+								<div className="section__line"><code>International: {libphonenumber.format(libphonenumber.parse(this.state.format, 'US'), 'International')}</code></div>
+								<div className="section__line"><code>International plaintext: {libphonenumber.format(libphonenumber.parse(this.state.format, 'US'), 'International_plaintext')}</code></div>
+							</div>
+						</div>
+					)
+				}
+			})
+
+			ReactDOM.render
+			(
+				<Content />,
+				document.getElementById('content')
+			)
+		</script>
+	</body>
+</html>
