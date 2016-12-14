@@ -124,7 +124,7 @@ export default class as_you_type
 		// since it's not considered a possible phone number.
 		if (!extracted_number)
 		{
-			if (text.indexOf('+') >= 0)
+			if (text && text.indexOf('+') >= 0)
 			{
 				extracted_number = '+'
 			}
