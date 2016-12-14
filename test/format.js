@@ -17,6 +17,9 @@ describe('format', () =>
 		format({ country: 'CH', phone: '446681800' }, 'International').should.equal('+41 44 668 18 00')
 		format({ country: 'CH', phone: '446681800' }, 'International_plaintext').should.equal('+41446681800')
 		format({ country: 'CH', phone: '446681800' }, 'National').should.equal('044 668 18 00')
+
+		// France
+		format({ country: 'FR', phone: '169454850' }, 'National').should.equal('01 69 45 48 50')
 	})
 
 	it('should work in edge cases', function()

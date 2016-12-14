@@ -1,3 +1,8 @@
+0.2.2 / 14.12.2016
+===================
+
+  * Fixed a bug when country couldn't be parsed from a phone number in most cases
+
 0.2.1 / 10.12.2016
 ===================
 

@@ -501,6 +501,13 @@ export function find_country_code(country_phone_code, national_phone_number)
 	// Is always non-empty, because `country_phone_code` is always valid
 	const possible_countries = metadata.country_phone_code_to_countries[country_phone_code]
 
+	// If there's just one country corresponding to the country code,
+	// then just return it, without further phone number digits validation.
+	if (possible_countries.length === 1)
+	{
+		return possible_countries[0]
+	}
+
 	for (let country_code of possible_countries)
 	{
 		const country = metadata.countries[country_code]

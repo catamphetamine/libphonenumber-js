@@ -38,6 +38,9 @@ describe('parse', () =>
 
 		// China, Beijing
 		parse('010-852644821', 'CN').should.deep.equal({ country: 'CN', phone: '10852644821' })
+
+		// France
+		parse('+33169454850').should.deep.equal({ country: 'FR', phone: '169454850' })
 	})
 
 	it('should work in edge cases', function()
