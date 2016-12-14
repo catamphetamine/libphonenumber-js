@@ -41,8 +41,9 @@ npm-debug.log
 # tests aren't needed for npm
 /test/
 
-# browser builds
-/bundle/
+# Since cdnjs is used, now including `bundle` in npm distribution
+# # browser builds
+# /bundle/
 
 # intermediary metadata
 /metadata.json

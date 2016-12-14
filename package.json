@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A simpler (and smaller) rewrite of Google Android's famous libphonenumber library",
   "main": "index.common.js",
   "jsnext:main": "index.es6.js",
@@ -36,7 +36,7 @@
     "clean-for-build": "rimraf ./build/**/*",
     "build-modules": "babel ./source --optional runtime --out-dir ./build --source-maps",
     "build": "npm-run-all clean-for-build build-modules",
-    "prepublish": "npm-run-all build test"
+    "prepublish": "npm-run-all build test browser-build"
   },
   "repository": {
     "type": "git",
