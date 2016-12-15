@@ -131,6 +131,7 @@
 					const ReactInput        = input_format.ReactInput
 					const templateParser    = input_format.templateParser
 					const templateFormatter = input_format.templateFormatter
+					const parseDigit        = input_format.parseDigit
 
 					const as_you_type = new libphonenumber.as_you_type()
 					as_you_type.input(this.state.value)
@@ -156,10 +157,7 @@
 									}
 
 									// Digits are allowed
-									if (character >= '0' && character <= '9')
-									{
-										return character
-									}
+									return parseDigit(character)
 								}}
 								format={(value) =>
 								{
