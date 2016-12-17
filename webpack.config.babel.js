@@ -44,8 +44,7 @@ const config =
       exclude : /node_modules/
     }, {
       test    : /(\.json)$/,
-      loader  : 'json-loader',
-      exclude : /node_modules/
+      loader  : 'json-loader'
     }]
   },
   externals:
