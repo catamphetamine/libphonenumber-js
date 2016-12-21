@@ -24,7 +24,8 @@
 			font-size: 20px;
 		}
 
-		input[type="tel"]
+		input[type="tel"],
+		input[type="text"]
 		{
 			padding-bottom: 4px;
 			border: none;
@@ -117,9 +118,10 @@
 				getInitialState: function()
 				{
 					return {
-						value : '+12133734253',
-						parse : '+1-213-373-4253',
-						format : '2133734253'
+						value   : '+12133734253',
+						parse   : '+1-213-373-4253',
+						format  : '2133734253',
+						country : 'US'
 					}
 				},
 
@@ -186,15 +188,21 @@
 
 							<h2>Format</h2>
 
-							US: <input
+							<input
+								type="text"
+								value={this.state.country}
+								onChange={event => this.setState({ country: event.target.value })}
+								style={{ width: '40px', marginRight: '10px' }}/>
+
+							<input
 								type="tel"
 								value={this.state.format}
 								onChange={event => this.setState({ format: event.target.value })}/>
 
 							<div className="section">
-								<div className="section__line"><code>National: {libphonenumber.format(libphonenumber.parse(this.state.format, 'US'), 'National')}</code></div>
-								<div className="section__line"><code>International: {libphonenumber.format(libphonenumber.parse(this.state.format, 'US'), 'International')}</code></div>
-								<div className="section__line"><code>International plaintext: {libphonenumber.format(libphonenumber.parse(this.state.format, 'US'), 'International_plaintext')}</code></div>
+								<div className="section__line"><code>National: {libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'National')}</code></div>
+								<div className="section__line"><code>International: {libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International')}</code></div>
+								<div className="section__line"><code>International plaintext: {libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International_plaintext')}</code></div>
 							</div>
 						</div>
 					)
