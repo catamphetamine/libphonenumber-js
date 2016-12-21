@@ -26,6 +26,10 @@
     "xml2js": "^0.4.17"
   },
   "scripts": {
+    "metadata:update-and-publish": "npm run metadata:update && npm version patch && npm publish",
+    "metadata:update": "npm run metadata:download && babel-node runnable/update",
+    "metadata:generate": "npm run generate && npm run compress",
+    "metadata:download": "curl -sS --remote-name https://raw.githubusercontent.com/googlei18n/libphonenumber/master/resources/PhoneNumberMetadata.xml",
     "generate": "babel-node runnable/generate ../PhoneNumberMetadata.xml",
     "compress": "babel-node runnable/compress",
     "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec test/ --recursive",

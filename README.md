@@ -140,29 +140,14 @@ formatter.template === 'xx xxx xxx xxxx'
 
 Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
 
-To update metadata first download the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one.
+How to update metadata:
 
-Then run the following `npm` scripts:
+  * Fork this repo
+  * `npm install`
+  * `npm run metadata:update`
+  * Submit a pull request
 
-```sh
-# Creates `metadata.json` from `PhoneNumberMetadata.xml`.
-npm run generate
-
-# Creates `metadata.min.json` from `metadata.json`.
-# `metadata.min.json` is then imported by the code.
-npm run compress
-
-# Test the new metadata (just in case).
-npm run test
-
-# Done. Create a Pull Request with the updated metadata.
-# Also changes to the original `libphonenumber`'s
-# `phonenumberutil.js` and `asyoutypeformatter.js`
-# should be merged because they may be required
-# for the new metadata to work as intended.
-```
-
-Latest metadata update: November 30th, 2016
+To update metadata first it downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one. Then it generates JSON metadata out of the XML one. After that it runs the tests and commits the new metadata.
 
 <!-- ## To do
 
