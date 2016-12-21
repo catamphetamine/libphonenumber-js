@@ -1,3 +1,8 @@
+0.2.6 / 22.12.2016
+===================
+
+  * Fixed a minor bug in "as you type" when a local phone number without national prefix got formatted with the national prefix
+
 0.2.2 / 14.12.2016
 ===================
 

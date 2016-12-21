@@ -15,6 +15,7 @@ import
 	get_format_format,
 	get_format_international_format,
 	get_format_national_prefix_formatting_rule,
+	get_format_national_prefix_is_optional_when_formatting,
 	get_format_leading_digits_patterns,
 	get_metadata_by_country_phone_code
 }
@@ -341,6 +342,8 @@ export default class as_you_type
 		this.reset_format()
 
 		this.valid = false
+
+		return this
 	}
 
 	reset_format()
@@ -461,20 +464,25 @@ export default class as_you_type
 
 			if (matcher.test(this.national_number))
 			{
-				// To leave the formatter in a consistent state
-				this.reset_format()
-				this.chosen_format = format
-				this.create_formatting_template(format)
-				this.reformat_national_number()
+				const number_pattern = this.validate_format(format)
 
-				return format_national_number_using_format
-				(
-					this.national_number,
-					format,
-					this.is_international(),
-					this.national_prefix,
-					this.country_metadata
-				)
+				if (number_pattern)
+				{
+					// To leave the formatter in a consistent state
+					this.reset_format()
+					this.chosen_format = format
+					this.create_formatting_template(format, number_pattern)
+					this.reformat_national_number()
+
+					return format_national_number_using_format
+					(
+						this.national_number,
+						format,
+						this.is_international(),
+						this.national_prefix,
+						this.country_metadata
+					)
+				}
 			}
 		}
 	}
@@ -562,8 +570,12 @@ export default class as_you_type
 			// If this `format` is suitable for "as you type",
 			// then extract the template from this format
 			// and use it to format the phone number being input.
-			if (this.create_formatting_template(format))
+
+			const number_pattern = this.validate_format(format)
+
+			if (number_pattern)
 			{
+				this.create_formatting_template(format, number_pattern)
 				this.chosen_format = format
 
 				// With a new formatting template, the matched position
@@ -582,44 +594,39 @@ export default class as_you_type
 		this.reset_format()
 	}
 
-	create_formatting_template(format)
+	validate_format(format)
 	{
-		let number_pattern = get_format_pattern(format)
-
 		// The formatter doesn't format numbers when numberPattern contains '|', e.g.
 		// (20|3)\d{4}. In those cases we quickly return.
 		// (Though there's no such format in current metadata)
 		/* istanbul ignore if */
-		if (number_pattern.indexOf('|') >= 0)
+		if (get_format_pattern(format).indexOf('|') >= 0)
 		{
 			return
 		}
 
-		// Now, a very smart trick by the guys at Google
-		number_pattern = number_pattern
+		const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
+
+		// If national prefix formatting rule is set
+		// for this phone number format
+		if (national_prefix_formatting_rule)
+		{
+			// If national prefix is mandatory for this rule
+			// and the user didn't input the national prefix
+			// then this template isn't suitable.
+			if (!get_format_national_prefix_is_optional_when_formatting(format, this.country_metadata)
+					&& !this.national_prefix)
+			{
+				return
+			}
+		}
+
+		// A very smart trick by the guys at Google
+		const number_pattern = get_format_pattern(format)
 			// Replace anything in the form of [..] with \d
 			.replace(CHARACTER_CLASS_PATTERN, '\\d')
 			// Replace any standalone digit (not the one in `{}`) with \d
 			.replace(STANDALONE_DIGIT_PATTERN, '\\d')
-
-		let number_format = this.get_format_format(format)
-		this.national_prefix_is_part_of_formatting_template = false
-
-		if (this.national_prefix)
-		{
-			const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
-
-			// If national prefix formatting rule is set
-			// (e.g. it is not set for US)
-			if (national_prefix_formatting_rule)
-			{
-				number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
-				this.national_prefix_is_part_of_formatting_template = true
-			}
-		}
-
-		// Get a formatting template which can be used to efficiently format
-		// a partial number where digits are added one by one.
 
 		// This match will always succeed,
 		// because the "longest dummy phone number"
@@ -633,6 +640,39 @@ export default class as_you_type
 		{
 			return
 		}
+
+		return number_pattern
+	}
+
+	create_formatting_template(format, number_pattern)
+	{
+		let number_format = this.get_format_format(format)
+		this.national_prefix_is_part_of_formatting_template = false
+
+		// If the user did input the national prefix
+		// then maybe make it a part of the phone number template
+		if (this.national_prefix)
+		{
+			const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
+
+			// If national prefix formatting rule is set
+			// for this phone number format
+			if (national_prefix_formatting_rule)
+			{
+				// Make the national prefix a part of the phone number template
+				number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
+				this.national_prefix_is_part_of_formatting_template = true
+			}
+		}
+
+		// Get a formatting template which can be used to efficiently format
+		// a partial number where digits are added one by one.
+
+		// This match will always succeed,
+		// because the "longest dummy phone number"
+		// has enough length to accomodate any possible
+		// national phone number format pattern.
+		const dummy_phone_number_matching_format_pattern = LONGEST_DUMMY_PHONE_NUMBER.match(number_pattern)[0]
 
 		// Create formatting template for this phone number format
 		const template = dummy_phone_number_matching_format_pattern

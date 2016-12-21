@@ -120,6 +120,17 @@ describe('as you type', () =>
 		formatter.country.should.equal('CH')
 		type(formatter.template).should.equal('undefined')
 
+		// Test Afghanistan phone numbers
+
+		formatter = new as_you_type('AF')
+
+		// No national prefix
+		formatter.input('44444444').should.equal('44444444')
+		type(formatter.template).should.equal('undefined')
+
+		formatter.reset().input('044444444').should.equal('044 444 444')
+		formatter.template.should.equal('xxx xxx xxxx')
+
 		// Test Russian phone numbers
 		// (with optional national prefix `8`)
 
