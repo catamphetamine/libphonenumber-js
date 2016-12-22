@@ -119,7 +119,7 @@
 				{
 					return {
 						value   : '+12133734253',
-						parse   : '+1-213-373-4253',
+						parse   : '213-373-4253',
 						format  : '2133734253',
 						country : 'US'
 					}
@@ -177,13 +177,19 @@
 
 							<h2>Parse</h2>
 
-							International: <input
+							<input
+								type="text"
+								value={this.state.country}
+								onChange={event => this.setState({ country: event.target.value })}
+								style={{ width: '40px', marginRight: '10px' }}/>
+
+							<input
 								type="tel"
 								value={this.state.parse}
 								onChange={event => this.setState({ parse: event.target.value })}/>
 
 							<div className="section">
-								<code>{JSON.stringify(libphonenumber.parse(this.state.parse))}</code>
+								<code>{JSON.stringify(libphonenumber.parse(this.state.parse, this.state.country))}</code>
 							</div>
 
 							<h2>Format</h2>
