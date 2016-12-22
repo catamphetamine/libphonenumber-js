@@ -14,7 +14,10 @@ describe('as you type', () =>
 
 		// With national prefix test
 		new as_you_type('RU').input('88005553535').should.equal('8 (800) 555-35-35')
-		new as_you_type('RU').input('8800555353').should.equal('8 (800) 555-35-3')
+
+		// Should discard the national prefix
+		// when a whole phone number format matches
+		new as_you_type('RU').input('8800555353').should.equal('880 055-53-53')
 
 		new as_you_type('CH').input('044-668-1').should.equal('044 668 1')
 

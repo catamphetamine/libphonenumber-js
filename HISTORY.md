@@ -1,3 +1,8 @@
+0.2.10 / 23.12.2016
+===================
+
+  * Better "as you type" matching: when the national prefix is optional it now tries both variants — with the national prefix extracted and without
+
 0.2.9 / 22.12.2016
 ===================
 

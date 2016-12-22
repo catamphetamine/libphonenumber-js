@@ -461,29 +461,57 @@ export default class as_you_type
 		for (let format of this.get_relevant_phone_number_formats())
 		{
 			const matcher = new RegExp('^(?:' + get_format_pattern(format) + ')$')
+			let matches = false
+			let discard_national_prefix = false
 
-			if (matcher.test(this.national_number))
+			// If the national prefix is optional
+			// then also try to format the phone number
+			// without the national prefix being extracted.
+			if (this.national_prefix
+				&& get_format_national_prefix_is_optional_when_formatting(format, this.country_metadata))
 			{
-				const number_pattern = this.validate_format(format)
+				matches = matcher.test(this.national_prefix + this.national_number)
 
-				if (number_pattern)
+				if (matches)
 				{
-					// To leave the formatter in a consistent state
-					this.reset_format()
-					this.chosen_format = format
-					this.create_formatting_template(format, number_pattern)
-					this.reformat_national_number()
-
-					return format_national_number_using_format
-					(
-						this.national_number,
-						format,
-						this.is_international(),
-						this.national_prefix,
-						this.country_metadata
-					)
+					discard_national_prefix = true
 				}
 			}
+
+			matches = matches || matcher.test(this.national_number)
+
+			if (!matches)
+			{
+				continue
+			}
+
+			const number_pattern = this.validate_format(format)
+
+			if (!number_pattern)
+			{
+				continue
+			}
+
+			if (discard_national_prefix)
+			{
+				this.national_number = this.national_prefix + this.national_number
+				this.national_prefix = undefined
+			}
+
+			// To leave the formatter in a consistent state
+			this.reset_format()
+			this.chosen_format = format
+			this.create_formatting_template(format, number_pattern)
+			this.reformat_national_number()
+
+			return format_national_number_using_format
+			(
+				this.national_number,
+				format,
+				this.is_international(),
+				this.national_prefix,
+				this.country_metadata
+			)
 		}
 	}
 
