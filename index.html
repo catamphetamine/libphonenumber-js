@@ -172,6 +172,7 @@
 							<div className="section">
 								<div className="section__line">Value: {this.state.value}</div>
 								<div className="section__line">Country: {as_you_type.country}</div>
+								<div className="section__line">National: {as_you_type.country && libphonenumber.format(as_you_type.national_number, as_you_type.country, 'National')}</div>
 								<div className="section__line">Valid: {String(as_you_type.valid)}</div>
 							</div>
 
