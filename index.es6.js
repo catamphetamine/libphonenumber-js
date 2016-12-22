@@ -17,10 +17,22 @@ export
 }
 from './source/validate'
 
-
 export
 {
 	default as as_you_type,
 	default as asYouType
 }
 from './source/as you type'
+
+export
+{
+	default as metadata
+}
+from './metadata.min'
+
+export
+{
+	get_phone_code,
+	get_phone_code as getPhoneCode
+}
+from './source/metadata'

@@ -5,7 +5,10 @@ import
 	is_valid_number,
 	isValidNumber,
 	as_you_type,
-	asYouType
+	asYouType,
+	metadata,
+	get_phone_code,
+	getPhoneCode
 }
 from '../index.es6'
 
@@ -20,6 +23,9 @@ describe(`exports`, function()
 		new as_you_type('US').input('+')
 		new asYouType('US').input('+')
 		asYouType.DIGIT_PLACEHOLDER.length
+		metadata.countries.RU.length
+		get_phone_code(metadata.countries.RU).should.equal('7')
+		getPhoneCode(metadata.countries.RU).should.equal('7')
 	})
 
 	it(`should export CommonJS`, function()
@@ -33,5 +39,8 @@ describe(`exports`, function()
 		new Library.as_you_type('US').input('+')
 		new Library.asYouType('US').input('+')
 		Library.asYouType.DIGIT_PLACEHOLDER.length
+		Library.metadata.countries.RU.length
+		Library.get_phone_code(metadata.countries.RU).should.equal('7')
+		Library.getPhoneCode(metadata.countries.RU).should.equal('7')
 	})
 })
