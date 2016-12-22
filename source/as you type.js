@@ -107,7 +107,7 @@ export default class as_you_type
 {
 	constructor(country_code)
 	{
-		if (country_code)
+		if (country_code && metadata.countries[country_code])
 		{
 			this.default_country = country_code
 		}

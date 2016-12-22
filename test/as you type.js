@@ -251,6 +251,12 @@ describe('as you type', () =>
 		formatter.input('88005553535').should.equal('8 (800) 555-35-35')
 		formatter.input('0').should.equal('880055535350')
 
+		// No matching phone number pattern
+
+		formatter = new as_you_type('AF')
+
+		formatter.input('211111111').should.equal('211111111')
+
 		// Invalid country phone code
 
 		formatter = new as_you_type()
