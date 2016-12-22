@@ -28,10 +28,8 @@
   "scripts": {
     "metadata:publish": "npm version patch && npm publish && git push",
     "metadata:update": "npm run metadata:download && babel-node runnable/update",
-    "metadata:generate": "npm run generate && npm run compress",
+    "metadata:generate": "babel-node runnable/generate ../PhoneNumberMetadata.xml",
     "metadata:download": "curl -sS --remote-name https://raw.githubusercontent.com/googlei18n/libphonenumber/master/resources/PhoneNumberMetadata.xml",
-    "generate": "babel-node runnable/generate ../PhoneNumberMetadata.xml",
-    "compress": "babel-node runnable/compress",
     "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec test/ --recursive",
     "test-coverage": "istanbul cover -x \"build/**\" node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/ --recursive",
     "test-travis": "istanbul cover -x \"build/**\" node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/ --recursive",

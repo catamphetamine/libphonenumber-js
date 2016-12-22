@@ -169,7 +169,7 @@ If you're using Webpack (which you most likely are) then make sure that
 
 For those who aren't using bundlers for some reason there's a way to build a standalone version of the library
 
- * Clone the repo
+ * `git clone https://github.com/halt-hammerzeit/libphonenumber-js.git`
  * `npm install`
  * `npm run browser-build`
  * See the `bundle` folder for `libphonenumber-js.min.js`
@@ -180,6 +180,15 @@ For those who aren't using bundlers for some reason there's a way to build a sta
   var libphonenumber = window['libphonenumber-js']
   alert(new libphonenumber.asYouType('US').input('213-373-4253'))
 </script>
+```
+
+## Including only a specific set of countries
+
+The following command will generate metadata only for the specified set of countries (if anyone needs that)
+
+```sh
+npm run metadata:generate NL,BE,FR,DE,LU,AT
+# The resulting `metadata.min.json` will only contain those countries
 ```
 
 ## Contributing

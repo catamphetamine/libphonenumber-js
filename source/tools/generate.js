@@ -1,7 +1,9 @@
 import { parseString } from 'xml2js'
 import Promise from 'bluebird'
 
-import as_you_type from '../as you type'
+// This constant is copied from "as you type.js"
+// to prevent recursive `require()` of `metadata.min.json`
+const DIGIT_PLACEHOLDER = 'x'
 
 // Excessive fields from "PhoneNumberMetadata.xml"
 // aren't included to reduce code complexity and size:
@@ -65,7 +67,7 @@ import as_you_type from '../as you type'
 //
 //  * ShortNumberMetadata.xml — emergency numbers, etc. not used in this library.
 //
-export default function(input)
+export default function(input, included_countries)
 {
 	return Promise.promisify(parseString)(input).then((xml) =>
 	{
@@ -81,6 +83,12 @@ export default function(input)
 		{
 			// A two-letter country code
 			const country_code = territory.$.id
+
+			// Skip this country if it has not been explicitly included
+			if (included_countries && !included_countries.has(country_code))
+			{
+				continue
+			}
 
 			// Country metadata
 			const country =
@@ -252,9 +260,9 @@ export default function(input)
 					}
 
 					// Never happens
-					if (format.format.indexOf(as_you_type.DIGIT_PLACEHOLDER) >= 0)
+					if (format.format.indexOf(DIGIT_PLACEHOLDER) >= 0)
 					{
-						throw new Error(`Phone number format "${format.format}" contains a reserved "${as_you_type.DIGIT_PLACEHOLDER}" symbol for pattern ${format.pattern} for ${country_code}`)
+						throw new Error(`Phone number format "${format.format}" contains a reserved "${DIGIT_PLACEHOLDER}" symbol for pattern ${format.pattern} for ${country_code}`)
 					}
 				}
 			}
