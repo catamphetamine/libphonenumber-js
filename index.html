@@ -171,7 +171,13 @@
 
 							<div className="section">
 								<div className="section__line">Value: {this.state.value}</div>
-								<div className="section__line">Default country: {this.state.country}</div>
+								<div className="section__line">Default country:
+									<input
+										type="text"
+										value={this.state.country}
+										onChange={event => this.setState({ country: event.target.value })}
+										style={{ width: '40px', marginLeft: '6px' }}/>
+								</div>
 								<div className="section__line">Actual country: {as_you_type.country}</div>
 								<div className="section__line">Valid: {String(as_you_type.valid)}</div>
 								<div className="section__line">National: {as_you_type.country && libphonenumber.format(as_you_type.national_number, as_you_type.country, 'National')}</div>
