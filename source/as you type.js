@@ -613,6 +613,13 @@ export default class as_you_type
 
 			if (number_pattern)
 			{
+				// A phone number format matches,
+				// so this is the country.
+				if (!this.country)
+				{
+					this.country = this.default_country
+				}
+
 				this.create_formatting_template(format, number_pattern)
 				this.chosen_format = format
 
@@ -625,8 +632,16 @@ export default class as_you_type
 		}
 
 		// No format matches the phone number,
-		// therefore set `country` to `undefined`.
-		this.country = this.default_country
+		// therefore set `country` to `undefined`
+		// (or to the default country).
+		if (this.default_country && this.parsed_input && this.parsed_input[0] !== '+')
+		{
+			this.country = this.default_country
+		}
+		else
+		{
+			this.country = undefined
+		}
 
 		// No format matches the national phone number entered
 		this.reset_format()
