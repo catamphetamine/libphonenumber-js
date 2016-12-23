@@ -54,6 +54,10 @@ new asYouType('US').input('2133734')
 // '(213) 373-4'
 ```
 
+## Country code definition
+
+"Country code" means either a [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) (like `US`) or a special `001` country code used for non-geographical entities (as per [Google's libphonenumber library](https://github.com/googlei18n/libphonenumber/blob/0068d861a68d3d4612f7bf8646ab844dd3cefce5/java/libphonenumber/test/com/google/i18n/phonenumbers/RegionCode.java#L23-L24)). For example, `+7 800 555 35 35` phone number belongs to Russia so it has `RU` country code where as `+800 1 1111 1111` phone number could belong to any country so it has `001` country code.
+
 ## API
 
 ### parse(text, options)
@@ -63,18 +67,18 @@ new asYouType('US').input('2133734')
 ```js
 country:
 {
-  restrict — (a two-letter country code)
+  restrict — (country code)
              the phone number must be in this country
 
-  default — (a two-letter country code)
+  default — (country code)
             default country to use for phone number parsing and validation
             (if no country code could be derived from the phone number)
 }
 ```
 
-or just a two-letter country code which is gonna be `country.restrict`.
+or just a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition) which is gonna be `country.restrict`.
 
-Returns `{ country, phone }` where `country` is a two-letter country code, and `phone` is a national (significant) number. If the phone number supplied isn't valid then an empty object `{}` is returned.
+Returns `{ country, phone }` where `country` is a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition), and `phone` is a national (significant) number. If the phone number supplied isn't valid then an empty object `{}` is returned.
 
 ```js
 parse('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
@@ -120,7 +124,7 @@ Creates a formatter for partially entered phone number. The two-letter `default_
 The instance of this class has also these fields:
 
  * `valid` — is the phone number being input a valid one already
- * `country` — a two-letter country code of the country this phone belongs to
+ * `country` — a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition) of the country this phone belongs to
  * `country_phone_code` — a phone code of the `country`
  * `national_number` — national number part (so far)
  * `template` — currently used phone number formatting template, where digits (and the plus sign, if present) are denoted by `x`-es
