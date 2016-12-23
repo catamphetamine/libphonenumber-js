@@ -625,13 +625,6 @@ export default class as_you_type
 
 			if (number_pattern)
 			{
-				// A phone number format matches,
-				// so this is the country.
-				if (!this.country)
-				{
-					this.country = this.default_country
-				}
-
 				this.create_formatting_template(format, number_pattern)
 				this.chosen_format = format
 
