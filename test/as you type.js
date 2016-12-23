@@ -130,6 +130,12 @@ describe('as you type', () =>
 		formatter.input('+77172580659')
 		formatter.country.should.equal('KZ')
 
+		// UK (Jersey) (non-main country for +44 country phone code)
+
+		formatter = new as_you_type()
+		formatter.input('+447700900756').should.equal('+44 77 0090 0756')
+		formatter.country.should.equal('JE')
+
 		// Test Afghanistan phone numbers
 
 		formatter = new as_you_type('AF')
@@ -260,12 +266,6 @@ describe('as you type', () =>
 
 		formatter.input('88005553535').should.equal('8 (800) 555-35-35')
 		formatter.input('0').should.equal('880055535350')
-
-		// No matching phone number pattern
-
-		formatter = new as_you_type('AF')
-
-		formatter.input('211111111').should.equal('211111111')
 
 		// Invalid country phone code
 

@@ -41,6 +41,9 @@ describe('parse', () =>
 
 		// France
 		parse('+33169454850').should.deep.equal({ country: 'FR', phone: '169454850' })
+
+		// UK (Jersey)
+		parse('+44 7700 900756').should.deep.equal({ country: 'JE', phone: '7700900756' })
 	})
 
 	it('should work in edge cases', function()

@@ -374,7 +374,6 @@ export default class as_you_type
 		this.template = undefined
 		this.partially_populated_template = undefined
 		this.last_match_position = -1
-		this.national_prefix_is_part_of_formatting_template = false
 	}
 
 	// Format each digit of national phone number (so far)
@@ -507,13 +506,6 @@ export default class as_you_type
 				continue
 			}
 
-			const number_pattern = this.validate_format(format)
-
-			if (!number_pattern)
-			{
-				continue
-			}
-
 			if (discard_national_prefix)
 			{
 				this.national_number = this.national_prefix + this.national_number
@@ -523,10 +515,10 @@ export default class as_you_type
 			// To leave the formatter in a consistent state
 			this.reset_format()
 			this.chosen_format = format
-			this.create_formatting_template(format, number_pattern)
-			this.reformat_national_number()
 
-			return format_national_number_using_format
+			const number_pattern = this.validate_format(format)
+
+			const formatted_number = format_national_number_using_format
 			(
 				this.national_number,
 				format,
@@ -534,6 +526,21 @@ export default class as_you_type
 				this.national_prefix,
 				this.country_metadata
 			)
+
+			if (number_pattern)
+			{
+				// Set `this.template` and `this.partially_populated_template`
+				this.create_formatting_template(format, number_pattern)
+				// Populate `this.partially_populated_template`
+				this.reformat_national_number()
+			}
+			else
+			{
+				this.template = formatted_number.replace(/[\d\+]/g, DIGIT_PLACEHOLDER)
+				this.partially_populated_template = formatted_number
+			}
+
+			return formatted_number
 		}
 	}
 
@@ -698,7 +705,6 @@ export default class as_you_type
 	create_formatting_template(format, number_pattern)
 	{
 		let number_format = this.get_format_format(format)
-		this.national_prefix_is_part_of_formatting_template = false
 
 		// If the user did input the national prefix
 		// then maybe make it a part of the phone number template
@@ -712,7 +718,6 @@ export default class as_you_type
 			{
 				// Make the national prefix a part of the phone number template
 				number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
-				this.national_prefix_is_part_of_formatting_template = true
 			}
 		}
 
