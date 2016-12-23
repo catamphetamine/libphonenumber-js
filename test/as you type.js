@@ -123,6 +123,13 @@ describe('as you type', () =>
 		formatter.country.should.equal('CH')
 		type(formatter.template).should.equal('undefined')
 
+		// Kazakhstan (non-main country for +7 country phone code)
+
+		formatter = new as_you_type()
+
+		formatter.input('+77172580659')
+		formatter.country.should.equal('KZ')
+
 		// Test Afghanistan phone numbers
 
 		formatter = new as_you_type('AF')
