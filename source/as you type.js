@@ -326,18 +326,7 @@ export default class as_you_type
 
 		this.national_number = ''
 
-		if (this.default_country)
-		{
-			this.country = this.default_country
-			this.country_metadata = metadata.countries[this.default_country]
-			this.country_phone_code = this.country_metadata.phone_code
-
-			this.initialize_phone_number_formats_for_this_country_phone_code()
-		}
-		else
-		{
-			this.reset_countriness()
-		}
+		this.reset_countriness()
 
 		this.reset_format()
 
@@ -346,14 +335,37 @@ export default class as_you_type
 		return this
 	}
 
+	reset_country()
+	{
+		if (this.default_country && !this.is_international())
+		{
+			this.country = this.default_country
+		}
+		else
+		{
+			this.country = undefined
+		}
+	}
+
 	reset_countriness()
 	{
-		this.country = undefined
-		this.country_metadata = undefined
-		this.country_phone_code = undefined
+		this.reset_country()
 
-		this.available_formats = []
-		this.matching_formats = this.available_formats
+		if (this.default_country && !this.is_international())
+		{
+			this.country_metadata = metadata.countries[this.default_country]
+			this.country_phone_code = this.country_metadata.phone_code
+
+			this.initialize_phone_number_formats_for_this_country_phone_code()
+		}
+		else
+		{
+			this.country_metadata = undefined
+			this.country_phone_code = undefined
+
+			this.available_formats = []
+			this.matching_formats = this.available_formats
+		}
 	}
 
 	reset_format()
@@ -634,14 +646,7 @@ export default class as_you_type
 		// No format matches the phone number,
 		// therefore set `country` to `undefined`
 		// (or to the default country).
-		if (this.default_country && this.parsed_input && this.parsed_input[0] !== '+')
-		{
-			this.country = this.default_country
-		}
-		else
-		{
-			this.country = undefined
-		}
+		this.reset_country()
 
 		// No format matches the national phone number entered
 		this.reset_format()
@@ -786,7 +791,7 @@ export default class as_you_type
 
 	is_international()
 	{
-		return this.parsed_input[0] === '+'
+		return this.parsed_input && this.parsed_input[0] === '+'
 	}
 
 	get_format_format(format)
