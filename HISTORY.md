@@ -1,3 +1,8 @@
+0.2.12 / 23.12.2016
+===================
+
+  * (misc) Small fix for `format()` when the national number is `undefined`
+
 0.2.10 / 23.12.2016
 ===================
 

@@ -71,6 +71,10 @@ export default function format(input, format, third_argument)
 	switch (format)
 	{
 		case 'International':
+			if (!number)
+			{
+				return `+${get_phone_code(country_metadata)}`
+			}
 			const national_number = format_national_number(number, 'International', false, country_metadata)
 			return `+${get_phone_code(country_metadata)} ${national_number}`
 
@@ -78,6 +82,10 @@ export default function format(input, format, third_argument)
 			return `+${get_phone_code(country_metadata)}${input.phone}`
 
 		case 'National':
+			if (!number)
+			{
+				return ''
+			}
 			return format_national_number(number, 'National', false, country_metadata)
 	}
 }
