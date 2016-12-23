@@ -122,6 +122,7 @@ The instance of this class has also these fields:
  * `valid` — is the phone number being input a valid one already
  * `country` — a two-letter country code of the country this phone belongs to
  * `country_phone_code` — a phone code of the `country`
+ * `national_number` — national number part (so far)
  * `template` — currently used phone number formatting template, where digits (and the plus sign, if present) are denoted by `x`-es
 
 ```js
