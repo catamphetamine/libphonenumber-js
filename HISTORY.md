@@ -1,3 +1,8 @@
+0.2.13 / 23.12.2016
+===================
+
+  * Reset `default_country` for "as you type" if the input is an international phone number
+
 0.2.12 / 23.12.2016
 ===================
 

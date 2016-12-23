@@ -283,6 +283,15 @@ describe('as you type', () =>
 		formatter = new as_you_type('RU')
 
 		formatter.input('+1abc2').should.equal('')
+
+		// Should reset default country when explicitly
+		// typing in an international phone number
+
+		formatter = new as_you_type('RU')
+
+		formatter.input('+')
+		type(formatter.country).should.equal('undefined')
+		type(formatter.country_phone_code).should.equal('undefined')
 	})
 
 	it('should repeat string N times', function()

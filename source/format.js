@@ -26,7 +26,7 @@ import
 }
 from './metadata'
 
-export default function format(input, format, third_argument)
+export default function format(input = '', format, third_argument)
 {
 	// If the first argument object is expanded
 	if (typeof input === 'string')
@@ -163,7 +163,7 @@ function choose_format_for_number(available_formats, national_number)
 			}
 		}
 
-		if (matches_entirely(new RegExp(get_format_pattern(format)), national_number))
+		if (matches_entirely(national_number, new RegExp(get_format_pattern(format))))
 		{
 			return format
 		}

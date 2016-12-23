@@ -1,6 +1,6 @@
 // Checks whether the entire input sequence can be matched
 // against the regular expression.
-export function matches_entirely(regular_expression, text = '')
+export function matches_entirely(text = '', regular_expression)
 {
 	if (typeof regular_expression === 'string')
 	{

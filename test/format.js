@@ -31,5 +31,9 @@ describe('format', () =>
 		format('+121337342530', 'US', 'National').should.equal('21337342530')
 		// No suitable format (leading digits mismatch)
 		format('699999', 'AD', 'National').should.equal('699999')
+
+		// No national number
+		format(undefined, 'US', 'National').should.equal('')
+		format(undefined, 'US', 'International').should.equal('+1')
 	})
 })

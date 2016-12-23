@@ -298,7 +298,7 @@ export default function parse(text, options)
 
 	const national_number_rule = new RegExp(get_national_number_pattern(country_metadata))
 
-	if (!matches_entirely(national_number_rule, national_number))
+	if (!matches_entirely(national_number, national_number_rule))
 	{
 		return {}
 	}
@@ -343,7 +343,7 @@ export function replace_characters(text, replacements)
 export function is_viable_phone_number(number)
 {
 	return number.length >= MIN_LENGTH_FOR_NSN &&
-		matches_entirely(VALID_PHONE_NUMBER_PATTERN, number)
+		matches_entirely(number, VALID_PHONE_NUMBER_PATTERN)
 }
 
 export function extract_formatted_phone_number(text)
@@ -487,8 +487,8 @@ export function strip_national_prefix(number, country_metadata)
 	const national_number_rule = new RegExp(get_national_number_pattern(country_metadata))
 
 	// If the original number was viable, and the resultant number is not, then return.
-	if (matches_entirely(national_number_rule, number) &&
-			!matches_entirely(national_number_rule, national_significant_number))
+	if (matches_entirely(number, national_number_rule) &&
+			!matches_entirely(national_significant_number, national_number_rule))
 	{
 		return number
 	}
@@ -630,5 +630,5 @@ export function is_of_type(national_number, type)
 	// }
 
 	// get_type_pattern(type) === type
-	return matches_entirely(type, national_number)
+	return matches_entirely(national_number, type)
 }

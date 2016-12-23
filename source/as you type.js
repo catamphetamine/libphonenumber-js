@@ -132,7 +132,7 @@ export default class as_you_type
 		}
 
 		// Validate possible first part of a phone number
-		if (!matches_entirely(VALID_INCOMPLETE_PHONE_NUMBER_PATTERN, extracted_number))
+		if (!matches_entirely(extracted_number, VALID_INCOMPLETE_PHONE_NUMBER_PATTERN))
 		{
 			return this.current_output
 		}
@@ -150,6 +150,11 @@ export default class as_you_type
 			if (!this.parsed_input)
 			{
 				this.parsed_input += '+'
+
+				// If a default country was set
+				// then reset it because an explicitly international
+				// phone number is being entered
+				this.reset_countriness()
 			}
 
 			input = input.slice(1)
@@ -331,12 +336,7 @@ export default class as_you_type
 		}
 		else
 		{
-			this.country = undefined
-			this.country_metadata = undefined
-			this.country_phone_code = undefined
-
-			this.available_formats = []
-			this.matching_formats = this.available_formats
+			this.reset_countriness()
 		}
 
 		this.reset_format()
@@ -344,6 +344,16 @@ export default class as_you_type
 		this.valid = false
 
 		return this
+	}
+
+	reset_countriness()
+	{
+		this.country = undefined
+		this.country_metadata = undefined
+		this.country_phone_code = undefined
+
+		this.available_formats = []
+		this.matching_formats = this.available_formats
 	}
 
 	reset_format()
