@@ -134,6 +134,7 @@ describe('as you type', () =>
 
 		formatter = new as_you_type()
 		formatter.input('+447700900756').should.equal('+44 77 0090 0756')
+		formatter.template.should.equal('xxx xx xxxx xxxx')
 		formatter.country.should.equal('JE')
 
 		// Test Afghanistan phone numbers

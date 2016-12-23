@@ -536,8 +536,10 @@ export default class as_you_type
 			}
 			else
 			{
-				this.template = formatted_number.replace(/[\d\+]/g, DIGIT_PLACEHOLDER)
-				this.partially_populated_template = formatted_number
+				const full_number = this.full_phone_number(formatted_number)
+
+				this.template = full_number.replace(/[\d\+]/g, DIGIT_PLACEHOLDER)
+				this.partially_populated_template = full_number
 			}
 
 			return formatted_number
