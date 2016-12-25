@@ -1,3 +1,8 @@
+0.2.19 / 25.12.2016
+===================
+
+  * Small fix for "as you type" to not prepend national prefix to the number being typed
+
 0.2.13 / 23.12.2016
 ===================
 

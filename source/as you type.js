@@ -16,6 +16,7 @@ import
 	get_format_international_format,
 	get_format_national_prefix_formatting_rule,
 	get_format_national_prefix_is_optional_when_formatting,
+	get_format_national_prefix_is_mandatory_when_formatting,
 	get_format_leading_digits_patterns,
 	get_metadata_by_country_phone_code
 }
@@ -509,21 +510,26 @@ export default class as_you_type
 			if (discard_national_prefix)
 			{
 				this.national_number = this.national_prefix + this.national_number
-				this.national_prefix = undefined
+				this.national_prefix = ''
+			}
+
+			if (!this.validate_format(format))
+			{
+				continue
 			}
 
 			// To leave the formatter in a consistent state
 			this.reset_format()
 			this.chosen_format = format
 
-			const number_pattern = this.validate_format(format)
+			const number_pattern = this.validate_format_for_template(format)
 
 			const formatted_number = format_national_number_using_format
 			(
 				this.national_number,
 				format,
 				this.is_international(),
-				this.national_prefix,
+				this.national_prefix.length > 0,
 				this.country_metadata
 			)
 
@@ -630,7 +636,12 @@ export default class as_you_type
 			// then extract the template from this format
 			// and use it to format the phone number being input.
 
-			const number_pattern = this.validate_format(format)
+			if (!this.validate_format(format))
+			{
+				continue
+			}
+
+			const number_pattern = this.validate_format_for_template(format)
 
 			if (number_pattern)
 			{
@@ -656,6 +667,19 @@ export default class as_you_type
 
 	validate_format(format)
 	{
+		// If national prefix is mandatory for this phone number format
+		// and the user didn't input the national prefix,
+		// then this phone number format isn't suitable.
+		if (!this.is_international() && !this.national_prefix && get_format_national_prefix_is_mandatory_when_formatting(format, this.country_metadata))
+		{
+			return
+		}
+
+		return true
+	}
+
+	validate_format_for_template(format)
+	{
 		// The formatter doesn't format numbers when numberPattern contains '|', e.g.
 		// (20|3)\d{4}. In those cases we quickly return.
 		// (Though there's no such format in current metadata)
@@ -666,20 +690,6 @@ export default class as_you_type
 		}
 
 		const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
-
-		// If national prefix formatting rule is set
-		// for this phone number format
-		if (national_prefix_formatting_rule)
-		{
-			// If national prefix is mandatory for this rule
-			// and the user didn't input the national prefix
-			// then this template isn't suitable.
-			if (!get_format_national_prefix_is_optional_when_formatting(format, this.country_metadata)
-					&& !this.national_prefix)
-			{
-				return
-			}
-		}
 
 		// A very smart trick by the guys at Google
 		const number_pattern = get_format_pattern(format)
@@ -733,30 +743,31 @@ export default class as_you_type
 		const dummy_phone_number_matching_format_pattern = LONGEST_DUMMY_PHONE_NUMBER.match(number_pattern)[0]
 
 		// Create formatting template for this phone number format
-		const template = dummy_phone_number_matching_format_pattern
+		let template = dummy_phone_number_matching_format_pattern
 			// Format the dummy phone number according to the format
 			.replace(new RegExp(number_pattern, 'g'), number_format)
 			// Replace each dummy digit with a DIGIT_PLACEHOLDER
 			.replace(DUMMY_DIGIT_MATCHER, DIGIT_PLACEHOLDER)
 
-		this.template = template
+		// This one is for national number only
+		this.partially_populated_template = template
 
 		// For convenience, the public `.template` property
 		// is gonna contain the whole international number
 		// if the phone number being input is international.
 		if (this.is_international())
 		{
-			this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + this.template
+			template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + template
 		}
 		// For local numbers, replace national prefix
 		// with a digit placeholder.
 		else
 		{
-			this.template = this.template.replace(/\d/g, DIGIT_PLACEHOLDER)
+			template = template.replace(/\d/g, DIGIT_PLACEHOLDER)
 		}
 
-		// This one is for national number only
-		return this.partially_populated_template = template
+		// This one is for the full phone number
+		this.template = template
 	}
 
 	format_next_national_number_digits(digits)

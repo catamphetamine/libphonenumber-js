@@ -77,6 +77,16 @@ export function get_format_national_prefix_is_optional_when_formatting(format_ar
 	return format_array[4] || get_national_prefix_is_optional_when_formatting(country_metadata)
 }
 
+export function get_format_national_prefix_is_mandatory_when_formatting(format_array, country_metadata)
+{
+	// National prefix is omitted if there's no national prefix formatting rule
+	// set for this country, or when this rule is set but
+	// national prefix is optional for this phone number format
+	// (and it is not enforced explicitly)
+	return get_format_national_prefix_formatting_rule(format_array, country_metadata) &&
+		!get_format_national_prefix_is_optional_when_formatting(format_array, country_metadata)
+}
+
 export function get_format_international_format(format_array)
 {
 	return format_array[5] || get_format_format(format_array)

@@ -182,6 +182,10 @@ describe('as you type', () =>
 		new as_you_type('US').input('1').should.equal('1')
 		new as_you_type('US').input('12').should.equal('(2  )')
 		new as_you_type('US').input('123').should.equal('(23 )')
+
+		// Bulgaria
+		// (should not prepend national prefix `0`)
+		new as_you_type('BG').input('111 222 3').should.equal('1112223')
 	})
 
 	it('should close dangling braces', function()

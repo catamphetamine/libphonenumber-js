@@ -100,11 +100,17 @@ export function format_national_number_using_format(number, format, internationa
 {
 	const format_pattern_matcher = new RegExp(get_format_pattern(format))
 
-	const national_prefix_may_be_omitted = !enforce_national_prefix && get_format_national_prefix_is_optional_when_formatting(format, country_metadata)
+	const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, country_metadata)
+
+	// National prefix is omitted if there's no national prefix formatting rule
+	// set for this country, or when this rule is set but
+	// national prefix is optional for this phone number format
+	// (and it is not enforced explicitly)
+	const national_prefix_may_be_omitted = !national_prefix_formatting_rule ||
+		(national_prefix_formatting_rule && get_format_national_prefix_is_optional_when_formatting(format, country_metadata) && !enforce_national_prefix)
 
 	if (!international && !national_prefix_may_be_omitted)
 	{
-		const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, country_metadata)
 
 		// If national prefix formatting rule is set
 		// (e.g. it is not set for US)
