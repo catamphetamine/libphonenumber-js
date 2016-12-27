@@ -207,7 +207,7 @@ const isValidNumberCustomCountries = isValidNumber.bind({ metadata })
 const asYouTypeCustomCountries = asYouType(metadata)
 ```
 
-For utilizing "tree-shaking" in ES6-capable bundlers (e.g. Webpack 2) `libphonenumber-js/custom.es6` may be used.
+For utilizing "tree-shaking" in ES6-capable bundlers (e.g. Webpack 2) `libphonenumber-js/custom.es6` may be used instead.
 
 ## Contributing
 
