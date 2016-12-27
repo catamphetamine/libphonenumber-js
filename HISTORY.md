@@ -1,3 +1,8 @@
+0.2.20 / 28.12.2016
+===================
+
+  * Added the ability to use custom-countries generated metadata as a parameter for the functions exported from this library
+
 0.2.19 / 25.12.2016
 ===================
 

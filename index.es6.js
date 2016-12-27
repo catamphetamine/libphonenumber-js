@@ -1,38 +1,19 @@
-export
-{
-	default as parse
-}
-from './source/parse'
+import metadata from './metadata.min'
 
-export
+import
 {
-	default as format
+	parse as _parse,
+	format as _format,
+	is_valid_number as _is_valid_number,
+	as_you_type as _as_you_type
 }
-from './source/format'
+from './custom.es6'
 
-export
-{
-	default as is_valid_number,
-	default as isValidNumber
-}
-from './source/validate'
+export const parse  = _parse.bind({ metadata })
+export const format = _format.bind({ metadata })
 
-export
-{
-	default as as_you_type,
-	default as asYouType
-}
-from './source/as you type'
+export const is_valid_number = _is_valid_number.bind({ metadata })
+export const isValidNumber   = is_valid_number
 
-export
-{
-	default as metadata
-}
-from './metadata.min'
-
-export
-{
-	get_phone_code,
-	get_phone_code as getPhoneCode
-}
-from './source/metadata'
+export const as_you_type = _as_you_type(metadata)
+export const asYouType   = as_you_type

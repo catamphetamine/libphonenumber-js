@@ -1,7 +1,8 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import as_you_type, { close_dangling_braces, repeat } from '../source/as you type'
+import { as_you_type } from '../index.es6'
+import { close_dangling_braces, repeat } from '../source/as you type'
 
 describe('as you type', () =>
 {

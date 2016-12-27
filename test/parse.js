@@ -1,7 +1,8 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import parse, { get_number_type } from '../source/parse'
+import { parse } from '../index.es6'
+import { get_number_type } from '../source/parse'
 
 import metadata from '../metadata.min'
 

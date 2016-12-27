@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import is_valid_number from '../source/validate'
+import { is_valid_number } from '../index.es6'
 
 describe('validate', () =>
 {

@@ -1,19 +1,19 @@
 'use strict'
 
+var metadata = require('./metadata.min')
+var custom = require('./custom')
+
 exports = module.exports = {}
 
-exports.parse = require('./build/parse').default
-exports.format = require('./build/format').default
+var context = { metadata: metadata }
 
-exports.is_valid_number = require('./build/validate')
-exports.isValidNumber   = require('./build/validate')
+exports.parse  = custom.parse.bind(context)
+exports.format = custom.format.bind(context)
 
-exports.as_you_type = require('./build/as you type').default
-exports.asYouType   = require('./build/as you type').default
+exports.is_valid_number = custom.is_valid_number.bind(context)
+exports.isValidNumber   = exports.is_valid_number
 
-exports.metadata = require('./metadata.min')
-
-exports.get_phone_code = require('./build/metadata').get_phone_code
-exports.getPhoneCode   = require('./build/metadata').get_phone_code
+exports.as_you_type = custom.as_you_type(metadata)
+exports.asYouType   = exports.as_you_type
 
 // exports['default'] = ...

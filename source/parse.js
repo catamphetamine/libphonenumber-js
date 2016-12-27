@@ -4,7 +4,6 @@
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
 import { matches_entirely } from './common'
-import metadata from '../metadata.min'
 
 import
 {
@@ -220,7 +219,7 @@ export default function parse(text, options)
 		return {}
 	}
 
-	let { country_phone_code, number } = parse_phone_number_and_country_phone_code(formatted_phone_number)
+	let { country_phone_code, number } = parse_phone_number_and_country_phone_code(formatted_phone_number, this.metadata)
 
 	// Maybe invalid country phone code encountered
 	if (!country_phone_code && !number)
@@ -235,12 +234,12 @@ export default function parse(text, options)
 	{
 		// Check country restriction
 		if (options.country.restrict &&
-			country_phone_code !== get_phone_code(metadata.countries[options.country.restrict]))
+			country_phone_code !== get_phone_code(this.metadata.countries[options.country.restrict]))
 		{
 			return {}
 		}
 
-		country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
+		country_metadata = get_metadata_by_country_phone_code(country_phone_code, this.metadata)
 
 		// `country` will be set later,
 		// because, for example, for NANPA countries
@@ -252,7 +251,7 @@ export default function parse(text, options)
 	else if (options.country.default || options.country.restrict)
 	{
 		country = options.country.default || options.country.restrict
-		country_metadata = metadata.countries[country]
+		country_metadata = this.metadata.countries[country]
 
 		number = normalize(text)
 	}
@@ -272,7 +271,7 @@ export default function parse(text, options)
 	//
 	if (!country)
 	{
-		country = find_country_code(country_phone_code, national_number)
+		country = find_country_code(country_phone_code, national_number, this.metadata)
 
 		// Just in case there's a bug in Google's metadata
 		/* istanbul ignore if */
@@ -397,7 +396,7 @@ export function parse_phone_number(number)
 //
 // (aka `maybeExtractCountryPhoneCode`)
 //
-export function parse_phone_number_and_country_phone_code(number)
+export function parse_phone_number_and_country_phone_code(number, metadata)
 {
 	number = parse_phone_number(number)
 
@@ -496,7 +495,7 @@ export function strip_national_prefix(number, country_metadata)
    return national_significant_number
 }
 
-export function find_country_code(country_phone_code, national_phone_number)
+export function find_country_code(country_phone_code, national_phone_number, metadata)
 {
 	// Is always non-empty, because `country_phone_code` is always valid
 	const possible_countries = metadata.country_phone_code_to_countries[country_phone_code]

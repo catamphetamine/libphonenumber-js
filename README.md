@@ -193,8 +193,21 @@ The following command will generate metadata only for the specified set of count
 
 ```sh
 npm run metadata:generate NL,BE,FR,DE,LU,AT
-# The resulting `metadata.min.json` will only contain those countries
 ```
+
+Then use the generated `metadata.min.json` with the `libphonenumber-js/custom` functions
+
+```js
+import { parse, format, isValidNumber, asYouType } from 'libphonenumber-js/custom'
+import metadata from './metadata.min.json'
+
+const parseCustomCountries = parse.bind({ metadata })
+const formatCustomCountries = format.bind({ metadata })
+const isValidNumberCustomCountries = isValidNumber.bind({ metadata })
+const asYouTypeCustomCountries = asYouType(metadata)
+```
+
+For utilizing "tree-shaking" in ES6-capable bundlers (e.g. Webpack 2) `libphonenumber-js/custom.es6` may be used.
 
 ## Contributing
 

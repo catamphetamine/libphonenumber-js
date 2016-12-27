@@ -4,7 +4,6 @@
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
 import { matches_entirely } from './common'
-import metadata from '../metadata.min'
 
 import
 {
@@ -47,10 +46,10 @@ export default function format(input = '', format, third_argument)
 
 	if (input.country)
 	{
-		country_metadata = metadata.countries[input.country]
+		country_metadata = this.metadata.countries[input.country]
 	}
 
-	const { country_phone_code, number } = parse_phone_number_and_country_phone_code(input.phone)
+	const { country_phone_code, number } = parse_phone_number_and_country_phone_code(input.phone, this.metadata)
 
 	if (country_phone_code)
 	{
@@ -60,7 +59,7 @@ export default function format(input = '', format, third_argument)
 			return input.phone
 		}
 
-		country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
+		country_metadata = get_metadata_by_country_phone_code(country_phone_code, this.metadata)
 	}
 
 	if (!country_metadata)
@@ -111,21 +110,15 @@ export function format_national_number_using_format(number, format, internationa
 
 	if (!international && !national_prefix_may_be_omitted)
 	{
-
-		// If national prefix formatting rule is set
-		// (e.g. it is not set for US)
-		if (national_prefix_formatting_rule)
-		{
-			return number.replace
+		return number.replace
+		(
+			format_pattern_matcher,
+			get_format_format(format).replace
 			(
-				format_pattern_matcher,
-				get_format_format(format).replace
-				(
-					FIRST_GROUP_PATTERN,
-					national_prefix_formatting_rule
-				)
+				FIRST_GROUP_PATTERN,
+				national_prefix_formatting_rule
 			)
-		}
+		)
 	}
 
 	const formatted_number = number.replace

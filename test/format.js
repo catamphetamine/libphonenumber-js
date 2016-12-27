@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import format from '../source/format'
+import { format } from '../index.es6'
 
 describe('format', () =>
 {
