@@ -1,3 +1,9 @@
+0.2.22 / 28.12.2016
+===================
+
+  * Added metadata update `bin` command for end users (see README)
+  * Added the ability to include extra regular expressions for finer-grained phone number validation
+
 0.2.20 / 28.12.2016
 ===================
 

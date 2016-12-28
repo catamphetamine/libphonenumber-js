@@ -1,11 +1,11 @@
-import child_process from 'child_process'
+var child_process = require('child_process')
 
 function exec(command)
 {
 	return child_process.execSync(command).toString().trim()
 }
 
-const metadata_changed = exec('git ls-files -m PhoneNumberMetadata.xml')
+var metadata_changed = exec('git ls-files -m PhoneNumberMetadata.xml')
 
 if (metadata_changed)
 {
@@ -31,12 +31,6 @@ if (metadata_changed)
 	console.log('========================================')
 	console.log()
 
-	console.log(exec('git add .'))
-	console.log(exec('git commit -m "Medatada updated"'))
-}
-else
-{
-	console.log('==============================================')
-	console.log('= Metadata has not changed and is up-to-date =')
-	console.log('==============================================')
+	console.log(exec('git add PhoneNumberMetadata.xml metadata.min.json'))
+	console.log(exec('git commit -m "Phone number medatada update"'))
 }

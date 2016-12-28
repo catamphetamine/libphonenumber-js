@@ -460,6 +460,20 @@ export function strip_national_prefix(number, country_metadata)
 	const national_prefix_pattern = new RegExp('^(?:' + national_prefix_for_parsing + ')')
 	const national_prefix_matcher = national_prefix_pattern.exec(number)
 
+	// If no national prefix is present in the phone number,
+	// but if the national prefix is optional for this country,
+	// then consider this phone number valid.
+	//
+	// Google's reference `libphonenumber` implementation
+	// wouldn't recognize such phone numbers as valid,
+	// but I think it would perfectly make sense
+	// to consider such phone numbers as valid
+	// because if a national phone number was originally
+	// formatted without the national prefix
+	// then it must be parseable back into the original national number.
+	// In other words, `parse(format(number))`
+	// must always be equal to `number`.
+	//
 	if (!national_prefix_matcher)
 	{
 		return number
@@ -469,29 +483,34 @@ export function strip_national_prefix(number, country_metadata)
 
 	let national_significant_number
 
-	// `!national_prefix_matcher[national_prefix_matcher.length - 1]`
-	// implies nothing was captured by the capturing groups
-	// in `national_prefix_for_parsing`.
-	// Therefore, no transformation is necessary,
-	// and we just remove the national prefix.
-	if (!national_prefix_transform_rule || !national_prefix_matcher[national_prefix_matcher.length - 1])
-	{
-		national_significant_number = number.slice(national_prefix_matcher[0].length)
-	}
-	else
+	// `national_prefix_for_parsing` capturing groups
+	// (used only for really messy cases: Argentina, Brazil, Mexico, Somalia)
+	const any_groups_were_captured = national_prefix_matcher[national_prefix_matcher.length - 1]
+
+	// If the national number tranformation is needed then do it
+	if (national_prefix_transform_rule && any_groups_were_captured)
 	{
 		national_significant_number = number.replace(national_prefix_pattern, national_prefix_transform_rule)
 	}
+	// Else, no transformation is necessary,
+	// and just strip the national prefix.
+	else
+	{
+		national_significant_number = number.slice(national_prefix_matcher[0].length)
+	}
 
+	// Verify the parsed national (significant) number for this country
 	const national_number_rule = new RegExp(get_national_number_pattern(country_metadata))
 
-	// If the original number was viable, and the resultant number is not, then return.
+	// If the original number was viable, and the resultant number is not,
+	// then prefer the original phone number.
 	if (matches_entirely(number, national_number_rule) &&
 			!matches_entirely(national_significant_number, national_number_rule))
 	{
 		return number
 	}
 
+	// Return the parsed national (significant) number
    return national_significant_number
 }
 

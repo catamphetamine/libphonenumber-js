@@ -13,7 +13,7 @@ describe('metadata', () =>
 {
 	it('should return undefined for non-defined types', function()
 	{
-		type(get_type_fixed_line(metadata.countries.DE)).should.equal('undefined')
+		type(get_type_fixed_line(metadata.countries.FR)).should.equal('undefined')
 	})
 })
 

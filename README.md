@@ -103,7 +103,7 @@ format('2133734253', 'US', 'International') === '+1 213 373 4253'
 
 (aka `is_valid_number`)
 
-This function is simply a wrapper for `parse`: if `parse` returns an empty object then the phone number is not valid.
+Checks if a phone number is valid.
 
 ```js
 isValidNumber('+1-213-373-4253') === true
@@ -189,11 +189,21 @@ For those who aren't using bundlers for some reason there's a way to build a sta
 
 ## Including only a specific set of countries
 
-The following command will generate metadata only for the specified set of countries (if anyone needs that)
+If only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 KiloBytes, then he can generate custom metadata and pass it as an extra argument to this library's functions.
 
-```sh
-npm run metadata:generate NL,BE,FR,DE,LU,AT
+First, add metadata generation script to the project's `package.json`
+
+```js
+{
+  "scripts": {
+    "libphonenumber-metadata": "libphonenumber-js-update-metadata metadata.min.json --countries RU,DE --extended",
+  }
+}
 ```
+
+And then run it like `npm run libphonenumber-metadata`.
+
+The first argument is the output metadata file path. `--countries` argument is a comma-separated list of the required countries. `--extended` argument may be passed to increase the precision of the phone number validation function but at the same time it will enlarge the resulting metadata size approximately twice.
 
 Then use the generated `metadata.min.json` with the `libphonenumber-js/custom` functions
 

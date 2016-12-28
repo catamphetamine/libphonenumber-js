@@ -67,7 +67,7 @@ const DIGIT_PLACEHOLDER = 'x'
 //
 //  * ShortNumberMetadata.xml — emergency numbers, etc. not used in this library.
 //
-export default function(input, included_countries)
+export default function(input, included_countries, extended)
 {
 	return Promise.promisify(parseString)(input).then((xml) =>
 	{
@@ -331,25 +331,31 @@ export default function(input, included_countries)
 		{
 			const country_codes = country_phone_code_to_countries[country_phone_code]
 
-			if (country_codes.length === 1)
+			// Purge `types` regular expressions (they are huge)
+			// when they're not needed for resolving country phone code
+			// to country phone number matching.
+			// E.g. when there's a one-to-one correspondence
+			// between a country phone code and a country code
+			if (!extended)
 			{
-				// Purge `types` regular expressions
-				// (they are huge)
-				// because they're not needed
-				// for resolving country phone code to country
-				// phone number matching.
-				delete countries[country_codes[0]].types
-				continue
+				if (country_codes.length === 1)
+				{
+					delete countries[country_codes[0]].types
+					continue
+				}
 			}
 
 			for (let country_code of country_codes)
 			{
 				// Leading digits for a country are sufficient
 				// to resolve country phone code ambiguity.
-				if (countries[country_code].leading_digits)
+				if (!extended)
 				{
-					delete countries[country_code].types
-					continue
+					if (countries[country_code].leading_digits)
+					{
+						delete countries[country_code].types
+						continue
+					}
 				}
 
 				const types = countries[country_code].types
