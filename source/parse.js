@@ -209,6 +209,20 @@ export default function parse(text, options)
 		options = { ...default_options }
 	}
 
+	// Validate country codes
+
+	if (!this.metadata.countries[options.country.default])
+	{
+		options = { ...options }
+		delete options.country.default
+	}
+
+	if (!this.metadata.countries[options.country.restrict])
+	{
+		options = { ...options }
+		delete options.country.restrict
+	}
+
 	// Parse the phone number
 
 	const formatted_phone_number = extract_formatted_phone_number(text)
