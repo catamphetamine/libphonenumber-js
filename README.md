@@ -154,6 +154,8 @@ How to update metadata:
 
 To update metadata first it downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one. Then it generates JSON metadata out of the XML one. After that it runs the tests and commits the new metadata.
 
+Alternatively, a developer may wish to update metadata instantly, without waiting for pull requests. In this case just perform the steps described in the [Including only a specific set of countries](#including-only-a-specific-set-of-countries) section of this document (just don't pass the `--countries` option).
+
 <!-- ## To do
 
 Everything's done -->
