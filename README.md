@@ -198,7 +198,7 @@ First, add metadata generation script to the project's `package.json`
 ```js
 {
   "scripts": {
-    "libphonenumber-metadata": "libphonenumber-js-update-metadata metadata.min.json --countries RU,DE --extended",
+    "libphonenumber-metadata": "libphonenumber-generate-metadata metadata.min.json --countries RU,DE --extended",
   }
 }
 ```

@@ -78,7 +78,7 @@ function usage(reason)
 
 	console.log('Usage:')
 	console.log('')
-	console.log('libphonenumber-js-update-metadata <path-to-the-output-metadata.min.json> [options]')
+	console.log('libphonenumber-generate-metadata <path-to-the-output-metadata.min.json> [options]')
 	console.log('')
 	console.log('Options:')
 	console.log('')

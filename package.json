@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "0.2.22",
+  "version": "0.2.23",
   "description": "A simpler (and smaller) rewrite of Google Android's popular libphonenumber library",
   "main": "index.common.js",
   "jsnext:main": "index.es6.js",
@@ -64,6 +64,6 @@
   },
   "homepage": "https://github.com/halt-hammerzeit/libphonenumber-js#readme",
   "bin": {
-    "libphonenumber-js-update-metadata": "./bin/update-metadata.js"
+    "libphonenumber-generate-metadata": "./bin/update-metadata.js"
   }
 }
