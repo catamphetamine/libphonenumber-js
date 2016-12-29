@@ -156,6 +156,10 @@ To update metadata first it downloads the new [`PhoneNumberMetadata.xml`](https:
 
 Alternatively, a developer may wish to update metadata instantly, without waiting for pull requests. In this case just perform the steps described in the [Including only a specific set of countries](#including-only-a-specific-set-of-countries) section of this document (just don't pass the `--countries` option).
 
+## React
+
+There's also a React component utilizing this library: [`react-phone-number-input`](https://github.com/halt-hammerzeit/react-phone-number-input)
+
 <!-- ## To do
 
 Everything's done -->
