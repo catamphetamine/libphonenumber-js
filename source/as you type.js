@@ -277,7 +277,11 @@ export default function(metadata)
 
 			if (formatted_number)
 			{
-				this.valid = true
+				if (this.country)
+				{
+					this.valid = true
+				}
+
 				return formatted_number
 			}
 

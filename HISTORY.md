@@ -1,3 +1,8 @@
+0.2.25 / 30.12.2016
+===================
+
+  * A bit more precise `valid` flag for "as you type" formatter
+
 0.2.22 / 28.12.2016
 ===================
 
