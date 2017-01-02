@@ -170,9 +170,9 @@ Currently I have an npm script for monitoring changes to `PhoneNumberMetadata.xm
   * `npm run metadata:update`
   * Submit a Pull Request to this repo from the `update-metadata` branch of your fork
 
-`npm run metadata:update` command creates a new `update-metadata` branch, downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one, generates JSON metadata out of the XML one, runs the tests, commits the new metadata and pushes the commit to the remote `update-metadata` branch of your fork.
+`npm run metadata:update` command creates a new `update-metadata` branch, downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one, generates JSON metadata out of the XML one, checks if the metadata has changed, runs the tests, commits the new metadata and pushes the commit to the remote `update-metadata` branch of your fork.
 
-Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Customizing metadata](#customizing-metadata) section of this document (just don't pass the `--countries` option).
+Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Customizing metadata](#customizing-metadata) section of this document.
 
 ## React
 
