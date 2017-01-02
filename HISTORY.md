@@ -1,3 +1,8 @@
+0.2.26 / 02.01.2016
+===================
+
+  * Added national prefix check for `parse` and `isPhoneValid`
+
 0.2.25 / 30.12.2016
 ===================
 

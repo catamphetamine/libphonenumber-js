@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "0.2.25",
+  "version": "0.2.26",
   "description": "A simpler (and smaller) rewrite of Google Android's popular libphonenumber library",
   "main": "index.common.js",
   "jsnext:main": "index.es6.js",
@@ -27,8 +27,11 @@
     "webpack": "^2.1.0-beta.22"
   },
   "scripts": {
+    "metadata:pull-request": "babel-node runnable/metadata-pull-request",
+    "metadata:branch": "babel-node runnable/metadata-branch",
+    "metadata:unbranch": "babel-node runnable/metadata-unbranch",
     "metadata:publish": "npm version patch && npm publish && git push",
-    "metadata:update": "npm run metadata:download && babel-node runnable/update",
+    "metadata:update": "npm run metadata:branch && npm run metadata:download && babel-node runnable/update && npm run metadata:unbranch",
     "metadata:generate": "babel-node runnable/generate ../PhoneNumberMetadata.xml",
     "metadata:download": "babel-node runnable/download https://raw.githubusercontent.com/googlei18n/libphonenumber/master/resources/PhoneNumberMetadata.xml PhoneNumberMetadata.xml",
     "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec test/ --recursive",

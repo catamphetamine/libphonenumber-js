@@ -11,8 +11,11 @@ describe('validate', () =>
 	{
 		is_valid_number('+1-213-373-4253').should.equal(true)
 		is_valid_number('+1-213-373').should.equal(false)
+
 		is_valid_number('(213) 373-4253', 'US').should.equal(true)
 		is_valid_number('(213) 37', 'US').should.equal(false)
+
+		is_valid_number({ country: 'US', phone: '2133734253' }).should.equal(true)
 	})
 
 	it('should refine phone number validation in case extended regular expressions are set for a country', () =>
@@ -21,6 +24,7 @@ describe('validate', () =>
 		is_valid_number('123456', 'DE').should.equal(true)
 		is_valid_number('0123456', 'DE').should.equal(true)
 
+		// Extra regular expressions for precise national number validation.
 		// `types` index in compressed array is `9`
 		metadata.countries.DE[9] =
 		[
@@ -34,8 +38,13 @@ describe('validate', () =>
          "16(?:4\\d{1,10}|[89]\\d{1,11})"
       ]
 
-		// Germany extended validation must not pass
+		// Germany extended validation must not pass for an invalid phone number
 		is_valid_number('123456', 'DE').should.equal(false)
 		is_valid_number('0123456', 'DE').should.equal(false)
+
+		// Germany extended validation must pass for a valid phone number,
+		// but still must demand the national prefix (`0`).
+		is_valid_number('30123456', 'DE').should.equal(false)
+		is_valid_number('030123456', 'DE').should.equal(true)
 	})
 })

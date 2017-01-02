@@ -147,21 +147,24 @@ export function format_national_number(number, format_as, enforce_national_prefi
 	return format_national_number_using_format(number, format, format_as === 'International', enforce_national_prefix, country_metadata)
 }
 
-function choose_format_for_number(available_formats, national_number)
+export function choose_format_for_number(available_formats, national_number)
 {
 	for (let format of available_formats)
 	{
+		// Validate leading digits
 		if (get_format_leading_digits_patterns(format).length > 0)
 		{
 			// The last leading_digits_pattern is used here, as it is the most detailed
 			const last_leading_digits_pattern = get_format_leading_digits_patterns(format)[get_format_leading_digits_patterns(format).length - 1]
 
+			// If leading digits don't match then move on to the next phone number format
 			if (national_number.search(last_leading_digits_pattern) !== 0)
 			{
-				return
+				continue
 			}
 		}
 
+		// Check that the national number matches the phone number format regular expression
 		if (matches_entirely(national_number, new RegExp(get_format_pattern(format))))
 		{
 			return format

@@ -6,9 +6,12 @@ import
 }
 from './metadata'
 
-export default function is_valid(number, country_code)
+export default function is_valid(parsed, country_code)
 {
-	const parsed = parse.call(this, number, country_code)
+	if (typeof parsed === 'string')
+	{
+		parsed = parse.call(this, parsed, country_code)
+	}
 
 	if (!parsed.country)
 	{

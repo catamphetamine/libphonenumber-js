@@ -78,7 +78,11 @@ country:
 
 or just a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition) which is gonna be `country.restrict`.
 
-Returns `{ country, phone }` where `country` is a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition), and `phone` is a national (significant) number. If the phone number supplied isn't valid then an empty object `{}` is returned.
+Returns `{ country, phone }` where
+ * `country` is a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition)
+ * `phone` is a national (significant) number
+
+If the phone number supplied isn't valid then an empty object `{}` is returned.
 
 ```js
 parse('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
@@ -99,18 +103,32 @@ format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 
 format('2133734253', 'US', 'International') === '+1 213 373 4253'
 ```
 
-### isValidNumber(number, country_code)
+### isValidNumber(parsed_number)
 
 (aka `is_valid_number`)
 
 Checks if a phone number is valid.
 
+The arguments can be
+
+ * either the result of the `parse()` function call: `{ country, phone }`
+ * or a pair of arguments `(phone, country_code)` which will then be simply passed to the `parse()` function for parsing
+
 ```js
 isValidNumber('+1-213-373-4253') === true
 isValidNumber('+1-213-373') === false
+
 isValidNumber('(213) 373-4253', 'US') === true
 isValidNumber('(213) 37', 'US') === false
+
+isValidNumber({ phone: '2133734253', country: 'US' }) === true
 ```
+
+The difference between using `parse()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parse('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` flag (see below) and the precise regular expressions for possible phone numbers are included in the metadata then `isValidNumber()` is gonna use those precise regular expressions for validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
+
+So, the general phone number rules for a country are mainly for phone number formatting: they dictate how different phone numbers (matching those general regular expressions) should be formatted. And `parse()` uses only those general regular expressions (as per the reference Google's `libphonenumber` implementation) to perform basic phone number validation. `isValidNumber()`, on the other hand, is all about validation, so it digs deeper into precise regular expressions (if they're included in metadata) for possible phone numbers in a given country. And that's the difference between them: `parse()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone number precisely (provided the precise regular expressions are included in metadata).
+
+By default those precise regular expressions aren't included in metadata at all because that would cause metadata to grow twice in its size (the complete metadata would be about 200 KiloBytes). If anyone needs to generate custom metadata then it's very easy to do so: just follow the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document (the option to look for is `--extended`).
 
 ### `class` asYouType(default_country_code)
 
@@ -141,7 +159,7 @@ formatter.country_phone_code = '1'
 formatter.template === 'xx xxx xxx xxxx'
 ```
 
-## Metadata generation
+## Metadata
 
 Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
 
@@ -150,11 +168,11 @@ Currently I have a daily bash script set up monitoring the changes to `PhoneNumb
   * Fork this repo
   * `npm install`
   * `npm run metadata:update`
-  * Submit a pull request
+  * Submit a Pull Request to the main repo from the `update-metadata` branch of your fork
 
-`npm run metadata:update` command downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one. Then it generates JSON metadata out of the XML one. After that it runs the tests and commits the new metadata.
+`npm run metadata:update` command creates a new `update-metadata` branch, downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one, generates JSON metadata out of the XML one, runs the tests, commits the new metadata and pushes the commit to the remote `update-metadata` branch of your fork.
 
-Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Including only a specific set of countries](#including-only-a-specific-set-of-countries) section of this document (just don't pass the `--countries` option).
+Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Customizing metadata](#customizing-metadata) section of this document (just don't pass the `--countries` option).
 
 ## React
 
@@ -193,9 +211,9 @@ For those who aren't using bundlers for some reason there's a way to build a sta
 </script>
 ```
 
-## Including only a specific set of countries
+## Customizing metadata
 
-If only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 KiloBytes, then he can generate custom metadata and pass it as an extra argument to this library's functions.
+If only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 KiloBytes, then he can generate custom metadata and pass it as an extra argument to this library's functions. Or, say, if a developer wants to use the complete metadata (which is about 200 KiloBytes) for precise phone number validation then he can also generate such complete metadata set.
 
 First, add metadata generation script to your project's `package.json`
 
@@ -209,7 +227,7 @@ First, add metadata generation script to your project's `package.json`
 
 And then run it like `npm run libphonenumber-metadata`.
 
-The first argument is the output metadata file path. `--countries` argument is a comma-separated list of the required countries. `--extended` argument may be passed to increase the precision of the phone number validation function but at the same time it will enlarge the resulting metadata size approximately twice.
+The first argument is the output metadata file path. `--countries` argument is a comma-separated list of the required countries (if `--countries` is omitted then all countries are included). `--extended` argument may be passed to increase the precision of phone number validation but at the same time it will enlarge the resulting metadata size approximately twice.
 
 Then use the generated `metadata.min.json` with the `libphonenumber-js/custom` functions
 
@@ -224,6 +242,10 @@ const asYouTypeCustomCountries = asYouType(metadata)
 ```
 
 For utilizing "tree-shaking" in ES6-capable bundlers (e.g. Webpack 2) `libphonenumber-js/custom.es6` may be used instead.
+
+## To do
+
+* Check that `metadata:update` and `metadata:pull-request` scripts work as intended and [add a daily `launchd` job](http://alvinalexander.com/mac-os-x/mac-osx-startup-crontab-launchd-jobs) for `npm run metadata:update && npm run metadata:pull-request`
 
 ## Contributing
 

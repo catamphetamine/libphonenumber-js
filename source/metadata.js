@@ -10,7 +10,7 @@ export function get_national_number_pattern(country_metadata)
 
 export function get_formats(country_metadata)
 {
-	return country_metadata[2]
+	return country_metadata[2] || []
 }
 
 export function get_national_prefix(country_metadata)

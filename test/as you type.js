@@ -305,6 +305,15 @@ describe('as you type', () =>
 		formatter.input('+')
 		type(formatter.country).should.equal('undefined')
 		type(formatter.country_phone_code).should.equal('undefined')
+
+		// Country not inferrable from the phone number,
+		// while the phone number itself can already be formatted "completely".
+
+		formatter = new as_you_type()
+
+		formatter.input('+12223333333')
+		type(formatter.country).should.equal('undefined')
+		formatter.country_phone_code.should.equal('1')
 	})
 
 	it('should repeat string N times', function()

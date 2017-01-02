@@ -13,6 +13,7 @@ import
 	get_national_prefix_transform_rule,
 	get_leading_digits,
 	get_metadata_by_country_phone_code,
+	get_formats,
 	get_type_fixed_line,
 	get_type_mobile,
 	get_type_toll_free,
@@ -22,9 +23,16 @@ import
 	get_type_uan,
 	get_type_pager,
 	get_type_voip,
-	get_type_shared_cost
+	get_type_shared_cost,
+	get_format_national_prefix_is_mandatory_when_formatting
 }
 from './metadata'
+
+import
+{
+	choose_format_for_number
+}
+from './format'
 
 export const PLUS_CHARS = '+\uFF0B'
 
@@ -244,8 +252,13 @@ export default function parse(text, options)
 	let country
 	let country_metadata
 
+	// Whether the phone number is formatted as an international phone number
+	let is_international = false
+
 	if (country_phone_code)
 	{
+		is_international = true
+
 		// Check country restriction
 		if (options.country.restrict &&
 			country_phone_code !== get_phone_code(this.metadata.countries[options.country.restrict]))
@@ -276,6 +289,14 @@ export default function parse(text, options)
 	}
 
 	const national_number = strip_national_prefix(number, country_metadata)
+
+	const did_have_national_prefix = national_number !== number
+
+	if (!is_international && !did_have_national_prefix &&
+			is_national_prefix_required(national_number, country_metadata))
+	{
+		return {}
+	}
 
 	// Sometimes there are several countries
 	// corresponding to the same country phone code
@@ -663,4 +684,14 @@ export function is_of_type(national_number, type)
 
 	// get_type_pattern(type) === type
 	return matches_entirely(national_number, type)
+}
+
+export function is_national_prefix_required(national_number, country_metadata)
+{
+	const format = choose_format_for_number(get_formats(country_metadata), national_number)
+
+	if (format)
+	{
+		return get_format_national_prefix_is_mandatory_when_formatting(format, country_metadata)
+	}
 }

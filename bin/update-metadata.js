@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-var path = require('path')
-var fs = require('fs')
+var path     = require('path')
+var fs       = require('fs')
 var minimist = require('minimist')
 
 var download = require('../build/tools/download')
