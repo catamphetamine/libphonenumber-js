@@ -145,16 +145,16 @@ formatter.template === 'xx xxx xxx xxxx'
 
 Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
 
-How to update metadata:
+Currently I have a daily bash script set up monitoring the changes to `PhoneNumberMetadata.xml` in Google's repo and it automatically creates a Pull Request when the metadata is updated. So this project's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
 
   * Fork this repo
   * `npm install`
   * `npm run metadata:update`
   * Submit a pull request
 
-To update metadata first it downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one. Then it generates JSON metadata out of the XML one. After that it runs the tests and commits the new metadata.
+`npm run metadata:update` command downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one. Then it generates JSON metadata out of the XML one. After that it runs the tests and commits the new metadata.
 
-Alternatively, a developer may wish to update metadata instantly, without waiting for pull requests. In this case just perform the steps described in the [Including only a specific set of countries](#including-only-a-specific-set-of-countries) section of this document (just don't pass the `--countries` option).
+Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Including only a specific set of countries](#including-only-a-specific-set-of-countries) section of this document (just don't pass the `--countries` option).
 
 ## React
 
