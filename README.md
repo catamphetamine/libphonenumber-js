@@ -168,7 +168,7 @@ Currently I have an npm script for monitoring changes to `PhoneNumberMetadata.xm
   * Fork this repo
   * `npm install`
   * `npm run metadata:update`
-  * Submit a Pull Request to the main repo from the `update-metadata` branch of your fork
+  * Submit a Pull Request to this repo from the `update-metadata` branch of your fork
 
 `npm run metadata:update` command creates a new `update-metadata` branch, downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one, generates JSON metadata out of the XML one, runs the tests, commits the new metadata and pushes the commit to the remote `update-metadata` branch of your fork.
 
