@@ -163,7 +163,7 @@ formatter.template === 'xx xxx xxx xxxx'
 
 Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
 
-Currently I have an npm script for monitoring changes to `PhoneNumberMetadata.xml` in Google's repo and automatically creating a Pull Request to this repo with the fresh metadata when it is updated. What's left is to test this script and schedule it to run daily on my machine. So this project's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
+Currently I have an npm script for monitoring changes to `PhoneNumberMetadata.xml` in Google's repo and automatically creating a Pull Request in this repo with the fresh metadata when it is updated. What's left is to test this script and schedule it to run daily on my machine. So this project's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
 
   * Fork this repo
   * `npm install`
