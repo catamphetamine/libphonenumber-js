@@ -47,4 +47,9 @@ describe('validate', () =>
 		is_valid_number('30123456', 'DE').should.equal(false)
 		is_valid_number('030123456', 'DE').should.equal(true)
 	})
+
+	it('should work in edge cases', function()
+	{
+		is_valid_number().should.equal(false)
+	})
 })

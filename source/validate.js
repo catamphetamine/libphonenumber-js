@@ -8,6 +8,11 @@ from './metadata'
 
 export default function is_valid(parsed, country_code)
 {
+	if (!parsed)
+	{
+		return false
+	}
+
 	if (typeof parsed === 'string')
 	{
 		parsed = parse.call(this, parsed, country_code)
