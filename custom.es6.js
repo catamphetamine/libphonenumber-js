@@ -2,24 +2,24 @@ export
 {
 	default as parse
 }
-from './source/parse'
+from './es6/parse'
 
 export
 {
 	default as format
 }
-from './source/format'
+from './es6/format'
 
 export
 {
 	default as is_valid_number,
 	default as isValidNumber
 }
-from './source/validate'
+from './es6/validate'
 
 export
 {
 	default as as_you_type,
 	default as asYouType
 }
-from './source/as you type'
+from './es6/as you type'

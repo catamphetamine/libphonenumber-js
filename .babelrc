@@ -1,13 +1,44 @@
 {
-	"presets":
-	[
-		"es2015",
-		"stage-0"
-	],
+	"env":
+	{
+		"development":
+		{
+			"presets":
+			[
+				"es2015",
+				"stage-2"
+			],
 
-	"plugins":
-	[
-		"transform-runtime",
-		"add-module-exports"
-	]
+			"plugins":
+			[
+				"transform-runtime"
+			]
+		},
+		"commonjs":
+		{
+			"presets":
+			[
+				"es2015",
+				"stage-2"
+			],
+
+			"plugins":
+			[
+				"transform-runtime"
+			]
+		},
+		"es6":
+		{
+			"presets":
+			[
+				["es2015", { modules: false }],
+				"stage-2"
+			],
+
+			"plugins":
+			[
+				"transform-runtime"
+			]
+		}
+	}
 }
