@@ -188,11 +188,13 @@ If you spot any inconsistencies with the [original Google's `libphonenumber`](ht
 
 ## Webpack
 
-If you're using Webpack (which you most likely are) then make sure that
+If you're using Webpack 1 (which you most likely are) then make sure that
 
  * You have `json-loader` set up for `*.json` files in Webpack configuration
  * `json-loader` doesn't `exclude` `/node_modules/`
  * If you override `resolve.extensions` in Webpack configuration then make sure `.json` extension is present in the list
+
+Webpack 2 sets up `json-loader` by default so there's no need for any special configuration.
 
 ## Standalone
 
