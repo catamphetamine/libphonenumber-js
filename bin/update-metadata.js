@@ -4,9 +4,9 @@ var path     = require('path')
 var fs       = require('fs')
 var minimist = require('minimist')
 
-var download = require('../build/tools/download')
-var generate = require('../build/tools/generate')
-var compress = require('../build/tools/compress')
+var download = require('../build/tools/download').default
+var generate = require('../build/tools/generate').default
+var compress = require('../build/tools/compress').default
 
 var metadata_path = process.argv[2]
 

@@ -1,3 +1,7 @@
+// Strict mode here is required for older browsers like Safari 9
+// because of using `const`.
+'use strict'
+
 import metadata from './metadata.min'
 
 import
