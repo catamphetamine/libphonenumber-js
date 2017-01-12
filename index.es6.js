@@ -1,7 +1,3 @@
-// Strict mode here is required for older browsers like Safari 9
-// because of using `const`.
-'use strict'
-
 import metadata from './metadata.min'
 
 import
@@ -13,11 +9,15 @@ import
 }
 from './custom.es6'
 
-export const parse  = _parse.bind({ metadata })
-export const format = _format.bind({ metadata })
+// `const` is not supported in Internet Explorer 10
 
-export const is_valid_number = _is_valid_number.bind({ metadata })
-export const isValidNumber   = is_valid_number
+var context = { metadata: metadata }
 
-export const as_you_type = _as_you_type(metadata)
-export const asYouType   = as_you_type
+export var parse  = _parse.bind(context)
+export var format = _format.bind(context)
+
+export var is_valid_number = _is_valid_number.bind(context)
+export var isValidNumber   = is_valid_number
+
+export var as_you_type = _as_you_type(metadata)
+export var asYouType   = as_you_type
