@@ -208,7 +208,6 @@ For those who aren't using bundlers for some reason there's a way to build a sta
 ```html
 <script src="/scripts/libphonenumber-js.min.js"></script>
 <script>
-  var libphonenumber = window['libphonenumber-js']
   alert(new libphonenumber.asYouType('US').input('213-373-4253'))
 </script>
 ```

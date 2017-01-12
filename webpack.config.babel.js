@@ -4,6 +4,8 @@ import path from 'path'
 const env = process.env.WEBPACK_ENV
 
 const library_name = 'libphonenumber-js'
+const global_variable_name = 'libphonenumber'
+
 let output_file
 
 const plugins = []
@@ -31,7 +33,7 @@ const config =
   {
     path           : path.join(__dirname, '/bundle'),
     filename       : output_file,
-    library        : library_name,
+    library        : global_variable_name,
     libraryTarget  : 'umd',
     umdNamedDefine : true
   },
