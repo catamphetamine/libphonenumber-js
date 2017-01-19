@@ -54,7 +54,8 @@ export default function format(input = '', format, third_argument)
 	if (country_phone_code)
 	{
 		// Check country restriction
-		if (input.country && country_phone_code !== get_phone_code(country_metadata))
+		if (input.country && country_metadata &&
+			country_phone_code !== get_phone_code(country_metadata))
 		{
 			return input.phone
 		}

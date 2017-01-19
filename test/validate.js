@@ -1,9 +1,9 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import { is_valid_number } from '../index.es6'
-
 import metadata from '../metadata.min'
+import validate from '../source/validate'
+const is_valid_number = validate.bind({ metadata })
 
 describe('validate', () =>
 {

@@ -1,10 +1,11 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import { parse } from '../index.es6'
+import metadata from '../metadata.min'
+import parser from '../source/parse'
 import { get_number_type } from '../source/parse'
 
-import metadata from '../metadata.min'
+const parse = parser.bind({ metadata })
 
 describe('parse', () =>
 {
@@ -49,6 +50,9 @@ describe('parse', () =>
 
 	it('should work in edge cases', function()
 	{
+		// No input
+		parse('').should.deep.equal({})
+
 		// No country phone code
 		parse('+').should.deep.equal({})
 

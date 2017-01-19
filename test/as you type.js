@@ -1,8 +1,10 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import { as_you_type } from '../index.es6'
-import { close_dangling_braces, repeat } from '../source/as you type'
+import metadata from '../metadata.min'
+import as_you_typer, { close_dangling_braces, repeat } from '../source/as you type'
+
+const as_you_type = as_you_typer(metadata)
 
 describe('as you type', () =>
 {

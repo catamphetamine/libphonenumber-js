@@ -1,7 +1,10 @@
 import chai, { expect } from 'chai'
 chai.should()
 
-import { format } from '../index.es6'
+import metadata from '../metadata.min'
+import formatter from '../source/format'
+
+const format = formatter.bind({ metadata })
 
 describe('format', () =>
 {
@@ -35,5 +38,9 @@ describe('format', () =>
 		// No national number
 		format(undefined, 'US', 'National').should.equal('')
 		format(undefined, 'US', 'International').should.equal('+1')
+
+		// No metadata for country
+		format('+121337342530', 'USA', 'National').should.equal('21337342530')
+		format('21337342530', 'USA', 'National').should.equal('21337342530')
 	})
 })
