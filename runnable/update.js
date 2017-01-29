@@ -55,22 +55,24 @@ if (modified_files.length > 2)
 	process.exit(1)
 }
 
-// http://stackoverflow.com/questions/33610682/git-list-of-staged-files
-var staged_files = exec('git diff --name-only --cached').split(/\s/)
-
-if (staged_files.length > 0)
-{
-	console.log()
-	console.log('========================================')
-	console.log('=                 Error                =')
-	console.log('========================================')
-	console.log()
-	console.log('There are some staged files already. Aborting metadata update process.')
-	console.log()
-	console.log(staged_files.join('\n'))
-
-	process.exit(1)
-}
+// Doesn't work
+//
+// // http://stackoverflow.com/questions/33610682/git-list-of-staged-files
+// var staged_files = exec('git diff --name-only --cached').split(/\s/)
+//
+// if (staged_files.length > 0)
+// {
+// 	console.log()
+// 	console.log('========================================')
+// 	console.log('=                 Error                =')
+// 	console.log('========================================')
+// 	console.log()
+// 	console.log('There are some staged files already. Aborting metadata update process.')
+// 	console.log()
+// 	console.log(staged_files.join('\n'))
+//
+// 	process.exit(1)
+// }
 
 console.log()
 console.log('========================================')
