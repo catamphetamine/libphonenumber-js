@@ -1,3 +1,9 @@
+// In order for this script to work:
+//
+// * Install `hub`: `brew install hub`
+// * Create a "Personal Access Token" in GitHub account settings (just "repo_public" would be enough)
+// * Tell `hub` to use the token for creating GitHub pull requests: `echo "---\ngithub.com:\n- protocol: https\n  user: GITHUB_USERNAME\n  oauth_token: TOKEN" >> ~/.config/hub`
+
 var child_process = require('child_process')
 
 function exec(command)
