@@ -26,6 +26,8 @@ catch (error)
 	}
 }
 
+// If no `update-metadata` branch exists
+// then it simply means that metadata hasn't changed.
 if (!metadata_branch_exists)
 {
 	process.exit(0)

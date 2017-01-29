@@ -1,6 +1,9 @@
 #!/bin/sh
 
 export PATH=/usr/local/bin:$PATH
-cd /Users/kuchumovn/work/libphonenumber-js
+
+# Enter this script's folder
+cd "${0%/*}"
+
 npm run metadata:update
 npm run metadata:pull-request
