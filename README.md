@@ -296,9 +296,54 @@ exports.asYouType.prototype.constructor = exports.asYouType
 
 ```
 
-## To do
+<!-- ## To do -->
 
-* Check that `metadata:update` and `metadata:pull-request` scripts work as intended and [add a daily `launchd` job](http://alvinalexander.com/mac-os-x/mac-osx-startup-crontab-launchd-jobs) for `npm run metadata:update && npm run metadata:pull-request`
+<!--
+## Automatic metadata update setup
+
+A daily `launchd` job
+
+http://alvinalexander.com/mac-os-x/mac-osx-startup-crontab-launchd-jobs
+
+```sh
+chmod u+x /Users/kuchumovn/work/libphonenumber-js/autoupdate.sh
+
+nano ~/Library/LaunchAgents/com.github.halt-hammerzeit.libphonenumber-js.metadata-update.plist
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.github.halt-hammerzeit.libphonenumber-js.metadata-update</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Users/kuchumovn/work/libphonenumber-js/autoupdate.sh</string>
+    </array>
+
+    <key>Nice</key>
+    <integer>1</integer>
+
+    <key>StartInterval</key>
+    <integer>24 * 60 * 60</integer>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/libphonenumber.errors.txt</string>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/libphonenumber.output.txt</string>
+  </dict>
+</plist>
+
+launchctl load ~/Library/LaunchAgents/com.github.halt-hammerzeit.libphonenumber-js.metadata-update.plist
+
+launchctl list | grep 'libphonenumber-js'
+```
+-->
 
 ## Contributing
 

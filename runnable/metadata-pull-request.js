@@ -32,3 +32,9 @@ if (!metadata_branch_exists)
 }
 
 console.log(exec('hub pull-request -m "Phone number medatada update" -b halt-hammerzeit/libphonenumber-js:master -h update-metadata'))
+
+console.log()
+console.log('========================================')
+console.log('=         Pull Request created         =')
+console.log('========================================')
+console.log()
