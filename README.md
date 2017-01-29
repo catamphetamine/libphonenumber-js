@@ -310,6 +310,10 @@ mkdir /Users/kuchumovn/work/libphonenumber-js-autoupdate
 
 git clone https://github.com/halt-hammerzeit/libphonenumber-js.git /Users/kuchumovn/work/libphonenumber-js-autoupdate
 
+cd /Users/kuchumovn/work/libphonenumber-js-autoupdate
+
+npm install
+
 chmod u+x /Users/kuchumovn/work/libphonenumber-js-autoupdate/autoupdate.sh
 
 nano ~/Library/LaunchAgents/com.github.halt-hammerzeit.libphonenumber-js.metadata-update.plist
