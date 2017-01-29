@@ -301,7 +301,7 @@ exports.asYouType.prototype.constructor = exports.asYouType
 <!--
 ## Automatic metadata update setup
 
-A daily `launchd` job
+A daily (24 * 60 * 60) `launchd` job
 
 http://alvinalexander.com/mac-os-x/mac-osx-startup-crontab-launchd-jobs
 
