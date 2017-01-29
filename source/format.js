@@ -25,31 +25,69 @@ import
 }
 from './metadata'
 
-export default function format(input = '', format, third_argument)
+// Formats a phone number
+//
+// Example use cases:
+//
+// ```js
+// format('8005553535', 'RU', 'International')
+// format('8005553535', 'RU', 'International', metadata)
+// format({ phone: '8005553535', country: 'RU' }, 'International')
+// format({ phone: '8005553535', country: 'RU' }, 'International', metadata)
+// format('+78005553535', 'National')
+// format('+78005553535', 'National', metadata)
+// ```
+//
+export default function format(first_argument = '', second_argument, third_argument, fourth_argument)
 {
-	// If the first argument object is expanded
-	if (typeof input === 'string')
+	let input
+	let format_type
+	let metadata
+
+	// Sort out arguments
+	if (typeof first_argument === 'string')
 	{
-		// If number is passed not as an object
+		// If country code is supplied
 		if (typeof third_argument === 'string')
 		{
-			input = { phone: input, country: format }
-			format = third_argument
+			// Will be `parse()`d later in code
+			input =
+			{
+				phone   : first_argument,
+				country : second_argument
+			}
+
+			format_type = third_argument
+			metadata    = fourth_argument
 		}
+		// Just an international phone number is supplied
 		else
 		{
-			input = { phone: input }
+			// Will be `parse()`d later in code
+			input =
+			{
+				phone : first_argument
+			}
+
+			format_type = second_argument
+			metadata    = third_argument
 		}
+	}
+	else
+	{
+		input       = first_argument
+		format_type = second_argument
+		metadata    = third_argument
 	}
 
 	let country_metadata
 
 	if (input.country)
 	{
-		country_metadata = this.metadata.countries[input.country]
+		country_metadata = metadata.countries[input.country]
 	}
 
-	const { country_phone_code, number } = parse_phone_number_and_country_phone_code(input.phone, this.metadata)
+	const { country_phone_code, number } = parse_phone_number_and_country_phone_code(input.phone, metadata)
 
 	if (country_phone_code)
 	{
@@ -60,7 +98,7 @@ export default function format(input = '', format, third_argument)
 			return input.phone
 		}
 
-		country_metadata = get_metadata_by_country_phone_code(country_phone_code, this.metadata)
+		country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
 	}
 
 	if (!country_metadata)
@@ -68,7 +106,7 @@ export default function format(input = '', format, third_argument)
 		return input.phone
 	}
 
-	switch (format)
+	switch (format_type)
 	{
 		case 'International':
 			if (!number)

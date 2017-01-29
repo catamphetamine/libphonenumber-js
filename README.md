@@ -194,7 +194,7 @@ If you're using Webpack 1 (which you most likely are) then make sure that
  * `json-loader` doesn't `exclude` `/node_modules/`
  * If you override `resolve.extensions` in Webpack configuration then make sure `.json` extension is present in the list
 
-Webpack 2 sets up `json-loader` by default so there's no need for any special configuration.
+Webpack 2 sets up `json-loader` by default so there's no need for any special configuration. So better upgrade to Webpack 2 instead.
 
 ## Standalone
 
@@ -230,19 +230,71 @@ And then run it like `npm run libphonenumber-metadata`.
 
 The first argument is the output metadata file path. `--countries` argument is a comma-separated list of the required countries (if `--countries` is omitted then all countries are included). `--extended` argument may be passed to increase the precision of phone number validation but at the same time it will enlarge the resulting metadata size approximately twice.
 
-Then use the generated `metadata.min.json` with the `libphonenumber-js/custom` functions
+Then use the generated `metadata.min.json` with the exported "custom" functions.
+
+For a "tree-shaking" ES6-capable bundler (e.g. Webpack 2) that would be
 
 ```js
-import { parse, format, isValidNumber, asYouType } from 'libphonenumber-js/custom'
+import { parseCustom, formatCustom, isValidNumberCustom, asYouTypeCustom } from 'libphonenumber-js'
 import metadata from './metadata.min.json'
 
-const parseCustomCountries = parse.bind({ metadata })
-const formatCustomCountries = format.bind({ metadata })
-const isValidNumberCustomCountries = isValidNumber.bind({ metadata })
-const asYouTypeCustomCountries = asYouType(metadata)
+export function parse() {
+  var parameters = Array.prototype.slice.call(arguments)
+  parameters.push(metadata)
+  return parseCustom.apply(this, parameters)
+}
+
+export function format() {
+  var parameters = Array.prototype.slice.call(arguments)
+  parameters.push(metadata)
+  return formatCustom.apply(this, parameters)
+}
+
+export function isValidNumber() {
+  var parameters = Array.prototype.slice.call(arguments)
+  parameters.push(metadata)
+  return isValidNumberCustom.apply(this, parameters)
+}
+
+export class asYouType extends asYouTypeCustom {
+  constructor(country) {
+    super(country, metadata)
+  }
+}
 ```
 
-For utilizing "tree-shaking" in ES6-capable bundlers (e.g. Webpack 2) `libphonenumber-js/custom.es6` may be used instead.
+And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) environment that would be
+
+```js
+var custom = require('libphonenumber-js/custom')
+var metadata = require('./metadata.min.json')
+
+exports.parse = function parse() {
+  var parameters = Array.prototype.slice.call(arguments)
+  parameters.push(metadata)
+  return custom.parse.apply(this, parameters)
+}
+
+exports.format = function format() {
+  var parameters = Array.prototype.slice.call(arguments)
+  parameters.push(metadata)
+  return custom.format.apply(this, parameters)
+}
+
+exports.isValidNumber = function isValidNumber() {
+  var parameters = Array.prototype.slice.call(arguments)
+  parameters.push(metadata)
+  return custom.isValidNumber.apply(this, parameters)
+}
+
+exports.asYouType = function asYouType(country) {
+  custom.asYouType.call(this, country, metadata)
+}
+
+exports.asYouType.prototype = Object.create(custom.asYouType.prototype, {})
+exports.asYouType.prototype.constructor = exports.asYouType
+
+```
 
 ## To do
 

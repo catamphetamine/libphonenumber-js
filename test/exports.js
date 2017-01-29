@@ -5,7 +5,8 @@ import
 	is_valid_number,
 	isValidNumber,
 	as_you_type,
-	asYouType
+	asYouType,
+	DIGIT_PLACEHOLDER
 }
 from '../index.es6'
 
@@ -19,7 +20,7 @@ describe(`exports`, function()
 		isValidNumber('', 'US')
 		new as_you_type('US').input('+')
 		new asYouType('US').input('+')
-		asYouType.DIGIT_PLACEHOLDER.length
+		DIGIT_PLACEHOLDER.length
 	})
 
 	it(`should export CommonJS`, function()
@@ -32,6 +33,6 @@ describe(`exports`, function()
 		Library.isValidNumber('', 'US')
 		new Library.as_you_type('US').input('+')
 		new Library.asYouType('US').input('+')
-		Library.asYouType.DIGIT_PLACEHOLDER.length
+		Library.DIGIT_PLACEHOLDER.length
 	})
 })

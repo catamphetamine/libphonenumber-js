@@ -1,23 +1,62 @@
 import metadata from './metadata.min'
 
-import
+import parseCustom         from './es6/parse'
+import formatCustom        from './es6/format'
+import isValidNumberCustom from './es6/validate'
+import asYouTypeCustom     from './es6/as you type'
+
+export function parse()
 {
-	parse as _parse,
-	format as _format,
-	is_valid_number as _is_valid_number,
-	as_you_type as _as_you_type
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return parseCustom.apply(this, parameters)
 }
-from './custom.es6'
 
-// `const` is not supported in Internet Explorer 10
+export function format()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return formatCustom.apply(this, parameters)
+}
 
-var context = { metadata: metadata }
+export function is_valid_number()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return isValidNumberCustom.apply(this, parameters)
+}
 
-export var parse  = _parse.bind(context)
-export var format = _format.bind(context)
+// camelCase alias
+export function isValidNumber()
+{
+	return is_valid_number.apply(this, arguments)
+}
 
-export var is_valid_number = _is_valid_number.bind(context)
-export var isValidNumber   = is_valid_number
+export function as_you_type(country)
+{
+	asYouTypeCustom.call(this, country, metadata)
+}
 
-export var as_you_type = _as_you_type(metadata)
-export var asYouType   = as_you_type
+as_you_type.prototype = Object.create(asYouTypeCustom.prototype, {})
+as_you_type.prototype.constructor = as_you_type
+
+// camelCase alias
+
+export function asYouType(country)
+{
+	asYouTypeCustom.call(this, country, metadata)
+}
+
+asYouType.prototype = Object.create(asYouTypeCustom.prototype, {})
+asYouType.prototype.constructor = asYouType
+
+export { default as parseCustom }         from './es6/parse'
+export { default as formatCustom }        from './es6/format'
+export { default as isValidNumberCustom } from './es6/validate'
+
+export
+{
+	default as asYouTypeCustom,
+	DIGIT_PLACEHOLDER
+}
+from './es6/as you type'

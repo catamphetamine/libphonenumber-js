@@ -1,9 +1,7 @@
 import { parseString } from 'xml2js'
 import Promise from 'bluebird'
 
-// This constant is copied from "as you type.js"
-// to prevent recursive `require()` of `metadata.min.json`
-const DIGIT_PLACEHOLDER = 'x'
+import { DIGIT_PLACEHOLDER } from '../as you type'
 
 // Excessive fields from "PhoneNumberMetadata.xml"
 // aren't included to reduce code complexity and size:

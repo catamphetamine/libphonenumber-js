@@ -5,7 +5,11 @@ import metadata from '../metadata.min'
 import parser from '../source/parse'
 import { get_number_type } from '../source/parse'
 
-const parse = parser.bind({ metadata })
+export function parse(...parameters)
+{
+	parameters.push(metadata)
+	return parser.apply(this, parameters)
+}
 
 describe('parse', () =>
 {

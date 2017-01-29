@@ -195,11 +195,29 @@ const default_options =
 //  }
 //
 // Returns `{ country, number }`
-export default function parse(text, options)
+//
+// Example use cases:
+//
+// ```js
+// parse('8 (800) 555-35-35', 'RU')
+// parse('8 (800) 555-35-35', 'RU', metadata)
+// parse('8 (800) 555-35-35', { country: { default: 'RU' } })
+// parse('8 (800) 555-35-35', { country: { default: 'RU' } }, metadata)
+// parse('+7 800 555 35 35')
+// parse('+7 800 555 35 35', metadata)
+// ```
+//
+export default function parse(text, second_argument, third_argument)
 {
-	if (typeof options === 'string')
+	let options
+	let metadata
+
+	// Sort out arguments
+
+	// Covert `resrict` country to an `options` object
+	if (typeof second_argument === 'string')
 	{
-		const restrict_to_country = options
+		const restrict_to_country = second_argument
 
 		options =
 		{
@@ -210,6 +228,21 @@ export default function parse(text, options)
 				restrict: restrict_to_country
 			}
 		}
+
+		metadata = third_argument
+	}
+	else
+	{
+		// Differentiate `metadata` from `options`
+		if (second_argument.countries)
+		{
+			metadata = second_argument
+		}
+		else
+		{
+			options  = second_argument
+			metadata = third_argument
+		}
 	}
 
 	if (!options)
@@ -219,13 +252,13 @@ export default function parse(text, options)
 
 	// Validate country codes
 
-	if (!this.metadata.countries[options.country.default])
+	if (!metadata.countries[options.country.default])
 	{
 		options = { ...options }
 		delete options.country.default
 	}
 
-	if (!this.metadata.countries[options.country.restrict])
+	if (!metadata.countries[options.country.restrict])
 	{
 		options = { ...options }
 		delete options.country.restrict
@@ -241,7 +274,7 @@ export default function parse(text, options)
 		return {}
 	}
 
-	let { country_phone_code, number } = parse_phone_number_and_country_phone_code(formatted_phone_number, this.metadata)
+	let { country_phone_code, number } = parse_phone_number_and_country_phone_code(formatted_phone_number, metadata)
 
 	// Maybe invalid country phone code encountered
 	if (!country_phone_code && !number)
@@ -261,12 +294,12 @@ export default function parse(text, options)
 
 		// Check country restriction
 		if (options.country.restrict &&
-			country_phone_code !== get_phone_code(this.metadata.countries[options.country.restrict]))
+			country_phone_code !== get_phone_code(metadata.countries[options.country.restrict]))
 		{
 			return {}
 		}
 
-		country_metadata = get_metadata_by_country_phone_code(country_phone_code, this.metadata)
+		country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
 
 		// `country` will be set later,
 		// because, for example, for NANPA countries
@@ -278,7 +311,7 @@ export default function parse(text, options)
 	else if (options.country.default || options.country.restrict)
 	{
 		country = options.country.default || options.country.restrict
-		country_metadata = this.metadata.countries[country]
+		country_metadata = metadata.countries[country]
 
 		number = normalize(text)
 	}
@@ -306,7 +339,7 @@ export default function parse(text, options)
 	//
 	if (!country)
 	{
-		country = find_country_code(country_phone_code, national_number, this.metadata)
+		country = find_country_code(country_phone_code, national_number, metadata)
 
 		// Just in case there's a bug in Google's metadata
 		/* istanbul ignore if */

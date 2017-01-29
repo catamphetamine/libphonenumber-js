@@ -3,7 +3,12 @@ chai.should()
 
 import metadata from '../metadata.min'
 import validate from '../source/validate'
-const is_valid_number = validate.bind({ metadata })
+
+export function is_valid_number(...parameters)
+{
+	parameters.push(metadata)
+	return validate.apply(this, parameters)
+}
 
 describe('validate', () =>
 {

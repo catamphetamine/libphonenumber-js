@@ -1,3 +1,9 @@
+0.3.0 / 29.01.2016
+===================
+
+  * Removed `libphonenumber-js/custom.es6` exported file: now everything should be imported from the root package in ES6-capable bundlers (because tree-shaking actually works that way)
+  * Now custom functions like `parse`, `format` and `isValidNumber` are not bound to custom metadata: it's passed as the last argument instead. And custom `asYouType` is now not a function — instead, `asYouType` constructor takes an additional `metadata` argument
+
 0.2.29 / 12.01.2016
 ===================
 

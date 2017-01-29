@@ -1,19 +1,41 @@
 'use strict'
 
-var metadata = require('./metadata.min')
-var custom = require('./custom')
+var custom   = require('./custom')
+var metadata = require('./metadata.min.json')
 
 exports = module.exports = {}
 
-var context = { metadata: metadata }
+exports.parse = function parse()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.parse.apply(this, parameters)
+}
 
-exports.parse  = custom.parse.bind(context)
-exports.format = custom.format.bind(context)
+exports.format = function format()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.format.apply(this, parameters)
+}
 
-exports.is_valid_number = custom.is_valid_number.bind(context)
-exports.isValidNumber   = exports.is_valid_number
+exports.is_valid_number = function is_valid_number()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.isValidNumber.apply(this, parameters)
+}
 
-exports.as_you_type = custom.as_you_type(metadata)
-exports.asYouType   = exports.as_you_type
+exports.as_you_type = function as_you_type(country)
+{
+	custom.asYouType.call(this, country, metadata)
+}
 
-// exports['default'] = ...
+exports.as_you_type.prototype = Object.create(custom.asYouType.prototype, {})
+exports.as_you_type.prototype.constructor = exports.as_you_type
+
+exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
+
+// camelCase aliases
+exports.isValidNumber = exports.is_valid_number
+exports.asYouType = exports.as_you_type

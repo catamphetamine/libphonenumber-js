@@ -4,7 +4,11 @@ chai.should()
 import metadata from '../metadata.min'
 import formatter from '../source/format'
 
-const format = formatter.bind({ metadata })
+function format(...parameters)
+{
+	parameters.push(metadata)
+	return formatter.apply(this, parameters)
+}
 
 describe('format', () =>
 {

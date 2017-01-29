@@ -2,13 +2,14 @@
 
 exports = module.exports = {}
 
-exports.parse  = require('./build/parse').default
-exports.format = require('./build/format').default
+exports.parse             = require('./build/parse').default
+exports.format            = require('./build/format').default
+exports.is_valid_number   = require('./build/validate').default
+exports.as_you_type       = require('./build/as you type').default
+exports.DIGIT_PLACEHOLDER = require('./build/as you type').DIGIT_PLACEHOLDER
 
-exports.is_valid_number = require('./build/validate').default
-exports.isValidNumber   = require('./build/validate').default
-
-exports.as_you_type = require('./build/as you type').default
-exports.asYouType   = require('./build/as you type').default
+// camelCase aliases
+exports.isValidNumber = exports.is_valid_number
+exports.asYouType     = exports.as_you_type
 
 // exports['default'] = ...
