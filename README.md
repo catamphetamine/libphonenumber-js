@@ -306,7 +306,11 @@ A daily `launchd` job
 http://alvinalexander.com/mac-os-x/mac-osx-startup-crontab-launchd-jobs
 
 ```sh
-chmod u+x /Users/kuchumovn/work/libphonenumber-js/autoupdate.sh
+mkdir /Users/kuchumovn/work/libphonenumber-js-autoupdate
+
+git clone https://github.com/halt-hammerzeit/libphonenumber-js.git /Users/kuchumovn/work/libphonenumber-js-autoupdate
+
+chmod u+x /Users/kuchumovn/work/libphonenumber-js-autoupdate/autoupdate.sh
 
 nano ~/Library/LaunchAgents/com.github.halt-hammerzeit.libphonenumber-js.metadata-update.plist
 
@@ -319,14 +323,14 @@ nano ~/Library/LaunchAgents/com.github.halt-hammerzeit.libphonenumber-js.metadat
 
     <key>ProgramArguments</key>
     <array>
-      <string>/Users/kuchumovn/work/libphonenumber-js/autoupdate.sh</string>
+      <string>/Users/kuchumovn/work/libphonenumber-js-autoupdate/autoupdate.sh</string>
     </array>
 
     <key>Nice</key>
     <integer>1</integer>
 
     <key>StartInterval</key>
-    <integer>24 * 60 * 60</integer>
+    <integer>86400</integer>
 
     <key>RunAtLoad</key>
     <true/>

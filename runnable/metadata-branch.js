@@ -26,5 +26,6 @@ if (metadata_branch_exists)
 	console.log(exec('git branch -D update-metadata'))
 }
 
+console.log(exec('git pull'))
 console.log(exec('git branch update-metadata origin/master'))
 console.log(exec('git checkout update-metadata'))
