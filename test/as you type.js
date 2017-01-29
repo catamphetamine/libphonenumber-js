@@ -142,8 +142,8 @@ describe('as you type', () =>
 		// UK (Jersey) (non-main country for +44 country phone code)
 
 		formatter = new as_you_type()
-		formatter.input('+447700900756').should.equal('+44 77 0090 0756')
-		formatter.template.should.equal('xxx xx xxxx xxxx')
+		formatter.input('+447700300000').should.equal('+44 7700 300000')
+		formatter.template.should.equal('xxx xxxx xxxxxx')
 		formatter.country.should.equal('JE')
 
 		// Test Afghanistan phone numbers

@@ -238,6 +238,10 @@ export default class as_you_type
 			}
 		}
 
+		// Check the available phone number formats
+		// based on the currently available leading digits.
+		this.match_formats_by_leading_digits()
+
 		// Format the phone number (given the next digits)
 		const formatted_national_phone_number = this.format_national_phone_number(input)
 
@@ -284,9 +288,6 @@ export default class as_you_type
 
 			return formatted_number
 		}
-
-		// Check if the previously chosen phone number format still holds
-		this.match_formats_by_leading_digits()
 
 		// If the previously chosen phone number format
 		// didn't match the next (current) digit being input
@@ -454,8 +455,16 @@ export default class as_you_type
 
 			const leading_digits_pattern_index = Math.min(index_of_leading_digits_pattern, leading_digits_pattern_count - 1)
 			const leading_digits_pattern = get_format_leading_digits_patterns(format)[leading_digits_pattern_index]
+
 			return new RegExp('^' + leading_digits_pattern).test(leading_digits)
 		})
+
+		// If there was a phone number format chosen
+		// and it no longer holds given the new leading digits then reset it
+		if (this.chosen_format && this.matching_formats.indexOf(this.chosen_format) === -1)
+		{
+			this.reset_format()
+		}
 	}
 
 	get_relevant_phone_number_formats()
