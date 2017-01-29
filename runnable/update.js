@@ -83,7 +83,7 @@ console.log()
 console.log(exec('git add PhoneNumberMetadata.xml metadata.min.json'))
 
 console.log(exec('git commit -m "Phone number medatada update"'))
-console.log(exec('git push'))
+console.log(exec('git push origin update-metadata'))
 
 console.log()
 console.log('========================================')
