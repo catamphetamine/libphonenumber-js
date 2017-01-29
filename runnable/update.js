@@ -83,6 +83,15 @@ console.log()
 console.log(exec('git add PhoneNumberMetadata.xml metadata.min.json'))
 
 console.log(exec('git commit -m "Phone number medatada update"'))
+
+// Delete previous `update-metadata` remote branch
+// (if it already exists)
+if (exec('git ls-remote --heads origin update-metadata'))
+{
+	console.log(exec('git push origin update-metadata --delete'))
+}
+
+// Push the local `update-metadata` branch to GitHub
 console.log(exec('git push origin update-metadata'))
 
 console.log()
