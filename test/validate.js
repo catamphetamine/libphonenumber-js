@@ -55,6 +55,11 @@ describe('validate', () =>
 
 	it('should work in edge cases', function()
 	{
-		is_valid_number().should.equal(false)
+		// No arguments
+		is_valid_number(undefined).should.equal(false)
+
+		// No metadata
+		const thrower = () => validate()
+		thrower.should.throw('Metadata')
 	})
 })

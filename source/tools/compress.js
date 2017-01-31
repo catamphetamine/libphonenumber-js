@@ -21,7 +21,7 @@ export default function compress(input)
 					format.format,
 					format.leading_digits_patterns,
 					format.national_prefix_formatting_rule,
-					format.national_prefix_optional_when_formatting,
+					format.national_prefix_is_optional_when_formatting,
 					format.international_format
 				]
 

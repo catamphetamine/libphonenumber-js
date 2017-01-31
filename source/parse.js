@@ -207,43 +207,9 @@ const default_options =
 // parse('+7 800 555 35 35', metadata)
 // ```
 //
-export default function parse(text, second_argument, third_argument)
+export default function parse(first_argument, second_argument, third_argument)
 {
-	let options
-	let metadata
-
-	// Sort out arguments
-
-	// Covert `resrict` country to an `options` object
-	if (typeof second_argument === 'string')
-	{
-		const restrict_to_country = second_argument
-
-		options =
-		{
-			...default_options,
-
-			country:
-			{
-				restrict: restrict_to_country
-			}
-		}
-
-		metadata = third_argument
-	}
-	else
-	{
-		// Differentiate `metadata` from `options`
-		if (second_argument.countries)
-		{
-			metadata = second_argument
-		}
-		else
-		{
-			options  = second_argument
-			metadata = third_argument
-		}
-	}
+	let { text, options, metadata } = sort_out_arguments(first_argument, second_argument, third_argument)
 
 	if (!options)
 	{
@@ -347,6 +313,9 @@ export default function parse(text, second_argument, third_argument)
 		{
 			return {}
 		}
+
+		// Update metadata to be for this specific country
+		country_metadata = metadata.countries[country]
 	}
 
 	// Validate national (significant) number length.
@@ -727,4 +696,56 @@ export function is_national_prefix_required(national_number, country_metadata)
 	{
 		return get_format_national_prefix_is_mandatory_when_formatting(format, country_metadata)
 	}
+}
+
+// Sort out arguments
+function sort_out_arguments(first_argument, second_argument, third_argument)
+{
+	let text
+	let options
+	let metadata
+
+	if (typeof first_argument === 'string')
+	{
+		text = first_argument
+	}
+
+	// Covert `resrict` country to an `options` object
+	if (typeof second_argument === 'string')
+	{
+		const restrict_to_country = second_argument
+
+		options =
+		{
+			...default_options,
+
+			country:
+			{
+				restrict: restrict_to_country
+			}
+		}
+
+		metadata = third_argument
+	}
+	else
+	{
+		// Differentiate `metadata` from `options`
+		if (second_argument && second_argument.countries)
+		{
+			metadata = second_argument
+		}
+		else
+		{
+			options  = second_argument
+			metadata = third_argument
+		}
+	}
+
+	// Sanity check
+	if (!metadata)
+	{
+		throw new Error('Metadata not passed')
+	}
+
+	return { text, options, metadata }
 }

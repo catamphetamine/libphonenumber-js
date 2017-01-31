@@ -106,6 +106,12 @@ export default class as_you_type
 {
 	constructor(country_code, metadata)
 	{
+		// Sanity check
+		if (!metadata)
+		{
+			throw new Error('Metadata not passed')
+		}
+
 		if (country_code && metadata.countries[country_code])
 		{
 			this.default_country = country_code
@@ -397,27 +403,6 @@ export default class as_you_type
 		this.available_formats = get_formats(this.country_metadata).filter((format) =>
 		{
 			return ELIGIBLE_FORMAT_PATTERN.test(get_format_international_format(format))
-		})
-		// Try the formats with "leading digits" defined first
-		.sort((a, b) =>
-		{
-			// Leading digits are defined for most formats
-			/* istanbul ignore next */
-			if (get_format_leading_digits_patterns(a).length === 0
-				&& get_format_leading_digits_patterns(b).length > 0)
-			{
-				return -1
-			}
-
-			// Leading digits are defined for most formats
-			/* istanbul ignore next */
-			if (get_format_leading_digits_patterns(a).length > 0
-				&& get_format_leading_digits_patterns(b).length === 0)
-			{
-				return 1
-			}
-
-			return 0
 		})
 
 		this.matching_formats = this.available_formats

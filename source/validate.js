@@ -21,29 +21,12 @@ from './metadata'
 //
 export default function is_valid(first_argument, second_argument, third_argument)
 {
-	let input
-	let metadata
+	const { input, metadata } = sort_out_arguments(first_argument, second_argument, third_argument)
 
-	// Sort out arguments
-	if (typeof first_argument === 'string')
+	// Sanity check
+	if (!metadata)
 	{
-		// If country code is supplied
-		if (typeof second_argument === 'string')
-		{
-			metadata = third_argument
-			input    = parse(first_argument, second_argument, metadata)
-		}
-		// Just an international phone number is supplied
-		else
-		{
-			metadata = second_argument
-			input    = parse(first_argument, metadata)
-		}
-	}
-	else
-	{
-		input    = first_argument
-		metadata = second_argument
+		throw new Error('Metadata not passed')
 	}
 
 	if (!input)
@@ -67,4 +50,34 @@ export default function is_valid(first_argument, second_argument, third_argument
 	}
 
 	return true
+}
+
+// Sort out arguments
+function sort_out_arguments(first_argument, second_argument, third_argument)
+{
+	let input
+	let metadata
+
+	if (typeof first_argument === 'string')
+	{
+		// If country code is supplied
+		if (typeof second_argument === 'string')
+		{
+			metadata = third_argument
+			input    = parse(first_argument, second_argument, metadata)
+		}
+		// Just an international phone number is supplied
+		else
+		{
+			metadata = second_argument
+			input    = parse(first_argument, metadata)
+		}
+	}
+	else
+	{
+		input    = first_argument
+		metadata = second_argument
+	}
+
+	return { input, metadata }
 }

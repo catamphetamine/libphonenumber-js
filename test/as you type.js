@@ -195,6 +195,15 @@ describe('as you type', () =>
 		// Bulgaria
 		// (should not prepend national prefix `0`)
 		new as_you_type('BG').input('111 222 3').should.equal('1112223')
+
+		// Deutchland
+		new as_you_type().input('+4915539898001').should.equal('+49 15539 898001')
+
+		// KZ detection
+		formatter = new as_you_type()
+		formatter.input('+7 702 211 1111')
+		formatter.country.should.equal('KZ')
+		formatter.valid.should.equal(true)
 	})
 
 	it('should close dangling braces', function()
@@ -258,6 +267,11 @@ describe('as you type', () =>
 	it('should work in edge cases', function()
 	{
 		let formatter
+		let thrower
+
+		// No metadata
+		thrower = () => new as_you_type_custom('RU')
+		thrower.should.throw('Metadata not passed')
 
 		// Second '+' sign
 
@@ -322,6 +336,12 @@ describe('as you type', () =>
 		formatter.input('+12223333333')
 		type(formatter.country).should.equal('undefined')
 		formatter.country_phone_code.should.equal('1')
+
+		// An otherwise matching phone number format is skipped
+		// when it requires a national prefix but no national prefix was entered.
+		formatter = new as_you_type('CN')
+		formatter.input('01010000').should.equal('010 10000')
+		formatter.reset().input('1010000').should.equal('10 1000 0')
 	})
 
 	it('should repeat string N times', function()

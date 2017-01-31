@@ -50,10 +50,15 @@ describe('parse', () =>
 
 		// UK (Jersey)
 		parse('+44 7700 300000').should.deep.equal({ country: 'JE', phone: '7700300000' })
+
+		// KZ
+		parse('+7 702 211 1111').should.deep.equal({ country: 'KZ', phone: '7022111111' })
 	})
 
 	it('should work in edge cases', function()
 	{
+		let thrower
+
 		// No input
 		parse('').should.deep.equal({})
 
@@ -91,6 +96,17 @@ describe('parse', () =>
 		// National prefix transform rule (Mexico).
 		// Local cell phone from a land line: 044 -> 1.
 		parse('0445511111111', 'MX').should.deep.equal({ country: 'MX', phone: '15511111111' })
+
+		// No arguments
+		parse(undefined).should.deep.equal({})
+
+		// No metadata
+		thrower = () => parser('')
+		thrower.should.throw('Metadata')
+
+		// No metadata
+		thrower = () => parser('', {})
+		thrower.should.throw('Metadata')
 	})
 
 	it('should infer phone number types', function()

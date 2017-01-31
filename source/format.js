@@ -38,47 +38,9 @@ from './metadata'
 // format('+78005553535', 'National', metadata)
 // ```
 //
-export default function format(first_argument = '', second_argument, third_argument, fourth_argument)
+export default function format(first_argument, second_argument, third_argument, fourth_argument)
 {
-	let input
-	let format_type
-	let metadata
-
-	// Sort out arguments
-	if (typeof first_argument === 'string')
-	{
-		// If country code is supplied
-		if (typeof third_argument === 'string')
-		{
-			// Will be `parse()`d later in code
-			input =
-			{
-				phone   : first_argument,
-				country : second_argument
-			}
-
-			format_type = third_argument
-			metadata    = fourth_argument
-		}
-		// Just an international phone number is supplied
-		else
-		{
-			// Will be `parse()`d later in code
-			input =
-			{
-				phone : first_argument
-			}
-
-			format_type = second_argument
-			metadata    = third_argument
-		}
-	}
-	else
-	{
-		input       = first_argument
-		format_type = second_argument
-		metadata    = third_argument
-	}
+	const { input, format_type, metadata } = sort_out_arguments(first_argument, second_argument, third_argument, fourth_argument)
 
 	let country_metadata
 
@@ -223,4 +185,71 @@ export function local_to_international_style(local)
 		// Replace dashes with spaces
 		.replace(/\-/g, ' ')
 		.trim()
+}
+
+// Sort out arguments
+function sort_out_arguments(first_argument = '', second_argument, third_argument, fourth_argument)
+{
+	let input
+	let format_type
+	let metadata
+
+	// Sort out arguments
+	if (typeof first_argument === 'string')
+	{
+		// If country code is supplied
+		if (typeof third_argument === 'string')
+		{
+			// Will be `parse()`d later in code
+			input =
+			{
+				phone   : first_argument,
+				country : second_argument
+			}
+
+			format_type = third_argument
+			metadata    = fourth_argument
+		}
+		// Just an international phone number is supplied
+		else
+		{
+			// Will be `parse()`d later in code
+			input =
+			{
+				phone : first_argument
+			}
+
+			if (typeof second_argument !== 'string')
+			{
+				throw new Error('Format type argument not passed for `format()`')
+			}
+
+			format_type = second_argument
+			metadata    = third_argument
+		}
+	}
+	else
+	{
+		input       = first_argument
+		format_type = second_argument
+		metadata    = third_argument
+	}
+
+	// Sanity check
+	if (!metadata)
+	{
+		throw new Error('Metadata not passed')
+	}
+
+	switch (format_type)
+	{
+		case 'International':
+		case 'International_plaintext':
+		case 'National':
+			break
+		default:
+			throw new Error(`Unknown format type argument passed to "format()": "${format_type}"`)
+	}
+
+	return { input, format_type, metadata }
 }
