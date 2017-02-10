@@ -47,7 +47,7 @@
   },
   "betterScripts": {
     "browser-build": {
-      "command": "npm run build-es6-modules && webpack --progress --colors --watch",
+      "command": "npm run build-es6-modules && webpack --progress --colors",
       "env": {
         "WEBPACK_ENV": "build"
       }
