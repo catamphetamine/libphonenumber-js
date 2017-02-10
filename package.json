@@ -37,7 +37,7 @@
     "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec test/ --recursive",
     "test-coverage": "istanbul cover -x \"build/**\" -x \"es6/**\" node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/ --recursive",
     "test-travis": "istanbul cover -x \"build/**\" -x \"es6/**\" node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/ --recursive",
-    "browser-build": "npm run build-es6-modules && WEBPACK_ENV=build webpack",
+    "browser-build": "better-npm-run browser-build",
     "browser-build-dev": "npm run build-es6-modules && WEBPACK_ENV=dev webpack --progress --colors --watch",
     "clean-for-build": "rimraf ./build/**/* ./es6/**/*",
     "build-commonjs-modules": "better-npm-run build-commonjs-modules",
@@ -46,6 +46,12 @@
     "prepublish": "npm-run-all build test browser-build"
   },
   "betterScripts": {
+    "browser-build": {
+      "command": "npm run build-es6-modules",
+      "env": {
+        "WEBPACK_ENV": "build"
+      }
+    },
     "build-commonjs-modules": {
       "command": "babel ./source --out-dir ./build --source-maps",
       "env": {
