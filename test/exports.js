@@ -2,6 +2,8 @@ import
 {
 	format,
 	parse,
+	get_number_type,
+	getNumberType,
 	is_valid_number,
 	isValidNumber,
 	as_you_type,
@@ -16,6 +18,8 @@ describe(`exports`, function()
 	{
 		parse('')
 		format('', 'US', 'National')
+		get_number_type('', 'RU')
+		getNumberType('', 'RU')
 		is_valid_number('', 'US')
 		isValidNumber('', 'US')
 		new as_you_type('US').input('+')
@@ -29,6 +33,8 @@ describe(`exports`, function()
 
 		Library.parse('')
 		Library.format('', 'US', 'National')
+		Library.get_number_type('', 'RU')
+		Library.getNumberType('', 'RU')
 		Library.is_valid_number('', 'US')
 		Library.isValidNumber('', 'US')
 		new Library.as_you_type('US').input('+')

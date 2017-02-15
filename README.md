@@ -103,6 +103,14 @@ format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 
 format('2133734253', 'US', 'International') === '+1 213 373 4253'
 ```
 
+### getNumberType(national_number, country_code)
+
+Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
+
+```js
+getNumberType('8005553535', 'RU') === 'MOBILE'
+```
+
 ### isValidNumber(parsed_number)
 
 (aka `is_valid_number`)

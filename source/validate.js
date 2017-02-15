@@ -43,7 +43,7 @@ export default function is_valid(first_argument, second_argument, third_argument
 
 	if (get_types(country_metadata))
 	{
-		if (!get_number_type(input.phone, country_metadata))
+		if (!get_number_type(input.phone, input.country, metadata))
 		{
 			return false
 		}

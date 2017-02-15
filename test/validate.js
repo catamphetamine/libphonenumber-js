@@ -4,7 +4,7 @@ chai.should()
 import metadata from '../metadata.min'
 import validate from '../source/validate'
 
-export function is_valid_number(...parameters)
+function is_valid_number(...parameters)
 {
 	parameters.push(metadata)
 	return validate.apply(this, parameters)

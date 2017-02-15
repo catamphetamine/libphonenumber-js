@@ -1,9 +1,9 @@
 import metadata from './metadata.min'
 
-import parseCustom         from './es6/parse'
-import formatCustom        from './es6/format'
+import parseCustom, { get_number_type as getNumberTypeCustom } from './es6/parse'
+import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
-import asYouTypeCustom     from './es6/as you type'
+import asYouTypeCustom from './es6/as you type'
 
 export function parse()
 {
@@ -17,6 +17,19 @@ export function format()
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return formatCustom.apply(this, parameters)
+}
+
+export function get_number_type()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return getNumberTypeCustom.apply(this, parameters)
+}
+
+// camelCase alias
+export function getNumberType()
+{
+	return is_valid_number.apply(this, arguments)
 }
 
 export function is_valid_number()

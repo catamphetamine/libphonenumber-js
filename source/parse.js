@@ -578,7 +578,7 @@ export function find_country_code(country_phone_code, national_phone_number, met
 		}
 		// Else perform full validation with all of those bulky
 		// fixed-line/mobile/etc regular expressions.
-		else if (get_number_type(national_phone_number, country))
+		else if (get_number_type(national_phone_number, country_code, metadata))
 		{
 			return country_code
 		}
@@ -586,8 +586,10 @@ export function find_country_code(country_phone_code, national_phone_number, met
 }
 
 // Finds out national phone number type (fixed line, mobile, etc)
-export function get_number_type(national_number, country_metadata)
+export function get_number_type(national_number, country_code, metadata)
 {
+	const country_metadata = metadata.countries[country_code]
+
 	// Is this national number even valid for this country
 	if (!is_of_type(national_number, get_national_number_pattern(country_metadata)))
 	{
@@ -600,9 +602,13 @@ export function get_number_type(national_number, country_metadata)
 		// to reduce metadata size, if there's no "fixed line" pattern
 		// then it means it was removed due to being a duplicate of some other pattern.
 		//
+		// Also, many times fixed line phone number regular expressions
+		// are the same as mobile phone number regular expressions,
+		// so in these cases there's no differentiation between them.
+		//
 		// (no such country in the metadata, therefore no unit test for this `if`)
 		/* istanbul ignore if */
-		if (!get_type_fixed_line(country_metadata))
+		if (!get_type_fixed_line(country_metadata) || get_type_fixed_line(country_metadata) === get_type_mobile(country_metadata))
 		{
 			return 'FIXED_LINE_OR_MOBILE'
 		}
@@ -616,7 +622,12 @@ export function get_number_type(national_number, country_metadata)
 		// Because duplicate regular expressions are removed
 		// to reduce metadata size, if there's no "mobile" pattern
 		// then it means it was removed due to being a duplicate of some other pattern.
-		if (!get_type_mobile(country_metadata))
+		//
+		// Also, many times fixed line phone number regular expressions
+		// are the same as mobile phone number regular expressions,
+		// so in these cases there's no differentiation between them.
+		//
+		if (!get_type_mobile(country_metadata) || get_type_mobile(country_metadata) === get_type_fixed_line(country_metadata))
 		{
 			return 'FIXED_LINE_OR_MOBILE'
 		}

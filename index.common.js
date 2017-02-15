@@ -19,6 +19,13 @@ exports.format = function format()
 	return custom.format.apply(this, parameters)
 }
 
+exports.get_number_type = function get_number_type()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.isValidNumber.apply(this, parameters)
+}
+
 exports.is_valid_number = function is_valid_number()
 {
 	var parameters = Array.prototype.slice.call(arguments)
@@ -37,5 +44,6 @@ exports.as_you_type.prototype.constructor = exports.as_you_type
 exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
 
 // camelCase aliases
+exports.getNumberType = exports.get_number_type
 exports.isValidNumber = exports.is_valid_number
 exports.asYouType = exports.as_you_type
