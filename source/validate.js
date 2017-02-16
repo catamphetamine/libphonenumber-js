@@ -1,4 +1,4 @@
-import parse, { get_number_type } from './parse'
+import parse, { get_number_type, is_viable_phone_number } from './parse'
 
 import
 {
@@ -64,18 +64,36 @@ function sort_out_arguments(first_argument, second_argument, third_argument)
 		if (typeof second_argument === 'string')
 		{
 			metadata = third_argument
-			input    = parse(first_argument, second_argument, metadata)
+
+			// The `first_argument` must be a valid phone number
+			// as a whole, not just a part of it which gets parsed here.
+			if (is_viable_phone_number(first_argument))
+			{
+				input = parse(first_argument, second_argument, metadata)
+			}
 		}
 		// Just an international phone number is supplied
 		else
 		{
 			metadata = second_argument
-			input    = parse(first_argument, metadata)
+
+			// The `first_argument` must be a valid phone number
+			// as a whole, not just a part of it which gets parsed here.
+			if (is_viable_phone_number(first_argument))
+			{
+				input = parse(first_argument, metadata)
+			}
 		}
 	}
 	else
 	{
-		input    = first_argument
+		// The `first_argument` must be a valid phone number
+		// as a whole, not just a part of it which gets parsed here.
+		if (first_argument && first_argument.phone && is_viable_phone_number(first_argument.phone))
+		{
+			input = first_argument
+		}
+
 		metadata = second_argument
 	}
 

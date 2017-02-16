@@ -61,5 +61,8 @@ describe('validate', () =>
 		// No metadata
 		const thrower = () => validate()
 		thrower.should.throw('Metadata')
+
+		// Letters in phone number
+		is_valid_number('+499821958a').should.equal(false)
 	})
 })

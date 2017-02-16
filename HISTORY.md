@@ -1,3 +1,9 @@
+0.3.6 / 16.02.2016
+===================
+
+  * Added more strict validation to `isValidNumber`
+  * Fixed CommonJS export for `getNumberType`
+
 0.3.5 / 15.02.2016
 ===================
 
