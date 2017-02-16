@@ -23,7 +23,7 @@ exports.get_number_type = function get_number_type()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
-	return custom.isValidNumber.apply(this, parameters)
+	return custom.getNumberType.apply(this, parameters)
 }
 
 exports.is_valid_number = function is_valid_number()
