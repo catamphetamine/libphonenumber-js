@@ -79,11 +79,19 @@ export function get_format_national_prefix_is_optional_when_formatting(format_ar
 
 export function get_format_national_prefix_is_mandatory_when_formatting(format_array, country_metadata)
 {
+	const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format_array, country_metadata)
+
 	// National prefix is omitted if there's no national prefix formatting rule
-	// set for this country, or when this rule is set but
+	// set for this country, or when the national prefix formatting rule
+	// contains no national prefix itself, or when this rule is set but
 	// national prefix is optional for this phone number format
 	// (and it is not enforced explicitly)
-	return get_format_national_prefix_formatting_rule(format_array, country_metadata) &&
+	return national_prefix_formatting_rule &&
+		// Check that national prefix formatting rule is not a dummy one
+		national_prefix_formatting_rule !== '$1' &&
+		// Check that national prefix formatting rule actually has national prefix digit(s)
+		/\d/.test(national_prefix_formatting_rule.replace('$1', '')) &&
+		// Or maybe national prefix is optional for this format
 		!get_format_national_prefix_is_optional_when_formatting(format_array, country_metadata)
 }
 

@@ -1,3 +1,8 @@
+0.3.8 / 25.02.2016
+===================
+
+  * Loosened national prefix requirement when parsing (fixed certain Brazilian phone numbers parsing)
+
 0.3.6 / 16.02.2016
 ===================
 

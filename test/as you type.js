@@ -139,6 +139,11 @@ describe('as you type', () =>
 		formatter.input('+77172580659')
 		formatter.country.should.equal('KZ')
 
+		// Brazil
+
+		formatter = new as_you_type('BR')
+		formatter.input('11987654321').should.equal('(11) 98765-4321')
+
 		// UK (Jersey) (non-main country for +44 country phone code)
 
 		formatter = new as_you_type()
