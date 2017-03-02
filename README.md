@@ -246,23 +246,9 @@ For a "tree-shaking" ES6-capable bundler (e.g. Webpack 2) that would be
 import { parseCustom, formatCustom, isValidNumberCustom, asYouTypeCustom } from 'libphonenumber-js'
 import metadata from './metadata.min.json'
 
-export function parse() {
-  var parameters = Array.prototype.slice.call(arguments)
-  parameters.push(metadata)
-  return parseCustom.apply(this, parameters)
-}
-
-export function format() {
-  var parameters = Array.prototype.slice.call(arguments)
-  parameters.push(metadata)
-  return formatCustom.apply(this, parameters)
-}
-
-export function isValidNumber() {
-  var parameters = Array.prototype.slice.call(arguments)
-  parameters.push(metadata)
-  return isValidNumberCustom.apply(this, parameters)
-}
+export const parse = (...args) => parseCustom(...args, metadata);
+export const format = (...args) => formatCustom(...args, metadata);
+export const isValidNumber = (...args) => isValidNumberCustom(...args, metadata);
 
 export class asYouType extends asYouTypeCustom {
   constructor(country) {
