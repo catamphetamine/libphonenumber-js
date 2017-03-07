@@ -76,8 +76,13 @@ describe('parse', () =>
 		// No country at all (non international number and no explicit country code)
 		parse('123').should.deep.equal({})
 
-		// No country metadata for this country code
-		parse('123', 'ZZ').should.deep.equal({})
+		// No country metadata for this `require` country code
+		thrower = () => parse('123', 'ZZ')
+		thrower.should.throw('Unknown country code')
+
+		// No country metadata for this `default` country code
+		thrower = () => parse('123', { country: { default: 'ZZ' }})
+		thrower.should.throw('Unknown country code')
 
 		// Invalid country phone code
 		parse('+210').should.deep.equal({})

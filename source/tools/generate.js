@@ -221,7 +221,7 @@ export default function(input, included_countries, extended)
 					uan             : phone_type_pattern(territory, 'uan'),
 					pager           : phone_type_pattern(territory, 'pager'),
 					voip            : phone_type_pattern(territory, 'voip'),
-					shared_cost     : phone_type_pattern(territory, 'fixedLine')
+					shared_cost     : phone_type_pattern(territory, 'sharedCost')
 				}
 			}
 

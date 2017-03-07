@@ -40,15 +40,19 @@ export const PLUS_CHARS = '+\uFF0B'
 // (ascii, fullwidth, arabic-indic, and eastern arabic digits).
 export const VALID_DIGITS = '0-9\uFF10-\uFF19\u0660-\u0669\u06F0-\u06F9'
 
+// `DASHES` will be right after the opening square bracket of the "character class"
+const DASHES = '-\u2010-\u2015\u2212\u30FC\uFF0D'
+const SLASHES = '\uFF0F/'
+const DOTS = '\uFF0E.'
+const WHITESPACE = ' \u00A0\u00AD\u200B\u2060\u3000'
+const BRACKETS = '()\uFF08\uFF09\uFF3B\uFF3D\\[\\]'
+const TILDES = '~\u2053\u223C\uFF5E'
+
 // Regular expression of acceptable punctuation found in phone numbers. This
 // excludes punctuation found as a leading character only. This consists of dash
 // characters, white space characters, full stops, slashes, square brackets,
-// parentheses and tildes. It also includes the letter 'x' as that is found as a
-// placeholder for carrier information in some phone numbers. Full-width
-// variants are also present.
-export const VALID_PUNCTUATION =
-	'-x\u2010-\u2015\u2212\u30FC\uFF0D-\uFF0F \u00A0\u00AD\u200B\u2060\u3000' +
-	'()\uFF08\uFF09\uFF3B\uFF3D.\\[\\]/~\u2053\u223C\uFF5E'
+// parentheses and tildes. Full-width variants are also present.
+export const VALID_PUNCTUATION = `${DASHES}${SLASHES}${DOTS}${WHITESPACE}${BRACKETS}${TILDES}`
 
 //  Regular expression of viable phone numbers. This is location independent.
 //  Checks we have at least three leading digits, and only valid punctuation,
@@ -218,16 +222,16 @@ export default function parse(first_argument, second_argument, third_argument)
 
 	// Validate country codes
 
-	if (!metadata.countries[options.country.default])
+	// Validate `default` country
+	if (options.country.default && !metadata.countries[options.country.default])
 	{
-		options = { ...options }
-		delete options.country.default
+		throw new Error(`Unknown country code: ${options.country.default}`)
 	}
 
-	if (!metadata.countries[options.country.restrict])
+	// Validate `restrict` country
+	if (options.country.restrict && !metadata.countries[options.country.restrict])
 	{
-		options = { ...options }
-		delete options.country.restrict
+		throw new Error(`Unknown country code: ${options.country.restrict}`)
 	}
 
 	// Parse the phone number
@@ -265,6 +269,12 @@ export default function parse(first_argument, second_argument, third_argument)
 			return {}
 		}
 
+		// Formatting information for regions which share
+		// a country calling code is contained by only one region
+		// for performance reasons. For example, for NANPA region
+		// ("North American Numbering Plan Administration",
+		//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
+		// it will be contained in the metadata for `US`.
 		country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
 
 		// `country` will be set later,
@@ -274,9 +284,9 @@ export default function parse(first_argument, second_argument, third_argument)
 		// Therefore, to reliably determine the exact country,
 		// national (significant) number should be parsed first.
 	}
-	else if (options.country.default || options.country.restrict)
+	else if (options.country.restrict || options.country.default)
 	{
-		country = options.country.default || options.country.restrict
+		country = options.country.restrict || options.country.default
 		country_metadata = metadata.countries[country]
 
 		number = normalize(text)
@@ -305,9 +315,13 @@ export default function parse(first_argument, second_argument, third_argument)
 	//
 	if (!country)
 	{
+		// When `metadata.json` is generated, all "ambiguous" country phone codes
+		// get their countries populated with the full set of
+		// "phone number type" regular expressions.
 		country = find_country_code(country_phone_code, national_number, metadata)
 
-		// Just in case there's a bug in Google's metadata
+		// Just in case there appears to be a bug in Google's metadata
+		// and the exact country could not be extracted from the phone number.
 		/* istanbul ignore if */
 		if (!country)
 		{
@@ -332,8 +346,11 @@ export default function parse(first_argument, second_argument, third_argument)
 		return {}
 	}
 
+	// National number pattern is different for each country,
+	// even for those ones which are part of the "NANPA" group.
 	const national_number_rule = new RegExp(get_national_number_pattern(country_metadata))
 
+	// Check if national phone number pattern matches the number
 	if (!matches_entirely(national_number, national_number_rule))
 	{
 		return {}

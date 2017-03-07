@@ -65,8 +65,11 @@ function sort_out_arguments(first_argument, second_argument, third_argument)
 		{
 			metadata = third_argument
 
-			// The `first_argument` must be a valid phone number
-			// as a whole, not just a part of it which gets parsed here.
+			// `parse` extracts phone numbers from raw text,
+			// therefore it will cut off all "garbage" characters,
+			// while this `validate` function needs to verify
+			// that the phone number contains no "garbage"
+			// therefore the explicit `is_viable_phone_number` check.
 			if (is_viable_phone_number(first_argument))
 			{
 				input = parse(first_argument, second_argument, metadata)
@@ -77,8 +80,11 @@ function sort_out_arguments(first_argument, second_argument, third_argument)
 		{
 			metadata = second_argument
 
-			// The `first_argument` must be a valid phone number
-			// as a whole, not just a part of it which gets parsed here.
+			// `parse` extracts phone numbers from raw text,
+			// therefore it will cut off all "garbage" characters,
+			// while this `validate` function needs to verify
+			// that the phone number contains no "garbage"
+			// therefore the explicit `is_viable_phone_number` check.
 			if (is_viable_phone_number(first_argument))
 			{
 				input = parse(first_argument, metadata)
