@@ -441,7 +441,9 @@ export default class as_you_type
 			const leading_digits_pattern_index = Math.min(index_of_leading_digits_pattern, leading_digits_pattern_count - 1)
 			const leading_digits_pattern = get_format_leading_digits_patterns(format)[leading_digits_pattern_index]
 
-			return new RegExp('^' + leading_digits_pattern).test(leading_digits)
+			// Brackets are required for `^` to be applied to
+			// all or-ed (`|`) parts, not just the first one.
+			return new RegExp(`^(${leading_digits_pattern})`).test(leading_digits)
 		})
 
 		// If there was a phone number format chosen

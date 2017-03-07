@@ -1,3 +1,8 @@
+0.3.11 / 07.03.2016
+===================
+
+  * Fixed a bug when "as you type" formatter incorrectly formatted the input using non-matching phone number formats
+
 0.3.8 / 25.02.2016
 ===================
 
