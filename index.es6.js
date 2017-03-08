@@ -1,4 +1,4 @@
-import metadata from './metadata.min.js'
+import metadata from './metadata.min.json'
 
 import parseCustom, { get_number_type as getNumberTypeCustom } from './es6/parse'
 import formatCustom from './es6/format'
