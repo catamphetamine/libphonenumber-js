@@ -179,7 +179,7 @@
 										style={{ width: '40px', marginLeft: '6px' }}/>
 								</div>
 								<div className="section__line">Actual country: {as_you_type.country}</div>
-								<div className="section__line">Valid: {String(as_you_type.valid)}</div>
+								<div className="section__line">Valid: {String(libphonenumber.isValidNumber(this.state.value))}</div>
 								<div className="section__line">National: {as_you_type.country && libphonenumber.format(as_you_type.national_number, as_you_type.country, 'National')}</div>
 							</div>
 
