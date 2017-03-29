@@ -138,6 +138,26 @@
 					const as_you_type = new libphonenumber.as_you_type(this.state.country)
 					as_you_type.input(this.state.value)
 
+					let parsed_number = 'Unknown country'
+					let national_formatted_number = 'Unknown country'
+					let international_formatted_number = 'Unknown country'
+					let international_formatted_number_in_plaintext = 'Unknown country'
+
+					try
+					{
+						parsed_number = JSON.stringify(libphonenumber.parse(this.state.parse, this.state.country))
+						national_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'National')
+						international_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International')
+						international_formatted_number_in_plaintext = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International_plaintext')
+					}
+					catch (error)
+					{
+						if (error.message.indexOf('Unknown country code') !== 0)
+						{
+							throw error
+						}
+					}
+
 					return (
 						<div>
 							<h2>As you type</h2>
@@ -197,7 +217,7 @@
 								onChange={event => this.setState({ parse: event.target.value })}/>
 
 							<div className="section">
-								<code>{JSON.stringify(libphonenumber.parse(this.state.parse, this.state.country))}</code>
+								<code>{parsed_number}</code>
 							</div>
 
 							<h2>Format</h2>
@@ -214,9 +234,9 @@
 								onChange={event => this.setState({ format: event.target.value })}/>
 
 							<div className="section">
-								<div className="section__line"><code>National: {libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'National')}</code></div>
-								<div className="section__line"><code>International: {libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International')}</code></div>
-								<div className="section__line"><code>International plaintext: {libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International_plaintext')}</code></div>
+								<div className="section__line"><code>National: {national_formatted_number}</code></div>
+								<div className="section__line"><code>International: {international_formatted_number}</code></div>
+								<div className="section__line"><code>International plaintext: {international_formatted_number_in_plaintext}</code></div>
 							</div>
 						</div>
 					)
