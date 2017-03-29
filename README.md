@@ -1,8 +1,8 @@
 # libphonenumber-js
 
-[![NPM Version][npm-badge]][npm]
-[![Build Status][travis-badge]][travis]
-[![Test Coverage][coveralls-badge]][coveralls]
+[![npm version](https://img.shields.io/npm/v/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
+[![npm downloads](https://img.shields.io/npm/dm/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
+[![coverage](https://img.shields.io/coveralls/halt-hammerzeit/libphonenumber-js/master.svg?style=flat-square)](https://coveralls.io/r/halt-hammerzeit/libphonenumber-js?branch=master)
 
 A simpler (and smaller) rewrite of Google Android's famous `libphonenumber` library: easy phone number parsing and formatting in javascript.
 
@@ -386,9 +386,3 @@ npm install [module name with version].tar.gz
 ## License
 
 [MIT](LICENSE)
-[npm]: https://www.npmjs.org/package/libphonenumber-js
-[npm-badge]: https://img.shields.io/npm/v/libphonenumber-js.svg?style=flat-square
-[travis]: https://travis-ci.org/halt-hammerzeit/libphonenumber-js
-[travis-badge]: https://img.shields.io/travis/halt-hammerzeit/libphonenumber-js/master.svg?style=flat-square
-[coveralls]: https://coveralls.io/r/halt-hammerzeit/libphonenumber-js?branch=master
-[coveralls-badge]: https://img.shields.io/coveralls/halt-hammerzeit/libphonenumber-js/master.svg?style=flat-square
