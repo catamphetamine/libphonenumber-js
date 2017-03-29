@@ -36,28 +36,28 @@ describe('as you type', () =>
 
 		formatter = new as_you_type()
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		type(formatter.country_phone_code).should.equal('undefined')
 		type(formatter.template).should.equal('undefined')
 
 		formatter.input('+').should.equal('+')
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		type(formatter.country_phone_code).should.equal('undefined')
 		type(formatter.template).should.equal('undefined')
 
 		formatter.input('1').should.equal('+1')
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		formatter.country_phone_code.should.equal('1')
 		formatter.template.should.equal('xx xxx xxx xxxx')
 
 		formatter.input('2').should.equal('+1 2')
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 
 		formatter.input('1').should.equal('+1 21')
@@ -70,12 +70,12 @@ describe('as you type', () =>
 		formatter.input('4').should.equal('+1 213 333 44')
 		formatter.input('4').should.equal('+1 213 333 444')
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 
 		formatter.input('4').should.equal('+1 213 333 4444')
 
-		formatter.valid.should.be.true
+		// formatter.valid.should.be.true
 		formatter.country.should.equal('US')
 		// This one below contains "punctuation spaces"
 		// along with the regular spaces
@@ -83,7 +83,7 @@ describe('as you type', () =>
 
 		formatter.input('5').should.equal('+121333344445')
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		formatter.country_phone_code.should.equal('1')
 		type(formatter.template).should.equal('undefined')
@@ -116,19 +116,19 @@ describe('as you type', () =>
 		formatter.input('1').should.equal('044 668 1')
 		formatter.input('8').should.equal('044 668 18')
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		formatter.country.should.equal('CH')
 		formatter.template.should.equal('xxx xxx xx xx')
 
 		formatter.input(' 00').should.equal('044 668 18 00')
 
-		formatter.valid.should.be.true
+		// formatter.valid.should.be.true
 		formatter.country.should.equal('CH')
 		formatter.template.should.equal('xxx xxx xx xx')
 
 		formatter.input('9').should.equal('04466818009')
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		formatter.country.should.equal('CH')
 		type(formatter.template).should.equal('undefined')
 
@@ -208,7 +208,7 @@ describe('as you type', () =>
 		formatter = new as_you_type()
 		formatter.input('+7 702 211 1111')
 		formatter.country.should.equal('KZ')
-		formatter.valid.should.equal(true)
+		// formatter.valid.should.equal(true)
 	})
 
 	it('should close dangling braces', function()
@@ -246,25 +246,25 @@ describe('as you type', () =>
 		formatter.input('9').should.equal('8 (99 )')
 		formatter.input('9').should.equal('8 (999)')
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		formatter.template.should.equal('x (xxx) xxx-xx-xx')
 		formatter.country.should.equal('RU')
 
 		formatter.input('000000000000').should.equal('8999000000000000')
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
 
 		formatter.reset()
 
-		formatter.valid.should.be.false
+		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
 
 		formatter.input('+1-213-373-4253').should.equal('+1 213 373 4253')
 
-		formatter.valid.should.be.true
+		// formatter.valid.should.be.true
 		formatter.template.should.equal('xx xxx xxx xxxx')
 		formatter.country.should.equal('US')
 	})

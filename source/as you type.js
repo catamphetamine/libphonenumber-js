@@ -170,8 +170,8 @@ export default class as_you_type
 		// Raw phone number
 		this.parsed_input += input
 
-		// Reset phone number validation state
-		this.valid = false
+		// // Reset phone number validation state
+		// this.valid = false
 
 		// Add digits to the national number
 		this.national_number += input
@@ -285,12 +285,17 @@ export default class as_you_type
 
 		const formatted_number = this.attempt_to_format_complete_phone_number()
 
+		// Just because a phone number doesn't have a suitable format
+		// that doesn't mean that the phone is invalid
+		// because phone number formats only format phone numbers,
+		// they don't validate them and some (rare) phone numbers
+		// are meant to stay non-formatted.
 		if (formatted_number)
 		{
-			if (this.country)
-			{
-				this.valid = true
-			}
+			// if (this.country)
+			// {
+			// 	this.valid = true
+			// }
 
 			return formatted_number
 		}
@@ -342,7 +347,7 @@ export default class as_you_type
 
 		this.reset_format()
 
-		this.valid = false
+		// this.valid = false
 
 		return this
 	}

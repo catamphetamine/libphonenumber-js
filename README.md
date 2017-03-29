@@ -149,7 +149,8 @@ Creates a formatter for partially entered phone number. The two-letter `default_
 
 The instance of this class has also these fields:
 
- * `valid` — is the phone number being input a valid one already
+<!-- * `valid` — is the phone number being input a valid one already
+formatter.valid === true -->
  * `country` — a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition) of the country this phone belongs to
  * `country_phone_code` — a phone code of the `country`
  * `national_number` — national number part (so far)
@@ -161,7 +162,6 @@ new asYouType('US').input('2133734') === '(213) 373-4'
 
 const formatter = new asYouType()
 formatter.input('+1-213-373-4253') === '+1 213 373 4253'
-formatter.valid === true
 formatter.country === 'US'
 formatter.country_phone_code = '1'
 formatter.template === 'xx xxx xxx xxxx'

@@ -1,36 +1,41 @@
-0.3.11 / 07.03.2016
+0.4.0 / 29.03.2017
+===================
+
+  * Removed `.valid` from "as you type" formatter because it wasn't reliable (gave false positives). Use `isValidNumber(value)` for phone number validation instead.
+
+0.3.11 / 07.03.2017
 ===================
 
   * Fixed a bug when "as you type" formatter incorrectly formatted the input using non-matching phone number formats
 
-0.3.8 / 25.02.2016
+0.3.8 / 25.02.2017
 ===================
 
   * Loosened national prefix requirement when parsing (fixed certain Brazilian phone numbers parsing)
 
-0.3.6 / 16.02.2016
+0.3.6 / 16.02.2017
 ===================
 
   * Added more strict validation to `isValidNumber`
   * Fixed CommonJS export for `getNumberType`
 
-0.3.5 / 15.02.2016
+0.3.5 / 15.02.2017
 ===================
 
   * Now exporting `getNumberType` function
 
-0.3.0 / 29.01.2016
+0.3.0 / 29.01.2017
 ===================
 
   * Removed `libphonenumber-js/custom.es6` exported file: now everything should be imported from the root package in ES6-capable bundlers (because tree-shaking actually works that way)
   * Now custom functions like `parse`, `format` and `isValidNumber` are not bound to custom metadata: it's passed as the last argument instead. And custom `asYouType` is now not a function — instead, `asYouType` constructor takes an additional `metadata` argument
 
-0.2.29 / 12.01.2016
+0.2.29 / 12.01.2017
 ===================
 
   * Fixed `update-metadata` utility
 
-0.2.26 / 02.01.2016
+0.2.26 / 02.01.2017
 ===================
 
   * Added national prefix check for `parse` and `isPhoneValid`
