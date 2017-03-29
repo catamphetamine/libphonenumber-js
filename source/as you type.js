@@ -29,7 +29,8 @@ import
 	extract_formatted_phone_number,
 	parse_phone_number,
 	parse_phone_number_and_country_phone_code,
-	find_country_code
+	find_country_code,
+	strip_national_prefix
 }
 from './parse'
 
@@ -300,6 +301,8 @@ export default class as_you_type
 			return formatted_number
 		}
 
+		// For some phone number formats national prefix
+
 		// If the previously chosen phone number format
 		// didn't match the next (current) digit being input
 		// (leading digits pattern didn't match).
@@ -485,26 +488,29 @@ export default class as_you_type
 	// leadingDigitsPattern also matches the input.
 	attempt_to_format_complete_phone_number()
 	{
-		for (let format of this.get_relevant_phone_number_formats())
+		for (const format of this.get_relevant_phone_number_formats())
 		{
 			const matcher = new RegExp('^(?:' + get_format_pattern(format) + ')$')
 
 			if (!matcher.test(this.national_number))
 			{
-				// If the national prefix is optional
-				// then also try to format the phone number
-				// without the national prefix being extracted.
-				if (this.national_prefix
-					&& get_format_national_prefix_is_optional_when_formatting(format, this.country_metadata))
-				{
-					if (!matcher.test(this.national_prefix + this.national_number))
-					{
-						continue
-					}
-
-					this.national_number = this.national_prefix + this.national_number
-					this.national_prefix = ''
-				}
+				// This national prefix extra handling has been
+				// done already in `extract_national_prefix()`.
+				//
+				// // If the national prefix is optional
+				// // then also try to format the phone number
+				// // without the national prefix being extracted.
+				// if (this.national_prefix
+				// 	&& get_format_national_prefix_is_optional_when_formatting(format, this.country_metadata))
+				// {
+				// 	if (!matcher.test(this.national_prefix + this.national_number))
+				// 	{
+				// 		continue
+				// 	}
+				//
+				// 	this.national_number = this.national_prefix + this.national_number
+				// 	this.national_prefix = ''
+				// }
 
 				continue
 			}
@@ -594,26 +600,13 @@ export default class as_you_type
 			return
 		}
 
-		const national_prefix_for_parsing = get_national_prefix_for_parsing(this.country_metadata)
+		const national_number = strip_national_prefix(this.national_number, this.country_metadata)
 
-		if (!national_prefix_for_parsing)
+		if (national_number !== this.national_number)
 		{
-			return
+			this.national_prefix = this.national_number.slice(0, this.national_number.length - national_number.length)
+			this.national_number = national_number
 		}
-
-		const matches = this.national_number.match(new RegExp('^(?:' + national_prefix_for_parsing + ')'))
-
-		// Since some national prefix patterns are entirely optional, check that a
-		// national prefix could actually be extracted.
-		if (!matches || !matches[0])
-		{
-			return
-		}
-
-		const national_number_starts_at = matches[0].length
-
-		this.national_prefix = this.national_number.slice(0, national_number_starts_at)
-		this.national_number = this.national_number.slice(national_number_starts_at)
 
 		return this.national_prefix
 	}

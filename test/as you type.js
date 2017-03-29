@@ -176,6 +176,12 @@ describe('as you type', () =>
 		formatter.input('567').should.equal('8 (999) 123-45-67')
 		formatter.input('8').should.equal('899912345678')
 
+		// Shouldn't strip national prefix if it is optional
+		// and if it's a valid phone number.
+		formatter = new as_you_type('RU')
+		formatter.input('8005553535')
+		formatter.national_number.should.equal('8005553535')
+
 		// Check that clearing an national formatter:
 		//  * doesn't clear country metadata
 		//  * clears all other things

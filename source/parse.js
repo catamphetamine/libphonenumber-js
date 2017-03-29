@@ -533,13 +533,13 @@ export function strip_national_prefix(number, country_metadata)
 		return number
 	}
 
-	const national_prefix_transform_rule = get_national_prefix_transform_rule(country_metadata)
 
 	let national_significant_number
 
 	// `national_prefix_for_parsing` capturing groups
 	// (used only for really messy cases: Argentina, Brazil, Mexico, Somalia)
 	const any_groups_were_captured = national_prefix_matcher[national_prefix_matcher.length - 1]
+	const national_prefix_transform_rule = get_national_prefix_transform_rule(country_metadata)
 
 	// If the national number tranformation is needed then do it
 	if (national_prefix_transform_rule && any_groups_were_captured)
@@ -556,8 +556,12 @@ export function strip_national_prefix(number, country_metadata)
 	// Verify the parsed national (significant) number for this country
 	const national_number_rule = new RegExp(get_national_number_pattern(country_metadata))
 
-	// If the original number was viable, and the resultant number is not,
-	// then prefer the original phone number.
+	// If the original number (before stripping national prefix) was viable,
+	// and the resultant number is not, then prefer the original phone number.
+	// This is because for some countries (e.g. Russia) the same digit could be both
+	// a national prefix and a leading digit of a valid national phone number,
+	// like `8` is the national prefix for Russia and both
+	// `8 800 555 35 35` and `800 555 35 35` are valid numbers.
 	if (matches_entirely(number, national_number_rule) &&
 			!matches_entirely(national_significant_number, national_number_rule))
 	{
