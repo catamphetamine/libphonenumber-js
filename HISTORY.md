@@ -1,7 +1,7 @@
 0.4.0 / 29.03.2017
 ===================
 
-  * Removed `.valid` from "as you type" formatter because it wasn't reliable (gave false positives). Use `isValidNumber(value)` for phone number validation instead.
+  * Removed `.valid` from "as you type" formatter because it wasn't reliable (gave false negatives). Use `isValidNumber(value)` for phone number validation instead.
 
 0.3.11 / 07.03.2017
 ===================
