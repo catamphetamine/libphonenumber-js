@@ -33,12 +33,15 @@ describe(`exports`, function()
 		new as_you_type('US').input('+')
 		new asYouType('US').input('+')
 
+		DIGIT_PLACEHOLDER.length
+	})
+
+	it(`should export ES6 custom functions`, function()
+	{
 		parseCustom('', metadata)
 		formatCustom('', 'US', 'National', metadata)
 		getNumberTypeCustom('', 'RU', metadata)
 		isValidNumberCustom('', 'US', metadata)
-
-		DIGIT_PLACEHOLDER.length
 	})
 
 	it(`should export CommonJS`, function()
@@ -54,5 +57,15 @@ describe(`exports`, function()
 		new Library.as_you_type('US').input('+')
 		new Library.asYouType('US').input('+')
 		Library.DIGIT_PLACEHOLDER.length
+	})
+
+	it(`should export CommonJS custom functions`, function()
+	{
+		const Library = require('../custom')
+
+		Library.parse('', metadata)
+		Library.format('', 'US', 'National', metadata)
+		Library.getNumberType('', 'RU', metadata)
+		Library.isValidNumber('', 'US', metadata)
 	})
 })
