@@ -8,9 +8,17 @@ import
 	isValidNumber,
 	as_you_type,
 	asYouType,
+
+	formatCustom,
+	parseCustom,
+	getNumberTypeCustom,
+	isValidNumberCustom,
+
 	DIGIT_PLACEHOLDER
 }
 from '../index.es6'
+
+import metadata from '../metadata.min.json'
 
 describe(`exports`, function()
 {
@@ -24,6 +32,12 @@ describe(`exports`, function()
 		isValidNumber('', 'US')
 		new as_you_type('US').input('+')
 		new asYouType('US').input('+')
+
+		parseCustom('', metadata)
+		formatCustom('', 'US', 'National', metadata)
+		getNumberTypeCustom('', 'RU', metadata)
+		isValidNumberCustom('', 'US', metadata)
+
 		DIGIT_PLACEHOLDER.length
 	})
 

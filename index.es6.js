@@ -67,6 +67,8 @@ export { default as parseCustom }         from './es6/parse'
 export { default as formatCustom }        from './es6/format'
 export { default as isValidNumberCustom } from './es6/validate'
 
+export { get_number_type as getNumberTypeCustom } from './es6/parse'
+
 export
 {
 	default as asYouTypeCustom,
