@@ -229,7 +229,7 @@ For those who aren't using bundlers for some reason there's a way to build a sta
 
 If only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 KiloBytes, then he can generate custom metadata and pass it as an extra argument to this library's functions. Or, say, if a developer wants to use the complete metadata (which is about 200 KiloBytes) for precise phone number validation then he can also generate such complete metadata set.
 
-First, add metadata generation script to your project's `package.json`
+First, add metadata generation script to **your project's** `package.json`
 
 ```js
 {
