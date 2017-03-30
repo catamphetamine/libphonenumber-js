@@ -14,16 +14,6 @@ import
 	get_leading_digits,
 	get_metadata_by_country_phone_code,
 	get_formats,
-	get_type_fixed_line,
-	get_type_mobile,
-	get_type_toll_free,
-	get_type_premium_rate,
-	get_type_personal_number,
-	get_type_voice_mail,
-	get_type_uan,
-	get_type_pager,
-	get_type_voip,
-	get_type_shared_cost,
 	get_format_national_prefix_is_mandatory_when_formatting
 }
 from './metadata'
@@ -33,6 +23,8 @@ import
 	choose_format_for_number
 }
 from './format'
+
+import get_number_type from './get number type'
 
 export const PLUS_CHARS = '+\uFF0B'
 
@@ -247,7 +239,7 @@ export default function parse(first_argument, second_argument, third_argument)
 	let { country_phone_code, number } = parse_phone_number_and_country_phone_code(formatted_phone_number, metadata)
 
 	// Maybe invalid country phone code encountered
-	if (!country_phone_code && !number)
+	if (!number)
 	{
 		return {}
 	}
@@ -599,125 +591,11 @@ export function find_country_code(country_phone_code, national_phone_number, met
 		}
 		// Else perform full validation with all of those bulky
 		// fixed-line/mobile/etc regular expressions.
-		else if (get_number_type(national_phone_number, country_code, metadata))
+		else if (get_number_type({ phone: national_phone_number, country: country_code }, metadata))
 		{
 			return country_code
 		}
 	}
-}
-
-// Finds out national phone number type (fixed line, mobile, etc)
-export function get_number_type(national_number, country_code, metadata)
-{
-	const country_metadata = metadata.countries[country_code]
-
-	// Is this national number even valid for this country
-	if (!is_of_type(national_number, get_national_number_pattern(country_metadata)))
-	{
-		return
-	}
-
-	if (is_of_type(national_number, get_type_mobile(country_metadata)))
-	{
-		// Because duplicate regular expressions are removed
-		// to reduce metadata size, if there's no "fixed line" pattern
-		// then it means it was removed due to being a duplicate of some other pattern.
-		//
-		// Also, many times fixed line phone number regular expressions
-		// are the same as mobile phone number regular expressions,
-		// so in these cases there's no differentiation between them.
-		//
-		// (no such country in the metadata, therefore no unit test for this `if`)
-		/* istanbul ignore if */
-		if (!get_type_fixed_line(country_metadata) || get_type_fixed_line(country_metadata) === get_type_mobile(country_metadata))
-		{
-			return 'FIXED_LINE_OR_MOBILE'
-		}
-
-		return 'MOBILE'
-	}
-
-	// Is it fixed line number
-	if (is_of_type(national_number, get_type_fixed_line(country_metadata)))
-	{
-		// Because duplicate regular expressions are removed
-		// to reduce metadata size, if there's no "mobile" pattern
-		// then it means it was removed due to being a duplicate of some other pattern.
-		//
-		// Also, many times fixed line phone number regular expressions
-		// are the same as mobile phone number regular expressions,
-		// so in these cases there's no differentiation between them.
-		//
-		if (!get_type_mobile(country_metadata) || get_type_mobile(country_metadata) === get_type_fixed_line(country_metadata))
-		{
-			return 'FIXED_LINE_OR_MOBILE'
-		}
-
-		return 'FIXED_LINE'
-	}
-
-	if (is_of_type(national_number, get_type_toll_free(country_metadata)))
-	{
-		return 'TOLL_FREE'
-	}
-
-	if (is_of_type(national_number, get_type_premium_rate(country_metadata)))
-	{
-		return 'PREMIUM_RATE'
-	}
-
-	if (is_of_type(national_number, get_type_personal_number(country_metadata)))
-	{
-		return 'PERSONAL_NUMBER'
-	}
-
-	/* istanbul ignore if */
-	if (is_of_type(national_number, get_type_voice_mail(country_metadata)))
-	{
-		return 'VOICEMAIL'
-	}
-
-	/* istanbul ignore if */
-	if (is_of_type(national_number, get_type_uan(country_metadata)))
-	{
-		return 'UAN'
-	}
-
-	/* istanbul ignore if */
-	if (is_of_type(national_number, get_type_pager(country_metadata)))
-	{
-		return 'PAGER'
-	}
-
-	/* istanbul ignore if */
-	if (is_of_type(national_number, get_type_voip(country_metadata)))
-	{
-		return 'VOIP'
-	}
-
-	/* istanbul ignore if */
-	if (is_of_type(national_number, get_type_shared_cost(country_metadata)))
-	{
-		return 'SHARED_COST'
-	}
-}
-
-export function is_of_type(national_number, type)
-{
-	// // Check if any possible number lengths are present;
-	// // if so, we use them to avoid checking
-	// // the validation pattern if they don't match.
-	// // If they are absent, this means they match
-	// // the general description, which we have
-	// // already checked before a specific number type.
-	// if (get_possible_lengths(type) &&
-	// 	get_possible_lengths(type).indexOf(national_number.length) === -1)
-	// {
-	// 	return false
-	// }
-
-	// get_type_pattern(type) === type
-	return matches_entirely(national_number, type)
 }
 
 export function is_national_prefix_required(national_number, country_metadata)

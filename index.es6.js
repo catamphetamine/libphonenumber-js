@@ -1,6 +1,7 @@
 import metadata from './metadata.min.json'
 
-import parseCustom, { get_number_type as getNumberTypeCustom } from './es6/parse'
+import parseCustom from './es6/parse'
+import getNumberTypeCustom from './es6/get number type'
 import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
 import asYouTypeCustom from './es6/as you type'
@@ -66,8 +67,7 @@ asYouType.prototype.constructor = asYouType
 export { default as parseCustom }         from './es6/parse'
 export { default as formatCustom }        from './es6/format'
 export { default as isValidNumberCustom } from './es6/validate'
-
-export { get_number_type as getNumberTypeCustom } from './es6/parse'
+export { default as getNumberTypeCustom } from './es6/get number type'
 
 export
 {
