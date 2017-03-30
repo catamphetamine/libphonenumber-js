@@ -28,7 +28,6 @@
     "webpack": "^2.2.0-rc.3"
   },
   "scripts": {
-    "libphonenumber-metadata": "libphonenumber-generate-metadata metadata.min.json --countries ID --extended",
     "metadata:pull-request": "babel-node runnable/metadata-pull-request",
     "metadata:branch": "babel-node runnable/metadata-branch",
     "metadata:unbranch": "babel-node runnable/metadata-unbranch",
