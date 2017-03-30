@@ -45,54 +45,13 @@ export default function get_number_type(first_argument, second_argument, third_a
 	const national_number = input.phone
 	const country_metadata = metadata.countries[input.country]
 
+	// The following is copy-pasted from the original function:
+	// https://github.com/googlei18n/libphonenumber/blob/3ea547d4fbaa2d0b67588904dfa5d3f2557c27ff/javascript/i18n/phonenumbers/phonenumberutil.js#L2835
+
 	// Is this national number even valid for this country
 	if (!is_of_type(national_number, get_national_number_pattern(country_metadata)))
 	{
-		return
-	}
-
-	if (is_of_type(national_number, get_type_mobile(country_metadata)))
-	{
-		// Because duplicate regular expressions are removed
-		// to reduce metadata size, if there's no "fixed line" pattern
-		// then it means it was removed due to being a duplicate of some other pattern.
-		//
-		// Also, many times fixed line phone number regular expressions
-		// are the same as mobile phone number regular expressions,
-		// so in these cases there's no differentiation between them.
-		//
-		// (no such country in the metadata, therefore no unit test for this `if`)
-		/* istanbul ignore if */
-		if (!get_type_fixed_line(country_metadata) || get_type_fixed_line(country_metadata) === get_type_mobile(country_metadata))
-		{
-			return 'FIXED_LINE_OR_MOBILE'
-		}
-
-		return 'MOBILE'
-	}
-
-	// Is it fixed line number
-	if (is_of_type(national_number, get_type_fixed_line(country_metadata)))
-	{
-		// Because duplicate regular expressions are removed
-		// to reduce metadata size, if there's no "mobile" pattern
-		// then it means it was removed due to being a duplicate of some other pattern.
-		//
-		// Also, many times fixed line phone number regular expressions
-		// are the same as mobile phone number regular expressions,
-		// so in these cases there's no differentiation between them.
-		//
-		if (!get_type_mobile(country_metadata) || get_type_mobile(country_metadata) === get_type_fixed_line(country_metadata))
-		{
-			return 'FIXED_LINE_OR_MOBILE'
-		}
-
-		return 'FIXED_LINE'
-	}
-
-	if (is_of_type(national_number, get_type_toll_free(country_metadata)))
-	{
-		return 'TOLL_FREE'
+		return // 'UNKNOWN'
 	}
 
 	if (is_of_type(national_number, get_type_premium_rate(country_metadata)))
@@ -100,21 +59,26 @@ export default function get_number_type(first_argument, second_argument, third_a
 		return 'PREMIUM_RATE'
 	}
 
+	if (is_of_type(national_number, get_type_toll_free(country_metadata)))
+	{
+		return 'TOLL_FREE'
+	}
+
+	/* istanbul ignore if */
+	if (is_of_type(national_number, get_type_shared_cost(country_metadata)))
+	{
+		return 'SHARED_COST'
+	}
+
+	/* istanbul ignore if */
+	if (is_of_type(national_number, get_type_voip(country_metadata)))
+	{
+		return 'VOIP'
+	}
+
 	if (is_of_type(national_number, get_type_personal_number(country_metadata)))
 	{
 		return 'PERSONAL_NUMBER'
-	}
-
-	/* istanbul ignore if */
-	if (is_of_type(national_number, get_type_voice_mail(country_metadata)))
-	{
-		return 'VOICEMAIL'
-	}
-
-	/* istanbul ignore if */
-	if (is_of_type(national_number, get_type_uan(country_metadata)))
-	{
-		return 'UAN'
 	}
 
 	/* istanbul ignore if */
@@ -124,16 +88,46 @@ export default function get_number_type(first_argument, second_argument, third_a
 	}
 
 	/* istanbul ignore if */
-	if (is_of_type(national_number, get_type_voip(country_metadata)))
+	if (is_of_type(national_number, get_type_uan(country_metadata)))
 	{
-		return 'VOIP'
+		return 'UAN'
 	}
 
 	/* istanbul ignore if */
-	if (is_of_type(national_number, get_type_shared_cost(country_metadata)))
+	if (is_of_type(national_number, get_type_voice_mail(country_metadata)))
 	{
-		return 'SHARED_COST'
+		return 'VOICEMAIL'
 	}
+
+	// Is it fixed line number
+	if (is_of_type(national_number, get_type_fixed_line(country_metadata)))
+	{
+		// Because duplicate regular expressions are removed
+		// to reduce metadata size, if there's no "mobile" pattern
+		// then it means it was removed due to being a duplicate of some other pattern.
+		//
+		if (!get_type_mobile(country_metadata))
+		{
+			return 'FIXED_LINE_OR_MOBILE'
+		}
+
+		// Check if the number happens to qualify as both fixed line and mobile.
+		// (no such country in the minimal metadata set)
+		/* istanbul ignore if */
+		if (is_of_type(national_number, get_type_mobile(country_metadata)))
+		{
+			return 'FIXED_LINE_OR_MOBILE'
+		}
+
+		return 'FIXED_LINE'
+	}
+
+	if (is_of_type(national_number, get_type_mobile(country_metadata)))
+	{
+		return 'MOBILE'
+	}
+
+	// return 'UNKNOWN'
 }
 
 export function is_of_type(national_number, type)

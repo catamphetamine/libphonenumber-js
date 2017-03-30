@@ -3,6 +3,20 @@ import Promise from 'bluebird'
 
 import { DIGIT_PLACEHOLDER } from '../as you type'
 
+const phone_number_types =
+[
+	'premium_rate',
+	'toll_free',
+	'shared_cost',
+	'voip',
+	'personal_number',
+	'pager',
+	'uan',
+	'voice_mail',
+	'fixed_line',
+	'mobile'
+]
+
 // Excessive fields from "PhoneNumberMetadata.xml"
 // aren't included to reduce code complexity and size:
 //
@@ -361,17 +375,16 @@ export default function(input, included_countries, extended)
 				// Find duplicate regular expressions for types
 				// and just discard such duplicate types
 				// to reduce metadata size (by 5 KiloBytes).
-				for (let type of Object.keys(types))
+				for (const type of phone_number_types)
 				{
-					// If this type has just been removed due to redundancy
 					if (!types[type])
 					{
 						continue
 					}
 
 					// Remove redundant types
-					// (having the same regular expressions as this one)
-					Object.keys(types)
+					// (other types having the same regular expressions as this one)
+					phone_number_types
 						.filter(key => key !== type && types[key] === types[type])
 						.forEach(key => delete types[key])
 				}
