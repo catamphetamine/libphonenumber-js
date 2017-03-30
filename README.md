@@ -246,9 +246,9 @@ For a "tree-shaking" ES6-capable bundler (e.g. Webpack 2) that would be
 import { parseCustom, formatCustom, isValidNumberCustom, asYouTypeCustom } from 'libphonenumber-js'
 import metadata from './metadata.min.json'
 
-export const parse = (...args) => parseCustom(...args, metadata);
-export const format = (...args) => formatCustom(...args, metadata);
-export const isValidNumber = (...args) => isValidNumberCustom(...args, metadata);
+export const parse = (...args) => parseCustom(...args, metadata)
+export const format = (...args) => formatCustom(...args, metadata)
+export const isValidNumber = (...args) => isValidNumberCustom(...args, metadata)
 
 export class asYouType extends asYouTypeCustom {
   constructor(country) {
@@ -288,6 +288,15 @@ exports.asYouType = function asYouType(country) {
 exports.asYouType.prototype = Object.create(custom.asYouType.prototype, {})
 exports.asYouType.prototype.constructor = exports.asYouType
 
+```
+
+ES6 "tree-shaking" is a non-trivial thing and at the moment of writing it's not guaranteed that a given ES6-aware bundler will actually be intelligent enough to tree-shake unused code, so there's always another option for those cases (if they arise): using `libphonenumber-js/custom` [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) export.
+
+```js
+import { parse as parseCustom } from 'libphonenumber-js/custom'
+import metadata from './metadata.min.json'
+
+export const parse = (...args) => parseCustom(...args, metadata)
 ```
 
 <!-- ## To do -->
