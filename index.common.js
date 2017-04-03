@@ -47,3 +47,8 @@ exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
 exports.getNumberType = exports.get_number_type
 exports.isValidNumber = exports.is_valid_number
 exports.asYouType = exports.as_you_type
+
+exports.getPhoneCode = function(country)
+{
+	return custom.getPhoneCode(country, metadata)
+}

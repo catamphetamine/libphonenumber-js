@@ -14,4 +14,11 @@ exports.getNumberType = exports.get_number_type
 exports.isValidNumber = exports.is_valid_number
 exports.asYouType     = exports.as_you_type
 
+var get_phone_code = require('./build/metadata').get_phone_code
+
+exports.getPhoneCode = function(country, metadata)
+{
+	return get_phone_code(metadata.countries[country])
+}
+
 // exports['default'] = ...

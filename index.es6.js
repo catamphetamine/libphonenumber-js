@@ -6,6 +6,8 @@ import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
 import asYouTypeCustom from './es6/as you type'
 
+import { get_phone_code } from './es6/metadata'
+
 export function parse()
 {
 	var parameters = Array.prototype.slice.call(arguments)
@@ -75,3 +77,13 @@ export
 	DIGIT_PLACEHOLDER
 }
 from './es6/as you type'
+
+export function getPhoneCode(country)
+{
+	return getPhoneCodeCustom(country, metadata)
+}
+
+export function getPhoneCodeCustom(country, metadata)
+{
+	return get_phone_code(metadata.countries[country])
+}

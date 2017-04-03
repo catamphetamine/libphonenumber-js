@@ -8,11 +8,13 @@ import
 	isValidNumber,
 	as_you_type,
 	asYouType,
+	getPhoneCode,
 
 	formatCustom,
 	parseCustom,
 	getNumberTypeCustom,
 	isValidNumberCustom,
+	getPhoneCodeCustom,
 
 	DIGIT_PLACEHOLDER
 }
@@ -34,6 +36,8 @@ describe(`exports`, function()
 		new asYouType('US').input('+')
 
 		DIGIT_PLACEHOLDER.length
+
+		getPhoneCode('KZ').should.equal('7')
 	})
 
 	it(`should export ES6 custom functions`, function()
@@ -42,6 +46,7 @@ describe(`exports`, function()
 		formatCustom('', 'US', 'National', metadata)
 		getNumberTypeCustom('', 'RU', metadata)
 		isValidNumberCustom('', 'US', metadata)
+		getPhoneCodeCustom('KZ', metadata).should.equal('7')
 	})
 
 	it(`should export CommonJS`, function()
@@ -56,7 +61,10 @@ describe(`exports`, function()
 		Library.isValidNumber('', 'US')
 		new Library.as_you_type('US').input('+')
 		new Library.asYouType('US').input('+')
+
 		Library.DIGIT_PLACEHOLDER.length
+
+		Library.getPhoneCode('KZ').should.equal('7')
 	})
 
 	it(`should export CommonJS custom functions`, function()
@@ -67,5 +75,6 @@ describe(`exports`, function()
 		Library.format('', 'US', 'National', metadata)
 		Library.getNumberType('', 'RU', metadata)
 		Library.isValidNumber('', 'US', metadata)
+		Library.getPhoneCode('KZ', metadata).should.equal('7')
 	})
 })
