@@ -172,6 +172,15 @@ formatter.country_phone_code = '1'
 formatter.template === 'xx xxx xxx xxxx'
 ```
 
+### getPhoneCode(country_code)
+
+There have been requests for a function returning a phone code by country code.
+
+```js
+getPhoneCode('RU') === '7'
+getPhoneCode('IL') === '972'
+```
+
 ## Metadata
 
 Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
