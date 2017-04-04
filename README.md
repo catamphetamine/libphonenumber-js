@@ -206,7 +206,7 @@ Everything's done -->
 
 ## Bug reporting
 
-If you spot any inconsistencies with the [original Google's `libphonenumber`](https://libphonenumber.appspot.com/) then create an issue in this repo.
+If any inconsistencies with the [original Google's `libphonenumber`](https://libphonenumber.appspot.com/) are spot then an issue can be created in this repo. Validation bugs should be reported only if they appear after full metadata is generated because with the default metadata the validation of this library is looser than the original Google `libphonenumber`'s.
 
 ## Webpack
 
