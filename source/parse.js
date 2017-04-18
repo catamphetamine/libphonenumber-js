@@ -14,7 +14,7 @@ import
 	get_leading_digits,
 	get_metadata_by_country_phone_code,
 	get_formats,
-	get_format_national_prefix_is_mandatory_when_formatting
+	// get_format_national_prefix_is_mandatory_when_formatting
 }
 from './metadata'
 
@@ -293,11 +293,12 @@ export default function parse(first_argument, second_argument, third_argument)
 
 	const did_have_national_prefix = national_number !== number
 
-	if (!is_international && !did_have_national_prefix &&
-			is_national_prefix_required(national_number, country_metadata))
-	{
-		return {}
-	}
+	// https://github.com/halt-hammerzeit/libphonenumber-js/issues/67
+	// if (!is_international && !did_have_national_prefix &&
+	// 		is_national_prefix_required(national_number, country_metadata))
+	// {
+	// 	return {}
+	// }
 
 	// Sometimes there are several countries
 	// corresponding to the same country phone code
@@ -598,15 +599,15 @@ export function find_country_code(country_phone_code, national_phone_number, met
 	}
 }
 
-export function is_national_prefix_required(national_number, country_metadata)
-{
-	const format = choose_format_for_number(get_formats(country_metadata), national_number)
-
-	if (format)
-	{
-		return get_format_national_prefix_is_mandatory_when_formatting(format, country_metadata)
-	}
-}
+// export function is_national_prefix_required(national_number, country_metadata)
+// {
+// 	const format = choose_format_for_number(get_formats(country_metadata), national_number)
+//
+// 	if (format)
+// 	{
+// 		return get_format_national_prefix_is_mandatory_when_formatting(format, country_metadata)
+// 	}
+// }
 
 // Sort out arguments
 function sort_out_arguments(first_argument, second_argument, third_argument)

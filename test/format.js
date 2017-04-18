@@ -63,5 +63,8 @@ describe('format', () =>
 		// No metadata
 		thrower = () => formatter('123', 'US', 'Gay')
 		thrower.should.throw('Metadata')
+
+		// No formats
+		format('012345', 'AC', 'National').should.equal('012345')
 	})
 })

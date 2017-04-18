@@ -13,7 +13,6 @@ import
 	get_format_format,
 	get_format_international_format,
 	get_format_national_prefix_formatting_rule,
-	get_format_national_prefix_is_optional_when_formatting,
 	get_format_national_prefix_is_mandatory_when_formatting,
 	get_format_leading_digits_patterns,
 	get_metadata_by_country_phone_code
@@ -494,24 +493,6 @@ export default class as_you_type
 
 			if (!matcher.test(this.national_number))
 			{
-				// This national prefix extra handling has been
-				// done already in `extract_national_prefix()`.
-				//
-				// // If the national prefix is optional
-				// // then also try to format the phone number
-				// // without the national prefix being extracted.
-				// if (this.national_prefix
-				// 	&& get_format_national_prefix_is_optional_when_formatting(format, this.country_metadata))
-				// {
-				// 	if (!matcher.test(this.national_prefix + this.national_number))
-				// 	{
-				// 		continue
-				// 	}
-				//
-				// 	this.national_number = this.national_prefix + this.national_number
-				// 	this.national_prefix = ''
-				// }
-
 				continue
 			}
 

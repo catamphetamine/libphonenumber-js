@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "A simpler (and smaller) rewrite of Google Android's popular libphonenumber library",
   "main": "index.common.js",
   "module": "index.es6.js",
@@ -20,7 +20,7 @@
     "babel-preset-stage-2": "^6.18.0",
     "better-npm-run": "0.0.14",
     "chai": "^3.5.0",
-    "istanbul": "^1.0.0-alpha.2",
+    "istanbul": "^1.1.0-alpha.1",
     "json-loader": "^0.5.4",
     "mocha": "^2.4.5",
     "npm-run-all": "^1.4.0",

@@ -171,3 +171,8 @@ export function get_type_shared_cost(country_metadata)
 {
 	return get_type(country_metadata, 9)
 }
+
+export function get_country_phone_code(country, country_metadata)
+{
+	return get_phone_code(country_metadata[country])
+}
