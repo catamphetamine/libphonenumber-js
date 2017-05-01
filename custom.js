@@ -18,6 +18,11 @@ var get_phone_code = require('./build/metadata').get_phone_code
 
 exports.getPhoneCode = function(country, metadata)
 {
+	if (!metadata.countries[country])
+	{
+		throw new Error('Unknown country: "' + country + '"')
+	}
+
 	return get_phone_code(metadata.countries[country])
 }
 

@@ -85,5 +85,10 @@ export function getPhoneCode(country)
 
 export function getPhoneCodeCustom(country, metadata)
 {
+	if (!metadata.countries[country])
+	{
+		throw new Error('Unknown country: "' + country + '"')
+	}
+
 	return get_phone_code(metadata.countries[country])
 }
