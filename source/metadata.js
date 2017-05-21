@@ -87,12 +87,20 @@ export function get_format_national_prefix_is_mandatory_when_formatting(format_a
 	// national prefix is optional for this phone number format
 	// (and it is not enforced explicitly)
 	return national_prefix_formatting_rule &&
-		// Check that national prefix formatting rule is not a dummy one
-		national_prefix_formatting_rule !== '$1' &&
-		// Check that national prefix formatting rule actually has national prefix digit(s)
-		/\d/.test(national_prefix_formatting_rule.replace('$1', '')) &&
+		// Check that national prefix formatting rule is not a dummy one.
+		// Check that national prefix formatting rule actually has national prefix digit(s).
+		get_format_uses_national_prefix(national_prefix_formatting_rule) &&
 		// Or maybe national prefix is optional for this format
 		!get_format_national_prefix_is_optional_when_formatting(format_array, country_metadata)
+}
+
+// Checks whether national prefix formatting rule contains national prefix
+export function get_format_uses_national_prefix(national_prefix_formatting_rule)
+{
+	// Check that national prefix formatting rule is not a dummy one
+	return national_prefix_formatting_rule !== '$1' &&
+		// Check that national prefix formatting rule actually has national prefix digit(s)
+		/\d/.test(national_prefix_formatting_rule.replace('$1', ''))
 }
 
 export function get_format_international_format(format_array)

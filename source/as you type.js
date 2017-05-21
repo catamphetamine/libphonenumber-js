@@ -15,6 +15,7 @@ import
 	get_format_national_prefix_formatting_rule,
 	get_format_national_prefix_is_mandatory_when_formatting,
 	get_format_leading_digits_patterns,
+	get_format_uses_national_prefix,
 	get_metadata_by_country_phone_code
 }
 from './metadata'
@@ -686,17 +687,16 @@ export default class as_you_type
 		// Now prepare phone number format
 		let number_format = this.get_format_format(format)
 
-		// If the user did input the national prefix
-		// then maybe make it a part of the phone number template
-		if (this.national_prefix)
+		// If national prefix formatting rule is set
+		// for this phone number format
+		if (national_prefix_formatting_rule)
 		{
-			const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
-
-			// If national prefix formatting rule is set
-			// for this phone number format
-			if (national_prefix_formatting_rule)
+			// If the user did input the national prefix
+			// (or if the national prefix formatting rule does not require national prefix)
+			// then maybe make it part of the phone number template
+			if (this.national_prefix || !get_format_uses_national_prefix(national_prefix_formatting_rule))
 			{
-				// Make the national prefix a part of the phone number template
+				// Make the national prefix part of the phone number template
 				number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
 			}
 		}

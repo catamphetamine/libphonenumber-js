@@ -162,6 +162,11 @@ describe('as you type', () =>
 		formatter.reset().input('044444444').should.equal('044 444 444')
 		formatter.template.should.equal('xxx xxx xxxx')
 
+		// Hungary (braces must be part of the template)
+		formatter = new as_you_type('HU')
+		formatter.input('301234567').should.equal('(30) 123 4567')
+		formatter.template.should.equal('(xx) xxx xxxx')
+
 		// Test Russian phone numbers
 		// (with optional national prefix `8`)
 
