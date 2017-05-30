@@ -96,11 +96,15 @@ Formats a phone number using one of the following `format`s:
   * `International_plaintext` — (aka [`E.164`](https://en.wikipedia.org/wiki/E.164)) e.g. `+12133734253`
   * `National` — e.g. `(213) 373-4253`
 
-`parsed_number` argument should be taken from the result of the `parse()` function call: `{ country, phone }`. `phone` must be a national (significant) number (i.e. no national prefix). `parsed_number` argument can also be expanded into two arguments:
+`parsed_number` argument **must** be an already `parse()`d phone number (to strip national prefix from it). That means that first a phone number is `parse()`d and only then is it `format()`ted and there's no other way around it. For example, a phone number is `parse()`d before storing it in a database and then it is `forrmat()`ted each time it is read from the database. The `parsed_number` object argument can also be expanded into two string arguments (for those who prefer this kind of syntax):
 
 ```js
 format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
 format('2133734253', 'US', 'International') === '+1 213 373 4253'
+
+// The following won't work becase the phone number argument is invalid
+// (has not been parsed previously and therefore contains the `0` national prefix)
+format('017212345678', 'DE', 'International_plaintext') !== '+4917212345678'
 ```
 
 ### getNumberType(parsed_number)
