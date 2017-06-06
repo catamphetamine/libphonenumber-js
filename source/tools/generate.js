@@ -79,7 +79,7 @@ const phone_number_types =
 //
 //  * ShortNumberMetadata.xml — emergency numbers, etc. not used in this library.
 //
-export default function(input, included_countries, extended)
+export default function(input, included_countries, extended, included_phone_number_types)
 {
 	return Promise.promisify(parseString)(input).then((xml) =>
 	{
@@ -339,7 +339,7 @@ export default function(input, included_countries, extended)
 		//
 		// This inncreases metadata size by 5 KiloBytes.
 		//
-		for (let country_phone_code of Object.keys(country_phone_code_to_countries))
+		for (const country_phone_code of Object.keys(country_phone_code_to_countries))
 		{
 			const country_codes = country_phone_code_to_countries[country_phone_code]
 
@@ -348,20 +348,21 @@ export default function(input, included_countries, extended)
 			// to country phone number matching.
 			// E.g. when there's a one-to-one correspondence
 			// between a country phone code and a country code
-			if (!extended)
+			const all_types_required = country_codes.length > 1
+
+			if (!extended && !included_phone_number_types && !all_types_required)
 			{
-				if (country_codes.length === 1)
-				{
-					delete countries[country_codes[0]].types
-					continue
-				}
+				delete countries[country_codes[0]].types
+				continue
 			}
 
-			for (let country_code of country_codes)
+			for (const country_code of country_codes)
 			{
 				// Leading digits for a country are sufficient
 				// to resolve country phone code ambiguity.
-				if (!extended)
+				// So retaining all phone number type regular expressions
+				// is not required in this case.
+				if (!extended && !included_phone_number_types)
 				{
 					if (countries[country_code].leading_digits)
 					{
@@ -375,6 +376,8 @@ export default function(input, included_countries, extended)
 				// Find duplicate regular expressions for types
 				// and just discard such duplicate types
 				// to reduce metadata size (by 5 KiloBytes).
+				// Or retain regular expressions just for the
+				// specified phone number types (if configured).
 				for (const type of phone_number_types)
 				{
 					if (!types[type])
@@ -382,11 +385,23 @@ export default function(input, included_countries, extended)
 						continue
 					}
 
+					// Retain regular expressions just for the
+					// specified phone number types (if configured).
+					if (included_phone_number_types)
+					{
+						if (!all_types_required && !included_phone_number_types.has(type))
+						{
+							delete types[type]
+						}
+					}
 					// Remove redundant types
 					// (other types having the same regular expressions as this one)
-					phone_number_types
-						.filter(key => key !== type && types[key] === types[type])
-						.forEach(key => delete types[key])
+					else
+					{
+						phone_number_types
+							.filter(key => key !== type && types[key] === types[type])
+							.forEach(key => delete types[key])
+					}
 				}
 			}
 		}

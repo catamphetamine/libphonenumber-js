@@ -38,6 +38,8 @@ describe(`exports`, function()
 		DIGIT_PLACEHOLDER.length
 
 		getPhoneCode('KZ').should.equal('7')
+		const thrower = () => getPhoneCode('ZZ')
+		thrower.should.throw('Unknown')
 	})
 
 	it(`should export ES6 custom functions`, function()
@@ -65,6 +67,8 @@ describe(`exports`, function()
 		Library.DIGIT_PLACEHOLDER.length
 
 		Library.getPhoneCode('KZ').should.equal('7')
+		const thrower = () => Library.getPhoneCode('ZZ')
+		thrower.should.throw('Unknown')
 	})
 
 	it(`should export CommonJS custom functions`, function()

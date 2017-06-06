@@ -109,7 +109,7 @@ format('017212345678', 'DE', 'International_plaintext') !== '+4917212345678'
 
 ### getNumberType(parsed_number)
 
-Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
+Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
 
 The arguments can be
 
@@ -141,11 +141,11 @@ isValidNumber('(213) 37', 'US') === false
 isValidNumber({ phone: '2133734253', country: 'US' }) === true
 ```
 
-The difference between using `parse()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parse('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` flag (see below) and the precise regular expressions for possible phone numbers are included in the metadata then `isValidNumber()` is gonna use those precise regular expressions for validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
+The difference between using `parse()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parse('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see below) and the precise regular expressions for possible phone numbers are included in the metadata then `isValidNumber()` is gonna use those precise regular expressions for validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
 
 So, the general phone number rules for a country are mainly for phone number formatting: they dictate how different phone numbers (matching those general regular expressions) should be formatted. And `parse()` uses only those general regular expressions (as per the reference Google's `libphonenumber` implementation) to perform basic phone number validation. `isValidNumber()`, on the other hand, is all about validation, so it digs deeper into precise regular expressions (if they're included in metadata) for possible phone numbers in a given country. And that's the difference between them: `parse()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone number precisely (provided the precise regular expressions are included in metadata).
 
-By default those precise regular expressions aren't included in metadata at all because that would cause metadata to grow twice in its size (the complete metadata would be about 200 KiloBytes). If anyone needs to generate custom metadata then it's very easy to do so: just follow the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document (the option to look for is `--extended`).
+By default those precise regular expressions aren't included in metadata at all because that would cause metadata to grow twice in its size (the complete metadata would be about 200 KiloBytes). If anyone needs to generate custom metadata then it's very easy to do so: just follow the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document (the option to look for is `--extended`, or relevant `--types`).
 
 ### `class` asYouType(default_country_code)
 
@@ -240,7 +240,13 @@ For those who aren't using bundlers for some reason there's a way to build a sta
 
 ## Customizing metadata
 
-If only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 KiloBytes, then he can generate custom metadata and pass it as an extra argument to this library's functions. Or, say, if a developer wants to use the complete metadata (which is about 200 KiloBytes) for precise phone number validation then he can also generate such complete metadata set.
+This library comes prepackaged with three flavours of metadata
+
+* `metadata.full.json` — contains everything, including all regular expressions for precise phone number validation and getting phone number type, but weighs `130 KiloBytes`.
+* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type, weighs `70 KiloBytes`.
+* `metadata.mobile.json` — contains regular expressions for precise **mobile** phone number validation, weighs `100 KiloBytes`.
+
+Furthermore, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 KiloBytes (even when including all regular expressions for precise phone number validation and getting phone number type), then he can generate such custom metadata and pass it as an extra argument to this library's functions.
 
 First, add metadata generation script to **your project's** `package.json`
 
@@ -254,7 +260,12 @@ First, add metadata generation script to **your project's** `package.json`
 
 And then run it like `npm run libphonenumber-metadata`.
 
-The first argument is the output metadata file path. `--countries` argument is a comma-separated list of the required countries (if `--countries` is omitted then all countries are included). `--extended` argument may be passed to increase the precision of phone number validation but at the same time it will enlarge the resulting metadata size approximately twice.
+The arguments are
+
+* The first argument is the output metadata file path.
+* `--countries` argument is a comma-separated list of the countries included (if `--countries` is omitted then all countries are included).
+* `--extended` argument may be passed to include all regular expressions for precise phone number validation and getting phone number type, which increases the precision of phone number validation but at the same time it will enlarge the resulting metadata size approximately twice.
+* `--types ...` argument may be passed instead of `--extended` to only include the precise phone number type regular expressions for a specific set of phone number types (a comma-separated list, e.g. `--types mobile,fixed`).
 
 Then use the generated `metadata.min.json` with the exported "custom" functions.
 

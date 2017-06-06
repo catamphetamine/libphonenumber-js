@@ -31,11 +31,20 @@ if (command_line_arguments.countries)
 }
 
 // Include all regular expressions
-let extended = false
+var extended = false
 if (command_line_arguments.extended)
 {
 	console.log('Include extra validation regular expressions')
 	extended = true
+}
+
+// Included phone number types
+var included_phone_number_types
+if (command_line_arguments.types)
+{
+	included_phone_number_types = command_line_arguments.types.split(',')
+	console.log('Included phone number types:', included_phone_number_types)
+	included_phone_number_types = new Set(included_phone_number_types)
 }
 
 // Download the latest `PhoneNumberMetadata.xml`
@@ -44,7 +53,7 @@ download('https://raw.githubusercontent.com/googlei18n/libphonenumber/master/res
 	.then(function(xml)
 	{
 		// Generate and compress metadata
-		return generate(xml, included_countries, extended)
+		return generate(xml, included_countries, extended, included_phone_number_types)
 	})
 	.then(function(output)
 	{
