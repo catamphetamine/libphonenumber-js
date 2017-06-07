@@ -39,8 +39,8 @@ npm install libphonenumber-js --save
 
 ## Usage
 
-```js
-import { parse, format, asYouType } from 'libphonenumber-js'
+```typescript
+import { parse, format, asYouType } from 'libphonenumber-js';
 
 parse('8 (800) 555 35 35', 'RU')
 // { country: 'RU', phone: '8005553535' }
