@@ -23,6 +23,7 @@ from './metadata'
 import
 {
 	VALID_PUNCTUATION,
+	VALID_PUNCTUATION_AND_WHITESPACE,
 	PLUS_SIGN,
 	PLUS_CHARS,
 	VALID_DIGITS,
@@ -84,8 +85,8 @@ const STANDALONE_DIGIT_PATTERN = /\d(?=[^,}][^,}])/g
 const ELIGIBLE_FORMAT_PATTERN = new RegExp
 (
 	'^' +
-	'[' + VALID_PUNCTUATION + ']*' +
-	'(\\$\\d[' + VALID_PUNCTUATION + ']*)+' +
+	'[' + VALID_PUNCTUATION_AND_WHITESPACE + ']*' +
+	'(\\$\\d[' + VALID_PUNCTUATION_AND_WHITESPACE + ']*)+' +
 	'$'
 )
 
@@ -97,7 +98,7 @@ const MIN_LEADING_DIGITS_LENGTH = 3
 const VALID_INCOMPLETE_PHONE_NUMBER =
 	'[' + PLUS_CHARS + ']{0,1}' +
 	'[' +
-		VALID_PUNCTUATION +
+		VALID_PUNCTUATION_AND_WHITESPACE +
 		VALID_DIGITS +
 	']*'
 
@@ -515,7 +516,7 @@ export default class as_you_type
 				this.country_metadata
 			)
 
-			// Set `this.template` and `this.partially_populated_template`
+			// Set `this.template` and `this.partially_populated_template`.
 			//
 			// `else` case doesn't ever happen
 			// with the current metadata,
@@ -529,8 +530,8 @@ export default class as_you_type
 			}
 			else
 			{
+				// Prepend `+CountryCode` in case of an international phone number
 				const full_number = this.full_phone_number(formatted_number)
-
 				this.template = full_number.replace(/[\d\+]/g, DIGIT_PLACEHOLDER)
 				this.partially_populated_template = full_number
 			}
@@ -539,7 +540,7 @@ export default class as_you_type
 		}
 	}
 
-	// Combines the national number with the appropriate prefix
+	// Prepends `+CountryCode` in case of an international phone number
 	full_phone_number(formatted_national_number)
 	{
 		if (this.is_international())
@@ -710,6 +711,12 @@ export default class as_you_type
 			.replace(new RegExp(number_pattern, 'g'), number_format)
 			// Replace each dummy digit with a DIGIT_PLACEHOLDER
 			.replace(DUMMY_DIGIT_MATCHER, DIGIT_PLACEHOLDER)
+
+		// Also remove braces for the international phone number format
+		if (this.is_international())
+		{
+			template = template.replace(new RegExp(`[${VALID_PUNCTUATION}]+`, 'g'), '')
+		}
 
 		// This one is for national number only
 		this.partially_populated_template = template

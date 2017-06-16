@@ -212,6 +212,13 @@ describe('as you type', () =>
 		// (should not prepend national prefix `0`)
 		new as_you_type('BG').input('111 222 3').should.equal('1112223')
 
+		// Brazil
+		// (should not add braces around `12`
+		//  because the phone number is being output in the international format)
+		new as_you_type().input('+55123456789').should.equal('+55 12 3456 789')
+		new as_you_type('BR').input('+55123456789').should.equal('+55 12 3456 789')
+		new as_you_type('BR').input('123456789').should.equal('(12) 3456-789')
+
 		// Deutchland
 		new as_you_type().input('+4915539898001').should.equal('+49 15539 898001')
 
