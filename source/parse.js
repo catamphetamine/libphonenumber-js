@@ -44,8 +44,7 @@ const TILDES = '~\u2053\u223C\uFF5E'
 // excludes punctuation found as a leading character only. This consists of dash
 // characters, white space characters, full stops, slashes, square brackets,
 // parentheses and tildes. Full-width variants are also present.
-export const VALID_PUNCTUATION = `${DASHES}${SLASHES}${DOTS}${BRACKETS}${TILDES}`
-export const VALID_PUNCTUATION_AND_WHITESPACE = `${VALID_PUNCTUATION}${WHITESPACE}`
+export const VALID_PUNCTUATION = `${DASHES}${SLASHES}${DOTS}${WHITESPACE}${BRACKETS}${TILDES}`
 
 //  Regular expression of viable phone numbers. This is location independent.
 //  Checks we have at least three leading digits, and only valid punctuation,
@@ -67,7 +66,7 @@ export const VALID_PUNCTUATION_AND_WHITESPACE = `${VALID_PUNCTUATION}${WHITESPAC
 //  creating the reg-ex VALID_PHONE_NUMBER_PATTERN itself so we can prefix it
 //  with ^ and append $ to each branch.
 //
-//  "Note VALID_PUNCTUATION_AND_WHITESPACE starts with a -,
+//  "Note VALID_PUNCTUATION starts with a -,
 //   so must be the first in the range" (c) Google devs.
 //  (wtf did they mean by saying that; probably nothing)
 //
@@ -79,11 +78,11 @@ const MIN_LENGTH_PHONE_NUMBER_PATTERN = '[' + VALID_DIGITS + ']{' + MIN_LENGTH_F
 const VALID_PHONE_NUMBER =
 		'[' + PLUS_CHARS + ']{0,1}' +
 		'(?:' +
-			'[' + VALID_PUNCTUATION_AND_WHITESPACE + ']*' +
+			'[' + VALID_PUNCTUATION + ']*' +
 			'[' + VALID_DIGITS + ']' +
 		'){3,}' +
 		'[' +
-			VALID_PUNCTUATION_AND_WHITESPACE +
+			VALID_PUNCTUATION +
 			VALID_DIGITS +
 		']*'
 

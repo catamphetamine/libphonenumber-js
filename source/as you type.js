@@ -23,7 +23,6 @@ from './metadata'
 import
 {
 	VALID_PUNCTUATION,
-	VALID_PUNCTUATION_AND_WHITESPACE,
 	PLUS_SIGN,
 	PLUS_CHARS,
 	VALID_DIGITS,
@@ -85,8 +84,8 @@ const STANDALONE_DIGIT_PATTERN = /\d(?=[^,}][^,}])/g
 const ELIGIBLE_FORMAT_PATTERN = new RegExp
 (
 	'^' +
-	'[' + VALID_PUNCTUATION_AND_WHITESPACE + ']*' +
-	'(\\$\\d[' + VALID_PUNCTUATION_AND_WHITESPACE + ']*)+' +
+	'[' + VALID_PUNCTUATION + ']*' +
+	'(\\$\\d[' + VALID_PUNCTUATION + ']*)+' +
 	'$'
 )
 
@@ -98,7 +97,7 @@ const MIN_LEADING_DIGITS_LENGTH = 3
 const VALID_INCOMPLETE_PHONE_NUMBER =
 	'[' + PLUS_CHARS + ']{0,1}' +
 	'[' +
-		VALID_PUNCTUATION_AND_WHITESPACE +
+		VALID_PUNCTUATION +
 		VALID_DIGITS +
 	']*'
 
@@ -685,22 +684,8 @@ export default class as_you_type
 			return
 		}
 
-		// Now prepare phone number format
-		let number_format = this.get_format_format(format)
-
-		// If national prefix formatting rule is set
-		// for this phone number format
-		if (national_prefix_formatting_rule)
-		{
-			// If the user did input the national prefix
-			// (or if the national prefix formatting rule does not require national prefix)
-			// then maybe make it part of the phone number template
-			if (this.national_prefix || !get_format_uses_national_prefix(national_prefix_formatting_rule))
-			{
-				// Make the national prefix part of the phone number template
-				number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
-			}
-		}
+		// Prepare the phone number format
+		const number_format = this.get_format_format(format, national_prefix_formatting_rule)
 
 		// Get a formatting template which can be used to efficiently format
 		// a partial number where digits are added one by one.
@@ -712,12 +697,6 @@ export default class as_you_type
 			// Replace each dummy digit with a DIGIT_PLACEHOLDER
 			.replace(DUMMY_DIGIT_MATCHER, DIGIT_PLACEHOLDER)
 
-		// Also remove braces for the international phone number format
-		if (this.is_international())
-		{
-			template = template.replace(new RegExp(`[${VALID_PUNCTUATION}]+`, 'g'), '')
-		}
-
 		// This one is for national number only
 		this.partially_populated_template = template
 
@@ -726,17 +705,17 @@ export default class as_you_type
 		// if the phone number being input is international.
 		if (this.is_international())
 		{
-			template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + template
+			this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + template
 		}
 		// For local numbers, replace national prefix
 		// with a digit placeholder.
 		else
 		{
-			template = template.replace(/\d/g, DIGIT_PLACEHOLDER)
+			this.template = template.replace(/\d/g, DIGIT_PLACEHOLDER)
 		}
 
 		// This one is for the full phone number
-		return this.template = template
+		return this.template
 	}
 
 	format_next_national_number_digits(digits)
@@ -774,14 +753,30 @@ export default class as_you_type
 		return this.parsed_input && this.parsed_input[0] === '+'
 	}
 
-	get_format_format(format)
+	get_format_format(format, national_prefix_formatting_rule)
 	{
-		if (this.is_international())
+		let number_format = this.is_international() ? get_format_international_format(format) : get_format_format(format)
+
+		// If national prefix formatting rule is set
+		// for this phone number format
+		if (national_prefix_formatting_rule)
 		{
-			return local_to_international_style(get_format_international_format(format))
+			// If the user did input the national prefix
+			// (or if the national prefix formatting rule does not require national prefix)
+			// then maybe make it part of the phone number template
+			if (this.national_prefix || !get_format_uses_national_prefix(national_prefix_formatting_rule))
+			{
+				// Make the national prefix part of the phone number template
+				number_format = number_format.replace(FIRST_GROUP_PATTERN, national_prefix_formatting_rule)
+			}
 		}
 
-		return get_format_format(format)
+		if (this.is_international())
+		{
+			return local_to_international_style(number_format)
+		}
+
+		return number_format
 	}
 
 	// Determines the country of the phone number

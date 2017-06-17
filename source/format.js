@@ -7,7 +7,8 @@ import { matches_entirely } from './common'
 
 import
 {
-	parse_phone_number_and_country_phone_code
+	parse_phone_number_and_country_phone_code,
+	VALID_PUNCTUATION
 }
 from './parse'
 
@@ -179,12 +180,7 @@ export function choose_format_for_number(available_formats, national_number)
 //
 export function local_to_international_style(local)
 {
-	return local
-		// Remove brackets
-		.replace(/[\(\)]/g, '')
-		// Replace dashes with spaces
-		.replace(/\-/g, ' ')
-		.trim()
+	return local.replace(new RegExp(`[${VALID_PUNCTUATION}]+`, 'g'), ' ').trim()
 }
 
 // Sort out arguments
