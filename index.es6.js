@@ -32,7 +32,7 @@ export function get_number_type()
 // camelCase alias
 export function getNumberType()
 {
-	return is_valid_number.apply(this, arguments)
+	return get_number_type.apply(this, arguments)
 }
 
 export function is_valid_number()
