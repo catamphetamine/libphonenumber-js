@@ -41,16 +41,21 @@ console.log('* Actually not running tests because if they fail then it won\'t be
 
 var modified_files = exec('git ls-files --modified').split(/\s/)
 
-if (modified_files.length > 2)
+var unexpected_modified_files = modified_files.filter(function(file)
+{
+	return file !== 'PhoneNumberMetadata.xml' && !/^metadata\.[a-z]+\.json$/.test(file)
+})
+
+if (unexpected_modified_files.length > 0)
 {
 	console.log()
 	console.log('========================================')
 	console.log('=                 Error                =')
 	console.log('========================================')
 	console.log()
-	console.log('Only `PhoneNumberMetadata.xml` and `metadata.min.json` should be modified.')
+	console.log('Only `PhoneNumberMetadata.xml` and `metadata.*.json` files should be modified. Unexpected modified files:')
 	console.log()
-	console.log(modified_files.join('\n'))
+	console.log(unexpected_modified_files.join('\n'))
 
 	process.exit(1)
 }
@@ -80,7 +85,7 @@ console.log('=          Committing changes          =')
 console.log('========================================')
 console.log()
 
-console.log(exec('git add PhoneNumberMetadata.xml metadata.min.json'))
+console.log(exec('git add .'))
 
 console.log(exec('git commit -m "Phone number medatada update"'))
 
