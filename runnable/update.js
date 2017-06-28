@@ -41,14 +41,14 @@ console.log('* Actually not running tests because if they fail then it won\'t be
 
 var modified_files = exec('git ls-files --modified').split(/\s/)
 
-if (modified_files.length > 2)
+if (modified_files.length > 4)
 {
 	console.log()
 	console.log('========================================')
 	console.log('=                 Error                =')
 	console.log('========================================')
 	console.log()
-	console.log('Only `PhoneNumberMetadata.xml` and `metadata.min.json` should be modified.')
+	console.log('Only `PhoneNumberMetadata.xml`, `metadata.min.json`, `metadata.full.json`, and `metadata.mobile.json` should be modified.')
 	console.log()
 	console.log(modified_files.join('\n'))
 
@@ -80,7 +80,7 @@ console.log('=          Committing changes          =')
 console.log('========================================')
 console.log()
 
-console.log(exec('git add PhoneNumberMetadata.xml metadata.min.json'))
+console.log(exec('git add PhoneNumberMetadata.xml metadata.min.json metadata.full.json metadata.mobile.json'))
 
 console.log(exec('git commit -m "Phone number medatada update"'))
 
