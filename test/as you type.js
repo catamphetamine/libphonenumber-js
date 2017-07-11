@@ -227,6 +227,9 @@ describe('as you type', () =>
 		formatter.input('+7 702 211 1111')
 		formatter.country.should.equal('KZ')
 		// formatter.valid.should.equal(true)
+
+		// New Zealand formatting fix (issue #89)
+		new as_you_type('NZ').input('0212').should.equal('021 2')
 	})
 
 	it('should close dangling braces', function()

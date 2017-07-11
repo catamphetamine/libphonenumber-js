@@ -420,14 +420,9 @@ export default class as_you_type
 	{
 		const leading_digits = this.national_number
 
-		// "leading digits" patterns start with a maximum 3 digits,
+		// "leading digits" patterns start with a maximum of 3 digits,
 		// and then with each additional digit
 		// a more precise "leading digits" pattern is specified.
-		// They could make "leading digits" patterns start
-		// with a maximum of a single digit, but they didn't,
-		// so it's possible that some phone number formats
-		// will be falsely rejected until there are at least
-		// 3 digits in the national (significant) number being input.
 
 		let index_of_leading_digits_pattern = leading_digits.length - MIN_LEADING_DIGITS_LENGTH
 
@@ -466,16 +461,19 @@ export default class as_you_type
 	{
 		const leading_digits = this.national_number
 
-		// "leading digits" patterns start with a maximum 3 digits,
+		// "leading digits" patterns start with a maximum of 3 digits,
 		// and then with each additional digit
 		// a more precise "leading digits" pattern is specified.
-		// They could make "leading digits" patterns start
-		// with a maximum of a single digit, but they didn't,
-		// so it's possible that some phone number formats
-		// will be falsely rejected until there are at least
-		// 3 digits in the national (significant) number being input.
 
-		if (leading_digits.length <= MIN_LEADING_DIGITS_LENGTH)
+		// Start matching any formats at all when the national number
+		// entered so far is at least 3 digits long,
+		// otherwise format matching would give false negatives
+		// like when the digits entered so far are `2`
+		// and the leading digits pattern is `21` –
+		// it's quite obvious in this case that the format could be the one
+		// but due to the absence of further digits it would give false negative.
+		//
+		if (leading_digits.length < MIN_LEADING_DIGITS_LENGTH)
 		{
 			return this.available_formats
 		}
@@ -597,7 +595,7 @@ export default class as_you_type
 	{
 		// When there are multiple available formats, the formatter uses the first
 		// format where a formatting template could be created.
-		for (let format of this.get_relevant_phone_number_formats())
+		for (const format of this.get_relevant_phone_number_formats())
 		{
 			// If this format is currently being used
 			// and is still possible, then stick to it.
