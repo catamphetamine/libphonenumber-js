@@ -53,7 +53,7 @@ describe('as you type', () =>
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		formatter.country_phone_code.should.equal('1')
-		formatter.template.should.equal('xx xxx xxx xxxx')
+		type(formatter.template).should.equal('undefined')
 
 		formatter.input('2').should.equal('+1 2')
 
@@ -205,7 +205,7 @@ describe('as you type', () =>
 		// National prefix should not be prepended
 		// when formatting local NANPA phone numbers.
 		new as_you_type('US').input('1').should.equal('1')
-		new as_you_type('US').input('12').should.equal('(2  )')
+		new as_you_type('US').input('12').should.equal('12')
 		new as_you_type('US').input('123').should.equal('(23 )')
 
 		// Bulgaria
