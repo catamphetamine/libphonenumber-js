@@ -247,7 +247,7 @@ export default class as_you_type
 
 		if (!this.should_format())
 		{
-			return this.non_formatted_number()
+			return this.format_as_non_formatted_number()
 		}
 
 		// Check the available phone number formats
@@ -270,12 +270,19 @@ export default class as_you_type
 		return this.parsed_input
 	}
 
-	non_formatted_number()
+	format_as_non_formatted_number()
 	{
 		if (this.is_international() && this.country_phone_code)
 		{
 			if (this.national_number)
 			{
+				// For convenience, the public `.template` property
+				// contains the whole international number
+				// if the phone number being input is international:
+				// 'x' for the '+' sign, 'x'es for the country phone code,
+				// a spacebar and then the template for the national number digits.
+				this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + repeat(DIGIT_PLACEHOLDER, this.national_number.length)
+
 				return `+${this.country_phone_code} ${this.national_number}`
 			}
 
@@ -711,8 +718,10 @@ export default class as_you_type
 		this.partially_populated_template = template
 
 		// For convenience, the public `.template` property
-		// is gonna contain the whole international number
-		// if the phone number being input is international.
+		// contains the whole international number
+		// if the phone number being input is international:
+		// 'x' for the '+' sign, 'x'es for the country phone code,
+		// a spacebar and then the template for the formatted national number.
 		if (this.is_international())
 		{
 			this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + template

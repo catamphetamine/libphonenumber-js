@@ -56,6 +56,7 @@ describe('as you type', () =>
 		type(formatter.template).should.equal('undefined')
 
 		formatter.input('2').should.equal('+1 2')
+		formatter.template.should.equal('xx x')
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
