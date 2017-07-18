@@ -294,7 +294,7 @@ export default function parse(first_argument, second_argument, third_argument)
 
 	const did_have_national_prefix = national_number !== number
 
-	// https://github.com/halt-hammerzeit/libphonenumber-js/issues/67
+	// https://github.com/catamphetamine/libphonenumber-js/issues/67
 	// if (!is_international && !did_have_national_prefix &&
 	// 		is_national_prefix_required(national_number, country_metadata))
 	// {

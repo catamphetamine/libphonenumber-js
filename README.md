@@ -2,11 +2,11 @@
 
 [![npm version](https://img.shields.io/npm/v/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
 [![npm downloads](https://img.shields.io/npm/dm/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
-[![coverage](https://img.shields.io/coveralls/halt-hammerzeit/libphonenumber-js/master.svg?style=flat-square)](https://coveralls.io/r/halt-hammerzeit/libphonenumber-js?branch=master)
+[![coverage](https://img.shields.io/coveralls/catamphetamine/libphonenumber-js/master.svg?style=flat-square)](https://coveralls.io/r/catamphetamine/libphonenumber-js?branch=master)
 
 A simpler (and smaller) rewrite of Google Android's famous `libphonenumber` library: easy phone number parsing and formatting in javascript.
 
-[See Demo](https://halt-hammerzeit.github.io/libphonenumber-js/)
+[See Demo](https://catamphetamine.github.io/libphonenumber-js/)
 
 ## LibPhoneNumber
 
@@ -76,10 +76,10 @@ country:
 }
 ```
 
-or just a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition) which is gonna be `country.restrict`.
+or just a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) which is gonna be `country.restrict`.
 
 Returns `{ country, phone }` where
- * `country` is a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition)
+ * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition)
  * `phone` is a national (significant) number
 
 If the phone number supplied isn't valid then an empty object `{}` is returned.
@@ -160,7 +160,7 @@ The instance of this class has also these fields:
 
 <!-- * `valid` — is the phone number being input a valid one already
 formatter.valid === true -->
- * `country` — a [country code](https://github.com/halt-hammerzeit/libphonenumber-js#country-code-definition) of the country this phone belongs to
+ * `country` — a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) of the country this phone belongs to
  * `country_phone_code` — a phone code of the `country`
  * `national_number` — national number part (so far)
  * `template` — currently used phone number formatting template, where digits (and the plus sign, if present) are denoted by `x`-es
@@ -202,7 +202,7 @@ Alternatively, a developer may wish to update metadata urgently, without waiting
 
 ## React
 
-There's also a React component utilizing this library: [`react-phone-number-input`](https://github.com/halt-hammerzeit/react-phone-number-input)
+There's also a React component utilizing this library: [`react-phone-number-input`](https://github.com/catamphetamine/react-phone-number-input)
 
 <!-- ## To do
 
@@ -226,7 +226,7 @@ Webpack 2 sets up `json-loader` by default so there's no need for any special co
 
 For those who aren't using bundlers for some reason there's a way to build a standalone version of the library
 
- * `git clone https://github.com/halt-hammerzeit/libphonenumber-js.git`
+ * `git clone https://github.com/catamphetamine/libphonenumber-js.git`
  * `npm install`
  * `npm run browser-build`
  * See the `bundle` folder for `libphonenumber-js.min.js`
@@ -340,7 +340,7 @@ http://alvinalexander.com/mac-os-x/mac-osx-startup-crontab-launchd-jobs
 ```sh
 mkdir /Users/kuchumovn/work/libphonenumber-js-autoupdate
 
-git clone https://github.com/halt-hammerzeit/libphonenumber-js.git /Users/kuchumovn/work/libphonenumber-js-autoupdate
+git clone https://github.com/catamphetamine/libphonenumber-js.git /Users/kuchumovn/work/libphonenumber-js-autoupdate
 
 cd /Users/kuchumovn/work/libphonenumber-js-autoupdate
 
@@ -348,14 +348,14 @@ npm install
 
 chmod u+x /Users/kuchumovn/work/libphonenumber-js-autoupdate/autoupdate.sh
 
-nano ~/Library/LaunchAgents/com.github.halt-hammerzeit.libphonenumber-js.metadata-update.plist
+nano ~/Library/LaunchAgents/com.github.catamphetamine.libphonenumber-js.metadata-update.plist
 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>com.github.halt-hammerzeit.libphonenumber-js.metadata-update</string>
+    <string>com.github.catamphetamine.libphonenumber-js.metadata-update</string>
 
     <key>ProgramArguments</key>
     <array>
@@ -379,7 +379,7 @@ nano ~/Library/LaunchAgents/com.github.halt-hammerzeit.libphonenumber-js.metadat
   </dict>
 </plist>
 
-launchctl load ~/Library/LaunchAgents/com.github.halt-hammerzeit.libphonenumber-js.metadata-update.plist
+launchctl load ~/Library/LaunchAgents/com.github.catamphetamine.libphonenumber-js.metadata-update.plist
 
 launchctl list | grep 'libphonenumber-js'
 ```

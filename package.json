@@ -71,7 +71,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/halt-hammerzeit/libphonenumber-js.git"
+    "url": "git+https://github.com/catamphetamine/libphonenumber-js.git"
   },
   "keywords": [
     "javascript",
@@ -88,9 +88,9 @@
   "author": "Halt Hammerzeit <halt.hammerzeit.at@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/halt-hammerzeit/libphonenumber-js/issues"
+    "url": "https://github.com/catamphetamine/libphonenumber-js/issues"
   },
-  "homepage": "https://github.com/halt-hammerzeit/libphonenumber-js#readme",
+  "homepage": "https://github.com/catamphetamine/libphonenumber-js#readme",
   "bin": {
     "libphonenumber-generate-metadata": "./bin/update-metadata.js"
   }

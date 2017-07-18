@@ -49,7 +49,7 @@ describe('validate', () =>
 
 		// // Germany extended validation must pass for a valid phone number,
 		// // but still must demand the national prefix (`0`).
-		// // https://github.com/halt-hammerzeit/libphonenumber-js/issues/6
+		// // https://github.com/catamphetamine/libphonenumber-js/issues/6
 		// is_valid_number('30123456', 'DE').should.equal(false)
 		is_valid_number('030123456', 'DE').should.equal(true)
 	})

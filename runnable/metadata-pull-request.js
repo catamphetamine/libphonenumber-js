@@ -33,7 +33,7 @@ if (!metadata_branch_exists)
 	process.exit(0)
 }
 
-console.log(exec('hub pull-request -m "Phone number medatada update" -b halt-hammerzeit/libphonenumber-js:master -h update-metadata'))
+console.log(exec('hub pull-request -m "Phone number medatada update" -b catamphetamine/libphonenumber-js:master -h update-metadata'))
 
 console.log()
 console.log('========================================')
