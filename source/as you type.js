@@ -23,7 +23,6 @@ from './metadata'
 import
 {
 	VALID_PUNCTUATION,
-	PLUS_SIGN,
 	PLUS_CHARS,
 	VALID_DIGITS,
 	extract_formatted_phone_number,
