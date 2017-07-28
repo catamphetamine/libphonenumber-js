@@ -32,7 +32,7 @@ describe('as you type', () =>
 
 		let formatter
 
-		// Test International phone number (USA)
+		// Test International phone number (international)
 
 		formatter = new as_you_type()
 
