@@ -9,7 +9,7 @@ export interface ParsedNumber {
     country: CountryCode,
 }
 
-export function parse(text: string, options?: CountryCode | { restrict?: CountryCode, default?: CountryCode }): ParsedNumber;
+export function parse(text: string, options?: CountryCode | { country: { restrict?: CountryCode, default?: CountryCode }}): ParsedNumber;
 
 export function format(parsed_number: ParsedNumber, format: 'International' | 'International_plaintext' | 'National'): string;
 export function format(phone: TelephoneNumber, country: CountryCode, format: 'International' | 'International_plaintext' | 'National'): string;
