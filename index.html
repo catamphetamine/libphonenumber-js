@@ -162,9 +162,10 @@
 						<div>
 							<h2>As you type</h2>
 
+							{/* type="tel" introduces bugs on Samsung Android phones */}
+							{/* https://github.com/catamphetamine/react-phone-number-input/issues/59 */}
 							<ReactInput
 								autoFocus
-								type="tel"
 								value={this.state.value}
 								onChange={value => this.setState({ value })}
 								parse={(character, value) =>
@@ -212,7 +213,7 @@
 								style={{ width: '40px', marginRight: '10px' }}/>
 
 							<input
-								type="tel"
+								type="text"
 								value={this.state.parse}
 								onChange={event => this.setState({ parse: event.target.value })}/>
 
@@ -229,7 +230,7 @@
 								style={{ width: '40px', marginRight: '10px' }}/>
 
 							<input
-								type="tel"
+								type="text"
 								value={this.state.format}
 								onChange={event => this.setState({ format: event.target.value })}/>
 
