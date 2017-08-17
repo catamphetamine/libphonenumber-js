@@ -212,7 +212,7 @@ Everything's done -->
 
 If any inconsistencies with the [original Google's `libphonenumber`](https://libphonenumber.appspot.com/) are found then an issue can be reported in this repo.
 
-Phone number validation bugs should **only** be reported if they appear when using custom metadata functions fed with `metadata.full.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.github.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s. That being said, it's very unlikely that any phone number validation inconsistencies could even exist. This paragraph is here just to prevent people from reporting "validation inconsistency" issues.
+Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#customizing-metadata) fed with `metadata.full.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.github.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s. That being said, it's very unlikely that any phone number validation inconsistencies could even exist. This paragraph is here just to prevent people from reporting "validation inconsistency" issues.
 
 ## Webpack
 
