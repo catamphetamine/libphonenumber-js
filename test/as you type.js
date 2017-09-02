@@ -231,6 +231,11 @@ describe('as you type', () =>
 
 		// New Zealand formatting fix (issue #89)
 		new as_you_type('NZ').input('0212').should.equal('021 2')
+
+		// South Korea
+		formatter = new as_you_type()
+		formatter.input('+82111111111').should.equal('+82 11 111 1111')
+		formatter.template.should.equal('xxx xx xxx xxxx')
 	})
 
 	it('should close dangling braces', function()

@@ -678,40 +678,15 @@ export default class as_you_type
 			return
 		}
 
-		const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
-
-		// A very smart trick by the guys at Google
-		const number_pattern = get_format_pattern(format)
-			// Replace anything in the form of [..] with \d
-			.replace(CHARACTER_CLASS_PATTERN, '\\d')
-			// Replace any standalone digit (not the one in `{}`) with \d
-			.replace(STANDALONE_DIGIT_PATTERN, '\\d')
-
-		// This match will always succeed,
-		// because the "longest dummy phone number"
-		// has enough length to accomodate any possible
-		// national phone number format pattern.
-		const dummy_phone_number_matching_format_pattern = LONGEST_DUMMY_PHONE_NUMBER.match(number_pattern)[0]
+		// Get formatting template for this phone number format
+		const template = this.get_template_for_phone_number_format_pattern(format)
 
 		// If the national number entered is too long
 		// for any phone number format, then abort.
-		if (this.national_number.length > dummy_phone_number_matching_format_pattern.length)
+		if (!template)
 		{
 			return
 		}
-
-		// Prepare the phone number format
-		const number_format = this.get_format_format(format, national_prefix_formatting_rule)
-
-		// Get a formatting template which can be used to efficiently format
-		// a partial number where digits are added one by one.
-
-		// Create formatting template for this phone number format
-		let template = dummy_phone_number_matching_format_pattern
-			// Format the dummy phone number according to the format
-			.replace(new RegExp(number_pattern, 'g'), number_format)
-			// Replace each dummy digit with a DIGIT_PLACEHOLDER
-			.replace(DUMMY_DIGIT_MATCHER, DIGIT_PLACEHOLDER)
 
 		// This one is for national number only
 		this.partially_populated_template = template
@@ -734,6 +709,84 @@ export default class as_you_type
 
 		// This one is for the full phone number
 		return this.template
+	}
+
+	// Generates formatting template for a phone number format
+	get_template_for_phone_number_format_pattern(format)
+	{
+		const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, this.country_metadata)
+
+		// A very smart trick by the guys at Google
+		const number_pattern = get_format_pattern(format)
+			// Replace anything in the form of [..] with \d
+			.replace(CHARACTER_CLASS_PATTERN, '\\d')
+			// Replace any standalone digit (not the one in `{}`) with \d
+			.replace(STANDALONE_DIGIT_PATTERN, '\\d')
+
+		// This match will always succeed,
+		// because the "longest dummy phone number"
+		// has enough length to accomodate any possible
+		// national phone number format pattern.
+		let dummy_phone_number_matching_format_pattern = LONGEST_DUMMY_PHONE_NUMBER.match(number_pattern)[0]
+
+		// If the national number entered is too long
+		// for any phone number format, then abort.
+		if (this.national_number.length > dummy_phone_number_matching_format_pattern.length)
+		{
+			return
+		}
+
+		// Prepare the phone number format
+		const number_format = this.get_format_format(format, national_prefix_formatting_rule)
+
+		// Get a formatting template which can be used to efficiently format
+		// a partial number where digits are added one by one.
+
+		// Below `strict_pattern` is used for the
+		// regular expression (with `^` and `$`).
+		// This wasn't originally in Google's `libphonenumber`
+		// and I guess they don't really need it
+		// because they're not using "templates" to format phone numbers
+		// but I added `strict_pattern` after encountering
+		// South Korean phone number formatting bug.
+		//
+		// Non-strict regular expression bug demonstration:
+		//
+		// this.national_number : `111111111` (9 digits)
+		//
+		// number_pattern : (\d{2})(\d{3,4})(\d{4})
+		// number_format : `$1 $2 $3`
+		// dummy_phone_number_matching_format_pattern : `9999999999` (10 digits)
+		//
+		// '9999999999'.replace(new RegExp(/(\d{2})(\d{3,4})(\d{4})/g), '$1 $2 $3') = "99 9999 9999"
+		//
+		// template : xx xxxx xxxx
+		//
+		// But the correct template in this case is `xx xxx xxxx`.
+		// The template was generated incorrectly because of the
+		// `{3,4}` variability in the `number_pattern`.
+		//
+		// The fix is, if `this.national_number` has already sufficient length
+		// to satisfy the `number_pattern` completely then `this.national_number` is used
+		// instead of `dummy_phone_number_matching_format_pattern`.
+
+		const strict_pattern = new RegExp('^' + number_pattern + '$')
+		const national_number_dummy_digits = this.national_number.replace(/\d/g, DUMMY_DIGIT)
+
+		// If `this.national_number` has already sufficient length
+		// to satisfy the `number_pattern` completely then use it
+		// instead of `dummy_phone_number_matching_format_pattern`.
+		if (strict_pattern.test(national_number_dummy_digits))
+		{
+			dummy_phone_number_matching_format_pattern = national_number_dummy_digits
+		}
+
+		// Generate formatting template for this phone number format
+		return dummy_phone_number_matching_format_pattern
+			// Format the dummy phone number according to the format
+			.replace(new RegExp(number_pattern), number_format)
+			// Replace each dummy digit with a DIGIT_PLACEHOLDER
+			.replace(DUMMY_DIGIT_MATCHER, DIGIT_PLACEHOLDER)
 	}
 
 	format_next_national_number_digits(digits)
