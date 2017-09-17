@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "0.4.29",
+  "version": "0.4.30",
   "description": "A simpler (and smaller) rewrite of Google Android's popular libphonenumber library",
   "main": "index.common.js",
   "module": "index.es6.js",
@@ -85,7 +85,7 @@
     "international",
     "libphonenumber"
   ],
-  "author": "Halt Hammerzeit <halt.hammerzeit.at@gmail.com>",
+  "author": "catamphetamine <purecatamphetamine@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/catamphetamine/libphonenumber-js/issues"
