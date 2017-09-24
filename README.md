@@ -189,14 +189,14 @@ getPhoneCode('IL') === '972'
 
 Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
 
-Currently I have an npm script for monitoring changes to `PhoneNumberMetadata.xml` in Google's repo and automatically creating a Pull Request in this repo with the fresh metadata when it is updated. What's left is to test this script and schedule it to run daily on my machine. So this project's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
+Currently I have a script set up monitoring changes to `PhoneNumberMetadata.xml` in Google's repo and automatically releasing new versions of this library when metadata in Google's repo gets updated. So this library's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
 
   * Fork this repo
   * `npm install`
-  * `npm run metadata:update`
+  * `npm run metadata:update:branch`
   * Submit a Pull Request to this repo from the `update-metadata` branch of your fork
 
-`npm run metadata:update` command creates a new `update-metadata` branch, downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one, generates JSON metadata out of the XML one, checks if the metadata has changed, runs the tests, commits the new metadata and pushes the commit to the remote `update-metadata` branch of your fork.
+`npm run metadata:update:branch` command creates a new `update-metadata` branch, downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one, generates JSON metadata out of the XML one, checks if the metadata has changed, runs the tests, commits the new metadata and pushes the commit to the remote `update-metadata` branch of your fork.
 
 Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Customizing metadata](#customizing-metadata) section of this document.
 
@@ -335,7 +335,7 @@ export const parse = (...args) => parseCustom(...args, metadata)
 <!--
 ## Automatic metadata update setup
 
-A daily (24 * 60 * 60) `launchd` job
+Create a daily (24 * 60 * 60) `launchd` job
 
 http://alvinalexander.com/mac-os-x/mac-osx-startup-crontab-launchd-jobs
 

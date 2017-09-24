@@ -1,9 +1,4 @@
-var child_process = require('child_process')
-
-function exec(command)
-{
-	return child_process.execSync(command).toString().trim()
-}
+var exec = require('./modules/exec')
 
 let metadata_branch_exists = false
 
