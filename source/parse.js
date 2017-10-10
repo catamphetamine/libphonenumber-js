@@ -115,6 +115,9 @@ const LEADING_PLUS_CHARS_PATTERN = new RegExp('^[' + PLUS_CHARS + ']+')
 // These mappings map a character (key) to a specific digit that should
 // replace it for normalization purposes. Non-European digits that
 // may be used in phone numbers are mapped to a European equivalent.
+//
+// E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
+//
 export const DIGIT_MAPPINGS =
 {
 	'0': '0',
@@ -356,6 +359,9 @@ export default function parse(first_argument, second_argument, third_argument)
 // Normalizes a string of characters representing a phone number.
 // This converts wide-ascii and arabic-indic numerals to European numerals,
 // and strips punctuation and alpha characters.
+//
+// E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
+//
 export function normalize(number)
 {
 	return replace_characters(number, DIGIT_MAPPINGS)
@@ -660,4 +666,9 @@ function sort_out_arguments(first_argument, second_argument, third_argument)
 	}
 
 	return { text, options, metadata }
+}
+
+export function normalize_digits(text)
+{
+
 }

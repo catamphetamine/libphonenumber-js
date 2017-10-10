@@ -57,6 +57,11 @@ describe('parse', () =>
 		parse('11987654321', 'BR').should.deep.equal({ country: 'BR', phone: '11987654321' })
 	})
 
+	it('should parse non-European digits', function()
+	{
+		parse('+١٢١٢٢٣٢٣٢٣٢').should.deep.equal({ country: 'US', phone: '2122323232' })
+	})
+
 	it('should work in edge cases', function()
 	{
 		let thrower

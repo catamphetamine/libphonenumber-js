@@ -376,6 +376,11 @@ describe('as you type', () =>
 		formatter.reset().input('1010000').should.equal('10 1000 0')
 	})
 
+	it('should parse non-European digits', function()
+	{
+		new as_you_type().input('+١٢١٢٢٣٢٣٢٣٢').should.equal('+1 212 232 3232')
+	})
+
 	it('should repeat string N times', function()
 	{
 		repeat('a', 0).should.equal('')
