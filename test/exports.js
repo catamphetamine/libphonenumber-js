@@ -16,7 +16,8 @@ import
 	isValidNumberCustom,
 	getPhoneCodeCustom,
 
-	DIGIT_PLACEHOLDER
+	DIGIT_PLACEHOLDER,
+	DIGITS
 }
 from '../index.es6'
 
@@ -36,6 +37,7 @@ describe(`exports`, function()
 		new asYouType('US').input('+')
 
 		DIGIT_PLACEHOLDER.length
+		Object.keys(DIGITS).length.should.be.above(0)
 
 		getPhoneCode('KZ').should.equal('7')
 		const thrower = () => getPhoneCode('ZZ')
@@ -65,6 +67,7 @@ describe(`exports`, function()
 		new Library.asYouType('US').input('+')
 
 		Library.DIGIT_PLACEHOLDER.length
+		Object.keys(Library.DIGITS).length.should.be.above(0)
 
 		Library.getPhoneCode('KZ').should.equal('7')
 		const thrower = () => Library.getPhoneCode('ZZ')

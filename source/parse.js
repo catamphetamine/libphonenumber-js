@@ -115,7 +115,7 @@ const LEADING_PLUS_CHARS_PATTERN = new RegExp('^[' + PLUS_CHARS + ']+')
 // These mappings map a character (key) to a specific digit that should
 // replace it for normalization purposes. Non-European digits that
 // may be used in phone numbers are mapped to a European equivalent.
-const DIGIT_MAPPINGS =
+export const DIGIT_MAPPINGS =
 {
 	'0': '0',
 	'1': '1',

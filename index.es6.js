@@ -66,7 +66,13 @@ export function asYouType(country)
 asYouType.prototype = Object.create(asYouTypeCustom.prototype, {})
 asYouType.prototype.constructor = asYouType
 
-export { default as parseCustom }         from './es6/parse'
+export
+{
+	default as parseCustom,
+	DIGIT_MAPPINGS as DIGITS
+}
+from './es6/parse'
+
 export { default as formatCustom }        from './es6/format'
 export { default as isValidNumberCustom } from './es6/validate'
 export { default as getNumberTypeCustom } from './es6/get number type'

@@ -3,6 +3,7 @@
 exports = module.exports = {}
 
 exports.parse             = require('./build/parse').default
+exports.DIGITS            = require('./build/parse').DIGIT_MAPPINGS
 exports.format            = require('./build/format').default
 exports.get_number_type   = require('./build/get number type').default
 exports.is_valid_number   = require('./build/validate').default

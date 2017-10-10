@@ -42,6 +42,7 @@ exports.as_you_type.prototype = Object.create(custom.asYouType.prototype, {})
 exports.as_you_type.prototype.constructor = exports.as_you_type
 
 exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
+exports.DIGITS            = custom.DIGITS
 
 // camelCase aliases
 exports.getNumberType = exports.get_number_type
