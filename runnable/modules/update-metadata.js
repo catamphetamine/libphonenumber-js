@@ -30,6 +30,7 @@ module.exports = function()
 	console.log()
 
 	// console.log('* Actually not running tests because if they fail then it won\'t be reported in any way, and if instead tests fail for the Pull Request on github then the repo owner will be notified by Travis CI about that.')
+	console.log(exec('npm run build'))
 	console.log(exec('npm test'))
 
 	var modified_files = exec('git ls-files --modified').split(/\s/)
