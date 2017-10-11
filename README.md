@@ -147,6 +147,16 @@ So, the general phone number rules for a country are mainly for phone number for
 
 By default those precise regular expressions aren't included in metadata at all because that would cause metadata to grow twice in its size (the complete metadata would be about 200 KiloBytes). If anyone needs to generate custom metadata then it's very easy to do so: just follow the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document (the option to look for is `--extended`, or relevant `--types`).
 
+#### Using phone number validation feature
+
+I personally wouldn't rely on Google's phone number validation too much because it might get outdated:
+
+* First, new phone number rules are added to Google's `libphonenumber` library after they have already been implemented in real life (which introduces a delay).
+
+* Then those new rules from Google's `libphonenumber` are updated automatically in this library (this scheduled update script introduces a small delay of 1 day, unless it malfunctions).
+
+* And then there's still the web application itself using this library and until a developer installs `libphonenumber-js@latest` and redeploys the web application it's gonna use the old (outdated) phone number validation rules which could result in losing customers with perfectly valid but brand new phone numbers.
+
 ### `class` asYouType(default_country_code)
 
 (aka `as_you_type`)
