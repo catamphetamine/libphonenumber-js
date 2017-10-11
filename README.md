@@ -157,6 +157,8 @@ I personally wouldn't rely on Google's phone number validation too much because 
 
 * And then there's still the web application itself using this library and until a developer installs `libphonenumber-js@latest` and redeploys the web application it's gonna use the old (outdated) phone number validation rules which could result in losing customers with perfectly valid but brand new phone numbers.
 
+Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
+
 ### `class` asYouType(default_country_code)
 
 (aka `as_you_type`)
