@@ -623,6 +623,13 @@ function sort_out_arguments(first_argument, second_argument, third_argument)
 	let options
 	let metadata
 
+	// Normalize numerical `value`.
+	// https://github.com/catamphetamine/libphonenumber-js/issues/142
+	if (typeof first_argument === 'number')
+	{
+		first_argument = String(first_argument)
+	}
+
 	if (typeof first_argument === 'string')
 	{
 		text = first_argument
@@ -666,9 +673,4 @@ function sort_out_arguments(first_argument, second_argument, third_argument)
 	}
 
 	return { text, options, metadata }
-}
-
-export function normalize_digits(text)
-{
-
 }

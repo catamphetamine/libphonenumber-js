@@ -154,6 +154,13 @@ export function sort_out_arguments(first_argument, second_argument, third_argume
 	let input
 	let metadata
 
+	// Normalize numerical `value`.
+	// https://github.com/catamphetamine/libphonenumber-js/issues/142
+	if (typeof first_argument === 'number')
+	{
+		first_argument = String(first_argument)
+	}
+
 	if (typeof first_argument === 'string')
 	{
 		// If country code is supplied

@@ -66,5 +66,8 @@ describe('validate', () =>
 		// Non-phone-number characters in a phone number
 		is_valid_number('+499821958a').should.equal(false)
 		is_valid_number('88005553535x', 'RU').should.equal(false)
+
+		// Numerical `value`
+		is_valid_number(88005553535, 'RU').should.equal(true)
 	})
 })
