@@ -164,7 +164,7 @@ export function sort_out_arguments(first_argument, second_argument, third_argume
 	if (typeof first_argument === 'string')
 	{
 		// If country code is supplied
-		if (typeof second_argument === 'string')
+		if (typeof second_argument === 'string' || second_argument === undefined)
 		{
 			metadata = third_argument
 
