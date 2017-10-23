@@ -228,6 +228,10 @@ When reporting an issue one must also provide a link to [Google's `libphonenumbe
 
 Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#customizing-metadata) fed with `metadata.full.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.github.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s. That being said, it's very unlikely that any phone number validation inconsistencies could even exist. This paragraph is here just to prevent people from reporting "validation inconsistency" issues.
 
+## TypeScript
+
+TypeScript support for this library is entirely community-driven. I myself don't use TypeScript.
+
 ## Webpack
 
 If you're using Webpack 1 (which you most likely are) then make sure that
