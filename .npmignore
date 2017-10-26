@@ -47,6 +47,9 @@ npm-debug.log
 # Since cdnjs is used, now including `bundle` in npm distribution
 # # browser builds
 # /bundle/
+/bundle/index.html
+/bundle/input-format.min.js
+/bundle/input-format.min.js.map
 
 # intermediary metadata
 /metadata.json
