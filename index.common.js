@@ -33,9 +33,9 @@ exports.is_valid_number = function is_valid_number()
 	return custom.isValidNumber.apply(this, parameters)
 }
 
-exports.as_you_type = function as_you_type(country)
+exports.as_you_type = function as_you_type(country, output_format)
 {
-	custom.asYouType.call(this, country, metadata)
+	custom.asYouType.call(this, country, output_format, metadata)
 }
 
 exports.as_you_type.prototype = Object.create(custom.asYouType.prototype, {})

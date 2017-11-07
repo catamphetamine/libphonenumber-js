@@ -48,9 +48,9 @@ export function isValidNumber()
 	return is_valid_number.apply(this, arguments)
 }
 
-export function as_you_type(country)
+export function as_you_type(country, output_format)
 {
-	asYouTypeCustom.call(this, country, metadata)
+	asYouTypeCustom.call(this, country, output_format, metadata)
 }
 
 as_you_type.prototype = Object.create(asYouTypeCustom.prototype, {})
@@ -58,9 +58,9 @@ as_you_type.prototype.constructor = as_you_type
 
 // camelCase alias
 
-export function asYouType(country)
+export function asYouType(country, output_format)
 {
-	asYouTypeCustom.call(this, country, metadata)
+	asYouTypeCustom.call(this, country,output_format,  metadata)
 }
 
 asYouType.prototype = Object.create(asYouTypeCustom.prototype, {})

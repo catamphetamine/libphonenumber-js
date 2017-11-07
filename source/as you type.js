@@ -104,12 +104,21 @@ const VALID_INCOMPLETE_PHONE_NUMBER_PATTERN = new RegExp('^' + VALID_INCOMPLETE_
 
 export default class as_you_type
 {
-	constructor(country_code, metadata)
+	constructor(country_code, output_format = 'National', metadata)
 	{
 		// Sanity check
 		if (!metadata)
 		{
 			throw new Error('Metadata not passed')
+		}
+
+		switch (output_format) {
+			case 'International':
+			case 'National':
+				this.output_format = output_format
+				break;
+			default:
+				throw new Error(`Unhandled ouput format ${output_format}`);
 		}
 
 		if (country_code && metadata.countries[country_code])
@@ -256,17 +265,25 @@ export default class as_you_type
 		// Format the phone number (given the next digits)
 		const formatted_national_phone_number = this.format_national_phone_number(input)
 
+		// If the phone number couldn't be formatted,
+		// then just fall back to the raw phone number.
+		if (!formatted_national_phone_number) {
+			return this.parsed_input
+		}
+
 		// If the phone number could be formatted,
 		// then return it, possibly prepending with country phone code
-		// (for international phone numbers only)
-		if (formatted_national_phone_number)
+		// for international phone numbers or if International output is selected.
+		if (this.output_format === 'International')
+		{
+			const intlFormatter = new as_you_type(undefined, undefined, this.metadata)
+			return intlFormatter.input(`+${this.country_phone_code}${this.national_number}`)
+		}
+		else
 		{
 			return this.full_phone_number(formatted_national_phone_number)
 		}
 
-		// If the phone number couldn't be formatted,
-		// then just fall back to the raw phone number.
-		return this.parsed_input
 	}
 
 	format_as_non_formatted_number()
@@ -562,8 +579,7 @@ export default class as_you_type
 		{
 			return `+${this.country_phone_code} ${formatted_national_number}`
 		}
-
-		return formatted_national_number
+		return formatted_national_number;
 	}
 
 	// Extracts the country calling code from the beginning
