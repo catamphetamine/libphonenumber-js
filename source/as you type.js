@@ -400,7 +400,7 @@ export default class as_you_type
 		if (this.default_country && !this.is_international())
 		{
 			this.country_metadata = this.metadata.countries[this.default_country]
-			this.country_phone_code = this.country_metadata.phone_code
+			this.country_phone_code = get_phone_code(this.country_metadata)
 
 			this.initialize_phone_number_formats_for_this_country_phone_code()
 		}
