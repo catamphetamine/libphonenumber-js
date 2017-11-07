@@ -276,24 +276,28 @@ describe('as you type', () =>
 		// formatter.valid.should.be.false
 		formatter.template.should.equal('x (xxx) xxx-xx-xx')
 		formatter.country.should.equal('RU')
+		formatter.country_phone_code.should.equal('7')
 
 		formatter.input('000000000000').should.equal('8999000000000000')
 
 		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
+		formatter.country_phone_code.should.equal('7')
 
 		formatter.reset()
 
 		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
+		formatter.country_phone_code.should.equal('7')
 
 		formatter.input('+1-213-373-4253').should.equal('+1 213 373 4253')
 
 		// formatter.valid.should.be.true
 		formatter.template.should.equal('xx xxx xxx xxxx')
 		formatter.country.should.equal('US')
+		formatter.country_phone_code.should.equal('1')
 	})
 
 	it('should work in edge cases', function()
