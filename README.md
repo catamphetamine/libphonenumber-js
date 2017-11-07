@@ -159,11 +159,11 @@ I personally wouldn't rely on Google's phone number validation too much because 
 
 Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
 
-### `class` asYouType(default_country_code)
+### `class` asYouType(default_country_code, format_output='National')
 
 (aka `as_you_type`)
 
-Creates a formatter for partially entered phone number. The two-letter `default_country_code` is optional and, if specified, is gonna be the default country for the phone number being input (in case it's not an international one). The instance of this class has two methods:
+Creates a formatter for partially entered phone number. The two-letter `default_country_code` is optional and, if specified, is gonna be the default country for the phone number being input (in case it's not an international one). The `ouput_format` is optional and could be set to `International` if international formating is needed instead of national one. The instance of this class has two methods:
 
  * `input(text)` — takes any text and appends it to the input; returns the formatted phone number
  * `reset()` — resets the input
@@ -180,6 +180,7 @@ formatter.valid === true -->
 ```js
 new asYouType().input('+12133734') === '+1 213 373 4'
 new asYouType('US').input('2133734') === '(213) 373-4'
+new asYouType('US', 'International').input('2133734') === '+1 213 373 4'
 
 const formatter = new asYouType()
 formatter.input('+1-213-373-4253') === '+1 213 373 4253'

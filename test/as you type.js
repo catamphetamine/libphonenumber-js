@@ -6,9 +6,9 @@ import as_you_type_custom, { close_dangling_braces, repeat } from '../source/as 
 
 class as_you_type extends as_you_type_custom
 {
-	constructor(country_code)
+	constructor(country_code, output_format)
 	{
-		super(country_code, metadata)
+		super(country_code, output_format, metadata)
 	}
 }
 
@@ -236,6 +236,133 @@ describe('as you type', () =>
 		formatter = new as_you_type()
 		formatter.input('+82111111111').should.equal('+82 11 111 1111')
 		formatter.template.should.equal('xxx xx xxx xxxx')
+	})
+
+	it('should parse and format phone numbers in international as you type', function()
+	{
+		// International number test
+		new as_you_type().input('+12133734').should.equal('+1 213 373 4')
+		// Local number test
+		new as_you_type('US', 'International').input('2133734').should.equal('+1 213 373 4')
+
+		// With national prefix test
+		new as_you_type('RU', 'International').input('88005553535', 'International').should.equal('+7 800 555 35 35')
+
+		// Should discard the national prefix
+		// when a whole phone number format matches
+		new as_you_type('RU', 'International').input('8800555353').should.equal('+7 880 055 53 53')
+
+		new as_you_type('CH', 'International').input('044-668-1').should.equal('+41 44 668 1')
+
+		let formatter
+
+		// Test Switzerland phone numbers
+
+		formatter = new as_you_type('CH', 'International')
+
+		formatter.input(' ').should.equal('')
+		formatter.input('0').should.equal('0')
+		formatter.input('4').should.equal('+41 4')
+		formatter.input(' ').should.equal('+41 4')
+		formatter.input('-').should.equal('+41 4')
+		formatter.input('4').should.equal('+41 44')
+		formatter.input('-').should.equal('+41 44')
+		formatter.input('6').should.equal('+41 44 6')
+		formatter.input('6').should.equal('+41 44 66')
+		formatter.input('8').should.equal('+41 44 668')
+		formatter.input('-').should.equal('+41 44 668')
+		formatter.input('1').should.equal('+41 44 668 1')
+		formatter.input('8').should.equal('+41 44 668 18')
+
+		// formatter.valid.should.be.false
+		formatter.country.should.equal('CH')
+		formatter.template.should.equal('xxx xxx xx xx')
+
+		formatter.input(' 00').should.equal('+41 44 668 18 00')
+
+		// formatter.valid.should.be.true
+		formatter.country.should.equal('CH')
+		formatter.template.should.equal('xxx xxx xx xx')
+
+		formatter.input('9').should.equal('04466818009')
+
+		// formatter.valid.should.be.false
+		formatter.country.should.equal('CH')
+		type(formatter.template).should.equal('undefined')
+
+		// Brazil
+
+		formatter = new as_you_type('BR', 'International')
+		formatter.input('11987654321').should.equal('+55 11 98765 4321')
+
+		formatter = new as_you_type('AF', 'International')
+
+		// No national prefix
+		formatter.input('44444444').should.equal('44444444')
+		type(formatter.template).should.equal('undefined')
+
+		formatter.reset().input('044444444').should.equal('+93 44 444 444')
+		formatter.template.should.equal('xxx xxx xxxx')
+
+		// Hungary (braces must be part of the template)
+		formatter = new as_you_type('HU', 'International')
+		formatter.input('301234567').should.equal('+36 30 123 4567')
+		formatter.template.should.equal('(xx) xxx xxxx')
+
+		// Test Russian phone numbers
+		// (with optional national prefix `8`)
+
+		formatter = new as_you_type('RU', 'International')
+
+		formatter.input('8').should.equal('8')
+		formatter.input('9').should.equal('+7 9')
+		formatter.input('9').should.equal('+7 99')
+		formatter.input('9').should.equal('+7 999')
+		formatter.input('-').should.equal('+7 999')
+		formatter.input('1234').should.equal('+7 999 123 4')
+		formatter.input('567').should.equal('+7 999 123 45 67')
+		formatter.input('8').should.equal('899912345678')
+
+		// Shouldn't strip national prefix if it is optional
+		// and if it's a valid phone number.
+		formatter = new as_you_type('RU', 'International')
+		formatter.input('8005553535')
+		formatter.national_number.should.equal('8005553535')
+
+		// Check that clearing an national formatter:
+		//  * doesn't clear country metadata
+		//  * clears all other things
+
+		formatter.reset()
+
+		formatter.input('8').should.equal('8')
+		formatter.input('9').should.equal('+7 9')
+		formatter.input('9').should.equal('+7 99')
+		formatter.input('9').should.equal('+7 999')
+		formatter.input('-').should.equal('+7 999')
+		formatter.input('1234').should.equal('+7 999 123 4')
+		formatter.input('567').should.equal('+7 999 123 45 67')
+		formatter.input('8').should.equal('899912345678')
+
+		// National prefix should not be prepended
+		// when formatting local NANPA phone numbers.
+		new as_you_type('US', 'International').input('1').should.equal('1')
+		new as_you_type('US', 'International').input('12').should.equal('12')
+		new as_you_type('US', 'International').input('123').should.equal('+1 23')
+
+		// Bulgaria
+		// (should not prepend national prefix `0`)
+		new as_you_type('BG', 'International').input('111 222 3').should.equal('1112223')
+
+		// Brazil
+		// (should not add braces around `12`
+		//  because the phone number is being output in the international format)
+		new as_you_type().input('+55123456789').should.equal('+55 12 3456 789')
+		new as_you_type('BR').input('+55123456789').should.equal('+55 12 3456 789')
+		new as_you_type('BR', 'International').input('123456789').should.equal('+55 12 3456 789')
+
+		// Deutchland
+		new as_you_type().input('+4915539898001').should.equal('+49 15539 898001')
 	})
 
 	it('should close dangling braces', function()
