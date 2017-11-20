@@ -16,11 +16,13 @@ export function format(phone: TelephoneNumber, country: CountryCode, format: 'In
 
 export function getNumberType(parsed_number: ParsedNumber): string;
 export function getNumberType(phone: TelephoneNumber, country: CountryCode): string;
+export function getNumberTypeCustom(phone: TelephoneNumber, country: CountryCode, metadata: object): string;
 
 export function isValidNumber(parsed_number: ParsedNumber): boolean;
 export function isValidNumber(phone: TelephoneNumber, country: CountryCode): boolean;
 
 export function getPhoneCode(country_code: CountryCode): PhoneCode;
+export function getPhoneCodeCustom(country_code: CountryCode, metadata: object): PhoneCode;
 
 export class asYouType {
     constructor(default_country_code?: CountryCode);
