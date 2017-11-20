@@ -230,7 +230,7 @@ Phone number validation bugs should **only** be reported if they appear when usi
 
 ## TypeScript
 
-TypeScript support for this library is entirely community-driven. I myself don't use TypeScript.
+TypeScript support for this library is entirely community-driven. I myself don't use TypeScript. Send your pull requests.
 
 ## Webpack
 
