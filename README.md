@@ -292,12 +292,20 @@ Then use the generated `metadata.min.json` with the exported "custom" functions.
 For a "tree-shaking" ES6-capable bundler (e.g. Webpack 2) that would be
 
 ```js
-import { parseCustom, formatCustom, isValidNumberCustom, asYouTypeCustom } from 'libphonenumber-js'
+import {
+  parseCustom,
+  formatCustom,
+  isValidNumberCustom,
+  asYouTypeCustom,
+  getNumberTypeCustom
+} from 'libphonenumber-js'
+
 import metadata from './metadata.min.json'
 
 export const parse = (...args) => parseCustom(...args, metadata)
 export const format = (...args) => formatCustom(...args, metadata)
 export const isValidNumber = (...args) => isValidNumberCustom(...args, metadata)
+export const getNumberType = (...args) => getNumberTypeCustom(...args, metadata)
 
 export class asYouType extends asYouTypeCustom {
   constructor(country) {
@@ -328,6 +336,12 @@ exports.isValidNumber = function isValidNumber() {
   var parameters = Array.prototype.slice.call(arguments)
   parameters.push(metadata)
   return custom.isValidNumber.apply(this, parameters)
+}
+
+exports.getNumberType = function isValidNumber() {
+  var parameters = Array.prototype.slice.call(arguments)
+  parameters.push(metadata)
+  return custom.getNumberType.apply(this, parameters)
 }
 
 exports.asYouType = function asYouType(country) {
