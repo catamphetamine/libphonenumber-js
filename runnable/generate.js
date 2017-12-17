@@ -54,11 +54,27 @@ generate(input, included_countries, extended, included_phone_number_types).then(
 	{
 		var examples = Object.keys(output.countries).reduce(function(out, country_code)
 		{
-			const example = output.countries[country_code].examples.mobile
-
-			if (example)
+			if (country_code === '001')
 			{
-				out[country_code] = example
+				return out
+			}
+
+			var mobile = output.countries[country_code].examples.mobile
+			var fixed_line = output.countries[country_code].examples.fixed_line
+
+			if (mobile)
+			{
+				out[country_code] = mobile
+			}
+			// "TA" country doesn't have any mobile phone number example
+			else if (fixed_line)
+			{
+				console.warn(`Country ${country_code} doesn't have a mobile phone number example. Substituting with a fixed line phone number example.`)
+				out[country_code] = fixed_line
+			}
+			else
+			{
+				throw new Error(`Country ${country_code} doesn't have neither a mobile phone number example nor a fixed line phone number example.`)
 			}
 
 			return out
