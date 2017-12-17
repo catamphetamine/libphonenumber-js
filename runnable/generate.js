@@ -48,4 +48,23 @@ generate(input, included_countries, extended, included_phone_number_types).then(
 
 	// Compress the generated metadata
 	fs.writeFileSync(path.join(__dirname, output_file), JSON.stringify(compress(output)))
+
+	// Output mobile phone number type examples
+	if (command_line_arguments.examples === 'mobile')
+	{
+		var examples = Object.keys(output.countries).reduce(function(out, country_code)
+		{
+			const example = output.countries[country_code].examples.mobile
+
+			if (example)
+			{
+				out[country_code] = example
+			}
+
+			return out
+		},
+		{})
+
+		fs.writeFileSync(path.join(__dirname, '../examples.mobile.json'), JSON.stringify(examples))
+	}
 })

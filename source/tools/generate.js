@@ -79,8 +79,61 @@ const phone_number_types =
 //
 //  * ShortNumberMetadata.xml — emergency numbers, etc. not used in this library.
 //
+// @returns
+//
+// {
+// 	country_phone_code_to_countries:
+// 	{
+// 		'+7': ['RU', 'KZ', ...],
+// 		...
+// 	},
+// 	countries:
+// 	{
+// 		RU:
+// 		{
+// 			phone_code: "7",
+// 			national_number_pattern: "[347-9]\\d{9}",
+// 			national_prefix: "8",
+// 			national_prefix_formatting_rule: "8 ($1)",
+// 			national_prefix_is_optional_when_formatting: true,
+// 			types:
+// 			{
+// 				fixed_line: "(?:3(?:0[12]|4[1-35-79]|5[1-3]|65|8[1-58]|9[0145])|4(?:01|1[1356]|2[13467]|7[1-5]|8[1-7]|9[1-689])|8(?:1[1-8]|2[01]|3[13-6]|4[0-8]|5[15]|6[1-35-79]|7[1-37-9]))\\d{7}",
+// 				mobile: "9\\d{9}",
+// 				...
+// 			},
+// 			examples:
+// 			{
+// 				fixed_line: '4955553535',
+// 				mobile: '9991234567',
+// 				...
+// 			},
+// 			formats:
+// 			[{
+// 				pattern: "([3489]\\d{2})(\\d{3})(\\d{2})(\\d{2})",
+// 				leading_digits_patterns: ["[3489]"],
+// 				format: "$1 $2-$3-$4"
+// 			},
+// 			...]
+// 		},
+// 		...
+// 	}
+// }
 export default function(input, included_countries, extended, included_phone_number_types)
 {
+	// Validate `included_phone_number_types`
+	if (included_phone_number_types)
+	{
+		for (const type of included_phone_number_types)
+		{
+			if (phone_number_types.indexOf(type) < 0)
+			{
+				return Promise.reject(`Unknown phone number type: ${type}`)
+			}
+		}
+	}
+
+	// Parse the XML metadata
 	return Promise.promisify(parseString)(input).then((xml) =>
 	{
 		// https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml
@@ -91,7 +144,7 @@ export default function(input, included_countries, extended, included_phone_numb
 		const country_phone_code_to_countries = {}
 		const countries = {}
 
-		for (let territory of xml.phoneNumberMetadata.territories[0].territory)
+		for (const territory of xml.phoneNumberMetadata.territories[0].territory)
 		{
 			// A two-letter country code
 			const country_code = territory.$.id
@@ -224,19 +277,10 @@ export default function(input, included_countries, extended, included_phone_numb
 				// if they're not needed (which is most likely).
 				// See `country_phone_code_to_countries` ambiguity for more info.
 				//
-				types:
-				{
-					fixed_line      : phone_type_pattern(territory, 'fixedLine'),
-					mobile          : phone_type_pattern(territory, 'mobile'),
-					toll_free       : phone_type_pattern(territory, 'tollFree'),
-					premium_rate    : phone_type_pattern(territory, 'premiumRate'),
-					personal_number : phone_type_pattern(territory, 'personalNumber'),
-					voice_mail      : phone_type_pattern(territory, 'voicemail'),
-					uan             : phone_type_pattern(territory, 'uan'),
-					pager           : phone_type_pattern(territory, 'pager'),
-					voip            : phone_type_pattern(territory, 'voip'),
-					shared_cost     : phone_type_pattern(territory, 'sharedCost')
-				}
+				types: get_phone_number_types(territory),
+
+				// Will be filtered out during compression phase
+				examples: get_phone_number_examples(territory)
 			}
 
 			// Check that national (significant) phone number pattern
@@ -424,8 +468,46 @@ function national_prefix_formatting_rule(rule, national_prefix)
 		.replace('$FG', '$1')
 }
 
-// Gets phone type pattern
-function phone_type_pattern(territory, type)
+// Extracts various phone number type patterns from country XML metadata
+function get_phone_number_types(territory)
 {
-	return territory[type] ? territory[type][0].nationalNumberPattern[0].replace(/\s/g, '') : undefined
+	return phone_number_types.reduce((output, type) =>
+	{
+		const camel_cased_type = underscore_to_camel_case(type)
+		const pattern = territory[camel_cased_type] && territory[camel_cased_type][0].nationalNumberPattern[0].replace(/\s/g, '')
+
+		if (pattern)
+		{
+			output[type] = pattern
+		}
+
+		return output
+	},
+	{})
+}
+
+// Extracts various phone number type examples from country XML metadata
+function get_phone_number_examples(territory)
+{
+	return phone_number_types.reduce((output, type) =>
+	{
+		const camel_cased_type = underscore_to_camel_case(type)
+		const example = territory[camel_cased_type] && territory[camel_cased_type][0].exampleNumber[0]
+
+		if (example)
+		{
+			output[type] = example
+		}
+
+		return output
+	},
+	{})
+}
+
+function underscore_to_camel_case(string)
+{
+	return string.replace(/(\_\w)/g, function(match)
+	{
+		return match[1].toUpperCase()
+	})
 }

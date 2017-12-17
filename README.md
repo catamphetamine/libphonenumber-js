@@ -216,6 +216,10 @@ Alternatively, a developer may wish to update metadata urgently, without waiting
 
 There's also a React component utilizing this library: [`react-phone-number-input`](https://github.com/catamphetamine/react-phone-number-input)
 
+## Examples
+
+For those asking for phone number examples for use in `<input placeholder/>`s there's `examples.mobile.json`.
+
 <!-- ## To do
 
 Everything's done -->
@@ -285,7 +289,7 @@ The arguments are
 * The first argument is the output metadata file path.
 * `--countries` argument is a comma-separated list of the countries included (if `--countries` is omitted then all countries are included).
 * `--extended` argument may be passed to include all regular expressions for precise phone number validation and getting phone number type, which increases the precision of phone number validation but at the same time it will enlarge the resulting metadata size approximately twice.
-* `--types ...` argument may be passed instead of `--extended` to only include the precise phone number type regular expressions for a specific set of phone number types (a comma-separated list, e.g. `--types mobile,fixed`).
+* `--types ...` argument may be passed instead of `--extended` to only include the precise phone number type regular expressions for a specific set of phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [The complete list of phone number types](https://github.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18).
 
 Then use the generated `metadata.min.json` with the exported "custom" functions.
 

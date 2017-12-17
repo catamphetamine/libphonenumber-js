@@ -37,7 +37,7 @@
     "metadata:update:branch": "npm run metadata:branch && npm run metadata:download && babel-node runnable/metadata-update-and-push",
     "metadata:update:pull-request": "npm run metadata:branch && npm run metadata:download && babel-node runnable/metadata-update-and-push-and-pull-request",
     "metadata:generate": "npm-run-all metadata:generate:min metadata:generate:full metadata:generate:mobile",
-    "metadata:generate:min": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.min.json",
+    "metadata:generate:min": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.min.json --examples mobile",
     "metadata:generate:full": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.full.json --extended",
     "metadata:generate:mobile": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.mobile.json --types mobile --debug",
     "metadata:download": "babel-node runnable/download https://raw.githubusercontent.com/googlei18n/libphonenumber/master/resources/PhoneNumberMetadata.xml PhoneNumberMetadata.xml",
