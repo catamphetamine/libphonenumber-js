@@ -18,6 +18,8 @@ describe('parse', () =>
 		parse('+7 (800) 55-35-35', undefined).should.deep.equal({})
 		parse('+7 (800) 55-35-35', 'US').should.deep.equal({})
 		parse('(800) 55 35 35', { country: { default: 'RU' } }).should.deep.equal({})
+		parse('+1 187 215 5230', 'US').should.deep.equal({}) 
+		parse('+1 1877 215 5230', 'US').should.deep.equal({})
 	})
 
 	it('should parse valid phone numbers', function()
