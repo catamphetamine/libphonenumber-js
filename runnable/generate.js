@@ -74,7 +74,9 @@ generate(input, included_countries, extended, included_phone_number_types).then(
 			}
 			else
 			{
-				throw new Error(`Country ${country_code} doesn't have neither a mobile phone number example nor a fixed line phone number example.`)
+				console.error(`Country ${country_code} doesn't have neither a mobile phone number example nor a fixed line phone number example.`)
+				// `async` errors aren't being caught at the top level in Node.js
+				process.exit(1)
 			}
 
 			return out
