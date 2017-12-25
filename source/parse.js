@@ -293,7 +293,20 @@ export default function parse(first_argument, second_argument, third_argument)
 		return {}
 	}
 
-	const national_number = strip_national_prefix(number, country_metadata)
+	let national_number = number
+
+	// Only strip national prefixes for non-international phone numbers
+	// because national prefixes can't be present in international phone numbers.
+	// Otherwise, while forgiving, it would parse a NANPA number `+1 1877 215 5230`
+	// first to `1877 215 5230` and then, stripping the leading `1`, to `877 215 5230`,
+	// and then it would assume that's a valid number which it isn't.
+	// So no forgiveness for grandmas here.
+	// The issue asking for this fix:
+	// https://github.com/catamphetamine/libphonenumber-js/issues/159
+	if (!is_international)
+	{
+		national_number = strip_national_prefix(number, country_metadata)
+	}
 
 	const did_have_national_prefix = national_number !== number
 
