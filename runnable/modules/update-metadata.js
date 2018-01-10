@@ -37,14 +37,16 @@ module.exports = function()
 
 	var unexpected_modified_files = modified_files.filter(function(file)
 	{
-		return file !== 'PhoneNumberMetadata.xml' && !/^metadata\.[a-z]+\.json$/.test(file)
+		return file !== 'PhoneNumberMetadata.xml' &&
+			!/^metadata\.[a-z]+\.json$/.test(file) &&
+			!/^examples\.[a-z]+\.json$/.test(file)
 	})
 
 	if (unexpected_modified_files.length > 0)
 	{
 		var error
 
-		error += 'Only `PhoneNumberMetadata.xml` and `metadata.*.json` files should be modified. Unexpected modified files:'
+		error += 'Only `PhoneNumberMetadata.xml`, `metadata.*.json` and `examples.*.json` files should be modified. Unexpected modified files:'
 		error += '\n'
 		error += '\n'
 		error += unexpected_modified_files.join('\n')
