@@ -459,6 +459,10 @@ It will `build`, `test` and then create a `.tgz` archive which you can then inst
 npm install [module name with version].tar.gz
 ```
 
+## Advertisement
+
+If you're looking for an international "2 days ago" javascript solution then check out [`javascript-time-ago`](https://github.com/catamphetamine/javascript-time-ago).
+
 ## License
 
 [MIT](LICENSE)
