@@ -39,7 +39,7 @@ npm-debug.log
 /NUL
 
 # webpack is used in development
-/webpack.config.js
+/webpack.config.babel.js
 
 # tests aren't needed for npm
 /test/
