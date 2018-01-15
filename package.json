@@ -20,6 +20,7 @@
     "babel-preset-stage-2": "^6.18.0",
     "better-npm-run": "0.0.14",
     "chai": "^3.5.0",
+    "crlf": "^1.1.1",
     "istanbul": "^1.1.0-alpha.1",
     "json-loader": "^0.5.4",
     "mocha": "^2.4.5",
@@ -50,7 +51,7 @@
     "build-commonjs-modules": "better-npm-run build-commonjs-modules",
     "build-es6-modules": "better-npm-run build-es6-modules",
     "build": "npm-run-all clean-for-build build-commonjs-modules build-es6-modules",
-    "prepublish": "npm-run-all build test browser-build"
+    "prepublish": "crlf --set=LF bin/* && npm-run-all build test browser-build"
   },
   "betterScripts": {
     "browser-build": {
