@@ -84,7 +84,7 @@ const phone_number_types =
 // {
 // 	country_phone_code_to_countries:
 // 	{
-// 		'+7': ['RU', 'KZ', ...],
+// 		'7': ['RU', 'KZ', ...],
 // 		...
 // 	},
 // 	countries:
@@ -119,6 +119,28 @@ const phone_number_types =
 // 		...
 // 	}
 // }
+//
+// `country_phone_code_to_countries` map is kinda redundant.
+// Not sure why did I choose to place country phone codes
+// into a separate structure inside metadata instead of generating it in runtime.
+// One extra feature it gives though is it tells what's the
+// "default" country for a given country phone code.
+// E.g. for country phone code `1` the "default" country is "US"
+// and therefore "US" is the first country code in the
+// `country_phone_code_to_countries["1"]` list.
+// The "default" country is the one holding metadata for a country phone code
+// so, for example, when "CA" (Canada) country is chosen
+// then it uses the metadata for the "default" country ("US").
+//
+// `country_phone_code_to_countries` data takes about 3 KiloBytes
+// so it kinda makes sense to drop it from the metadata file
+// replacing it with a "default" country flag (something like `1` for "yes").
+// If anyone finds oneself fighting for those extra 3 KiloBytes
+// then I guess go for it and send a Pull Request.
+// It will have to provide an exported `getCountryPhoneCodes()` function
+// which would take `metadata` and return `country_phone_code_to_countries` map
+// because some people use that `country_phone_code_to_countries` map in their projects.
+//
 export default function(input, included_countries, extended, included_phone_number_types)
 {
 	// Validate `included_phone_number_types`
@@ -381,7 +403,7 @@ export default function(input, included_countries, extended, included_phone_numb
 		// For these cases all those bulky `<fixedLine/>`, `<mobile/>`, etc
 		// patterns are required. Therefore retain them for these rare cases.
 		//
-		// This inncreases metadata size by 5 KiloBytes.
+		// This increases metadata size by 5 KiloBytes.
 		//
 		for (const country_phone_code of Object.keys(country_phone_code_to_countries))
 		{
