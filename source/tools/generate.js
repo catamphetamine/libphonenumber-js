@@ -133,13 +133,19 @@ const phone_number_types =
 // then it uses the metadata for the "default" country ("US").
 //
 // `country_phone_code_to_countries` data takes about 3 KiloBytes
-// so it kinda makes sense to drop it from the metadata file
+// so it could kinda make sense to drop it from the metadata file
 // replacing it with a "default" country flag (something like `1` for "yes").
-// If anyone finds oneself fighting for those extra 3 KiloBytes
-// then I guess go for it and send a Pull Request.
-// It will have to provide an exported `getCountryPhoneCodes()` function
+// In that scenario `country_phone_code_to_countries` would be generated on startup.
+// It would have to also provide an exported `getCountryPhoneCodes()` function
 // which would take `metadata` and return `country_phone_code_to_countries` map
 // because some people use that `country_phone_code_to_countries` map in their projects.
+//
+// On the other hand, having `country_phone_code_to_countries`
+// prepopulated yields more elegance to the exports
+// because if `country_phone_code_to_countries` wasn't part of metadata
+// it would have to be computed somewhere in global scope
+// therefore the modules wouldn't be strictly "pure"
+// so maybe `country_phone_code_to_countries` stays as part of metadata.
 //
 export default function(input, included_countries, extended, included_phone_number_types)
 {
