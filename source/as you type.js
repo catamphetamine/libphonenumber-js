@@ -446,7 +446,8 @@ export default class as_you_type
 	{
 		const leading_digits = this.national_number
 
-		// "leading digits" patterns start with a maximum of 3 digits,
+		// "leading digits" pattern list starts with
+		// one of a maximum length of 3 digits,
 		// and then with each additional digit
 		// a more precise "leading digits" pattern is specified.
 
@@ -476,7 +477,9 @@ export default class as_you_type
 		})
 
 		// If there was a phone number format chosen
-		// and it no longer holds given the new leading digits then reset it
+		// and it no longer holds given the new leading digits then reset it.
+		// The test for this `if` condition is marked as:
+		// "Reset a chosen format when it no longer holds given the new leading digits".
 		if (this.chosen_format && this.matching_formats.indexOf(this.chosen_format) === -1)
 		{
 			this.reset_format()

@@ -18,7 +18,7 @@ describe('parse', () =>
 		parse('+7 (800) 55-35-35', undefined).should.deep.equal({})
 		parse('+7 (800) 55-35-35', 'US').should.deep.equal({})
 		parse('(800) 55 35 35', { country: { default: 'RU' } }).should.deep.equal({})
-		parse('+1 187 215 5230', 'US').should.deep.equal({}) 
+		parse('+1 187 215 5230', 'US').should.deep.equal({})
 		parse('+1 1877 215 5230', 'US').should.deep.equal({})
 	})
 
@@ -125,5 +125,43 @@ describe('parse', () =>
 
 		// Numerical `value`
 		parse(2141111111, 'US').should.deep.equal({ country: 'US', phone: '2141111111'})
+	})
+
+	it('should parse phone number extensions', function()
+	{
+		// "ext"
+		parse('2134567890 ext 123', 'US').should.deep.equal
+		({
+			country : 'US',
+			phone   : '2134567890',
+			ext     : '123'
+		})
+
+		// "ext."
+		parse('+12134567890 ext. 12345', 'US').should.deep.equal
+		({
+			country : 'US',
+			phone   : '2134567890',
+			ext     : '12345'
+		})
+
+		// "#"
+		parse('+12134567890#1234').should.deep.equal
+		({
+			country : 'US',
+			phone   : '2134567890',
+			ext     : '1234'
+		})
+
+		// "x"
+		parse('+78005553535 x1234').should.deep.equal
+		({
+			country : 'RU',
+			phone   : '8005553535',
+			ext     : '1234'
+		})
+
+		// Not a valid extension
+		parse('2134567890 ext. 1234567890', 'US').should.deep.equal({})
 	})
 })

@@ -5,15 +5,19 @@ exports = module.exports = {}
 exports.parse             = require('./build/parse').default
 exports.DIGITS            = require('./build/parse').DIGIT_MAPPINGS
 exports.format            = require('./build/format').default
-exports.get_number_type   = require('./build/get number type').default
-exports.is_valid_number   = require('./build/validate').default
-exports.as_you_type       = require('./build/as you type').default
+exports.getNumberType     = require('./build/get number type').default
+exports.isValidNumber     = require('./build/validate').default
+exports.AsYouType         = require('./build/as you type').default
 exports.DIGIT_PLACEHOLDER = require('./build/as you type').DIGIT_PLACEHOLDER
 
-// camelCase aliases
-exports.getNumberType = exports.get_number_type
-exports.isValidNumber = exports.is_valid_number
-exports.asYouType     = exports.as_you_type
+// `get_number_type` name is deprecated
+exports.get_number_type = exports.getNumberType
+// `is_valid_number` name is deprecated
+exports.is_valid_number = exports.isValidNumber
+// `as_you_type` name is deprecated
+exports.as_you_type = exports.AsYouType
+// `asYouType` name is deprecated
+exports.asYouType = exports.AsYouType
 
 var get_phone_code = require('./build/metadata').get_phone_code
 

@@ -19,35 +19,40 @@ exports.format = function format()
 	return custom.format.apply(this, parameters)
 }
 
-exports.get_number_type = function get_number_type()
+exports.getNumberType = function getNumberType()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return custom.getNumberType.apply(this, parameters)
 }
 
-exports.is_valid_number = function is_valid_number()
+exports.isValidNumber = function isValidNumber()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return custom.isValidNumber.apply(this, parameters)
 }
 
-exports.as_you_type = function as_you_type(country)
+exports.AsYouType = function AsYouType(country)
 {
-	custom.asYouType.call(this, country, metadata)
+	custom.AsYouType.call(this, country, metadata)
 }
 
-exports.as_you_type.prototype = Object.create(custom.asYouType.prototype, {})
-exports.as_you_type.prototype.constructor = exports.as_you_type
+exports.AsYouType.prototype = Object.create(custom.AsYouType.prototype, {})
+exports.AsYouType.prototype.constructor = exports.AsYouType
 
 exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
 exports.DIGITS            = custom.DIGITS
 
 // camelCase aliases
-exports.getNumberType = exports.get_number_type
-exports.isValidNumber = exports.is_valid_number
-exports.asYouType = exports.as_you_type
+// `get_number_type` name is deprecated
+exports.get_number_type = exports.getNumberType
+// `is_valid_number` name is deprecated
+exports.is_valid_number = exports.isValidNumber
+// `as_you_type` name is deprecated
+exports.as_you_type = exports.AsYouType
+// `asYouType` name is deprecated
+exports.asYouType = exports.AsYouType
 
 exports.getPhoneCode = function(country)
 {

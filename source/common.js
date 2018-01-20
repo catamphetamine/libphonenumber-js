@@ -8,5 +8,5 @@ export function matches_entirely(text = '', regular_expression)
 	}
 
 	const matched_groups = text.match(regular_expression)
-	return matched_groups && matched_groups[0].length === text.length
+	return matched_groups !== null && matched_groups[0].length === text.length
 }

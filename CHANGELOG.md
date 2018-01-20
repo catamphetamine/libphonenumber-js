@@ -1,3 +1,12 @@
+0.4.50 / 20.01.2018
+===================
+
+  * Added support for phone number extensions.
+  * `asYouType` name is deprecated, use `AsYouType` instead (same goes for `asYouTypeCustom`).
+  * `is_valid_number`, `get_number_type` and `as_you_type` names are deprecated, use camelCased names instead.
+  * `International_plaintext` format is deprecated, use `E.164` instead.
+  * Added `RFC3966` format for phone number URIs (`tel:+1213334455;ext=123`).
+
 0.4.2 / 30.03.2017
 ===================
 

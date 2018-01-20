@@ -77,18 +77,37 @@ export default function format(first_argument, second_argument, third_argument, 
 				return `+${get_phone_code(country_metadata)}`
 			}
 			const national_number = format_national_number(number, 'International', false, country_metadata)
-			return `+${get_phone_code(country_metadata)} ${national_number}`
+			const international_number = `+${get_phone_code(country_metadata)} ${national_number}`
+			return add_extension(international_number, input.ext)
 
+		case 'E.164':
+		// "International_plaintext" is deprecated
 		case 'International_plaintext':
 			return `+${get_phone_code(country_metadata)}${input.phone}`
+
+		case 'RFC3966':
+			return `+${get_phone_code(country_metadata)}${input.phone}${input.ext !== undefined ? ';ext=' + input.ext : ''}`
 
 		case 'National':
 			if (!number)
 			{
 				return ''
 			}
-			return format_national_number(number, 'National', false, country_metadata)
+			const _national_number = format_national_number(number, 'National', false, country_metadata)
+			return add_extension(_national_number, input.ext)
 	}
+}
+
+// Adds phone number extension.
+function add_extension(number, extension)
+{
+	if (extension === undefined)
+	{
+		return number
+	}
+
+	// The " ext. " part could be internationalized but that's a job for CLDR.
+	return `${number} ext. ${extension}`
 }
 
 // This was originally set to $1 but there are some countries for which the
@@ -151,7 +170,7 @@ export function format_national_number(number, format_as, enforce_national_prefi
 
 export function choose_format_for_number(available_formats, national_number)
 {
-	for (let format of available_formats)
+	for (const format of available_formats)
 	{
 		// Validate leading digits
 		if (get_format_leading_digits_patterns(format).length > 0)
@@ -240,8 +259,11 @@ function sort_out_arguments(first_argument = '', second_argument, third_argument
 	switch (format_type)
 	{
 		case 'International':
+		case 'E.164':
+		// "International_plaintext" is deprecated
 		case 'International_plaintext':
 		case 'National':
+		case 'RFC3966':
 			break
 		default:
 			throw new Error(`Unknown format type argument passed to "format()": "${format_type}"`)

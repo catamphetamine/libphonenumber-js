@@ -4,7 +4,7 @@ import parseCustom from './es6/parse'
 import getNumberTypeCustom from './es6/get number type'
 import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
-import asYouTypeCustom from './es6/as you type'
+import AsYouTypeCustom from './es6/as you type'
 
 import { get_phone_code } from './es6/metadata'
 
@@ -22,48 +22,56 @@ export function format()
 	return formatCustom.apply(this, parameters)
 }
 
-export function get_number_type()
+export function getNumberType()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return getNumberTypeCustom.apply(this, parameters)
 }
 
-// camelCase alias
-export function getNumberType()
+// `get_number_type` name is deprecated
+export function get_number_type()
 {
-	return get_number_type.apply(this, arguments)
+	return getNumberType.apply(this, arguments)
 }
 
-export function is_valid_number()
+export function isValidNumber()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return isValidNumberCustom.apply(this, parameters)
 }
 
-// camelCase alias
-export function isValidNumber()
+// `is_valid_number` name is deprecated
+export function is_valid_number()
 {
-	return is_valid_number.apply(this, arguments)
+	return isValidNumber.apply(this, arguments)
 }
 
+export function AsYouType(country)
+{
+	AsYouTypeCustom.call(this, country, metadata)
+}
+
+AsYouType.prototype = Object.create(AsYouTypeCustom.prototype, {})
+AsYouType.prototype.constructor = AsYouType
+
+// `as_you_type` name is deprecated
 export function as_you_type(country)
 {
-	asYouTypeCustom.call(this, country, metadata)
+	AsYouTypeCustom.call(this, country, metadata)
 }
 
-as_you_type.prototype = Object.create(asYouTypeCustom.prototype, {})
+as_you_type.prototype = Object.create(AsYouTypeCustom.prototype, {})
 as_you_type.prototype.constructor = as_you_type
 
-// camelCase alias
-
+// `asYouType` name is deprecated
 export function asYouType(country)
 {
-	asYouTypeCustom.call(this, country, metadata)
+	AsYouTypeCustom.call(this, country, metadata)
 }
 
-asYouType.prototype = Object.create(asYouTypeCustom.prototype, {})
+asYouType.prototype = Object.create(AsYouTypeCustom.prototype, {})
 asYouType.prototype.constructor = asYouType
 
 export
@@ -79,6 +87,8 @@ export { default as getNumberTypeCustom } from './es6/get number type'
 
 export
 {
+	default as AsYouTypeCustom,
+	// `asYouTypeCustom` name is deprecated
 	default as asYouTypeCustom,
 	DIGIT_PLACEHOLDER
 }

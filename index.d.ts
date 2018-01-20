@@ -11,8 +11,8 @@ export interface ParsedNumber {
 
 export function parse(text: string, options?: CountryCode | { country: { restrict?: CountryCode, default?: CountryCode }}): ParsedNumber;
 
-export function format(parsed_number: ParsedNumber, format: 'International' | 'International_plaintext' | 'National'): string;
-export function format(phone: TelephoneNumber, country: CountryCode, format: 'International' | 'International_plaintext' | 'National'): string;
+export function format(parsed_number: ParsedNumber, format: 'International' | 'International_plaintext' | 'E.164' | 'National'): string;
+export function format(phone: TelephoneNumber, country: CountryCode, format: 'International' | 'International_plaintext' | 'E.164' | 'National'): string;
 
 export function getNumberType(parsed_number: ParsedNumber): string;
 export function getNumberType(phone: TelephoneNumber, country: CountryCode): string;
@@ -24,7 +24,18 @@ export function isValidNumber(phone: TelephoneNumber, country: CountryCode): boo
 export function getPhoneCode(country_code: CountryCode): PhoneCode;
 export function getPhoneCodeCustom(country_code: CountryCode, metadata: object): PhoneCode;
 
+// `asYouType` name is deprecated
 export class asYouType {
+    constructor(default_country_code?: CountryCode);
+    input(text: string): string;
+    reset(): void;
+    country: CountryCode;
+    country_phone_code: PhoneCode;
+    national_number: string;
+    template: string;
+}
+
+export class AsYouType {
     constructor(default_country_code?: CountryCode);
     input(text: string): string;
     reset(): void;

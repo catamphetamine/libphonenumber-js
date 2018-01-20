@@ -72,4 +72,12 @@ describe('validate', () =>
 		// Numerical `value`
 		is_valid_number(88005553535, 'RU').should.equal(true)
 	})
+
+	it('should accept phone number extensions', function()
+	{
+		// International
+		is_valid_number('+12133734253 ext. 123').should.equal(true)
+		// National
+		is_valid_number('88005553535 x123', 'RU').should.equal(true)
+	})
 })

@@ -26,6 +26,20 @@ from './format'
 
 import get_number_type from './get number type'
 
+// The maximum length of the country calling code.
+const MAX_LENGTH_COUNTRY_CODE = 3
+
+// The minimum length of the national significant number.
+const MIN_LENGTH_FOR_NSN = 2
+
+// The ITU says the maximum length should be 15,
+// but one can find longer numbers in Germany.
+const MAX_LENGTH_FOR_NSN = 17
+
+// We don't allow input strings for parsing to be longer than 250 chars.
+// This prevents malicious input from consuming CPU.
+const MAX_INPUT_STRING_LENGTH = 250
+
 export const PLUS_CHARS = '+\uFF0B'
 
 // Digits accepted in phone numbers
@@ -45,6 +59,42 @@ const TILDES = '~\u2053\u223C\uFF5E'
 // characters, white space characters, full stops, slashes, square brackets,
 // parentheses and tildes. Full-width variants are also present.
 export const VALID_PUNCTUATION = `${DASHES}${SLASHES}${DOTS}${WHITESPACE}${BRACKETS}${TILDES}`
+
+// Pattern to capture digits used in an extension.
+// Places a maximum length of '7' for an extension.
+const CAPTURING_EXTN_DIGITS = '([' + VALID_DIGITS + ']{1,7})'
+
+// The RFC 3966 format for extensions.
+const RFC3966_EXTN_PREFIX = ';ext='
+
+/**
+ * Regexp of all possible ways to write extensions, for use when parsing. This
+ * will be run as a case-insensitive regexp match. Wide character versions are
+ * also provided after each ASCII version. There are three regular expressions
+ * here. The first covers RFC 3966 format, where the extension is added using
+ * ';ext='. The second more generic one starts with optional white space and
+ * ends with an optional full stop (.), followed by zero or more spaces/tabs
+ * /commas and then the numbers themselves. The other one covers the special
+ * case of American numbers where the extension is written with a hash at the
+ * end, such as '- 503#'. Note that the only capturing groups should be around
+ * the digits that you want to capture as part of the extension, or else parsing
+ * will fail! We allow two options for representing the accented o - the
+ * character itself, and one in the unicode decomposed form with the combining
+ * acute accent.
+ */
+const EXTN_PATTERNS_FOR_PARSING =
+	RFC3966_EXTN_PREFIX +
+	CAPTURING_EXTN_DIGITS + '|' +
+	'[ \u00A0\\t,]*' +
+	'(?:e?xt(?:ensi(?:o\u0301?|\u00F3))?n?|\uFF45?\uFF58\uFF54\uFF4E?|' +
+	'[;,x\uFF58#\uFF03~\uFF5E]|int|anexo|\uFF49\uFF4E\uFF54)' +
+	'[:\\.\uFF0E]?[ \u00A0\\t,-]*' +
+	CAPTURING_EXTN_DIGITS + '#?|' +
+	'[- ]+([' + VALID_DIGITS + ']{1,5})#'
+
+// Regexp of all known extension prefixes used by different regions followed by
+// 1 or more valid digits, for use when parsing.
+const EXTN_PATTERN = new RegExp('(?:' + EXTN_PATTERNS_FOR_PARSING + ')$', 'i')
 
 //  Regular expression of viable phone numbers. This is location independent.
 //  Checks we have at least three leading digits, and only valid punctuation,
@@ -98,8 +148,8 @@ const VALID_PHONE_NUMBER_PATTERN = new RegExp
 	// Or a longer fully parsed phone number (min 3 characters)
 	'^' +
 		VALID_PHONE_NUMBER +
-		// screw phone number extensions
-		// '(?:' + EXTN_PATTERNS_FOR_PARSING + ')?' +
+		// Phone number extensions
+		'(?:' + EXTN_PATTERNS_FOR_PARSING + ')?' +
 	'$'
 ,
 'i')
@@ -162,20 +212,6 @@ export const DIGIT_MAPPINGS =
 	'\u06F9': '9'  // Eastern-Arabic digit 9
 }
 
-// The maximum length of the country calling code.
-const MAX_LENGTH_COUNTRY_CODE = 3
-
-// The minimum length of the national significant number.
-const MIN_LENGTH_FOR_NSN = 2
-
-// The ITU says the maximum length should be 15,
-// but one can find longer numbers in Germany.
-const MAX_LENGTH_FOR_NSN = 17
-
-// We don't allow input strings for parsing to be longer than 250 chars.
-// This prevents malicious input from consuming CPU.
-const MAX_INPUT_STRING_LENGTH = 250
-
 const default_options =
 {
 	country: {}
@@ -232,12 +268,26 @@ export default function parse(first_argument, second_argument, third_argument)
 
 	// Parse the phone number
 
-	const formatted_phone_number = extract_formatted_phone_number(text)
+	let formatted_phone_number = extract_formatted_phone_number(text)
 
 	// If the phone number is not viable, then abort.
 	if (!is_viable_phone_number(formatted_phone_number))
 	{
 		return {}
+	}
+
+	// Attempt to parse extension first, since it doesn't require region-specific
+	// data and we want to have the non-normalised number here.
+	const
+	{
+		number: number_without_extension,
+		extension
+	}
+	= strip_extension(formatted_phone_number)
+
+	if (extension !== undefined)
+	{
+		formatted_phone_number = number_without_extension
 	}
 
 	let { country_phone_code, number } = parse_phone_number_and_country_phone_code(formatted_phone_number, metadata)
@@ -285,7 +335,7 @@ export default function parse(first_argument, second_argument, third_argument)
 		country = options.country.restrict || options.country.default
 		country_metadata = metadata.countries[country]
 
-		number = normalize(text)
+		number = normalize(formatted_phone_number)
 	}
 
 	if (!country_metadata)
@@ -366,7 +416,18 @@ export default function parse(first_argument, second_argument, third_argument)
 		return {}
 	}
 
-	return { country, phone: national_number }
+	const result =
+	{
+		country,
+		phone: national_number
+	}
+
+	if (extension)
+	{
+		result.ext = extension
+	}
+
+	return result
 }
 
 // Normalizes a string of characters representing a phone number.
@@ -386,7 +447,7 @@ export function replace_characters(text, replacements)
 {
 	let replaced = ''
 
-	for (let character of text)
+	for (const character of text)
 	{
 		const replacement = replacements[character.toUpperCase()]
 
@@ -686,4 +747,39 @@ function sort_out_arguments(first_argument, second_argument, third_argument)
 	}
 
 	return { text, options, metadata }
+}
+
+// Strips any extension (as in, the part of the number dialled after the call is
+// connected, usually indicated with extn, ext, x or similar) from the end of
+// the number, and returns it.
+function strip_extension(number)
+{
+	const start = number.search(EXTN_PATTERN)
+	if (start < 0)
+	{
+		return {}
+	}
+
+	// If we find a potential extension, and the number preceding this is a viable
+	// number, we assume it is an extension.
+	const number_without_extension = number.slice(0, start)
+	/* istanbul ignore if - seems a bit of a redundant check */
+	if (!is_viable_phone_number(number_without_extension))
+	{
+		return {}
+	}
+
+	const matches = number.match(EXTN_PATTERN)
+	let i = 1
+	while (i < matches.length)
+	{
+		if (matches[i] != null && matches[i].length > 0)
+		{
+			return {
+				number    : number_without_extension,
+				extension : matches[i]
+			}
+		}
+		i++
+	}
 }

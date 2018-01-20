@@ -24,7 +24,6 @@ One part of me was curious about how all this phone matching machinery worked, a
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK` as we don't use telephone sets in the XXIst century that much (and we have phonebooks in your mobile phones)
   * Doesn't handle carrier codes: they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number (the locals surely already know those carrier codes by themselves)
   * Assumes all phone numbers being `format`ted are internationally diallable, because that's the only type of phone numbers users are supposed to be inputting on websites (no one inputs short codes, emergency telephone numbers like `911`, etc.)
-  * Doesn't parse phone numbers with extensions (again, this is not the type of phone numbers users should input on websites — they're supposed to input their personal mobile phone numbers, or home stationary phone numbers if they're living in an area where celltowers don't have a good signal, not their business/enterprise stationary phone numbers)
   * Doesn't use `possibleDigits` data to speed up phone number pre-validation (it just skips to the regular expression check itself)
   * Doesn't distinguish between fixed line, mobile, pager, voicemail, toll free and other XXth century bullsh*t
   * Doesn't format phone numbers for "out of country dialing", e.g. `011 ...` in the US (again, just use the `+...` notation accepted worldwide for mobile phones)
@@ -40,7 +39,7 @@ npm install libphonenumber-js --save
 ## Usage
 
 ```js
-import { parse, format, asYouType } from 'libphonenumber-js'
+import { parse, format, AsYouType } from 'libphonenumber-js'
 
 parse('8 (800) 555 35 35', 'RU')
 // { country: 'RU', phone: '8005553535' }
@@ -48,9 +47,9 @@ parse('8 (800) 555 35 35', 'RU')
 format('2133734253', 'US', 'International')
 // '+1 213 373 4253'
 
-new asYouType().input('+12133734')
+new AsYouType().input('+12133734')
 // '+1 213 373 4'
-new asYouType('US').input('2133734')
+new AsYouType('US').input('2133734')
 // '(213) 373-4'
 ```
 
@@ -78,25 +77,32 @@ country:
 
 or just a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) which is gonna be `country.restrict`.
 
-Returns `{ country, phone }` where
+Returns `{ country, phone, ext }` where
  * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition)
  * `phone` is a national (significant) number
+ * `ext` is a phone number extension
 
 If the phone number supplied isn't valid then an empty object `{}` is returned.
 
 ```js
 parse('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
 parse('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
+
+// Supports phone number extensions
+parse('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '2133734253', ext: '123' }
 ```
 
-### format(parsed_number, format)
+Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in XXI-st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
+
+### format(parsedNumber, format)
 
 Formats a phone number using one of the following `format`s:
-  * `International` — e.g. `+1 213 373 4253`
-  * `International_plaintext` — (aka [`E.164`](https://en.wikipedia.org/wiki/E.164)) e.g. `+12133734253`
   * `National` — e.g. `(213) 373-4253`
+  * `International` — e.g. `+1 213 373 4253`
+  * [`E.164`](https://en.wikipedia.org/wiki/E.164) — e.g. `+12133734253`
+  * [`RFC3966`](https://www.ietf.org/rfc/rfc3966.txt) (the phone number URI) — e.g. `tel:+12133734253;ext=123`
 
-`parsed_number` argument **must** be an already `parse()`d phone number (to strip national prefix from it). That means that first a phone number is `parse()`d and only then is it `format()`ted and there's no other way around it. For example, a phone number is `parse()`d before storing it in a database and then it is `forrmat()`ted each time it is read from the database. The `parsed_number` object argument can also be expanded into two string arguments (for those who prefer this kind of syntax):
+`parsedNumber` argument **must** be an already `parse()`d phone number (to strip national prefix from it). That means that first a phone number is `parse()`d and only then is it `format()`ted and there's no other way around it. For example, a phone number is `parse()`d before storing it in a database and then it is `forrmat()`ted each time it is read from the database. The `parsedNumber` object argument can also be expanded into two string arguments (for those who prefer this kind of syntax):
 
 ```js
 format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
@@ -104,10 +110,13 @@ format('2133734253', 'US', 'International') === '+1 213 373 4253'
 
 // The following won't work becase the phone number argument is invalid
 // (has not been parsed previously and therefore contains the `0` national prefix)
-format('017212345678', 'DE', 'International_plaintext') !== '+4917212345678'
+format('017212345678', 'DE', 'E.164') !== '+4917212345678'
+
+// Supports phone number extensions (except for E.164).
+format({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
 ```
 
-### getNumberType(parsed_number)
+### getNumberType(parsedNumber)
 
 Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
 
@@ -120,9 +129,7 @@ The arguments can be
 getNumberType('8005553535', 'RU') === 'MOBILE'
 ```
 
-### isValidNumber(parsed_number)
-
-(aka `is_valid_number`)
+### isValidNumber(parsedNumber)
 
 Checks if a phone number is valid.
 
@@ -159,9 +166,7 @@ I personally wouldn't rely on Google's phone number validation too much because 
 
 Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
 
-### `class` asYouType(default_country_code)
-
-(aka `as_you_type`)
+### `class` AsYouType(default_country_code)
 
 Creates a formatter for partially entered phone number. The two-letter `default_country_code` is optional and, if specified, is gonna be the default country for the phone number being input (in case it's not an international one). The instance of this class has two methods:
 
@@ -178,15 +183,17 @@ formatter.valid === true -->
  * `template` — currently used phone number formatting template, where digits (and the plus sign, if present) are denoted by `x`-es
 
 ```js
-new asYouType().input('+12133734') === '+1 213 373 4'
-new asYouType('US').input('2133734') === '(213) 373-4'
+new AsYouType().input('+12133734') === '+1 213 373 4'
+new AsYouType('US').input('2133734') === '(213) 373-4'
 
-const formatter = new asYouType()
+const formatter = new AsYouType()
 formatter.input('+1-213-373-4253') === '+1 213 373 4253'
 formatter.country === 'US'
 formatter.country_phone_code = '1'
 formatter.template === 'xx xxx xxx xxxx'
 ```
+
+Does not support phone number extensions (same as Google's original library).
 
 ### getPhoneCode(country_code)
 
@@ -256,7 +263,7 @@ For those who aren't using bundlers for some reason there's a way to build a sta
 ```html
 <script src="/scripts/libphonenumber-js.min.js"></script>
 <script>
-  alert(new libphonenumber.asYouType('US').input('213-373-4253'))
+  alert(new libphonenumber.AsYouType('US').input('213-373-4253'))
 </script>
 ```
 
@@ -298,7 +305,7 @@ import {
   parseCustom,
   formatCustom,
   isValidNumberCustom,
-  asYouTypeCustom,
+  AsYouTypeCustom,
   getNumberTypeCustom
 } from 'libphonenumber-js'
 
@@ -309,7 +316,7 @@ export const format = (...args) => formatCustom(...args, metadata)
 export const isValidNumber = (...args) => isValidNumberCustom(...args, metadata)
 export const getNumberType = (...args) => getNumberTypeCustom(...args, metadata)
 
-export class asYouType extends asYouTypeCustom {
+export class AsYouType extends AsYouTypeCustom {
   constructor(country) {
     super(country, metadata)
   }
@@ -346,13 +353,12 @@ exports.getNumberType = function isValidNumber() {
   return custom.getNumberType.apply(this, parameters)
 }
 
-exports.asYouType = function asYouType(country) {
-  custom.asYouType.call(this, country, metadata)
+exports.AsYouType = function AsYouType(country) {
+  custom.AsYouType.call(this, country, metadata)
 }
 
-exports.asYouType.prototype = Object.create(custom.asYouType.prototype, {})
-exports.asYouType.prototype.constructor = exports.asYouType
-
+exports.AsYouType.prototype = Object.create(custom.AsYouType.prototype, {})
+exports.AsYouType.prototype.constructor = exports.AsYouType
 ```
 
 ES6 "tree-shaking" is a non-trivial thing and at the moment of writing it's not guaranteed that a given ES6-aware bundler will actually be intelligent enough to tree-shake unused code, so there's always another option for those cases (if they arise): using `libphonenumber-js/custom` [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) export.

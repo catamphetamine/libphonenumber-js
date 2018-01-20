@@ -378,6 +378,17 @@ describe('as you type', () =>
 		formatter = new as_you_type('CN')
 		formatter.input('01010000').should.equal('010 10000')
 		formatter.reset().input('1010000').should.equal('10 1000 0')
+
+		// Reset a chosen format when it no longer holds given the new leading digits.
+		// If Google changes metadata for Australia then this test might not cover the case.
+		formatter = new as_you_type('AU')
+		formatter.input('180').should.equal('180')
+		formatter.input('2').should.equal('180 2')
+	})
+
+	it('should not accept phone number extensions', function()
+	{
+		new as_you_type().input('+1-213-373-4253 ext. 123').should.equal('')
 	})
 
 	it('should parse non-European digits', function()
