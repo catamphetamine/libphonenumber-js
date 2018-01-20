@@ -92,7 +92,7 @@ parse('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
 parse('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '2133734253', ext: '123' }
 ```
 
-Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in XXI-st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
+Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the XXI-st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
 
 ### format(parsedNumber, format)
 
