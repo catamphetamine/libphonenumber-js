@@ -268,7 +268,37 @@ export default function parse(first_argument, second_argument, third_argument)
 
 	// Parse the phone number
 
-	let formatted_phone_number = extract_formatted_phone_number(text)
+	let formatted_phone_number
+	let extension
+
+	// Parse RFC 3966 phone number URI.
+	if (text && text.indexOf('tel:') === 0)
+	{
+		for (const part of text.split(';'))
+		{
+			const [name, value] = part.split(':')
+			switch (name)
+			{
+				case 'tel':
+					formatted_phone_number = value
+					break
+				case 'ext':
+					extension = value
+					break
+				case 'phone-context':
+					// Domain contexts are ignored.
+					if (value[0] === '+')
+					{
+						formatted_phone_number = value + formatted_phone_number
+					}
+					break
+			}
+		}
+	}
+	else
+	{
+		formatted_phone_number = extract_formatted_phone_number(text)
+	}
 
 	// If the phone number is not viable, then abort.
 	if (!is_viable_phone_number(formatted_phone_number))
@@ -278,16 +308,12 @@ export default function parse(first_argument, second_argument, third_argument)
 
 	// Attempt to parse extension first, since it doesn't require region-specific
 	// data and we want to have the non-normalised number here.
-	const
-	{
-		number: number_without_extension,
-		extension
-	}
-	= strip_extension(formatted_phone_number)
+	const with_extension_stripped = strip_extension(formatted_phone_number)
 
-	if (extension !== undefined)
+	if (with_extension_stripped.extension !== undefined)
 	{
-		formatted_phone_number = number_without_extension
+		formatted_phone_number = with_extension_stripped.number,
+		extension              = with_extension_stripped.extension
 	}
 
 	let { country_phone_code, number } = parse_phone_number_and_country_phone_code(formatted_phone_number, metadata)

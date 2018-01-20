@@ -18,17 +18,13 @@ One part of me was curious about how all this phone matching machinery worked, a
 
 ## Difference from Google's `libphonenumber`
 
-  * Pure javascript, doesn't require any 3rd party libraries
-  * Metadata size is just about 75 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes
-  * Better "as you type" formatting (and also more iPhone-alike style)
-  * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK` as we don't use telephone sets in the XXIst century that much (and we have phonebooks in your mobile phones)
-  * Doesn't handle carrier codes: they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number (the locals surely already know those carrier codes by themselves)
-  * Assumes all phone numbers being `format`ted are internationally diallable, because that's the only type of phone numbers users are supposed to be inputting on websites (no one inputs short codes, emergency telephone numbers like `911`, etc.)
-  * Doesn't use `possibleDigits` data to speed up phone number pre-validation (it just skips to the regular expression check itself)
-  * Doesn't distinguish between fixed line, mobile, pager, voicemail, toll free and other XXth century bullsh*t
-  * Doesn't format phone numbers for "out of country dialing", e.g. `011 ...` in the US (again, just use the `+...` notation accepted worldwide for mobile phones)
-  * Doesn't parse `tel:...` URIs ([RFC 3966](https://www.ietf.org/rfc/rfc3966.txt)) because it's not relevant for user-facing web experience
-  * When formatting international numbers replaces all braces, dashes, etc with spaces (because that's the logical thing to do, and leaving braces in an international number isn't)
+  * Pure javascript, doesn't require any 3rd party libraries.
+  * Metadata size is just about 75 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes.
+  * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK`.
+  * Doesn't parse "carrier codes": they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number.
+  * Doesn't format special local-only phone numbers: ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-), emergency telephone numbers like `911`, etc.
+  * Doesn't distinguish between pager, voicemail, toll free and other XXth century stuff.
+  * Doesn't format phone numbers for "out of country dialing", e.g. `011 ...` for calling from inside the US to another country. Just use the standard `+...` international phone numbers.
 
 ## Installation
 
@@ -88,8 +84,11 @@ If the phone number supplied isn't valid then an empty object `{}` is returned.
 parse('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
 parse('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
 
-// Supports phone number extensions
+// Parses phone number extensions.
 parse('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '2133734253', ext: '123' }
+
+// Parses RFC 3966 phone number URIs.
+parse('tel:+78005553535;ext:123') === { country: 'RU', phone: '8005553535', ext: '123' }
 ```
 
 Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the XXI-st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
@@ -112,7 +111,7 @@ format('2133734253', 'US', 'International') === '+1 213 373 4253'
 // (has not been parsed previously and therefore contains the `0` national prefix)
 format('017212345678', 'DE', 'E.164') !== '+4917212345678'
 
-// Supports phone number extensions (except for E.164).
+// Formats phone number extensions (except for E.164).
 format({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
 ```
 

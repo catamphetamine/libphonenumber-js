@@ -164,4 +164,38 @@ describe('parse', () =>
 		// Not a valid extension
 		parse('2134567890 ext. 1234567890', 'US').should.deep.equal({})
 	})
+
+	it('should parse RFC 3966 phone numbers', function()
+	{
+		parse('tel:+78005553535;ext:123').should.deep.equal
+		({
+			country : 'RU',
+			phone   : '8005553535',
+			ext     : '123'
+		})
+
+		// With phone context
+		parse('tel:8005553535;ext:123;phone-context:+7').should.deep.equal
+		({
+			country : 'RU',
+			phone   : '8005553535',
+			ext     : '123'
+		})
+
+		// Domain contexts are ignored
+		parse('tel:8005553535;ext:123;phone-context:www.leningrad.spb.ru', 'RU').should.deep.equal
+		({
+			country : 'RU',
+			phone   : '8005553535',
+			ext     : '123'
+		})
+
+		// // Missing `tel:` prefix is invalid as per the specs.
+		// // http://www.cdapro.com/know/26883
+		// parse('+78005553535;phone-context=').should.deep.equal
+		// ({
+		// 	country: 'RU',
+		// 	phone: '8005553535'
+		// })
+	})
 })
