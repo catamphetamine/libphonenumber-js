@@ -1,7 +1,7 @@
 import { parseString } from 'xml2js'
 import Promise from 'bluebird'
 
-import { DIGIT_PLACEHOLDER } from '../as you type'
+import { DIGIT_PLACEHOLDER } from '../AsYouType'
 
 const phone_number_types =
 [

@@ -2,7 +2,7 @@ import chai, { expect } from 'chai'
 chai.should()
 
 import metadata from '../metadata.min'
-import get_number_type_custom from '../source/get number type'
+import get_number_type_custom from '../source/getNumberType'
 
 function get_number_type(...parameters)
 {

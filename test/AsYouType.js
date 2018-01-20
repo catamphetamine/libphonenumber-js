@@ -2,7 +2,7 @@ import chai, { expect } from 'chai'
 chai.should()
 
 import metadata from '../metadata.min'
-import as_you_type_custom, { close_dangling_braces, repeat } from '../source/as you type'
+import as_you_type_custom, { close_dangling_braces, repeat } from '../source/AsYouType'
 
 class as_you_type extends as_you_type_custom
 {

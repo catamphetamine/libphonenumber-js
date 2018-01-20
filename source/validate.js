@@ -1,5 +1,5 @@
 import parse, { is_viable_phone_number } from './parse'
-import get_number_type, { sort_out_arguments } from './get number type'
+import get_number_type, { sort_out_arguments } from './getNumberType'
 
 import
 {

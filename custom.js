@@ -5,10 +5,10 @@ exports = module.exports = {}
 exports.parse             = require('./build/parse').default
 exports.DIGITS            = require('./build/parse').DIGIT_MAPPINGS
 exports.format            = require('./build/format').default
-exports.getNumberType     = require('./build/get number type').default
+exports.getNumberType     = require('./build/getNumberType').default
 exports.isValidNumber     = require('./build/validate').default
-exports.AsYouType         = require('./build/as you type').default
-exports.DIGIT_PLACEHOLDER = require('./build/as you type').DIGIT_PLACEHOLDER
+exports.AsYouType         = require('./build/AsYouType').default
+exports.DIGIT_PLACEHOLDER = require('./build/AsYouType').DIGIT_PLACEHOLDER
 
 // `get_number_type` name is deprecated
 exports.get_number_type = exports.getNumberType
