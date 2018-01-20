@@ -135,7 +135,7 @@
 					const templateFormatter = input_format.templateFormatter
 					const parseDigit        = input_format.parseDigit
 
-					const as_you_type = new libphonenumber.as_you_type(this.state.country)
+					const as_you_type = new libphonenumber.AsYouType(this.state.country)
 					as_you_type.input(this.state.value)
 
 					let parsed_number = 'Unknown country'
@@ -184,7 +184,7 @@
 								}}
 								format={(value) =>
 								{
-									const as_you_type = new libphonenumber.as_you_type(this.state.country)
+									const as_you_type = new libphonenumber.AsYouType(this.state.country)
 									const text = as_you_type.input(value)
 
 									return { text: text, template: as_you_type.template }
