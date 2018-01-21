@@ -22,9 +22,9 @@ One part of me was curious about how all this phone matching machinery worked, a
   * Metadata size is just about 75 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes.
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK`.
   * Doesn't parse "carrier codes": they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number.
-  * Doesn't format special local-only phone numbers: ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-), emergency telephone numbers like `911`, etc.
-  * Doesn't distinguish between pager, voicemail, toll free and other XXth century stuff.
-  * Doesn't format phone numbers for "out of country dialing", e.g. `011 ...` for calling from inside the US to another country. Just use the standard `+...` international phone numbers.
+  * Doesn't parse and format special local-only phone numbers: emergency phone numbers like `911`, ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-), etc.
+  * Doesn't distinguish between pager, voicemail, toll free and other 20th century stuff.
+  * Doesn't format phone numbers in "out-of-country" dialing format, e.g. `011 ...` for calling from the United States to another country. Use the standard `+...` international phone number format instead.
 
 ## Installation
 
@@ -55,25 +55,11 @@ new AsYouType('US').input('2133734')
 
 ## API
 
-### parse(text, [`country: string` or `options: Object`])
+### parse(text, [default_country])
 
 Attempts to parse a valid phone number from `text`.
 
-Available `options`:
-
-```js
-{
-  country:
-  {
-    restrict — The phone number must belong to this country.
-
-    default — Default country to use if the phone number
-              is not written in international format.
-  }
-}
-```
-
-If [`country`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) string is passed then it becomes `options.country.restrict`.
+If [`default_country`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is passed then it's gonna be the default country for parsing non-international phone numbers.
 
 Returns `{ country, phone, ext }` where
  * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition)
@@ -93,7 +79,7 @@ parse('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '2133734253',
 parse('tel:+78005553535;ext:123') === { country: 'RU', phone: '8005553535', ext: '123' }
 ```
 
-Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the XXI-st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
+Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the 21st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
 
 ### format(parsedNumber, format, [options])
 

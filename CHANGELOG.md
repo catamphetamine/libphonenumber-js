@@ -1,3 +1,9 @@
+1.0.0 / 21.01.2018
+==================
+
+  * If `country: string` argument is passed to `parse()` now it becomes "the default country" rather than "restrict to country".
+  * `parse()` `options` argument changed: it's now an undocumented feature and can have only a single option inside — `defaultCountry: string` — which should be passed as a string argument instead.
+
 0.4.52 / 21.01.2018
 ===================
 

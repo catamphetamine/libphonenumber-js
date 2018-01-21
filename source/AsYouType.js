@@ -102,8 +102,12 @@ const VALID_INCOMPLETE_PHONE_NUMBER =
 
 const VALID_INCOMPLETE_PHONE_NUMBER_PATTERN = new RegExp('^' + VALID_INCOMPLETE_PHONE_NUMBER + '$', 'i')
 
-export default class as_you_type
+export default class AsYouType
 {
+	/**
+	 * @param {string} [country_code] - The default country used for parsing non-international phone numbers.
+	 * @param {Object} metadata
+	 */
 	constructor(country_code, metadata)
 	{
 		// Metadata is required.

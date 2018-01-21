@@ -250,16 +250,16 @@ export default function parse(arg_1, arg_2, arg_3)
 	// Validate country codes
 
 	// Validate `default` country
-	if (options.country.default && !metadata.countries[options.country.default])
+	if (options.defaultCountry && !metadata.countries[options.defaultCountry])
 	{
-		throw new Error(`Unknown country code: ${options.country.default}`)
+		throw new Error(`Unknown country code: ${options.defaultCountry}`)
 	}
 
-	// Validate `restrict` country
-	if (options.country.restrict && !metadata.countries[options.country.restrict])
-	{
-		throw new Error(`Unknown country code: ${options.country.restrict}`)
-	}
+	// // Validate `restrict` country
+	// if (options.restrictCountry && !metadata.countries[options.restrictCountry])
+	// {
+	// 	throw new Error(`Unknown country code: ${options.restrictCountry}`)
+	// }
 
 	// Parse the phone number
 
@@ -329,12 +329,12 @@ export default function parse(arg_1, arg_2, arg_3)
 	{
 		is_international = true
 
-		// Check country restriction
-		if (options.country.restrict &&
-			country_phone_code !== get_phone_code(metadata.countries[options.country.restrict]))
-		{
-			return {}
-		}
+		// // Check country restriction
+		// if (options.restrictCountry &&
+		// 	country_phone_code !== get_phone_code(metadata.countries[options.restrictCountry]))
+		// {
+		// 	return {}
+		// }
 
 		// Formatting information for regions which share
 		// a country calling code is contained by only one region
@@ -351,9 +351,11 @@ export default function parse(arg_1, arg_2, arg_3)
 		// Therefore, to reliably determine the exact country,
 		// national (significant) number should be parsed first.
 	}
-	else if (options.country.restrict || options.country.default)
+	// else if (options.restrictCountry || options.defaultCountry)
+	else if (options.defaultCountry)
 	{
-		country = options.country.restrict || options.country.default
+		// country = options.restrictCountry || options.defaultCountry
+		country = options.defaultCountry
 		country_metadata = metadata.countries[country]
 
 		number = normalize(formatted_phone_number)
@@ -738,7 +740,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3)
 	// `parse('88005553535', 'RU', [options], metadata)`.
 	if (typeof arg_2 === 'string')
 	{
-		options = { country: { restrict: arg_2 } }
+		options = { defaultCountry: arg_2 }
 		metadata = arg_3
 	}
 	// No "resrict country" argument is being passed.

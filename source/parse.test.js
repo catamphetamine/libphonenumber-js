@@ -17,7 +17,7 @@ describe('parse', () =>
 		parse('+7 (800) 55-35-35').should.deep.equal({})
 		parse('+7 (800) 55-35-35', undefined).should.deep.equal({})
 		parse('+7 (800) 55-35-35', 'US').should.deep.equal({})
-		parse('(800) 55 35 35', { country: { default: 'RU' } }).should.deep.equal({})
+		parse('(800) 55 35 35', { defaultCountry: 'RU' }).should.deep.equal({})
 		parse('+1 187 215 5230', 'US').should.deep.equal({})
 		parse('+1 1877 215 5230', 'US').should.deep.equal({})
 	})
@@ -31,12 +31,12 @@ describe('parse', () =>
 		parse('8 (800) 555 35 35', 'RU').should.deep.equal({ country: 'RU', phone: '8005553535' })
 		// International format
 		parse('+7 (800) 555-35-35').should.deep.equal({ country: 'RU', phone: '8005553535' })
-		// Restrict to US, but not a US country phone code supplied
-		parse('+7 (800) 555-35-35', 'US').should.deep.equal({})
+		// // Restrict to US, but not a US country phone code supplied
+		// parse('+7 (800) 555-35-35', 'US').should.deep.equal({})
 		// Restrict to RU
 		parse('(800) 555 35 35', 'RU').should.deep.equal({ country: 'RU', phone: '8005553535' })
 		// Default to RU
-		parse('8 (800) 555 35 35', { country: { default: 'RU' } }).should.deep.equal({ country: 'RU', phone: '8005553535' })
+		parse('8 (800) 555 35 35', { defaultCountry: 'RU' }).should.deep.equal({ country: 'RU', phone: '8005553535' })
 
 		// Gangster partyline
 		parse('+1-213-373-4253').should.deep.equal({ country: 'US', phone: '2133734253' })
@@ -83,7 +83,7 @@ describe('parse', () =>
 		thrower.should.throw('Unknown country code')
 
 		// No country metadata for this `default` country code
-		thrower = () => parse('123', { country: { default: 'ZZ' }})
+		thrower = () => parse('123', { defaultCountry: 'ZZ' })
 		thrower.should.throw('Unknown country code')
 
 		// Invalid country phone code
@@ -95,9 +95,9 @@ describe('parse', () =>
 		// Barbados NANPA phone number
 		parse('+12460000000').should.deep.equal({ country: 'BB', phone: '2460000000' })
 
-		// A case when country (restricted to) is not equal
-		// to the one parsed out of an international number.
-		parse('+1-213-373-4253', 'RU').should.deep.equal({})
+		// // A case when country (restricted to) is not equal
+		// // to the one parsed out of an international number.
+		// parse('+1-213-373-4253', 'RU').should.deep.equal({})
 
 		// National (significant) number too short
 		parse('2', 'US').should.deep.equal({})
