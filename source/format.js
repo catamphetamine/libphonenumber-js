@@ -97,8 +97,6 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 			return international_number
 
 		case 'E.164':
-		// "International_plaintext" is deprecated
-		case 'International_plaintext':
 			// `E.164` doesn't define "phone number extensions".
 			return `+${get_phone_code(country_metadata)}${input.phone}`
 
@@ -305,8 +303,6 @@ function sort_out_arguments(arg_1 = '', arg_2, arg_3, arg_4, arg_5)
 	{
 		case 'International':
 		case 'E.164':
-		// "International_plaintext" is deprecated
-		case 'International_plaintext':
 		case 'National':
 		case 'RFC3966':
 			break

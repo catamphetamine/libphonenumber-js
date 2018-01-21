@@ -44,16 +44,6 @@ exports.AsYouType.prototype.constructor = exports.AsYouType
 exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
 exports.DIGITS            = custom.DIGITS
 
-// camelCase aliases
-// `get_number_type` name is deprecated
-exports.get_number_type = exports.getNumberType
-// `is_valid_number` name is deprecated
-exports.is_valid_number = exports.isValidNumber
-// `as_you_type` name is deprecated
-exports.as_you_type = exports.AsYouType
-// `asYouType` name is deprecated
-exports.asYouType = exports.AsYouType
-
 exports.getPhoneCode = function(country)
 {
 	return custom.getPhoneCode(country, metadata)

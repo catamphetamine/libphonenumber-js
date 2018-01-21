@@ -29,23 +29,11 @@ export function getNumberType()
 	return getNumberTypeCustom.apply(this, parameters)
 }
 
-// `get_number_type` name is deprecated
-export function get_number_type()
-{
-	return getNumberType.apply(this, arguments)
-}
-
 export function isValidNumber()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return isValidNumberCustom.apply(this, parameters)
-}
-
-// `is_valid_number` name is deprecated
-export function is_valid_number()
-{
-	return isValidNumber.apply(this, arguments)
 }
 
 export function AsYouType(country)
@@ -55,24 +43,6 @@ export function AsYouType(country)
 
 AsYouType.prototype = Object.create(AsYouTypeCustom.prototype, {})
 AsYouType.prototype.constructor = AsYouType
-
-// `as_you_type` name is deprecated
-export function as_you_type(country)
-{
-	AsYouTypeCustom.call(this, country, metadata)
-}
-
-as_you_type.prototype = Object.create(AsYouTypeCustom.prototype, {})
-as_you_type.prototype.constructor = as_you_type
-
-// `asYouType` name is deprecated
-export function asYouType(country)
-{
-	AsYouTypeCustom.call(this, country, metadata)
-}
-
-asYouType.prototype = Object.create(AsYouTypeCustom.prototype, {})
-asYouType.prototype.constructor = asYouType
 
 export
 {
@@ -88,8 +58,6 @@ export { default as getNumberTypeCustom } from './es6/types'
 export
 {
 	default as AsYouTypeCustom,
-	// `asYouTypeCustom` name is deprecated
-	default as asYouTypeCustom,
 	DIGIT_PLACEHOLDER
 }
 from './es6/AsYouType'
