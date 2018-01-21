@@ -21,8 +21,8 @@ One part of me was curious about how all this phone matching machinery worked, a
   * Pure javascript, doesn't require any 3rd party libraries.
   * Metadata size is just about 75 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes.
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK`.
-  * Doesn't parse "carrier codes": they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number.
-  * Doesn't parse and format special local-only phone numbers: emergency phone numbers like `911`, ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-), etc.
+  * Doesn't parse or format "carrier codes": they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number.
+  * Doesn't parse or format special local-only phone numbers: emergency phone numbers like `911`, ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-), etc.
   * Doesn't distinguish between pager, voicemail, toll free and other 20th century stuff.
   * Doesn't format phone numbers in "out-of-country" dialing format, e.g. `011 ...` for calling from the United States to another country. Use the standard `+...` international phone number format instead.
 
