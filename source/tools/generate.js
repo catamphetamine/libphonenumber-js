@@ -335,7 +335,7 @@ export default function(input, included_countries, extended, included_phone_numb
 				.filter(format => format.international_format !== 'NA')
 
 				// Sanity check (using no "default" for this field)
-				for (let format of country.formats)
+				for (const format of country.formats)
 				{
 					// Never happens
 					if (!format.format)
