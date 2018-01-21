@@ -55,11 +55,11 @@ new AsYouType('US').input('2133734')
 
 ## API
 
-### parse(text, [default_country])
+### parse(text, [defaultCountry])
 
 Attempts to parse a valid phone number from `text`.
 
-If [`default_country`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is passed then it's gonna be the default country for parsing non-international phone numbers.
+If [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is passed then it's gonna be the default country for parsing non-international phone numbers.
 
 Returns `{ country, phone, ext }` where
  * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition)
