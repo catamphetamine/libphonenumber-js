@@ -95,7 +95,7 @@ Available `options`:
 
 ```js
 {
-  formatExtension(number, extension) — Formats `number` and `extension` to a string.
+  formatExtension(number, extension) — Formats `number` and `extension` into a string.
                                        By default returns `${number} ext. ${extension}`.
 }
 ```
