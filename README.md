@@ -55,23 +55,25 @@ new AsYouType('US').input('2133734')
 
 ## API
 
-### parse(text, options)
+### parse(text, [`country: string` or `options: Object`])
 
-`options` can be either an object
+Attempts to parse a valid phone number from `text`.
+
+Available `options`:
 
 ```js
-country:
 {
-  restrict — (country code)
-             the phone number must be in this country
+  country:
+  {
+    restrict — The phone number must belong to this country.
 
-  default — (country code)
-            default country to use for phone number parsing and validation
-            (if no country code could be derived from the phone number)
+    default — Default country to use if the phone number
+              is not written in international format.
+  }
 }
 ```
 
-or just a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) which is gonna be `country.restrict`.
+If [`country`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) string is passed then it becomes `options.country.restrict`.
 
 Returns `{ country, phone, ext }` where
  * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition)
@@ -93,13 +95,24 @@ parse('tel:+78005553535;ext:123') === { country: 'RU', phone: '8005553535', ext:
 
 Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the XXI-st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
 
-### format(parsedNumber, format)
+### format(parsedNumber, format, [options])
 
-Formats a phone number using one of the following `format`s:
+Formats a `parsedNumber` into a string according to a `format`.
+
+Available `format`s:
   * `National` — e.g. `(213) 373-4253`
   * `International` — e.g. `+1 213 373 4253`
   * [`E.164`](https://en.wikipedia.org/wiki/E.164) — e.g. `+12133734253`
   * [`RFC3966`](https://www.ietf.org/rfc/rfc3966.txt) (the phone number URI) — e.g. `tel:+12133734253;ext=123`
+
+Available `options`:
+
+```js
+{
+  formatExtension(number, extension) — Formats `number` and `extension` to a string.
+                                       By default returns `${number} ext. ${extension}`.
+}
+```
 
 `parsedNumber` argument **must** be an already `parse()`d phone number (to strip national prefix from it). That means that first a phone number is `parse()`d and only then is it `format()`ted and there's no other way around it. For example, a phone number is `parse()`d before storing it in a database and then it is `forrmat()`ted each time it is read from the database. The `parsedNumber` object argument can also be expanded into two string arguments (for those who prefer this kind of syntax):
 
@@ -107,7 +120,7 @@ Formats a phone number using one of the following `format`s:
 format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
 format('2133734253', 'US', 'International') === '+1 213 373 4253'
 
-// The following won't work becase the phone number argument is invalid
+// The following won't work because the phone number argument is invalid
 // (has not been parsed previously and therefore contains the `0` national prefix)
 format('017212345678', 'DE', 'E.164') !== '+4917212345678'
 

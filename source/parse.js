@@ -243,14 +243,9 @@ const default_options =
 // parse('+7 800 555 35 35', metadata)
 // ```
 //
-export default function parse(first_argument, second_argument, third_argument)
+export default function parse(arg_1, arg_2, arg_3)
 {
-	let { text, options, metadata } = sort_out_arguments(first_argument, second_argument, third_argument)
-
-	if (!options)
-	{
-		options = { ...default_options }
-	}
+	let { text, options, metadata } = sort_out_arguments(arg_1, arg_2, arg_3)
 
 	// Validate country codes
 
@@ -310,7 +305,7 @@ export default function parse(first_argument, second_argument, third_argument)
 	// data and we want to have the non-normalised number here.
 	const with_extension_stripped = strip_extension(formatted_phone_number)
 
-	if (with_extension_stripped.extension !== undefined)
+	if (with_extension_stripped.extension)
 	{
 		formatted_phone_number = with_extension_stripped.number,
 		extension              = with_extension_stripped.extension
@@ -717,7 +712,7 @@ export function find_country_code(country_phone_code, national_phone_number, met
 // }
 
 // Sort out arguments
-function sort_out_arguments(first_argument, second_argument, third_argument)
+function sort_out_arguments(arg_1, arg_2, arg_3)
 {
 	let text
 	let options
@@ -725,51 +720,57 @@ function sort_out_arguments(first_argument, second_argument, third_argument)
 
 	// Normalize numerical `value`.
 	// https://github.com/catamphetamine/libphonenumber-js/issues/142
-	if (typeof first_argument === 'number')
+	// `parse(88005553535, ...)`.
+	if (typeof arg_1 === 'number')
 	{
-		first_argument = String(first_argument)
+		arg_1 = String(arg_1)
 	}
 
-	if (typeof first_argument === 'string')
+	// If the phone number is passed as a string.
+	// `parse('88005553535', ...)`.
+	if (typeof arg_1 === 'string')
 	{
-		text = first_argument
+		text = arg_1
 	}
 
-	// Covert `resrict` country to an `options` object
-	if (typeof second_argument === 'string')
+	// If "resrict country" argument is being passed
+	// then convert it to an `options` object.
+	// `parse('88005553535', 'RU', [options], metadata)`.
+	if (typeof arg_2 === 'string')
 	{
-		const restrict_to_country = second_argument
-
-		options =
-		{
-			...default_options,
-
-			country:
-			{
-				restrict: restrict_to_country
-			}
-		}
-
-		metadata = third_argument
+		options = { country: { restrict: arg_2 } }
+		metadata = arg_3
 	}
+	// No "resrict country" argument is being passed.
+	// International phone number is passed.
+	// `parse('+78005553535', [options], metadata)`.
 	else
 	{
-		// Differentiate `metadata` from `options`
-		if (second_argument && second_argument.countries)
+		if (arg_3)
 		{
-			metadata = second_argument
+			options  = arg_2
+			metadata = arg_3
 		}
 		else
 		{
-			options  = second_argument
-			metadata = third_argument
+			metadata = arg_2
 		}
 	}
 
-	// Sanity check
-	if (!metadata)
+	// Metadata is required.
+	if (!metadata || !metadata.countries)
 	{
-		throw new Error('Metadata not passed')
+		throw new Error('Metadata is required')
+	}
+
+	// Apply default options.
+	if (options)
+	{
+		options = { ...default_options, ...options }
+	}
+	else
+	{
+		options = default_options
 	}
 
 	return { text, options, metadata }

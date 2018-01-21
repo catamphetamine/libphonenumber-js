@@ -1,3 +1,8 @@
+0.4.52 / 21.01.2018
+===================
+
+  * Added `formatExtension(number, extension)` option to `format()`
+
 0.4.50 / 20.01.2018
 ===================
 

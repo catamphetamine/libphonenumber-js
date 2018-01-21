@@ -20,15 +20,9 @@ from './metadata'
 // is_valid('+78005553535', metadata)
 // ```
 //
-export default function is_valid(first_argument, second_argument, third_argument)
+export default function is_valid(arg_1, arg_2, arg_3)
 {
-	const { input, metadata } = sort_out_arguments(first_argument, second_argument, third_argument)
-
-	// Sanity check
-	if (!metadata)
-	{
-		throw new Error('Metadata not passed')
-	}
+	const { input, metadata } = sort_out_arguments(arg_1, arg_2, arg_3)
 
 	if (!input)
 	{

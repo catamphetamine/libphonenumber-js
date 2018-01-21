@@ -26,6 +26,11 @@ import
 }
 from './metadata'
 
+const default_options =
+{
+	formatExtension: (number, extension) => `${number} ext. ${extension}`
+}
+
 // Formats a phone number
 //
 // Example use cases:
@@ -39,9 +44,16 @@ from './metadata'
 // format('+78005553535', 'National', metadata)
 // ```
 //
-export default function format(first_argument, second_argument, third_argument, fourth_argument)
+export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 {
-	const { input, format_type, metadata } = sort_out_arguments(first_argument, second_argument, third_argument, fourth_argument)
+	const
+	{
+		input,
+		format_type,
+		options,
+		metadata
+	}
+	= sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 
 	let country_metadata
 
@@ -78,15 +90,20 @@ export default function format(first_argument, second_argument, third_argument, 
 			}
 			const national_number = format_national_number(number, 'International', false, country_metadata)
 			const international_number = `+${get_phone_code(country_metadata)} ${national_number}`
-			return add_extension(international_number, input.ext)
+			if (input.ext || input.ext === 0)
+			{
+				return options.formatExtension(international_number, input.ext)
+			}
+			return international_number
 
 		case 'E.164':
 		// "International_plaintext" is deprecated
 		case 'International_plaintext':
+			// `E.164` doesn't define "phone number extensions".
 			return `+${get_phone_code(country_metadata)}${input.phone}`
 
 		case 'RFC3966':
-			return `+${get_phone_code(country_metadata)}${input.phone}${input.ext !== undefined ? ';ext=' + input.ext : ''}`
+			return `+${get_phone_code(country_metadata)}${input.phone}${(input.ext || input.ext === 0) ? ';ext=' + input.ext : ''}`
 
 		case 'National':
 			if (!number)
@@ -94,20 +111,12 @@ export default function format(first_argument, second_argument, third_argument, 
 				return ''
 			}
 			const _national_number = format_national_number(number, 'National', false, country_metadata)
-			return add_extension(_national_number, input.ext)
+			if (input.ext || input.ext === 0)
+			{
+				return options.formatExtension(_national_number, input.ext)
+			}
+			return _national_number
 	}
-}
-
-// Adds phone number extension.
-function add_extension(number, extension)
-{
-	if (extension === undefined)
-	{
-		return number
-	}
-
-	// The " ext. " part could be internationalized but that's a job for CLDR.
-	return `${number} ext. ${extension}`
 }
 
 // This was originally set to $1 but there are some countries for which the
@@ -203,59 +212,95 @@ export function local_to_international_style(local)
 }
 
 // Sort out arguments
-function sort_out_arguments(first_argument = '', second_argument, third_argument, fourth_argument)
+function sort_out_arguments(arg_1 = '', arg_2, arg_3, arg_4, arg_5)
 {
 	let input
 	let format_type
+	let options
 	let metadata
 
-	// Sort out arguments
-	if (typeof first_argument === 'string')
+	// Sort out arguments.
+
+	// If the phone number is passed as a string.
+	// `format('8005553535', ...)`.
+	if (typeof arg_1 === 'string')
 	{
-		// If country code is supplied
-		if (typeof third_argument === 'string')
+		// If country code is supplied.
+		// `format('8005553535', 'RU', 'National', [options], metadata)`.
+		if (typeof arg_3 === 'string')
 		{
 			// Will be `parse()`d later in code
 			input =
 			{
-				phone   : first_argument,
-				country : second_argument
+				phone   : arg_1,
+				country : arg_2
 			}
 
-			format_type = third_argument
-			metadata    = fourth_argument
+			format_type = arg_3
+
+			if (arg_5)
+			{
+				options  = arg_4
+				metadata = arg_5
+			}
+			else
+			{
+				metadata = arg_4
+			}
 		}
 		// Just an international phone number is supplied
+		// `format('+78005553535', 'National', [options], metadata)`.
 		else
 		{
 			// Will be `parse()`d later in code
 			input =
 			{
-				phone : first_argument
+				phone : arg_1
 			}
 
-			if (typeof second_argument !== 'string')
+			if (typeof arg_2 !== 'string')
 			{
 				throw new Error('Format type argument not passed for `format()`')
 			}
 
-			format_type = second_argument
-			metadata    = third_argument
+			format_type = arg_2
+
+			if (arg_4)
+			{
+				options  = arg_3
+				metadata = arg_4
+			}
+			else
+			{
+				metadata = arg_3
+			}
 		}
 	}
+	// If the phone number is passed as a parsed number object.
+	// `format({ phone: '8005553535', country: 'RU' }, 'National', [options], metadata)`.
 	else
 	{
-		input       = first_argument
-		format_type = second_argument
-		metadata    = third_argument
+		input       = arg_1
+		format_type = arg_2
+
+		if (arg_4)
+		{
+			options  = arg_3
+			metadata = arg_4
+		}
+		else
+		{
+			metadata = arg_3
+		}
 	}
 
-	// Sanity check
+	// Metadata is required.
 	if (!metadata)
 	{
-		throw new Error('Metadata not passed')
+		throw new Error('Metadata is required')
 	}
 
+	// Validate `format_type`.
 	switch (format_type)
 	{
 		case 'International':
@@ -269,5 +314,15 @@ function sort_out_arguments(first_argument = '', second_argument, third_argument
 			throw new Error(`Unknown format type argument passed to "format()": "${format_type}"`)
 	}
 
-	return { input, format_type, metadata }
+	// Apply default options.
+	if (options)
+	{
+		options = { ...default_options, ...options }
+	}
+	else
+	{
+		options = default_options
+	}
+
+	return { input, format_type, options, metadata }
 }

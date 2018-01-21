@@ -18,6 +18,25 @@ describe('format', () =>
 		format('2133734253', 'US', 'International').should.equal('+1 213 373 4253')
 	})
 
+	it('should sort out the arguments', function()
+	{
+		const options =
+		{
+			formatExtension: (number, extension) => `${number} доб. ${extension}`
+		}
+
+		format
+		({
+			phone   : '8005553535',
+			country : 'RU',
+			ext     : '123'
+		},
+		'National', options).should.equal('800 555-35-35 доб. 123')
+
+		format('+78005553535', 'National', options).should.equal('800 555-35-35')
+		format('8005553535', 'RU', 'National', options).should.equal('800 555-35-35')
+	})
+
 	it('should format valid phone numbers', function()
 	{
 		// Switzerland

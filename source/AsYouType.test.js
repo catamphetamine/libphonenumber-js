@@ -307,7 +307,7 @@ describe('as you type', () =>
 
 		// No metadata
 		thrower = () => new as_you_type_custom('RU')
-		thrower.should.throw('Metadata not passed')
+		thrower.should.throw('Metadata is required')
 
 		// Second '+' sign
 

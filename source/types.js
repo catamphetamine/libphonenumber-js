@@ -19,15 +19,9 @@ import
 from './metadata'
 
 // Finds out national phone number type (fixed line, mobile, etc)
-export default function get_number_type(first_argument, second_argument, third_argument)
+export default function get_number_type(arg_1, arg_2, arg_3)
 {
-	const { input, metadata } = sort_out_arguments(first_argument, second_argument, third_argument)
-
-	// Sanity check
-	if (!metadata)
-	{
-		throw new Error('Metadata not passed')
-	}
+	const { input, metadata } = sort_out_arguments(arg_1, arg_2, arg_3)
 
 	// When no input was passed
 	if (!input)
@@ -149,61 +143,76 @@ export function is_of_type(national_number, type)
 }
 
 // Sort out arguments
-export function sort_out_arguments(first_argument, second_argument, third_argument)
+export function sort_out_arguments(arg_1, arg_2, arg_3)
 {
 	let input
 	let metadata
 
 	// Normalize numerical `value`.
 	// https://github.com/catamphetamine/libphonenumber-js/issues/142
-	if (typeof first_argument === 'number')
+	// `getNumberType(88005553535, ...)`.
+	if (typeof arg_1 === 'number')
 	{
-		first_argument = String(first_argument)
+		arg_1 = String(arg_1)
 	}
 
-	if (typeof first_argument === 'string')
+	// If the phone number is passed as a string.
+	// `getNumberType('88005553535', ...)`.
+	if (typeof arg_1 === 'string')
 	{
-		// If country code is supplied
-		if (typeof second_argument === 'string' || second_argument === undefined)
+		// If "resrict country" argument is being passed
+		// then convert it to an `options` object.
+		// `getNumberType('88005553535', 'RU', metadata)`.
+		if (typeof arg_2 === 'string' || arg_2 === undefined)
 		{
-			metadata = third_argument
+			metadata = arg_3
 
 			// `parse` extracts phone numbers from raw text,
 			// therefore it will cut off all "garbage" characters,
 			// while this `validate` function needs to verify
 			// that the phone number contains no "garbage"
 			// therefore the explicit `is_viable_phone_number` check.
-			if (is_viable_phone_number(first_argument))
+			if (is_viable_phone_number(arg_1))
 			{
-				input = parse(first_argument, second_argument, metadata)
+				input = parse(arg_1, arg_2, metadata)
 			}
 		}
-		// Just an international phone number is supplied
+		// No "resrict country" argument is being passed.
+		// International phone number is passed.
+		// `getNumberType('+78005553535', metadata)`.
 		else
 		{
-			metadata = second_argument
+			metadata = arg_2
 
 			// `parse` extracts phone numbers from raw text,
 			// therefore it will cut off all "garbage" characters,
 			// while this `validate` function needs to verify
 			// that the phone number contains no "garbage"
 			// therefore the explicit `is_viable_phone_number` check.
-			if (is_viable_phone_number(first_argument))
+			if (is_viable_phone_number(arg_1))
 			{
-				input = parse(first_argument, metadata)
+				input = parse(arg_1, metadata)
 			}
 		}
 	}
+	// If the phone number is passed as a parsed phone number.
+	// `getNumberType({ phone: '88005553535', country: 'RU' }, ...)`.
 	else
 	{
-		// The `first_argument` must be a valid phone number
+		// The `arg_1` must be a valid phone number
 		// as a whole, not just a part of it which gets parsed here.
-		if (first_argument && first_argument.phone && is_viable_phone_number(first_argument.phone))
+		if (arg_1 && arg_1.phone && is_viable_phone_number(arg_1.phone))
 		{
-			input = first_argument
+			input = arg_1
 		}
 
-		metadata = second_argument
+		metadata = arg_2
+	}
+
+	// Metadata is required.
+	if (!metadata || !metadata.countries)
+	{
+		throw new Error('Metadata is required')
 	}
 
 	return { input, metadata }

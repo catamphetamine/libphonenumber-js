@@ -106,10 +106,10 @@ export default class as_you_type
 {
 	constructor(country_code, metadata)
 	{
-		// Sanity check
-		if (!metadata)
+		// Metadata is required.
+		if (!metadata || !metadata.countries)
 		{
-			throw new Error('Metadata not passed')
+			throw new Error('Metadata is required')
 		}
 
 		if (country_code && metadata.countries[country_code])
