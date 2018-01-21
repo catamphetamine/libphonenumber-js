@@ -121,7 +121,7 @@ Determines phone number type (fixed line, mobile, toll free, etc). This function
 The arguments can be
 
  * either the result of the `parse()` function call: `{ country, phone }`
- * or a pair of arguments `(phone, country_code)` in which case it is passed to the `parse()` function right away and the resulting `{ country, phone }` object is used
+ * or a pair of arguments `(phone, [defaultCountry])` in which case it is passed to the `parse()` function right away and the resulting `{ country, phone }` object is used
 
 ```js
 getNumberType('8005553535', 'RU') === 'MOBILE'
