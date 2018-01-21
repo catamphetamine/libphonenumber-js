@@ -1,7 +1,7 @@
 import metadata from './metadata.min.json'
 
 import parseCustom from './es6/parse'
-import getNumberTypeCustom from './es6/getNumberType'
+import getNumberTypeCustom from './es6/types'
 import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
 import AsYouTypeCustom from './es6/AsYouType'
@@ -83,7 +83,7 @@ from './es6/parse'
 
 export { default as formatCustom }        from './es6/format'
 export { default as isValidNumberCustom } from './es6/validate'
-export { default as getNumberTypeCustom } from './es6/getNumberType'
+export { default as getNumberTypeCustom } from './es6/types'
 
 export
 {

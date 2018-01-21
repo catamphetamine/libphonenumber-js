@@ -24,7 +24,7 @@ import
 }
 from './format'
 
-import get_number_type from './getNumberType'
+import get_number_type from './types'
 
 // The maximum length of the country calling code.
 const MAX_LENGTH_COUNTRY_CODE = 3

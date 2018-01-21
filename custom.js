@@ -5,7 +5,7 @@ exports = module.exports = {}
 exports.parse             = require('./build/parse').default
 exports.DIGITS            = require('./build/parse').DIGIT_MAPPINGS
 exports.format            = require('./build/format').default
-exports.getNumberType     = require('./build/getNumberType').default
+exports.getNumberType     = require('./build/types').default
 exports.isValidNumber     = require('./build/validate').default
 exports.AsYouType         = require('./build/AsYouType').default
 exports.DIGIT_PLACEHOLDER = require('./build/AsYouType').DIGIT_PLACEHOLDER
