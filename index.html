@@ -148,7 +148,7 @@
 						parsed_number = JSON.stringify(libphonenumber.parse(this.state.parse, this.state.country))
 						national_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'National')
 						international_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International')
-						international_formatted_number_in_plaintext = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International_plaintext')
+						international_formatted_number_in_plaintext = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'E.164')
 					}
 					catch (error)
 					{
@@ -205,7 +205,7 @@
 
 								<br/>
 
-								Note: Phone number validation here is loose because it uses the (default) reduced metadata set. For more precise phone number validation use <code>metadata.full.json</code>. <a href="https://github.com/catamphetamine/libphonenumber-js#isvalidnumberparsed_number">Read more</a>
+								Note: Phone number validation here is loose because it uses the (default) reduced metadata set. For more precise phone number validation use <code>metadata.full.json</code>. <a href="https://github.com/catamphetamine/libphonenumber-js#isvalidnumberparsednumber">Read more</a>
 							</div>
 
 							<h2>Parse</h2>
