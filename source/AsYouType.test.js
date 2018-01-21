@@ -186,7 +186,7 @@ describe('as you type', () =>
 		// and if it's a valid phone number.
 		formatter = new as_you_type('RU')
 		formatter.input('8005553535')
-		formatter.national_number.should.equal('8005553535')
+		formatter.getNationalNumber().should.equal('8005553535')
 
 		// Check that clearing an national formatter:
 		//  * doesn't clear country metadata

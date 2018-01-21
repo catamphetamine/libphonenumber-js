@@ -798,7 +798,7 @@ export default class AsYouType
 
 	format_next_national_number_digits(digits)
 	{
-		for (let digit of digits)
+		for (const digit of digits)
 		{
 			// If there is room for more digits in current `template`,
 			// then set the next digit in the `template`,
@@ -863,6 +863,11 @@ export default class AsYouType
 	determine_the_country()
 	{
 		this.country = find_country_code(this.country_phone_code, this.national_number, this.metadata)
+	}
+
+	getNationalNumber()
+	{
+		return this.national_number
 	}
 }
 

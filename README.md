@@ -166,29 +166,26 @@ Phone number validation rules are [constantly changing](https://github.com/googl
 
 ### `class` AsYouType(defaultCountry)
 
-Creates a formatter for partially entered phone number. The [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The instance of this class has two methods:
+Creates a formatter for partially entered phone number. The [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance has two methods:
 
- * `input(text)` — takes any text and appends it to the input; returns the formatted phone number
- * `reset()` — resets the input
+ * `input(text)` — Takes any text and appends it to the input. Returns the formatted phone number.
+ * `reset()` — Resets the input.
 
-The instance of this class has also these fields:
+The formatter also has the following getters:
 
-<!-- * `valid` — is the phone number being input a valid one already
-formatter.valid === true -->
- * `country` — a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) of the country this phone belongs to
- * `country_phone_code` — a phone code of the `country`
- * `national_number` — national number part (so far)
- * `template` — currently used phone number formatting template, where digits (and the plus sign, if present) are denoted by `x`-es
+ * `country` — Phone number [country](https://github.com/catamphetamine/libphonenumber-js#country-code-definition).
+ * `getNationalNumber()` — Returns the national number part of the phone number.
+ * `template` — The template used to format the phone number. Digits (and the `+` sign, if present) are denoted by `x`-es.
 
 ```js
 new AsYouType().input('+12133734') === '+1 213 373 4'
 new AsYouType('US').input('2133734') === '(213) 373-4'
 
-const formatter = new AsYouType()
-formatter.input('+1-213-373-4253') === '+1 213 373 4253'
-formatter.country === 'US'
-formatter.country_phone_code = '1'
-formatter.template === 'xx xxx xxx xxxx'
+const asYouType = new AsYouType()
+asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
+asYouType.country === 'US'
+asYouType.getNationalNumber() === '2133734253'
+asYouType.template === 'xx xxx xxx xxxx'
 ```
 
 "As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits. This solution is sufficient for all use cases except for phone number extensions which Google's "As You Type" formatter does not support. If your project requires phone number extensions input then use a separate input field for that.
