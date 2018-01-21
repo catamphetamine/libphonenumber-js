@@ -134,7 +134,7 @@ Checks if a phone number is valid.
 The arguments can be
 
  * either the result of the `parse()` function call: `{ country, phone }`
- * or a pair of arguments `(phone, country_code)` in which case it is passed to the `parse()` function right away and the resulting `{ country, phone }` object is used
+ * or a pair of arguments `(phone, [defaultCountry])` in which case it is passed to the `parse()` function right away and the resulting `{ country, phone }` object is used
 
 ```js
 isValidNumber('+1-213-373-4253') === true
@@ -164,9 +164,9 @@ I personally wouldn't rely on Google's phone number validation too much because 
 
 Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
 
-### `class` AsYouType(default_country_code)
+### `class` AsYouType(defaultCountry)
 
-Creates a formatter for partially entered phone number. The two-letter `default_country_code` is optional and, if specified, is gonna be the default country for the phone number being input (in case it's not an international one). The instance of this class has two methods:
+Creates a formatter for partially entered phone number. The [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The instance of this class has two methods:
 
  * `input(text)` — takes any text and appends it to the input; returns the formatted phone number
  * `reset()` — resets the input
@@ -193,9 +193,9 @@ formatter.template === 'xx xxx xxx xxxx'
 
 "As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits. This solution is sufficient for all use cases except for phone number extensions which Google's "As You Type" formatter does not support. If your project requires phone number extensions input then use a separate input field for that.
 
-### getPhoneCode(country_code)
+### getPhoneCode(country)
 
-There have been requests for a function returning a phone code by country code.
+There have been requests for a function returning a phone code by [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition).
 
 ```js
 getPhoneCode('RU') === '7'
