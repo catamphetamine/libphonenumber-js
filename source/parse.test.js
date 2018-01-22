@@ -112,16 +112,17 @@ describe('parse', () =>
 		// Local cell phone from a land line: 044 -> 1.
 		parse('0445511111111', 'MX').should.deep.equal({ country: 'MX', phone: '15511111111' })
 
-		// No arguments
-		parse(undefined).should.deep.equal({})
-
 		// No metadata
 		thrower = () => parser('')
-		thrower.should.throw('Metadata')
+		thrower.should.throw('Metadata is required')
 
 		// No metadata
 		thrower = () => parser('', {})
-		thrower.should.throw('Metadata')
+		thrower.should.throw('Metadata is required')
+
+		// Numerical `value`
+		thrower = () => parse(2141111111, 'US')
+		thrower.should.throw('A phone number for parsing must be a string.')
 	})
 
 	it('should parse phone number extensions', function()

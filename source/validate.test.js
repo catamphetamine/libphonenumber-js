@@ -58,16 +58,17 @@ describe('validate', () =>
 
 	it('should work in edge cases', function()
 	{
-		// No arguments
-		is_valid_number(undefined).should.equal(false)
-
 		// No metadata
-		const thrower = () => validate()
-		thrower.should.throw('Metadata')
+		let thrower = () => validate('+78005553535')
+		thrower.should.throw('Metadata is required')
 
 		// Non-phone-number characters in a phone number
 		is_valid_number('+499821958a').should.equal(false)
 		is_valid_number('88005553535x', 'RU').should.equal(false)
+
+		// Numerical `value`
+		thrower = () => is_valid_number(88005553535, 'RU')
+		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
 	})
 
 	it('should accept phone number extensions', function()

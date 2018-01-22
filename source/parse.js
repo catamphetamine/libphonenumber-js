@@ -726,6 +726,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3)
 	{
 		text = arg_1
 	}
+	else throw new TypeError('A phone number for parsing must be a string.')
 
 	// If "resrict country" argument is being passed
 	// then convert it to an `options` object.

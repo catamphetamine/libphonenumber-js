@@ -4,6 +4,7 @@
   * If `country: string` argument is passed to `parse()` now it becomes "the default country" rather than "restrict to country" ("restrict to country" option is gone).
   * `parse()` `options` argument changed: it's now an undocumented feature and can have only a single option inside — `defaultCountry: string` — which should be passed as a string argument instead.
   * Removed all previously deprecated stuff (all underscored exports, `asYouType` and `asYouTypeCustom` exports, `"International_plaintext"` format).
+  * Integer phone numbers no longer [get automatically converted to strings](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md).
 
 0.4.52 / 21.01.2018
 ===================

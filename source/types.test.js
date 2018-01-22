@@ -31,15 +31,19 @@ describe('get_number_type', () =>
 
 	it('should work in edge cases', function()
 	{
-		// No arguments
-		type(get_number_type(undefined)).should.equal('undefined')
-
 		// No metadata
-		const thrower = () => get_number_type()
-		thrower.should.throw('Metadata')
+		let thrower = () => get_number_type_custom({ phone: '+78005553535' })
+		thrower.should.throw('Metadata is required')
+
+		// Parsed phone number
+		get_number_type({ phone: '8005553535', country: 'RU' }).should.equal('TOLL_FREE')
 
 		// Invalid phone number
 		type(get_number_type('123', 'RU')).should.equal('undefined')
+
+		// Numerical `value`
+		thrower = () => get_number_type(89150000000, 'RU')
+		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
 	})
 })
 

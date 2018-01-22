@@ -189,17 +189,18 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 	}
 	// If the phone number is passed as a parsed phone number.
 	// `getNumberType({ phone: '88005553535', country: 'RU' }, ...)`.
-	else
+	else if (is_object(arg_1) && typeof arg_1.phone === 'string')
 	{
 		// The `arg_1` must be a valid phone number
 		// as a whole, not just a part of it which gets parsed here.
-		if (arg_1 && arg_1.phone && is_viable_phone_number(arg_1.phone))
+		if (is_viable_phone_number(arg_1.phone))
 		{
 			input = arg_1
 		}
 
 		metadata = arg_2
 	}
+	else throw new TypeError('A phone number must either be a string or an object of shape { phone, [country] }.')
 
 	// Metadata is required.
 	if (!metadata || !metadata.countries)
@@ -209,3 +210,8 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 
 	return { input, metadata }
 }
+
+// Babel transforms `typeof` into some "branches"
+// so istanbul will show this as "branch not covered".
+/* istanbul ignore next */
+const is_object = _ => typeof _ === 'object'
