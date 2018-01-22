@@ -40,9 +40,6 @@ describe('get_number_type', () =>
 
 		// Invalid phone number
 		type(get_number_type('123', 'RU')).should.equal('undefined')
-
-		// Numerical `value`
-		get_number_type(89150000000, 'RU').should.equal('MOBILE')
 	})
 })
 

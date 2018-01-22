@@ -122,9 +122,6 @@ describe('parse', () =>
 		// No metadata
 		thrower = () => parser('', {})
 		thrower.should.throw('Metadata')
-
-		// Numerical `value`
-		parse(2141111111, 'US').should.deep.equal({ country: 'US', phone: '2141111111'})
 	})
 
 	it('should parse phone number extensions', function()

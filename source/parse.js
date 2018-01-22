@@ -720,17 +720,6 @@ function sort_out_arguments(arg_1, arg_2, arg_3)
 	let options
 	let metadata
 
-	// Normalize numerical `value`.
-	// https://github.com/catamphetamine/libphonenumber-js/issues/142
-	// `parse(88005553535, ...)`.
-	// This is for legacy databases only
-	// because integers must not be used to represent phone numbers.
-	// https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md
-	if (typeof arg_1 === 'number')
-	{
-		arg_1 = String(arg_1)
-	}
-
 	// If the phone number is passed as a string.
 	// `parse('88005553535', ...)`.
 	if (typeof arg_1 === 'string')
