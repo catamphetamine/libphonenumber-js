@@ -59,14 +59,18 @@ describe('format', () =>
 		// Explicitly specified country and derived country conflict
 		format('+12133734253', 'RU', 'National').should.equal('+12133734253')
 
+		// No phone number
+		format('', 'RU', 'International').should.equal('+7')
+		format('', 'RU', 'National').should.equal('')
+
 		// No suitable format
 		format('+121337342530', 'US', 'National').should.equal('21337342530')
 		// No suitable format (leading digits mismatch)
 		format('699999', 'AD', 'National').should.equal('699999')
 
-		// No national number
-		format(undefined, 'US', 'National').should.equal('')
-		format(undefined, 'US', 'International').should.equal('+1')
+		// Numerical `value`
+		thrower = () => format(89150000000, 'RU', 'National')
+		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
 
 		// No metadata for country
 		format('+121337342530', 'USA', 'National').should.equal('21337342530')

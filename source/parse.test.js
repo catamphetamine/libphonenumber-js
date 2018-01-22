@@ -2,7 +2,7 @@ import chai, { expect } from 'chai'
 chai.should()
 
 import metadata from '../metadata.min'
-import parser from '../source/parse'
+import parser, { parse_phone_number_and_country_phone_code } from '../source/parse'
 
 function parse(...parameters)
 {
@@ -123,6 +123,8 @@ describe('parse', () =>
 		// Numerical `value`
 		thrower = () => parse(2141111111, 'US')
 		thrower.should.throw('A phone number for parsing must be a string.')
+
+		parse_phone_number_and_country_phone_code().should.deep.equal({})
 	})
 
 	it('should parse phone number extensions', function()

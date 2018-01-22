@@ -529,7 +529,7 @@ export function parse_phone_number(number)
 
 	const is_international = LEADING_PLUS_CHARS_PATTERN.test(number)
 
-	// Remove non-digits
+	// Remove non-digits.
 	// (and strip the possible leading '+')
 	number = normalize(number)
 

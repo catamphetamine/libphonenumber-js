@@ -210,7 +210,7 @@ export function local_to_international_style(local)
 }
 
 // Sort out arguments
-function sort_out_arguments(arg_1 = '', arg_2, arg_3, arg_4, arg_5)
+function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 {
 	let input
 	let format_type
@@ -276,7 +276,7 @@ function sort_out_arguments(arg_1 = '', arg_2, arg_3, arg_4, arg_5)
 	}
 	// If the phone number is passed as a parsed number object.
 	// `format({ phone: '8005553535', country: 'RU' }, 'National', [options], metadata)`.
-	else
+	else if (is_object(arg_1) && typeof arg_1.phone === 'string')
 	{
 		input       = arg_1
 		format_type = arg_2
@@ -291,6 +291,7 @@ function sort_out_arguments(arg_1 = '', arg_2, arg_3, arg_4, arg_5)
 			metadata = arg_3
 		}
 	}
+	else throw new TypeError('A phone number must either be a string or an object of shape { phone, [country] }.')
 
 	// Metadata is required.
 	if (!metadata)
@@ -322,3 +323,8 @@ function sort_out_arguments(arg_1 = '', arg_2, arg_3, arg_4, arg_5)
 
 	return { input, format_type, options, metadata }
 }
+
+// Babel transforms `typeof` into some "branches"
+// so istanbul will show this as "branch not covered".
+/* istanbul ignore next */
+const is_object = _ => typeof _ === 'object'
