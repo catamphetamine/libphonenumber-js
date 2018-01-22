@@ -113,27 +113,22 @@ format('017212345678', 'DE', 'E.164') !== '+4917212345678'
 format({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
 ```
 
-### getNumberType(parsedNumber)
+### getNumberType(number, [defaultCountry])
 
 Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
 
-The arguments can be
-
- * either the result of the `parse()` function call: `{ country, phone }`
- * or a pair of arguments `(phone, [defaultCountry])` in which case it is passed to the `parse()` function right away and the resulting `{ country, phone }` object is used
+The `number` argument can be either a result of the `parse()` function call — `{ country, phone }` — or a string possibly accompanied with `defaultCountry`.
 
 ```js
-getNumberType('8005553535', 'RU') === 'MOBILE'
+getNumberType('9160151539', 'RU') === 'MOBILE'
+getNumberType({ phone: '9160151539', country: 'RU' }) === 'MOBILE'
 ```
 
-### isValidNumber(parsedNumber)
+### isValidNumber(number, [defaultCountry])
 
 Checks if a phone number is valid.
 
-The arguments can be
-
- * either the result of the `parse()` function call: `{ country, phone }`
- * or a pair of arguments `(phone, [defaultCountry])` in which case it is passed to the `parse()` function right away and the resulting `{ country, phone }` object is used
+The `number` argument can be either a result of the `parse()` function call — `{ country, phone }` — or a string possibly accompanied with `defaultCountry`.
 
 ```js
 isValidNumber('+1-213-373-4253') === true
