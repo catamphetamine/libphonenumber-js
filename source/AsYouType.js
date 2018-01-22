@@ -484,6 +484,9 @@ export default class AsYouType
 		// and it no longer holds given the new leading digits then reset it.
 		// The test for this `if` condition is marked as:
 		// "Reset a chosen format when it no longer holds given the new leading digits".
+		// To construct a valid test case for this one can find a country
+		// in `PhoneNumberMetadata.xml` yielding one format for 3 `<leadingDigits>`
+		// and yielding another format for 4 `<leadingDigits>` (Australia in this case).
 		if (this.chosen_format && this.matching_formats.indexOf(this.chosen_format) === -1)
 		{
 			this.reset_format()
