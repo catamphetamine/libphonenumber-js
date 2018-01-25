@@ -20,7 +20,7 @@ export function getNumberType(phone: TelephoneNumber, country: CountryCode): str
 export function getNumberTypeCustom(phone: TelephoneNumber, country: CountryCode, metadata: object): string;
 
 export function isValidNumber(parsedNumber: ParsedNumber): boolean;
-export function isValidNumber(phone: TelephoneNumber, country: CountryCode): boolean;
+export function isValidNumber(phone: TelephoneNumber, country?: CountryCode): boolean;
 
 export function getPhoneCode(countryCode: CountryCode): PhoneCode;
 export function getPhoneCodeCustom(countryCode: CountryCode, metadata: object): PhoneCode;
