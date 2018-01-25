@@ -228,7 +228,7 @@ Phone number validation bugs should **only** be reported if they appear when usi
 
 ## TypeScript
 
-TypeScript support for this library is entirely community-driven. I myself don't use TypeScript. Send your pull requests.
+[TypeScript support](https://github.com/catamphetamine/libphonenumber-js/blob/master/index.d.ts) for this library is entirely community-driven. I myself don't use TypeScript. Send your pull requests.
 
 ## Webpack
 
