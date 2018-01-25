@@ -16,19 +16,19 @@ export function parse(text: string, options?: CountryCode | { defaultCountry?: C
 export function parseCustom(text: string, options?: CountryCode | { defaultCountry?: CountryCode }, metadata: object): ParsedNumber;
 
 export function format(parsedNumber: ParsedNumber, format: NumberFormat): string;
-export function format(phone: TelephoneNumber, country?: CountryCode, format: NumberFormat): string;
+export function format(phone: TelephoneNumber, country: CountryCode | undefined, format: NumberFormat): string;
 export function formatCustom(parsedNumber: ParsedNumber, format: NumberFormat, metadata: object): string;
-export function formatCustom(phone: TelephoneNumber, country?: CountryCode, format: NumberFormat, metadata: object): string;
+export function formatCustom(phone: TelephoneNumber, country: CountryCode | undefined, format: NumberFormat, metadata: object): string;
 
 export function getNumberType(parsedNumber: ParsedNumber): string;
 export function getNumberType(phone: TelephoneNumber, country?: CountryCode): string;
 export function getNumberTypeCustom(parsedNumber: ParsedNumber, metadata: object): string;
-export function getNumberTypeCustom(phone: TelephoneNumber, country?: CountryCode, metadata: object): string;
+export function getNumberTypeCustom(phone: TelephoneNumber, country: CountryCode | undefined, metadata: object): string;
 
 export function isValidNumber(parsedNumber: ParsedNumber): boolean;
 export function isValidNumber(phone: TelephoneNumber, country?: CountryCode): boolean;
 export function isValidNumberCustom(parsedNumber: ParsedNumber, metadata: object): boolean;
-export function isValidNumberCustom(phone: TelephoneNumber, country?: CountryCode, metadata: object): boolean;
+export function isValidNumberCustom(phone: TelephoneNumber, country: CountryCode | undefined, metadata: object): boolean;
 
 export function getPhoneCode(countryCode: CountryCode): PhoneCode;
 export function getPhoneCodeCustom(countryCode: CountryCode, metadata: object): PhoneCode;
