@@ -1,6 +1,3 @@
-import chai, { expect } from 'chai'
-chai.should()
-
 import { matches_entirely } from '../source/common'
 
 describe('common', () =>

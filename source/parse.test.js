@@ -1,6 +1,3 @@
-import chai, { expect } from 'chai'
-chai.should()
-
 import metadata from '../metadata.min'
 import parser, { parse_phone_number_and_country_phone_code } from '../source/parse'
 

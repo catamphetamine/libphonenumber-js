@@ -1,6 +1,3 @@
-import chai, { expect } from 'chai'
-chai.should()
-
 import metadata from '../metadata.min'
 import as_you_type_custom, { close_dangling_braces, repeat } from '../source/AsYouType'
 

@@ -1,6 +1,3 @@
-import chai, { expect } from 'chai'
-chai.should()
-
 import metadata from '../metadata.min'
 import validate from '../source/validate'
 
