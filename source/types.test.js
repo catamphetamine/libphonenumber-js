@@ -12,12 +12,22 @@ function get_number_type(...parameters)
 
 describe('get_number_type', () =>
 {
+	it('should infer phone number type MOBILE', function()
+	{
+		get_number_type('9150000000', 'RU', metadata).should.equal('MOBILE')
+		get_number_type('7912345678', 'GB', metadata).should.equal('MOBILE')
+		get_number_type('2423570000', 'US', metadata).should.equal('MOBILE')
+		get_number_type('345678901', 'IT', metadata).should.equal('MOBILE')
+		get_number_type('91187654321', 'AR', metadata).should.equal('MOBILE')
+		get_number_type('15123456789', 'DE', metadata).should.equal('MOBILE')
+		get_number_type('51234567', 'EE', metadata).should.equal('MOBILE')
+	})
+
 	it('should infer phone number types', function()
 	{
 		get_number_type('88005553535', 'RU', metadata).should.equal('TOLL_FREE')
 		get_number_type('8005553535', 'RU', metadata).should.equal('TOLL_FREE')
 		get_number_type('4957777777', 'RU', metadata).should.equal('FIXED_LINE')
-		get_number_type('9150000000', 'RU', metadata).should.equal('MOBILE')
 		get_number_type('8030000000', 'RU', metadata).should.equal('PREMIUM_RATE')
 
 		get_number_type('2133734253', 'US', metadata).should.equal('FIXED_LINE_OR_MOBILE')
