@@ -3,7 +3,15 @@
 //
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
-import { matches_entirely } from './common'
+import
+{
+	parse_phone_number_and_country_phone_code,
+	VALID_PUNCTUATION,
+	PLUS_CHARS,
+	normalize,
+	matches_entirely
+}
+from './common'
 
 import
 {
@@ -13,21 +21,11 @@ import
 	get_national_prefix_transform_rule,
 	get_leading_digits,
 	get_metadata_by_country_phone_code,
-	get_formats,
-	// get_format_national_prefix_is_mandatory_when_formatting
+	get_formats
 }
 from './metadata'
 
-import
-{
-	choose_format_for_number
-}
-from './format'
-
 import get_number_type from './types'
-
-// The maximum length of the country calling code.
-const MAX_LENGTH_COUNTRY_CODE = 3
 
 // The minimum length of the national significant number.
 const MIN_LENGTH_FOR_NSN = 2
@@ -40,25 +38,9 @@ const MAX_LENGTH_FOR_NSN = 17
 // This prevents malicious input from consuming CPU.
 const MAX_INPUT_STRING_LENGTH = 250
 
-export const PLUS_CHARS = '+\uFF0B'
-
 // Digits accepted in phone numbers
 // (ascii, fullwidth, arabic-indic, and eastern arabic digits).
 export const VALID_DIGITS = '0-9\uFF10-\uFF19\u0660-\u0669\u06F0-\u06F9'
-
-// `DASHES` will be right after the opening square bracket of the "character class"
-const DASHES = '-\u2010-\u2015\u2212\u30FC\uFF0D'
-const SLASHES = '\uFF0F/'
-const DOTS = '\uFF0E.'
-const WHITESPACE = ' \u00A0\u00AD\u200B\u2060\u3000'
-const BRACKETS = '()\uFF08\uFF09\uFF3B\uFF3D\\[\\]'
-const TILDES = '~\u2053\u223C\uFF5E'
-
-// Regular expression of acceptable punctuation found in phone numbers. This
-// excludes punctuation found as a leading character only. This consists of dash
-// characters, white space characters, full stops, slashes, square brackets,
-// parentheses and tildes. Full-width variants are also present.
-export const VALID_PUNCTUATION = `${DASHES}${SLASHES}${DOTS}${WHITESPACE}${BRACKETS}${TILDES}`
 
 // Pattern to capture digits used in an extension.
 // Places a maximum length of '7' for an extension.
@@ -159,58 +141,6 @@ const PHONE_NUMBER_START_PATTERN = new RegExp('[' + PLUS_CHARS + VALID_DIGITS + 
 
 // Regular expression of trailing characters that we want to remove.
 const AFTER_PHONE_NUMBER_END_PATTERN = new RegExp('[^' + VALID_DIGITS + ']+$')
-
-const LEADING_PLUS_CHARS_PATTERN = new RegExp('^[' + PLUS_CHARS + ']+')
-
-// These mappings map a character (key) to a specific digit that should
-// replace it for normalization purposes. Non-European digits that
-// may be used in phone numbers are mapped to a European equivalent.
-//
-// E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
-//
-export const DIGIT_MAPPINGS =
-{
-	'0': '0',
-	'1': '1',
-	'2': '2',
-	'3': '3',
-	'4': '4',
-	'5': '5',
-	'6': '6',
-	'7': '7',
-	'8': '8',
-	'9': '9',
-	'\uFF10': '0', // Fullwidth digit 0
-	'\uFF11': '1', // Fullwidth digit 1
-	'\uFF12': '2', // Fullwidth digit 2
-	'\uFF13': '3', // Fullwidth digit 3
-	'\uFF14': '4', // Fullwidth digit 4
-	'\uFF15': '5', // Fullwidth digit 5
-	'\uFF16': '6', // Fullwidth digit 6
-	'\uFF17': '7', // Fullwidth digit 7
-	'\uFF18': '8', // Fullwidth digit 8
-	'\uFF19': '9', // Fullwidth digit 9
-	'\u0660': '0', // Arabic-indic digit 0
-	'\u0661': '1', // Arabic-indic digit 1
-	'\u0662': '2', // Arabic-indic digit 2
-	'\u0663': '3', // Arabic-indic digit 3
-	'\u0664': '4', // Arabic-indic digit 4
-	'\u0665': '5', // Arabic-indic digit 5
-	'\u0666': '6', // Arabic-indic digit 6
-	'\u0667': '7', // Arabic-indic digit 7
-	'\u0668': '8', // Arabic-indic digit 8
-	'\u0669': '9', // Arabic-indic digit 9
-	'\u06F0': '0', // Eastern-Arabic digit 0
-	'\u06F1': '1', // Eastern-Arabic digit 1
-	'\u06F2': '2', // Eastern-Arabic digit 2
-	'\u06F3': '3', // Eastern-Arabic digit 3
-	'\u06F4': '4', // Eastern-Arabic digit 4
-	'\u06F5': '5', // Eastern-Arabic digit 5
-	'\u06F6': '6', // Eastern-Arabic digit 6
-	'\u06F7': '7', // Eastern-Arabic digit 7
-	'\u06F8': '8', // Eastern-Arabic digit 8
-	'\u06F9': '9'  // Eastern-Arabic digit 9
-}
 
 const default_options =
 {
@@ -453,36 +383,6 @@ export default function parse(arg_1, arg_2, arg_3)
 	return result
 }
 
-// Normalizes a string of characters representing a phone number.
-// This converts wide-ascii and arabic-indic numerals to European numerals,
-// and strips punctuation and alpha characters.
-//
-// E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
-//
-export function normalize(number)
-{
-	return replace_characters(number, DIGIT_MAPPINGS)
-}
-
-// For any character not being part of `replacements`
-// it is removed from the phone number.
-export function replace_characters(text, replacements)
-{
-	let replaced = ''
-
-	for (const character of text)
-	{
-		const replacement = replacements[character.toUpperCase()]
-
-		if (replacement !== undefined)
-		{
-			replaced += replacement
-		}
-	}
-
-	return replaced
-}
-
 // Checks to see if the string of characters could possibly be a phone number at
 // all. At the moment, checks to see that the string begins with at least 2
 // digits, ignoring any punctuation commonly found in phone numbers. This method
@@ -517,84 +417,6 @@ export function extract_formatted_phone_number(text)
 		.slice(starts_at)
 		// Remove trailing non-numerical characters
 		.replace(AFTER_PHONE_NUMBER_END_PATTERN, '')
-}
-
-// Parses a formatted phone number.
-export function parse_phone_number(number)
-{
-	if (!number)
-	{
-		return ''
-	}
-
-	const is_international = LEADING_PLUS_CHARS_PATTERN.test(number)
-
-	// Remove non-digits.
-	// (and strip the possible leading '+')
-	number = normalize(number)
-
-	if (is_international)
-	{
-		return `+${number}`
-	}
-
-	return number
-}
-
-// Parses a formatted phone number
-// and returns `{ country_phone_code, number }`
-// where `number` is the national (significant) phone number.
-//
-// (aka `maybeExtractCountryPhoneCode`)
-//
-export function parse_phone_number_and_country_phone_code(number, metadata)
-{
-	number = parse_phone_number(number)
-
-	if (!number)
-	{
-		return {}
-	}
-
-	// If this is not an international phone number,
-	// then don't extract country phone code.
-	if (number[0] !== '+')
-	{
-		return { number }
-	}
-
-	// Strip the leading '+' sign
-	number = number.slice(1)
-
-	// Fast abortion: country codes do not begin with a '0'
-	if (number[0] === '0')
-	{
-		return {}
-	}
-
-	// The thing with country phone codes
-	// is that they are orthogonal to each other
-	// i.e. there's no such country phone code A
-	// for which country phone code B exists
-	// where B starts with A.
-	// Therefore, while scanning digits,
-	// if a valid country code is found,
-	// that means that it is the country code.
-	//
-	let i = 1
-	while (i <= MAX_LENGTH_COUNTRY_CODE && i <= number.length)
-	{
-		const country_phone_code = number.slice(0, i)
-
-		if (metadata.country_phone_code_to_countries[country_phone_code])
-		{
-			return { country_phone_code, number: number.slice(i) }
-		}
-
-		i++
-	}
-
-	return {}
 }
 
 // Strips any national prefix (such as 0, 1) present in the number provided
@@ -681,7 +503,7 @@ export function find_country_code(country_phone_code, national_phone_number, met
 		return possible_countries[0]
 	}
 
-	for (let country_code of possible_countries)
+	for (const country_code of possible_countries)
 	{
 		const country = metadata.countries[country_code]
 
@@ -702,16 +524,6 @@ export function find_country_code(country_phone_code, national_phone_number, met
 		}
 	}
 }
-
-// export function is_national_prefix_required(national_number, country_metadata)
-// {
-// 	const format = choose_format_for_number(get_formats(country_metadata), national_number)
-//
-// 	if (format)
-// 	{
-// 		return get_format_national_prefix_is_mandatory_when_formatting(format, country_metadata)
-// 	}
-// }
 
 // Sort out arguments
 function sort_out_arguments(arg_1, arg_2, arg_3)

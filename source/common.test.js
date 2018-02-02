@@ -1,4 +1,4 @@
-import { matches_entirely } from '../source/common'
+import { matches_entirely, parse_phone_number_and_country_phone_code } from '../source/common'
 
 describe('common', () =>
 {
@@ -6,5 +6,10 @@ describe('common', () =>
 	{
 		// No text
 		matches_entirely(undefined, /^$/).should.equal(true)
+	})
+
+	it('should parse phone number and country phone code', function()
+	{
+		parse_phone_number_and_country_phone_code().should.deep.equal({})
 	})
 })

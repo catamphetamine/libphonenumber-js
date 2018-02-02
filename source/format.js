@@ -3,14 +3,13 @@
 //
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
-import { matches_entirely } from './common'
-
 import
 {
 	parse_phone_number_and_country_phone_code,
-	VALID_PUNCTUATION
+	VALID_PUNCTUATION,
+	matches_entirely
 }
-from './parse'
+from './common'
 
 import
 {

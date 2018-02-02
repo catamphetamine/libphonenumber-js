@@ -46,10 +46,15 @@ AsYouType.prototype.constructor = AsYouType
 
 export
 {
-	default as parseCustom,
-	DIGIT_MAPPINGS as DIGITS
+	default as parseCustom
 }
 from './es6/parse'
+
+export
+{
+	DIGIT_MAPPINGS as DIGITS
+}
+from './es6/common'
 
 export { default as formatCustom }        from './es6/format'
 export { default as isValidNumberCustom } from './es6/validate'

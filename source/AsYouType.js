@@ -22,12 +22,18 @@ from './metadata'
 
 import
 {
+	matches_entirely,
 	VALID_PUNCTUATION,
 	PLUS_CHARS,
+	parse_phone_number,
+	parse_phone_number_and_country_phone_code
+}
+from './common'
+
+import
+{
 	VALID_DIGITS,
 	extract_formatted_phone_number,
-	parse_phone_number,
-	parse_phone_number_and_country_phone_code,
 	find_country_code,
 	strip_national_prefix
 }
@@ -40,12 +46,6 @@ import
 	local_to_international_style
 }
 from './format'
-
-import
-{
-	matches_entirely
-}
-from './common'
 
 // Used in phone number format template creation.
 // Could be any digit, I guess.
