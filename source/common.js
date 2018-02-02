@@ -105,11 +105,8 @@ export function parse_phone_number_and_country_phone_code(number, metadata)
 		return { number }
 	}
 
-	// Strip the leading '+' sign
-	number = number.slice(1)
-
 	// Fast abortion: country codes do not begin with a '0'
-	if (number[0] === '0')
+	if (number[1] === '0')
 	{
 		return {}
 	}
@@ -126,7 +123,7 @@ export function parse_phone_number_and_country_phone_code(number, metadata)
 	let i = 1
 	while (i <= MAX_LENGTH_COUNTRY_CODE && i <= number.length)
 	{
-		const country_phone_code = number.slice(0, i)
+		const country_phone_code = number.slice(1, i)
 
 		if (metadata.country_phone_code_to_countries[country_phone_code])
 		{
