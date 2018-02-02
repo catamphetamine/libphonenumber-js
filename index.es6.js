@@ -52,6 +52,7 @@ from './es6/parse'
 
 export
 {
+	// `DIGITS` are used by `react-phone-number-input`.
 	DIGIT_MAPPINGS as DIGITS
 }
 from './es6/common'
@@ -63,6 +64,7 @@ export { default as getNumberTypeCustom } from './es6/types'
 export
 {
 	default as AsYouTypeCustom,
+	// `DIGIT_PLACEHOLDER` is used by `react-phone-number-input`.
 	DIGIT_PLACEHOLDER
 }
 from './es6/AsYouType'

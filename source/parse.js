@@ -5,10 +5,10 @@
 
 import
 {
+	parse_phone_number_digits,
 	parse_phone_number_and_country_phone_code,
 	VALID_PUNCTUATION,
 	PLUS_CHARS,
-	normalize,
 	matches_entirely
 }
 from './common'
@@ -288,7 +288,7 @@ export default function parse(arg_1, arg_2, arg_3)
 		country = options.defaultCountry
 		country_metadata = metadata.countries[country]
 
-		number = normalize(formatted_phone_number)
+		number = parse_phone_number_digits(formatted_phone_number)
 	}
 
 	if (!country_metadata)

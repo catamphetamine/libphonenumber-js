@@ -25,7 +25,7 @@ import
 	matches_entirely,
 	VALID_PUNCTUATION,
 	PLUS_CHARS,
-	parse_phone_number,
+	parse_phone_number_digits,
 	parse_phone_number_and_country_phone_code
 }
 from './common'
@@ -148,7 +148,7 @@ export default class AsYouType
 			return this.current_output
 		}
 
-		return this.process_input(parse_phone_number(extracted_number))
+		return this.process_input(parse_phone_number_digits(extracted_number))
 	}
 
 	process_input(input)

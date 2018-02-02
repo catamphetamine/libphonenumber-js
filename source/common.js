@@ -13,7 +13,6 @@ const TILDES = '~\u2053\u223C\uFF5E'
 export const VALID_PUNCTUATION = `${DASHES}${SLASHES}${DOTS}${WHITESPACE}${BRACKETS}${TILDES}`
 
 export const PLUS_CHARS = '+\uFF0B'
-
 const LEADING_PLUS_CHARS_PATTERN = new RegExp('^[' + PLUS_CHARS + ']+')
 
 // The maximum length of the country calling code.
@@ -69,26 +68,19 @@ export const DIGIT_MAPPINGS =
 	'\u06F9': '9'  // Eastern-Arabic digit 9
 }
 
-// Parses a formatted phone number.
-export function parse_phone_number(number)
+/**
+ * Drops all punctuation leaving only digits and the leading `+` sign (if any).
+ * Also converts wide-ascii and arabic-indic numerals to conventional numerals.
+ *
+ * E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
+ *
+ * @param  {string} number
+ * @return {string}
+ */
+export function parse_phone_number_digits(number)
 {
-	if (!number)
-	{
-		return ''
-	}
-
-	const is_international = LEADING_PLUS_CHARS_PATTERN.test(number)
-
-	// Remove non-digits.
-	// (and strip the possible leading '+')
-	number = normalize(number)
-
-	if (is_international)
-	{
-		return `+${number}`
-	}
-
-	return number
+	return (LEADING_PLUS_CHARS_PATTERN.test(number) ? '+' : '') +
+		drop_and_substitute_characters(number, DIGIT_MAPPINGS)
 }
 
 // Parses a formatted phone number
@@ -99,7 +91,7 @@ export function parse_phone_number(number)
 //
 export function parse_phone_number_and_country_phone_code(number, metadata)
 {
-	number = parse_phone_number(number)
+	number = parse_phone_number_digits(number)
 
 	if (!number)
 	{
@@ -138,7 +130,10 @@ export function parse_phone_number_and_country_phone_code(number, metadata)
 
 		if (metadata.country_phone_code_to_countries[country_phone_code])
 		{
-			return { country_phone_code, number: number.slice(i) }
+			return {
+				country_phone_code,
+				number: number.slice(i)
+			}
 		}
 
 		i++
@@ -160,20 +155,9 @@ export function matches_entirely(text = '', regular_expression)
 	return matched_groups !== null && matched_groups[0].length === text.length
 }
 
-// Normalizes a string of characters representing a phone number.
-// This converts wide-ascii and arabic-indic numerals to European numerals,
-// and strips punctuation and alpha characters.
-//
-// E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
-//
-export function normalize(number)
-{
-	return replace_characters(number, DIGIT_MAPPINGS)
-}
-
 // For any character not being part of `replacements`
 // it is removed from the phone number.
-function replace_characters(text, replacements)
+function drop_and_substitute_characters(text, replacements)
 {
 	let replaced = ''
 
@@ -181,7 +165,7 @@ function replace_characters(text, replacements)
 	{
 		const replacement = replacements[character.toUpperCase()]
 
-		if (replacement !== undefined)
+		if (replacement)
 		{
 			replaced += replacement
 		}
