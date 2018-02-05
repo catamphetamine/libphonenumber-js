@@ -2,9 +2,9 @@ export type CountryCode = 'AD' | 'AE' | 'AF' | 'AG' | 'AI' | 'AL' | 'AM' | 'AO' 
 
 export type NumberFormat = 'National' | 'International' | 'E.164' | 'RFC3966';
 
-export type TelephoneNumber = string
-export type Extension = string
-export type PhoneCode = string
+export interface TelephoneNumber extends String { }
+export interface Extension extends String { }
+export interface PhoneCode extends String { }
 
 export interface ParsedNumber {
     phone: TelephoneNumber,
