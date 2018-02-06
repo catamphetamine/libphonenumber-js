@@ -55,6 +55,12 @@ describe('parse', () =>
 
 		// Brazil
 		parse('11987654321', 'BR').should.deep.equal({ country: 'BR', phone: '11987654321' })
+
+		// Long country phone code.
+		parse('+212659777777').should.deep.equal({ country: 'MA', phone: '659777777' })
+
+		// No country could be derived.
+		// parse('+212569887076').should.deep.equal({ countryPhoneCode: '212', phone: '569887076' })
 	})
 
 	it('should parse non-European digits', function()
