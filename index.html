@@ -141,14 +141,16 @@
 					let parsed_number = 'Unknown country'
 					let national_formatted_number = 'Unknown country'
 					let international_formatted_number = 'Unknown country'
-					let international_formatted_number_in_plaintext = 'Unknown country'
+					let international_formatted_number_in_E164 = 'Unknown country'
+					let international_formatted_number_in_RFC3966 = 'Unknown country'
 
 					try
 					{
 						parsed_number = JSON.stringify(libphonenumber.parse(this.state.parse, this.state.country))
 						national_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'National')
 						international_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International')
-						international_formatted_number_in_plaintext = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'E.164')
+						international_formatted_number_in_E164 = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'E.164')
+						international_formatted_number_in_RFC3966 = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'RFC3966')
 					}
 					catch (error)
 					{
@@ -241,7 +243,8 @@
 							<div className="section">
 								<div className="section__line"><code>National: {national_formatted_number}</code></div>
 								<div className="section__line"><code>International: {international_formatted_number}</code></div>
-								<div className="section__line"><code>International plaintext: {international_formatted_number_in_plaintext}</code></div>
+								<div className="section__line"><code>E.164: {international_formatted_number_in_E164}</code></div>
+								<div className="section__line"><code>RFC3966: {international_formatted_number_in_RFC3966}</code></div>
 							</div>
 						</div>
 					)
