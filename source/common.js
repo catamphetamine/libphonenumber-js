@@ -121,7 +121,7 @@ export function parse_phone_number_and_country_phone_code(number, metadata)
 	// that means that it is the country code.
 	//
 	let i = 1
-	while (i <= MAX_LENGTH_COUNTRY_CODE && i <= number.length)
+	while (i - 1 <= MAX_LENGTH_COUNTRY_CODE && i <= number.length)
 	{
 		const country_phone_code = number.slice(1, i)
 

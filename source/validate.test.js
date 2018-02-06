@@ -66,6 +66,9 @@ describe('validate', () =>
 		// Numerical `value`
 		thrower = () => is_valid_number(88005553535, 'RU')
 		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
+
+		// Long country phone code
+		is_valid_number('+3725555555').should.equal(true)
 	})
 
 	it('should accept phone number extensions', function()
