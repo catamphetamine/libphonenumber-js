@@ -1,5 +1,5 @@
 import metadata from '../metadata.full'
-import get_number_type_custom from '../source/types'
+import get_number_type_custom, { check_number_length_for_type } from '../source/types'
 
 function get_number_type(...parameters)
 {
@@ -32,6 +32,28 @@ describe('get_number_type', () =>
 	it('should return FIXED_LINE_OR_MOBILE when there is ambiguity', () =>
 	{
 		// (no such country in the metadata, therefore no unit test for this `if`)
+	})
+
+	it('should check phone number length', function()
+	{
+		// Too short.
+		check_number_length_for_type('800555353', 'FIXED_LINE', metadata.countries.RU).should.equal('TOO_SHORT')
+		// Normal.
+		check_number_length_for_type('8005553535', 'FIXED_LINE', metadata.countries.RU).should.equal('IS_POSSIBLE')
+		// Too long.
+		check_number_length_for_type('80055535355', 'FIXED_LINE', metadata.countries.RU).should.equal('TOO_LONG')
+
+		// No such type.
+		check_number_length_for_type('169454850', 'VOIP', metadata.countries.AC).should.equal('INVALID_LENGTH')
+		// No such possible length.
+		check_number_length_for_type('1694548', undefined, metadata.countries.AD).should.equal('INVALID_LENGTH')
+
+		// FIXED_LINE_OR_MOBILE
+		check_number_length_for_type('1694548', 'FIXED_LINE_OR_MOBILE', metadata.countries.AD).should.equal('INVALID_LENGTH')
+		// No mobile phones.
+		check_number_length_for_type('8123', 'FIXED_LINE_OR_MOBILE', metadata.countries.TA).should.equal('IS_POSSIBLE')
+		// No "possible lengths" for "mobile".
+		check_number_length_for_type('81234567', 'FIXED_LINE_OR_MOBILE', metadata.countries.SZ).should.equal('IS_POSSIBLE')
 	})
 
 	it('should work in edge cases', function()

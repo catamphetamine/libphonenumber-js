@@ -46,7 +46,10 @@ exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
 // `DIGITS` are used by `react-phone-number-input`.
 exports.DIGITS = custom.DIGITS
 
-exports.getPhoneCode = function(country)
+exports.getCountryCallingCode = function(country)
 {
-	return custom.getPhoneCode(country, metadata)
+	return custom.getCountryCallingCode(country, metadata)
 }
+
+// `getPhoneCode` name is deprecated
+exports.getPhoneCode = exports.getCountryCallingCode

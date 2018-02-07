@@ -11,8 +11,11 @@ describe('parse', () =>
 {
 	it('should not parse invalid phone numbers', function()
 	{
+		// Too short.
 		parse('+7 (800) 55-35-35').should.deep.equal({})
-		parse('+7 (800) 55-35-35', undefined).should.deep.equal({})
+		// Too long.
+		parse('+7 (800) 55-35-35-55').should.deep.equal({})
+
 		parse('+7 (800) 55-35-35', 'US').should.deep.equal({})
 		parse('(800) 55 35 35', { defaultCountry: 'RU' }).should.deep.equal({})
 		parse('+1 187 215 5230', 'US').should.deep.equal({})
@@ -61,6 +64,49 @@ describe('parse', () =>
 
 		// No country could be derived.
 		// parse('+212569887076').should.deep.equal({ countryPhoneCode: '212', phone: '569887076' })
+	})
+
+	it('should parse possible numbers', function()
+	{
+		// Invalid phone number for a given country.
+		parse('1112223344', 'RU', { possible: true }).should.deep.equal
+		({
+			country  : 'RU',
+			phone    : '1112223344',
+			possible : true
+		})
+
+		// International phone number.
+		// Several countries with the same country phone code.
+		parse('+71112223344').should.deep.equal({})
+		parse('+71112223344', { possible: true }).should.deep.equal
+		({
+			country            : undefined,
+			countryCallingCode : '7',
+			phone              : '1112223344',
+			possible           : true
+		})
+
+		// International phone number.
+		// Single country with the given country phone code.
+		parse('+33011222333', { possible: true }).should.deep.equal
+		({
+			country  : 'FR',
+			phone    : '011222333',
+			possible : true
+		})
+
+		// Too short.
+		parse('+7 (800) 55-35-35', { possible: true }).should.deep.equal({})
+		// Too long.
+		parse('+7 (800) 55-35-35-55', { possible: true }).should.deep.equal({})
+
+		// Valid number.
+		parse('+78005553535', { possible: true }).should.deep.equal
+		({
+			country : 'RU',
+			phone   : '8005553535'
+		})
 	})
 
 	it('should parse non-European digits', function()
@@ -174,6 +220,9 @@ describe('parse', () =>
 			phone   : '8005553535',
 			ext     : '123'
 		})
+
+		// Invalid number.
+		parse('tel:+7x8005553535;ext:123').should.deep.equal({})
 
 		// With phone context
 		parse('tel:8005553535;ext:123;phone-context:+7').should.deep.equal

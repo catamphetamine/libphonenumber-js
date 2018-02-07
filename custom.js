@@ -10,16 +10,19 @@ exports.isValidNumber     = require('./build/validate').default
 exports.AsYouType         = require('./build/AsYouType').default
 exports.DIGIT_PLACEHOLDER = require('./build/AsYouType').DIGIT_PLACEHOLDER
 
-var getPhoneCode = require('./build/metadata').get_phone_code
+var get_country_calling_code = require('./build/metadata').get_country_calling_code
 
-exports.getPhoneCode = function(country, metadata)
+exports.getCountryCallingCode = function(country, metadata)
 {
 	if (!metadata.countries[country])
 	{
 		throw new Error('Unknown country: "' + country + '"')
 	}
 
-	return getPhoneCode(metadata.countries[country])
+	return get_country_calling_code(metadata.countries[country])
 }
+
+// `getPhoneCode` name is deprecated, use `getCountryCallingCode` instead.
+exports.getPhoneCode = exports.getCountryCallingCode
 
 // exports['default'] = ...

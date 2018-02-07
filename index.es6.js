@@ -6,7 +6,7 @@ import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
 import AsYouTypeCustom from './es6/AsYouType'
 
-import { get_phone_code } from './es6/metadata'
+import { get_country_calling_code } from './es6/metadata'
 
 export function parse()
 {
@@ -69,17 +69,29 @@ export
 }
 from './es6/AsYouType'
 
-export function getPhoneCode(country)
+export function getCountryCallingCode(country)
 {
-	return getPhoneCodeCustom(country, metadata)
+	return getCountryCallingCodeCustom(country, metadata)
 }
 
-export function getPhoneCodeCustom(country, metadata)
+export function getCountryCallingCodeCustom(country, metadata)
 {
 	if (!metadata.countries[country])
 	{
 		throw new Error('Unknown country: "' + country + '"')
 	}
 
-	return get_phone_code(metadata.countries[country])
+	return get_country_calling_code(metadata.countries[country])
+}
+
+// `getPhoneCode` name is deprecated, use `getCountryCallingCode` instead.
+export function getPhoneCode(country)
+{
+	return getCountryCallingCode(country)
+}
+
+// `getPhoneCodeCustom` name is deprecated, use `getCountryCallingCodeCustom` instead.
+export function getPhoneCodeCustom(country, metadata)
+{
+	return getCountryCallingCodeCustom(country, metadata)
 }

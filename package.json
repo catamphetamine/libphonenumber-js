@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "A simpler (and smaller) rewrite of Google Android's popular libphonenumber library",
   "main": "index.common.js",
   "module": "index.es6.js",
@@ -39,8 +39,8 @@
     "metadata:update:pull-request": "npm run metadata:branch && npm run metadata:download && babel-node runnable/metadata-update-and-push-and-pull-request",
     "metadata:generate": "npm-run-all metadata:generate:min metadata:generate:full metadata:generate:mobile",
     "metadata:generate:min": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.min.json --examples mobile",
-    "metadata:generate:full": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.full.json --extended",
-    "metadata:generate:mobile": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.mobile.json --types mobile --debug",
+    "metadata:generate:full": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.full.json --extended --debug",
+    "metadata:generate:mobile": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.mobile.json --types mobile",
     "metadata:download": "babel-node runnable/download https://raw.githubusercontent.com/googlei18n/libphonenumber/master/resources/PhoneNumberMetadata.xml PhoneNumberMetadata.xml",
     "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec --require ./test/setup.js \"./{,!(node_modules|commonjs|modules|build|es6)/**/}*.test.js\" --recursive",
     "test-coverage": "istanbul cover -x \"build/**\" -x \"es6/**\" -x \"*.test.js\" node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot --require ./test/setup.js \"./{,!(node_modules|commonjs|modules|build|es6)/**/}*.test.js\" --recursive",

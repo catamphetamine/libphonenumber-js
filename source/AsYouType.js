@@ -5,7 +5,7 @@
 
 import
 {
-	get_phone_code,
+	get_country_calling_code,
 	get_national_prefix,
 	get_national_prefix_for_parsing,
 	get_formats,
@@ -16,7 +16,8 @@ import
 	get_format_national_prefix_is_mandatory_when_formatting,
 	get_format_leading_digits_patterns,
 	get_format_uses_national_prefix,
-	get_metadata_by_country_phone_code
+	get_national_number_pattern,
+	get_metadata_by_country_calling_code
 }
 from './metadata'
 
@@ -26,7 +27,7 @@ import
 	VALID_PUNCTUATION,
 	PLUS_CHARS,
 	parse_phone_number_digits,
-	parse_phone_number_and_country_phone_code
+	parse_national_number_and_country_calling_code
 }
 from './common'
 
@@ -46,6 +47,12 @@ import
 	local_to_international_style
 }
 from './format'
+
+import
+{
+	check_number_length_for_type
+}
+from './types'
 
 // Used in phone number format template creation.
 // Could be any digit, I guess.
@@ -184,7 +191,7 @@ export default class AsYouType
 
 		if (this.is_international())
 		{
-			if (!this.country_phone_code)
+			if (!this.country_calling_code)
 			{
 				// If one looks at country phone codes
 				// then he can notice that no one country phone code
@@ -196,14 +203,14 @@ export default class AsYouType
 				// then just return the raw phone number,
 				// because it has no way of knowing
 				// how to format the phone number so far.
-				if (!this.extract_country_phone_code())
+				if (!this.extract_country_calling_code())
 				{
 					// Return raw phone number
 					return this.parsed_input
 				}
 
 				// Initialize country-specific data
-				this.initialize_phone_number_formats_for_this_country_phone_code()
+				this.initialize_phone_number_formats_for_this_country_calling_code()
 				this.reset_format()
 				this.determine_the_country()
 			}
@@ -275,7 +282,7 @@ export default class AsYouType
 
 	format_as_non_formatted_number()
 	{
-		if (this.is_international() && this.country_phone_code)
+		if (this.is_international() && this.country_calling_code)
 		{
 			if (this.national_number)
 			{
@@ -284,12 +291,12 @@ export default class AsYouType
 				// if the phone number being input is international:
 				// 'x' for the '+' sign, 'x'es for the country phone code,
 				// a spacebar and then the template for the national number digits.
-				this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + repeat(DIGIT_PLACEHOLDER, this.national_number.length)
+				this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_calling_code.length) + ' ' + repeat(DIGIT_PLACEHOLDER, this.national_number.length)
 
-				return `+${this.country_phone_code} ${this.national_number}`
+				return `+${this.country_calling_code} ${this.national_number}`
 			}
 
-			return `+${this.country_phone_code}`
+			return `+${this.country_calling_code}`
 		}
 
 		return this.parsed_input
@@ -404,14 +411,14 @@ export default class AsYouType
 		if (this.default_country && !this.is_international())
 		{
 			this.country_metadata = this.metadata.countries[this.default_country]
-			this.country_phone_code = get_phone_code(this.country_metadata)
+			this.country_calling_code = get_country_calling_code(this.country_metadata)
 
-			this.initialize_phone_number_formats_for_this_country_phone_code()
+			this.initialize_phone_number_formats_for_this_country_calling_code()
 		}
 		else
 		{
 			this.country_metadata = undefined
-			this.country_phone_code = undefined
+			this.country_calling_code = undefined
 
 			this.available_formats = []
 			this.matching_formats = this.available_formats
@@ -435,7 +442,7 @@ export default class AsYouType
 		return this.format_next_national_number_digits(this.national_number)
 	}
 
-	initialize_phone_number_formats_for_this_country_phone_code()
+	initialize_phone_number_formats_for_this_country_calling_code()
 	{
 		// Get all "eligible" phone number formats for this country
 		this.available_formats = get_formats(this.country_metadata).filter((format) =>
@@ -570,7 +577,7 @@ export default class AsYouType
 	{
 		if (this.is_international())
 		{
-			return `+${this.country_phone_code} ${formatted_national_number}`
+			return `+${this.country_calling_code} ${formatted_national_number}`
 		}
 
 		return formatted_national_number
@@ -579,24 +586,24 @@ export default class AsYouType
 	// Extracts the country calling code from the beginning
 	// of the entered `national_number` (so far),
 	// and places the remaining input into the `national_number`.
-	extract_country_phone_code()
+	extract_country_calling_code()
 	{
 		if (!this.national_number)
 		{
 			return
 		}
 
-		const { country_phone_code, number } = parse_phone_number_and_country_phone_code(this.parsed_input, this.metadata)
+		const { country_calling_code, number } = parse_national_number_and_country_calling_code(this.parsed_input, this.metadata)
 
-		if (!country_phone_code)
+		if (!country_calling_code)
 		{
 			return
 		}
 
-		this.country_phone_code = country_phone_code
+		this.country_calling_code = country_calling_code
 		this.national_number = number
 
-		return this.country_metadata = get_metadata_by_country_phone_code(country_phone_code, this.metadata)
+		return this.country_metadata = get_metadata_by_country_calling_code(country_calling_code, this.metadata)
 	}
 
 	extract_national_prefix()
@@ -608,15 +615,57 @@ export default class AsYouType
 			return
 		}
 
-		const national_number = strip_national_prefix(this.national_number, this.country_metadata)
+		// Only strip national prefixes for non-international phone numbers
+		// because national prefixes can't be present in international phone numbers.
+		// Otherwise, while forgiving, it would parse a NANPA number `+1 1877 215 5230`
+		// first to `1877 215 5230` and then, stripping the leading `1`, to `877 215 5230`,
+		// and then it would assume that's a valid number which it isn't.
+		// So no forgiveness for grandmas here.
+		// The issue asking for this fix:
+		// https://github.com/catamphetamine/libphonenumber-js/issues/159
+		const potential_national_number = strip_national_prefix(this.national_number, this.country_metadata)
 
-		if (national_number !== this.national_number)
+		// We require that the NSN remaining after stripping the national prefix and
+		// carrier code be long enough to be a possible length for the region.
+		// Otherwise, we don't do the stripping, since the original number could be
+		// a valid short number.
+		if (this.is_possible_number(this.national_number) &&
+			!this.is_possible_number(potential_national_number))
 		{
-			this.national_prefix = this.national_number.slice(0, this.national_number.length - national_number.length)
-			this.national_number = national_number
+			// Verify the parsed national (significant) number for this country
+			const national_number_rule = new RegExp(get_national_number_pattern(this.country_metadata))
+			//
+			// If the original number (before stripping national prefix) was viable,
+			// and the resultant number is not, then prefer the original phone number.
+			// This is because for some countries (e.g. Russia) the same digit could be both
+			// a national prefix and a leading digit of a valid national phone number,
+			// like `8` is the national prefix for Russia and both
+			// `8 800 555 35 35` and `800 555 35 35` are valid numbers.
+			if (matches_entirely(this.national_number, national_number_rule) &&
+				!matches_entirely(potential_national_number, national_number_rule))
+			{
+				return
+			}
 		}
 
+		this.national_prefix = this.national_number.slice(0, this.national_number.length - potential_national_number.length)
+		this.national_number = potential_national_number
+
 		return this.national_prefix
+	}
+
+	is_possible_number(number)
+	{
+		const validation_result = check_number_length_for_type(number, undefined, this.country_metadata)
+		switch (validation_result)
+		{
+			case 'IS_POSSIBLE':
+				return true
+			// case 'IS_POSSIBLE_LOCAL_ONLY':
+			// 	return !this.is_international()
+			default:
+				return false
+		}
 	}
 
 	choose_another_format()
@@ -708,7 +757,7 @@ export default class AsYouType
 		// a spacebar and then the template for the formatted national number.
 		if (this.is_international())
 		{
-			this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_phone_code.length) + ' ' + template
+			this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_calling_code.length) + ' ' + template
 		}
 		// For local numbers, replace national prefix
 		// with a digit placeholder.
@@ -865,7 +914,7 @@ export default class AsYouType
 	// and the national phone number.
 	determine_the_country()
 	{
-		this.country = find_country_code(this.country_phone_code, this.national_number, this.metadata)
+		this.country = find_country_code(this.country_calling_code, this.national_number, this.metadata)
 	}
 
 	getNationalNumber()

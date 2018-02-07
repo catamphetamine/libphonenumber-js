@@ -142,4 +142,10 @@ describe('format', () =>
 		},
 		'RFC3966').should.equal('+12133734253;ext=123')
 	})
+
+	it('should format possible numbers', function()
+	{
+		format({ countryCallingCode: '7', phone: '1111111111' }, 'E.164')
+			.should.equal('+71111111111')
+	})
 })

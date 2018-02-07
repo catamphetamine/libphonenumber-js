@@ -5,12 +5,16 @@ import
 	getNumberType,
 	isValidNumber,
 	AsYouType,
+	getCountryCallingCode,
+	// `getPhoneCode` name is deprecated.
 	getPhoneCode,
 
 	formatCustom,
 	parseCustom,
 	getNumberTypeCustom,
 	isValidNumberCustom,
+	getCountryCallingCodeCustom,
+	// `getPhoneCodeCustom` name is deprecated.
 	getPhoneCodeCustom,
 
 	DIGIT_PLACEHOLDER,
@@ -33,8 +37,13 @@ describe(`exports`, function()
 		DIGIT_PLACEHOLDER.length
 		Object.keys(DIGITS).length.should.be.above(0)
 
+		// `getPhoneCode` name is deprecated.
 		getPhoneCode('KZ').should.equal('7')
-		const thrower = () => getPhoneCode('ZZ')
+		let thrower = () => getPhoneCode('ZZ')
+		thrower.should.throw('Unknown')
+
+		getCountryCallingCode('KZ').should.equal('7')
+		thrower = () => getCountryCallingCode('ZZ')
 		thrower.should.throw('Unknown')
 	})
 
@@ -60,8 +69,13 @@ describe(`exports`, function()
 		Library.DIGIT_PLACEHOLDER.length
 		Object.keys(Library.DIGITS).length.should.be.above(0)
 
+		// `getPhoneCode` name is deprecated.
 		Library.getPhoneCode('KZ').should.equal('7')
-		const thrower = () => Library.getPhoneCode('ZZ')
+		let thrower = () => Library.getPhoneCode('ZZ')
+		thrower.should.throw('Unknown')
+
+		Library.getCountryCallingCode('KZ').should.equal('7')
+		thrower = () => Library.getCountryCallingCode('ZZ')
 		thrower.should.throw('Unknown')
 	})
 

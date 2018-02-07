@@ -128,9 +128,9 @@ const phone_number_types =
 // E.g. for country phone code `1` the "default" country is "US"
 // and therefore "US" is the first country code in the
 // `country_phone_code_to_countries["1"]` list.
-// The "default" country is the one holding metadata for a country phone code
-// so, for example, when "CA" (Canada) country is chosen
-// then it uses the metadata for the "default" country ("US").
+// The "default" country is the one other countries
+// with the same country phone code inherit phone number formatting rules from.
+// For example, "CA" (Canada) inhertis phone number formatting rules from "US".
 //
 // `country_phone_code_to_countries` data takes about 3 KiloBytes
 // so it could kinda make sense to drop it from the metadata file
@@ -152,11 +152,11 @@ export default function(input, included_countries, extended, included_phone_numb
 	// Validate `included_phone_number_types`
 	if (included_phone_number_types)
 	{
-		for (const type of included_phone_number_types)
+		for (const _type of included_phone_number_types)
 		{
-			if (phone_number_types.indexOf(type) < 0)
+			if (phone_number_types.indexOf(_type) < 0)
 			{
-				return Promise.reject(`Unknown phone number type: ${type}`)
+				return Promise.reject(`Unknown phone number type: ${_type}`)
 			}
 		}
 	}
@@ -169,7 +169,7 @@ export default function(input, included_countries, extended, included_phone_numb
 		// https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js
 		// https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/asyoutypeformatter.js
 
-		const country_phone_code_to_countries = {}
+		const country_calling_code_to_countries = {}
 		const countries = {}
 
 		for (const territory of xml.phoneNumberMetadata.territories[0].territory)
@@ -303,7 +303,7 @@ export default function(input, included_countries, extended, included_phone_numb
 
 				// These `types` will be purged later,
 				// if they're not needed (which is most likely).
-				// See `country_phone_code_to_countries` ambiguity for more info.
+				// See `country_calling_code_to_countries` ambiguity for more info.
 				//
 				types: get_phone_number_types(territory),
 
@@ -357,9 +357,9 @@ export default function(input, included_countries, extended, included_phone_numb
 
 			// Register this country's "country phone code"
 
-			if (!country_phone_code_to_countries[country.phone_code])
+			if (!country_calling_code_to_countries[country.phone_code])
 			{
-				country_phone_code_to_countries[country.phone_code] = []
+				country_calling_code_to_countries[country.phone_code] = []
 			}
 
 			// In case of several countries
@@ -373,22 +373,22 @@ export default function(input, included_countries, extended, included_phone_numb
 			//
 			if (territory.$.mainCountryForCode === "true")
 			{
-				country_phone_code_to_countries[country.phone_code].unshift(country_code)
+				country_calling_code_to_countries[country.phone_code].unshift(country_code)
 			}
 			else
 			{
-				country_phone_code_to_countries[country.phone_code].push(country_code)
+				country_calling_code_to_countries[country.phone_code].push(country_code)
 			}
 		}
 
 		// Some countries don't have `availableFormats` specified,
 		// because those formats are meant to be copied
 		// from the "main country for region".
-		for (let country_code of Object.keys(countries))
+		for (const country_code of Object.keys(countries))
 		{
 			const country = countries[country_code]
 
-			const main_country_for_region_code = country_phone_code_to_countries[country.phone_code][0]
+			const main_country_for_region_code = country_calling_code_to_countries[country.phone_code][0]
 			const main_country_for_region = countries[main_country_for_region_code]
 			country.formats = main_country_for_region.formats
 
@@ -411,9 +411,23 @@ export default function(input, included_countries, extended, included_phone_numb
 		//
 		// This increases metadata size by 5 KiloBytes.
 		//
-		for (const country_phone_code of Object.keys(country_phone_code_to_countries))
+		const visited_countries = {}
+		for (const country_calling_code of Object.keys(country_calling_code_to_countries))
 		{
-			const country_codes = country_phone_code_to_countries[country_phone_code]
+			const country_codes = country_calling_code_to_countries[country_calling_code]
+
+			for (const country_code of country_codes)
+			{
+				if (visited_countries[country_code])
+				{
+					continue
+				}
+
+				visited_countries[country_code] = true
+
+				// Populate possible lengths
+				populate_possible_lengths(countries[country_code])
+			}
 
 			// Purge `types` regular expressions (they are huge)
 			// when they're not needed for resolving country phone code
@@ -450,9 +464,9 @@ export default function(input, included_countries, extended, included_phone_numb
 				// to reduce metadata size (by 5 KiloBytes).
 				// Or retain regular expressions just for the
 				// specified phone number types (if configured).
-				for (const type of phone_number_types)
+				for (const _type of phone_number_types)
 				{
-					if (!types[type])
+					if (!types[_type])
 					{
 						continue
 					}
@@ -461,24 +475,27 @@ export default function(input, included_countries, extended, included_phone_numb
 					// specified phone number types (if configured).
 					if (included_phone_number_types)
 					{
-						if (!all_types_required && !included_phone_number_types.has(type))
+						if (!all_types_required && !included_phone_number_types.has(_type))
 						{
-							delete types[type]
+							delete types[_type]
 						}
 					}
 					// Remove redundant types
 					// (other types having the same regular expressions as this one)
 					else
 					{
-						phone_number_types
-							.filter(key => key !== type && types[key] === types[type])
-							.forEach(key => delete types[key])
+						// Sometimes fixed line pattern is the same as for mobile.
+						if (types.fixed_line && types.mobile &&
+							types.fixed_line.pattern === types.mobile.pattern)
+						{
+							types.mobile.pattern = ''
+						}
 					}
 				}
 			}
 		}
 
-		return { countries, country_phone_code_to_countries }
+		return { countries, country_phone_code_to_countries: country_calling_code_to_countries }
 	})
 }
 
@@ -503,10 +520,17 @@ function get_phone_number_types(territory)
 	{
 		const camel_cased_type = underscore_to_camel_case(type)
 		const pattern = territory[camel_cased_type] && territory[camel_cased_type][0].nationalNumberPattern[0].replace(/\s/g, '')
+		const possible_lengths = territory[camel_cased_type] && territory[camel_cased_type][0].possibleLengths[0].$.national
+		const possible_lengths_local = territory[camel_cased_type] && territory[camel_cased_type][0].possibleLengths[0].$.localOnly
 
 		if (pattern)
 		{
-			output[type] = pattern
+			output[type] =
+			{
+				pattern,
+				possible_lengths,
+				// possible_lengths_local
+			}
 		}
 
 		return output
@@ -538,4 +562,145 @@ function underscore_to_camel_case(string)
 	{
 		return match[1].toUpperCase()
 	})
+}
+
+/**
+* Parses a possible length string into a set of the integers that are covered.
+*
+* @param {string} possible_length_string - A string specifying the possible lengths of phone numbers. Follows
+*     this syntax: ranges or elements are separated by commas, and ranges are specified in
+*     [min-max] notation, inclusive. For example, [3-5],7,9,[11-14] should be parsed to
+*     3,4,5,7,9,11,12,13,14.
+* @return {Set}
+*/
+function parse_possible_lengths(possible_length_string)
+{
+	if (possible_length_string.length === 0)
+	{
+		throw new TypeError('Empty possibleLength string found.')
+	}
+
+	const lengths = new Set()
+
+	for (const length of possible_length_string.split(','))
+	{
+		if (length.length == 0)
+		{
+			throw new TypeError(`Leading, trailing or adjacent commas in possible length string ${length}, these should only separate numbers or ranges.`)
+		}
+
+		if (length[0] === '[')
+		{
+			if (length[length.length - 1] !== ']')
+			{
+				throw new TypeError(`Missing end of range character in possible length string ${length}.`)
+			}
+
+			// Strip the leading and trailing [], and split on the -.
+			const min_max = length.slice(1, length.length - 1).split('-').map(_ => parseInt(_))
+
+			if (min_max.length !== 2)
+			{
+				throw new TypeError(`Ranges must have exactly one - character: missing for ${length}.`)
+			}
+
+			const [min, max] = min_max
+
+			// We don't even accept [6-7] since we prefer the shorter 6,7 variant;
+			// for a range to be in use the hyphen needs to replace at least one digit.
+			if (max - min < 2)
+			{
+				throw new TypeError(`The first number in a range should be two or more digits lower than the second. Culprit possibleLength string: ${length}`)
+			}
+
+			for (let i = min; i <= max; i++)
+			{
+				if (lengths.has(i))
+				{
+					throw new TypeError(`Duplicate length element found (${i}) in possibleLength string ${length}.`)
+				}
+
+				lengths.add(i)
+			}
+		}
+		else
+		{
+			const i = parseInt(length)
+
+			if (lengths.has(i))
+			{
+				throw new TypeError(`Duplicate length element found (${i}) in possibleLength string ${length}.`)
+			}
+
+			lengths.add(i)
+		}
+	}
+
+	return lengths
+}
+
+const arrays_are_equal = (a1, a2) => a1.length === a2.length && a1.every((_, i) => _ === a2[i])
+
+function populate_possible_lengths(metadata)
+{
+	const types = metadata.types
+
+	const possible_lengths = new Set()
+	const possible_lengths_local = new Set()
+
+	for (const _type of Object.keys(types))
+	{
+		const type_possible_lengths = parse_possible_lengths(types[_type].possible_lengths)
+
+		for (const i of type_possible_lengths)
+		{
+			possible_lengths.add(i)
+		}
+
+		types[_type].possible_lengths = Array.from(type_possible_lengths)
+
+		if (types[_type].possible_lengths_local)
+		{
+			const type_possible_lengths_local = parse_possible_lengths(types[_type].possible_lengths_local)
+
+			for (const i of type_possible_lengths_local)
+			{
+				possible_lengths_local.add(i)
+			}
+
+			types[_type].possible_lengths_local = Array.from(type_possible_lengths_local)
+		}
+	}
+
+	for (const i of possible_lengths_local)
+	{
+		if (possible_lengths.has(i))
+		{
+			possible_lengths_local.delete(i)
+		}
+	}
+
+	metadata.possible_lengths = Array.from(possible_lengths)
+	metadata.possible_lengths.sort((a, b) => a - b)
+
+	if (possible_lengths_local.size > 0)
+	{
+		metadata.possible_lengths_local = Array.from(possible_lengths_local)
+		metadata.possible_lengths_local.sort((a, b) => a - b)
+	}
+
+	// Remove duplicates.
+	for (const _type of Object.keys(types))
+	{
+		if (arrays_are_equal(types[_type].possible_lengths, metadata.possible_lengths))
+		{
+			delete types[_type].possible_lengths
+		}
+
+		if (types[_type].possible_lengths_local && metadata.possible_lengths_local &&
+			arrays_are_equal(types[_type].possible_lengths_local, metadata.possible_lengths_local))
+		{
+			delete types[_type].possible_lengths_local
+		}
+	}
 }

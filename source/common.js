@@ -84,12 +84,12 @@ export function parse_phone_number_digits(number)
 }
 
 // Parses a formatted phone number
-// and returns `{ country_phone_code, number }`
+// and returns `{ country_calling_code, number }`
 // where `number` is the national (significant) phone number.
 //
 // (aka `maybeExtractCountryPhoneCode`)
 //
-export function parse_phone_number_and_country_phone_code(number, metadata)
+export function parse_national_number_and_country_calling_code(number, metadata)
 {
 	number = parse_phone_number_digits(number)
 
@@ -123,12 +123,12 @@ export function parse_phone_number_and_country_phone_code(number, metadata)
 	let i = 1
 	while (i - 1 <= MAX_LENGTH_COUNTRY_CODE && i <= number.length)
 	{
-		const country_phone_code = number.slice(1, i)
+		const country_calling_code = number.slice(1, i)
 
-		if (metadata.country_phone_code_to_countries[country_phone_code])
+		if (metadata.country_phone_code_to_countries[country_calling_code])
 		{
 			return {
-				country_phone_code,
+				country_calling_code,
 				number: number.slice(i)
 			}
 		}

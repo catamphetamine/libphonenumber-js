@@ -2,7 +2,7 @@ export default function compress(input)
 {
 	const countries = {}
 
-	for (let country_code of Object.keys(input.countries))
+	for (const country_code of Object.keys(input.countries))
 	{
 		const country = input.countries[country_code]
 
@@ -11,6 +11,9 @@ export default function compress(input)
 		[
 			country.phone_code,
 			country.national_number_pattern,
+
+			country.possible_lengths,
+			// country.possible_lengths_local,
 
 			country.formats.map((format) =>
 			{
@@ -54,6 +57,12 @@ export default function compress(input)
 				country.types.voip,
 				country.types.shared_cost
 			]
+			.map((type) => type && trim_array
+			([
+				type.pattern,
+				type.possible_lengths
+				// type.possible_lengths_local
+			]))
 
 			country_array.push(trim_array(types_array))
 		}
@@ -76,6 +85,7 @@ export default function compress(input)
 	return output
 }
 
+// Empty strings are not considered "empty".
 function is_empty(value)
 {
 	return value === undefined

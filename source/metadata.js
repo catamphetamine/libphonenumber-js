@@ -1,4 +1,4 @@
-export function get_phone_code(country_metadata)
+export function get_country_calling_code(country_metadata)
 {
 	return country_metadata[0]
 }
@@ -8,24 +8,34 @@ export function get_national_number_pattern(country_metadata)
 	return country_metadata[1]
 }
 
+export function get_country_phone_number_possible_lengths(country_metadata)
+{
+	return country_metadata[2]
+}
+
+// export function get_country_phone_number_possible_lengths_local(country_metadata)
+// {
+// 	return country_metadata[3]
+// }
+
 export function get_formats(country_metadata)
 {
-	return country_metadata[2] || []
+	return country_metadata[3] || []
 }
 
 export function get_national_prefix(country_metadata)
 {
-	return country_metadata[3]
+	return country_metadata[4]
 }
 
 export function get_national_prefix_formatting_rule(country_metadata)
 {
-	return country_metadata[4]
+	return country_metadata[5]
 }
 
 export function get_national_prefix_for_parsing(country_metadata)
 {
-	let national_prefix_for_parsing = country_metadata[5]
+	let national_prefix_for_parsing = country_metadata[6]
 
 	// If `national_prefix_for_parsing` is not set explicitly,
 	// then infer it from `national_prefix` (if any)
@@ -39,17 +49,22 @@ export function get_national_prefix_for_parsing(country_metadata)
 
 export function get_national_prefix_transform_rule(country_metadata)
 {
-	return country_metadata[6]
+	return country_metadata[7]
 }
 
 export function get_national_prefix_is_optional_when_formatting(country_metadata)
 {
-	return country_metadata[7]
+	return country_metadata[8]
 }
 
 export function get_leading_digits(country_metadata)
 {
-	return country_metadata[8]
+	return country_metadata[9]
+}
+
+export function get_types(country_metadata)
+{
+	return country_metadata[10]
 }
 
 export function get_format_pattern(format_array)
@@ -114,15 +129,10 @@ export function get_format_international_format(format_array)
 // ("North American Numbering Plan Administration",
 //  which includes USA, Canada, Cayman Islands, Bahamas, etc)
 // it will be contained in the metadata for `US`.
-export function get_metadata_by_country_phone_code(country_phone_code, metadata)
+export function get_metadata_by_country_calling_code(country_calling_code, metadata)
 {
-	const country_code = metadata.country_phone_code_to_countries[country_phone_code][0]
+	const country_code = metadata.country_phone_code_to_countries[country_calling_code][0]
 	return metadata.countries[country_code]
-}
-
-export function get_types(country_metadata)
-{
-	return country_metadata[9]
 }
 
 function get_type(country_metadata, index)
@@ -180,7 +190,17 @@ export function get_type_shared_cost(country_metadata)
 	return get_type(country_metadata, 9)
 }
 
-export function get_country_phone_code(country, country_metadata)
+export function get_type_pattern(type)
 {
-	return get_phone_code(country_metadata[country])
+	return type[0]
 }
+
+export function get_type_possible_lengths(type)
+{
+	return type[1]
+}
+
+// export function get_type_possible_lengths_local(type)
+// {
+// 	return type[2]
+// }

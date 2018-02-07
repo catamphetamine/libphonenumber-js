@@ -5,7 +5,7 @@
 
 import
 {
-	parse_phone_number_and_country_phone_code,
+	parse_national_number_and_country_calling_code,
 	VALID_PUNCTUATION,
 	matches_entirely
 }
@@ -13,7 +13,7 @@ from './common'
 
 import
 {
-	get_phone_code,
+	get_country_calling_code,
 	get_formats,
 	get_format_pattern,
 	get_format_format,
@@ -21,7 +21,7 @@ import
 	get_format_national_prefix_formatting_rule,
 	get_format_national_prefix_is_optional_when_formatting,
 	get_format_international_format,
-	get_metadata_by_country_phone_code
+	get_metadata_by_country_calling_code
 }
 from './metadata'
 
@@ -61,18 +61,20 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 		country_metadata = metadata.countries[input.country]
 	}
 
-	const { country_phone_code, number } = parse_phone_number_and_country_phone_code(input.phone, metadata)
+	let { country_calling_code, number } = parse_national_number_and_country_calling_code(input.phone, metadata)
 
-	if (country_phone_code)
+	country_calling_code = country_calling_code || input.countryCallingCode
+
+	if (country_calling_code)
 	{
 		// Check country restriction
 		if (input.country && country_metadata &&
-			country_phone_code !== get_phone_code(country_metadata))
+			country_calling_code !== get_country_calling_code(country_metadata))
 		{
 			return input.phone
 		}
 
-		country_metadata = get_metadata_by_country_phone_code(country_phone_code, metadata)
+		country_metadata = get_metadata_by_country_calling_code(country_calling_code, metadata)
 	}
 
 	if (!country_metadata)
@@ -85,10 +87,10 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 		case 'International':
 			if (!number)
 			{
-				return `+${get_phone_code(country_metadata)}`
+				return `+${get_country_calling_code(country_metadata)}`
 			}
 			const national_number = format_national_number(number, 'International', false, country_metadata)
-			const international_number = `+${get_phone_code(country_metadata)} ${national_number}`
+			const international_number = `+${get_country_calling_code(country_metadata)} ${national_number}`
 			if (input.ext || input.ext === 0)
 			{
 				return options.formatExtension(international_number, input.ext)
@@ -97,10 +99,10 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 
 		case 'E.164':
 			// `E.164` doesn't define "phone number extensions".
-			return `+${get_phone_code(country_metadata)}${input.phone}`
+			return `+${get_country_calling_code(country_metadata)}${input.phone}`
 
 		case 'RFC3966':
-			return `+${get_phone_code(country_metadata)}${input.phone}${(input.ext || input.ext === 0) ? ';ext=' + input.ext : ''}`
+			return `+${get_country_calling_code(country_metadata)}${input.phone}${(input.ext || input.ext === 0) ? ';ext=' + input.ext : ''}`
 
 		case 'National':
 			if (!number)
