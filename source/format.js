@@ -61,20 +61,20 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 		country_metadata = metadata.countries[input.country]
 	}
 
-	let { country_calling_code, number } = parse_national_number_and_country_calling_code(input.phone, metadata)
+	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(input.phone, metadata)
 
-	country_calling_code = country_calling_code || input.countryCallingCode
+	countryCallingCode = countryCallingCode || input.countryCallingCode
 
-	if (country_calling_code)
+	if (countryCallingCode)
 	{
 		// Check country restriction
 		if (input.country && country_metadata &&
-			country_calling_code !== get_country_calling_code(country_metadata))
+			countryCallingCode !== get_country_calling_code(country_metadata))
 		{
 			return input.phone
 		}
 
-		country_metadata = get_metadata_by_country_calling_code(country_calling_code, metadata)
+		country_metadata = get_metadata_by_country_calling_code(countryCallingCode, metadata)
 	}
 
 	if (!country_metadata)
@@ -102,7 +102,7 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 			return `+${get_country_calling_code(country_metadata)}${input.phone}`
 
 		case 'RFC3966':
-			return `+${get_country_calling_code(country_metadata)}${input.phone}${(input.ext || input.ext === 0) ? ';ext=' + input.ext : ''}`
+			return `tel:+${get_country_calling_code(country_metadata)}${input.phone}${(input.ext || input.ext === 0) ? ';ext=' + input.ext : ''}`
 
 		case 'National':
 			if (!number)

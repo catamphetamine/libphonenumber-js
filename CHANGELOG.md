@@ -1,10 +1,16 @@
+1.0.17 / 07.02.2018
+===================
+
+  * Fixed `RFC3966` format not prepending `tel:` to the output.
+  * Renamed `{ possible: true }` option to `{ extended: true }` and the result is now more verbose (see the README).
+
 1.0.16 / 07.02.2018
-==================
+===================
 
   * (experimental) Added `{ possible: true }` option for `parse()` for parsing "possible numbers" which are not considered valid (like Google's demo does). E.g. `parse('+71111111111', { possible: true }) === { countryCallingCode: '7', phone: '1111111111', possible: true }` and `format({ countryCallingCode: '7', phone: '1111111111' }, 'E.164') === '+71111111111'`.
   * `getPhoneCode` name is deprecated, use `getCountryCallingCode` instead.
   * `getPhoneCodeCustom` name is deprecated, use `getCountryCallingCodeCustom` instead.
-  * `AsYouType.country_phone_code` renamed to `AsYouType.country_calling_code` (but no one should have used that property).
+  * `AsYouType.country_phone_code` renamed to `AsYouType.countryCallingCode` (but no one should have used that property).
 
 1.0.0 / 21.01.2018
 ==================

@@ -123,12 +123,12 @@ export function parse_national_number_and_country_calling_code(number, metadata)
 	let i = 1
 	while (i - 1 <= MAX_LENGTH_COUNTRY_CODE && i <= number.length)
 	{
-		const country_calling_code = number.slice(1, i)
+		const countryCallingCode = number.slice(1, i)
 
-		if (metadata.country_phone_code_to_countries[country_calling_code])
+		if (metadata.country_phone_code_to_countries[countryCallingCode])
 		{
 			return {
-				country_calling_code,
+				countryCallingCode,
 				number: number.slice(i)
 			}
 		}

@@ -35,21 +35,21 @@ describe('as you type', () =>
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		type(formatter.country_calling_code).should.equal('undefined')
+		type(formatter.countryCallingCode).should.equal('undefined')
 		type(formatter.template).should.equal('undefined')
 
 		formatter.input('+').should.equal('+')
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		type(formatter.country_calling_code).should.equal('undefined')
+		type(formatter.countryCallingCode).should.equal('undefined')
 		type(formatter.template).should.equal('undefined')
 
 		formatter.input('1').should.equal('+1')
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		formatter.country_calling_code.should.equal('1')
+		formatter.countryCallingCode.should.equal('1')
 		type(formatter.template).should.equal('undefined')
 
 		formatter.input('2').should.equal('+1 2')
@@ -83,7 +83,7 @@ describe('as you type', () =>
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
-		formatter.country_calling_code.should.equal('1')
+		formatter.countryCallingCode.should.equal('1')
 		type(formatter.template).should.equal('undefined')
 
 		// Check that clearing an international formatter
@@ -275,28 +275,28 @@ describe('as you type', () =>
 		// formatter.valid.should.be.false
 		formatter.template.should.equal('x (xxx) xxx-xx-xx')
 		formatter.country.should.equal('RU')
-		formatter.country_calling_code.should.equal('7')
+		formatter.countryCallingCode.should.equal('7')
 
 		formatter.input('000000000000').should.equal('8999000000000000')
 
 		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
-		formatter.country_calling_code.should.equal('7')
+		formatter.countryCallingCode.should.equal('7')
 
 		formatter.reset()
 
 		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
-		formatter.country_calling_code.should.equal('7')
+		formatter.countryCallingCode.should.equal('7')
 
 		formatter.input('+1-213-373-4253').should.equal('+1 213 373 4253')
 
 		// formatter.valid.should.be.true
 		formatter.template.should.equal('xx xxx xxx xxxx')
 		formatter.country.should.equal('US')
-		formatter.country_calling_code.should.equal('1')
+		formatter.countryCallingCode.should.equal('1')
 	})
 
 	it('should work in edge cases', function()
@@ -361,7 +361,7 @@ describe('as you type', () =>
 
 		formatter.input('+')
 		type(formatter.country).should.equal('undefined')
-		type(formatter.country_calling_code).should.equal('undefined')
+		type(formatter.countryCallingCode).should.equal('undefined')
 
 		// Country not inferrable from the phone number,
 		// while the phone number itself can already be formatted "completely".
@@ -370,7 +370,7 @@ describe('as you type', () =>
 
 		formatter.input('+12223333333')
 		type(formatter.country).should.equal('undefined')
-		formatter.country_calling_code.should.equal('1')
+		formatter.countryCallingCode.should.equal('1')
 
 		// An otherwise matching phone number format is skipped
 		// when it requires a national prefix but no national prefix was entered.

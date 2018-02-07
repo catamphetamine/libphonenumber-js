@@ -54,7 +54,7 @@ new AsYouType('US').input('2133734')
 
 ## API
 
-### parse(text, [defaultCountry])
+### parse(text, [defaultCountry], [options])
 
 Attempts to parse a valid phone number from `text`.
 
@@ -77,6 +77,12 @@ parse('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '2133734253',
 // Parses RFC 3966 phone number URIs.
 parse('tel:+78005553535;ext:123') === { country: 'RU', phone: '8005553535', ext: '123' }
 ```
+
+Available `options`:
+
+ * `defaultCountry : string` — Same as `defaultCountry` argument.
+
+ * `extended : boolean` — If set to `true` then `parse()` will attempt to parse "possible" phone numbers even if they're classified as "invalid". The result of "extended" parsing has shape `{ country, countryCallingCode, phone, ext, valid: boolean, possible: boolean }`; some of these properties may be absent. The "extended" parsing is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid. Though I don't know who might need such an advanced feature, still it [has been requested](https://github.com/catamphetamine/libphonenumber-js/issues/176) and therefore has been implemented.
 
 Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the 21st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
 

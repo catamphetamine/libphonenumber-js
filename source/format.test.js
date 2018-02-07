@@ -39,7 +39,7 @@ describe('format', () =>
 		// Switzerland
 		format({ country: 'CH', phone: '446681800' }, 'International').should.equal('+41 44 668 18 00')
 		format({ country: 'CH', phone: '446681800' }, 'E.164').should.equal('+41446681800')
-		format({ country: 'CH', phone: '446681800' }, 'RFC3966').should.equal('+41446681800')
+		format({ country: 'CH', phone: '446681800' }, 'RFC3966').should.equal('tel:+41446681800')
 		format({ country: 'CH', phone: '446681800' }, 'National').should.equal('044 668 18 00')
 
 		// France
@@ -140,7 +140,7 @@ describe('format', () =>
 			phone   : '2133734253',
 			ext     : '123'
 		},
-		'RFC3966').should.equal('+12133734253;ext=123')
+		'RFC3966').should.equal('tel:+12133734253;ext=123')
 	})
 
 	it('should format possible numbers', function()

@@ -5,17 +5,20 @@ export type NumberType = undefined | 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST
 
 export interface TelephoneNumber extends String { }
 export interface Extension extends String { }
-export interface PhoneCode extends String { }
+export interface CountryCallingCode extends String { }
 
 export interface ParsedNumber {
-    phone: TelephoneNumber,
+    countryCallingCode: CountryCallingCode,
     country: CountryCode,
-    ext: Extension
+    phone: TelephoneNumber,
+    ext: Extension,
+    possible: boolean,
+    valid: boolean
 }
 
-export function parse(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): ParsedNumber;
+export function parse(text: string, options?: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }): ParsedNumber;
 export function parseCustom(text: string, metadata: object): ParsedNumber;
-export function parseCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): ParsedNumber;
+export function parseCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }, metadata: object): ParsedNumber;
 
 export function format(parsedNumber: ParsedNumber, format: NumberFormat): string;
 export function format(phone: TelephoneNumber, format: NumberFormat): string;
@@ -36,8 +39,11 @@ export function isValidNumberCustom(parsedNumber: ParsedNumber, metadata: object
 export function isValidNumberCustom(phone: TelephoneNumber, metadata: object): boolean;
 export function isValidNumberCustom(phone: TelephoneNumber, country: CountryCode, metadata: object): boolean;
 
-export function getPhoneCode(countryCode: CountryCode): PhoneCode;
-export function getPhoneCodeCustom(countryCode: CountryCode, metadata: object): PhoneCode;
+export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
+export function getCountryCallingCodeCustom(countryCode: CountryCode, metadata: object): CountryCallingCode;
+
+export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;
+export function getPhoneCodeCustom(countryCode: CountryCode, metadata: object): CountryCallingCode;
 
 export class AsYouType {
     constructor(defaultCountryCode?: CountryCode);

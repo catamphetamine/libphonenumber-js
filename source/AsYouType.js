@@ -191,7 +191,7 @@ export default class AsYouType
 
 		if (this.is_international())
 		{
-			if (!this.country_calling_code)
+			if (!this.countryCallingCode)
 			{
 				// If one looks at country phone codes
 				// then he can notice that no one country phone code
@@ -282,7 +282,7 @@ export default class AsYouType
 
 	format_as_non_formatted_number()
 	{
-		if (this.is_international() && this.country_calling_code)
+		if (this.is_international() && this.countryCallingCode)
 		{
 			if (this.national_number)
 			{
@@ -291,12 +291,12 @@ export default class AsYouType
 				// if the phone number being input is international:
 				// 'x' for the '+' sign, 'x'es for the country phone code,
 				// a spacebar and then the template for the national number digits.
-				this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_calling_code.length) + ' ' + repeat(DIGIT_PLACEHOLDER, this.national_number.length)
+				this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.countryCallingCode.length) + ' ' + repeat(DIGIT_PLACEHOLDER, this.national_number.length)
 
-				return `+${this.country_calling_code} ${this.national_number}`
+				return `+${this.countryCallingCode} ${this.national_number}`
 			}
 
-			return `+${this.country_calling_code}`
+			return `+${this.countryCallingCode}`
 		}
 
 		return this.parsed_input
@@ -411,14 +411,14 @@ export default class AsYouType
 		if (this.default_country && !this.is_international())
 		{
 			this.country_metadata = this.metadata.countries[this.default_country]
-			this.country_calling_code = get_country_calling_code(this.country_metadata)
+			this.countryCallingCode = get_country_calling_code(this.country_metadata)
 
 			this.initialize_phone_number_formats_for_this_country_calling_code()
 		}
 		else
 		{
 			this.country_metadata = undefined
-			this.country_calling_code = undefined
+			this.countryCallingCode = undefined
 
 			this.available_formats = []
 			this.matching_formats = this.available_formats
@@ -577,7 +577,7 @@ export default class AsYouType
 	{
 		if (this.is_international())
 		{
-			return `+${this.country_calling_code} ${formatted_national_number}`
+			return `+${this.countryCallingCode} ${formatted_national_number}`
 		}
 
 		return formatted_national_number
@@ -593,17 +593,17 @@ export default class AsYouType
 			return
 		}
 
-		const { country_calling_code, number } = parse_national_number_and_country_calling_code(this.parsed_input, this.metadata)
+		const { countryCallingCode, number } = parse_national_number_and_country_calling_code(this.parsed_input, this.metadata)
 
-		if (!country_calling_code)
+		if (!countryCallingCode)
 		{
 			return
 		}
 
-		this.country_calling_code = country_calling_code
+		this.countryCallingCode = countryCallingCode
 		this.national_number = number
 
-		return this.country_metadata = get_metadata_by_country_calling_code(country_calling_code, this.metadata)
+		return this.country_metadata = get_metadata_by_country_calling_code(countryCallingCode, this.metadata)
 	}
 
 	extract_national_prefix()
@@ -757,7 +757,7 @@ export default class AsYouType
 		// a spacebar and then the template for the formatted national number.
 		if (this.is_international())
 		{
-			this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.country_calling_code.length) + ' ' + template
+			this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.countryCallingCode.length) + ' ' + template
 		}
 		// For local numbers, replace national prefix
 		// with a digit placeholder.
@@ -914,7 +914,7 @@ export default class AsYouType
 	// and the national phone number.
 	determine_the_country()
 	{
-		this.country = find_country_code(this.country_calling_code, this.national_number, this.metadata)
+		this.country = find_country_code(this.countryCallingCode, this.national_number, this.metadata)
 	}
 
 	getNationalNumber()
