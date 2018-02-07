@@ -195,12 +195,6 @@ export function check_number_length_for_type(national_number, type, metadata)
 {
 	const type_info = get_type_info(type, metadata)
 
-	// If the type doesn't exist then return 'INVALID_LENGTH'.
-	if (type && type !== 'FIXED_LINE_OR_MOBILE' && !type_info)
-	{
-		return 'INVALID_LENGTH'
-	}
-
 	// There should always be "<possiblePengths/>" set for every type element.
 	// This is declared in the XML schema.
 	// For size efficiency, where a sub-description (e.g. fixed-line)
@@ -245,6 +239,11 @@ export function check_number_length_for_type(national_number, type, metadata)
 			// 	local_lengths = get_type_possible_lengths_local(mobile_type)
 			// }
 		}
+	}
+	// If the type doesn't exist then return 'INVALID_LENGTH'.
+	else if (type && !type_info)
+	{
+		return 'INVALID_LENGTH'
 	}
 
 	const actual_length = national_number.length
