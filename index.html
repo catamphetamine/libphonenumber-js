@@ -139,6 +139,7 @@
 					as_you_type.input(this.state.value)
 
 					let parsed_number = 'Unknown country'
+					let parsed_number_extended = 'Unknown country'
 					let national_formatted_number = 'Unknown country'
 					let international_formatted_number = 'Unknown country'
 					let international_formatted_number_in_E164 = 'Unknown country'
@@ -147,6 +148,7 @@
 					try
 					{
 						parsed_number = JSON.stringify(libphonenumber.parse(this.state.parse, this.state.country))
+						parsed_number_extended = JSON.stringify(libphonenumber.parse(this.state.parse, this.state.country, { extended: true }))
 						national_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'National')
 						international_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International')
 						international_formatted_number_in_E164 = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'E.164')
@@ -225,6 +227,23 @@
 
 							<div className="section">
 								<code>{parsed_number}</code>
+							</div>
+
+							<h2>Parse (extended)</h2>
+
+							<input
+								type="text"
+								value={this.state.country}
+								onChange={event => this.setState({ country: event.target.value })}
+								style={{ width: '40px', marginRight: '10px' }}/>
+
+							<input
+								type="text"
+								value={this.state.parse}
+								onChange={event => this.setState({ parse: event.target.value })}/>
+
+							<div className="section">
+								<code>{parsed_number_extended}</code>
 							</div>
 
 							<h2>Format</h2>
