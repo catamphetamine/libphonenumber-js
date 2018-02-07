@@ -135,9 +135,6 @@
 					const templateFormatter = input_format.templateFormatter
 					const parseDigit        = input_format.parseDigit
 
-					const as_you_type = new libphonenumber.AsYouType(this.state.country)
-					as_you_type.input(this.state.value)
-
 					let parsed_number = 'Unknown country'
 					let parsed_number_extended = 'Unknown country'
 					let national_formatted_number = 'Unknown country'
@@ -145,18 +142,34 @@
 					let international_formatted_number_in_E164 = 'Unknown country'
 					let international_formatted_number_in_RFC3966 = 'Unknown country'
 
+					const { country, parse, format, value } = this.state
+
+					const asYouType = new libphonenumber.AsYouType(country)
+					asYouType.input(value)
+
 					try
 					{
-						parsed_number = JSON.stringify(libphonenumber.parse(this.state.parse, this.state.country))
-						parsed_number_extended = JSON.stringify(libphonenumber.parse(this.state.parse, this.state.country, { extended: true }))
-						national_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'National')
-						international_formatted_number = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'International')
-						international_formatted_number_in_E164 = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'E.164')
-						international_formatted_number_in_RFC3966 = libphonenumber.format(libphonenumber.parse(this.state.format, this.state.country), 'RFC3966')
+						parsed_number = JSON.stringify(libphonenumber.parse(parse, country))
+						parsed_number_extended = JSON.stringify(libphonenumber.parse(parse, country, { extended: true }))
+
+						const number_to_format = libphonenumber.parse(format, country)
+
+						national_formatted_number = libphonenumber.format(number_to_format, 'National')
+						international_formatted_number = libphonenumber.format(number_to_format, 'International')
+						international_formatted_number_in_E164 = libphonenumber.format(number_to_format, 'E.164')
+						international_formatted_number_in_RFC3966 = libphonenumber.format(number_to_format, 'RFC3966')
 					}
 					catch (error)
 					{
-						if (error.message.indexOf('Unknown country code') !== 0)
+						if (error.message.indexOf('Unknown country code') === 0)
+						{
+							//
+						}
+						else if (error.message.indexOf('A phone number must either be a string or an object of shape') === 0)
+						{
+							//
+						}
+						else
 						{
 							throw error
 						}
@@ -188,10 +201,10 @@
 								}}
 								format={(value) =>
 								{
-									const as_you_type = new libphonenumber.AsYouType(this.state.country)
-									const text = as_you_type.input(value)
+									const asYouType = new libphonenumber.AsYouType(this.state.country)
+									const text = asYouType.input(value)
 
-									return { text: text, template: as_you_type.template }
+									return { text: text, template: asYouType.template }
 								}}/>
 
 							<div className="section">
@@ -203,9 +216,9 @@
 										onChange={event => this.setState({ country: event.target.value })}
 										style={{ width: '40px', marginLeft: '6px' }}/>
 								</div>
-								<div className="section__line">Actual country: {as_you_type.country}</div>
-								<div className="section__line">National: {as_you_type.country && libphonenumber.format(as_you_type.national_number, as_you_type.country, 'National')}</div>
-								<div className="section__line">Valid: {String(libphonenumber.isValidNumber(this.state.value, as_you_type.country))}</div>
+								<div className="section__line">Actual country: {asYouType.country}</div>
+								<div className="section__line">National: {asYouType.country && libphonenumber.format(asYouType.national_number, asYouType.country, 'National')}</div>
+								<div className="section__line">Valid: {String(libphonenumber.isValidNumber(this.state.value, asYouType.country))}</div>
 
 								<br/>
 
