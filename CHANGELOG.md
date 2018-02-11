@@ -1,6 +1,3 @@
-<!-- Везде, где есть country_metadata, она может быть null, потому что некоторые генерируют сабсет метадейты -->
-<!-- pattern, format, leading_digits_patterns, international_format, national_prefix_formatting_rule, -->
-
 1.0.18 / 12.02.2018
 ===================
 

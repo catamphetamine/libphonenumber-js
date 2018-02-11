@@ -586,7 +586,7 @@ export default class AsYouType
 		this.national_number = number
 
 		this.metadata.chooseCountryByCountryCallingCode(countryCallingCode)
-		return true
+		return this.metadata.selectedCountry() !== undefined
 	}
 
 	extract_national_prefix()

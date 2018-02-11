@@ -128,10 +128,21 @@ export default class Metadata
 	// ("North American Numbering Plan Administration",
 	//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
 	// it will be contained in the metadata for `US`.
+	//
+	// `country_calling_code` is always valid.
+	// But the actual country may not necessarily be part of the metadata.
+	//
 	chooseCountryByCountryCallingCode(country_calling_code)
 	{
 		const country = this.countryCallingCodes()[country_calling_code][0]
-		this.country(country)
+
+		// Do not want to test this case.
+		// (custom metadata, not all countries).
+		/* istanbul ignore else */
+		if (this.hasCountry(country))
+		{
+			this.country(country)
+		}
 	}
 
 	selectedCountry()
