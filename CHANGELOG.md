@@ -1,3 +1,12 @@
+<!-- Везде, где есть country_metadata, она может быть null, потому что некоторые генерируют сабсет метадейты -->
+<!-- pattern, format, leading_digits_patterns, international_format, national_prefix_formatting_rule, -->
+
+1.0.18 / 12.02.2018
+===================
+
+  * Fixed custom metadata backwards compatibility [bug](https://github.com/catamphetamine/libphonenumber-js/issues/180) introduced in `1.0.16`. All people who previously installed `1.0.16` or `1.0.17` should update.
+  * Refactored metadata module which now supports versioning by adding the `version` property to metadata JSON.
+
 1.0.17 / 07.02.2018
 ===================
 
