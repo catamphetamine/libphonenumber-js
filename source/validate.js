@@ -1,12 +1,6 @@
 import parse, { is_viable_phone_number } from './parse'
 import get_number_type, { sort_out_arguments } from './types'
 
-import
-{
-	get_types
-}
-from './metadata'
-
 // Checks if a given phone number is valid
 //
 // Example use cases:
@@ -34,14 +28,16 @@ export default function is_valid(arg_1, arg_2, arg_3)
 		return false
 	}
 
-	const country_metadata = metadata.countries[input.country]
-
-	if (get_types(country_metadata))
+	if (!metadata.hasCountry(input.country))
 	{
-		if (!get_number_type(input, metadata))
-		{
-			return false
-		}
+		throw new Error(`Unknown country: ${input.country}`)
+	}
+
+	metadata.country(input.country)
+
+	if (metadata.hasTypes())
+	{
+		return get_number_type(input, metadata.metadata) !== undefined
 	}
 
 	return true

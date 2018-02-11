@@ -6,7 +6,8 @@ import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
 import AsYouTypeCustom from './es6/AsYouType'
 
-import { get_country_calling_code } from './es6/metadata'
+import Metadata from './es6/metadata'
+export { default as Metadata } from './es6/metadata'
 
 export function parse()
 {
@@ -76,12 +77,14 @@ export function getCountryCallingCode(country)
 
 export function getCountryCallingCodeCustom(country, metadata)
 {
-	if (!metadata.countries[country])
+	metadata = new Metadata(metadata)
+
+	if (!metadata.hasCountry(country))
 	{
-		throw new Error('Unknown country: "' + country + '"')
+		throw new Error(`Unknown country: ${country}`)
 	}
 
-	return get_country_calling_code(metadata.countries[country])
+	return metadata.country(country).countryCallingCode()
 }
 
 // `getPhoneCode` name is deprecated, use `getCountryCallingCode` instead.

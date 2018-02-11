@@ -11,19 +11,7 @@ import
 }
 from './common'
 
-import
-{
-	get_country_calling_code,
-	get_formats,
-	get_format_pattern,
-	get_format_format,
-	get_format_leading_digits_patterns,
-	get_format_national_prefix_formatting_rule,
-	get_format_national_prefix_is_optional_when_formatting,
-	get_format_international_format,
-	get_metadata_by_country_calling_code
-}
-from './metadata'
+import Metadata from './metadata'
 
 const default_options =
 {
@@ -54,11 +42,9 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 	}
 	= sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 
-	let country_metadata
-
-	if (input.country)
+	if (input.country && metadata.hasCountry(input.country))
 	{
-		country_metadata = metadata.countries[input.country]
+		metadata.country(input.country)
 	}
 
 	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(input.phone, metadata)
@@ -68,16 +54,16 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 	if (countryCallingCode)
 	{
 		// Check country restriction
-		if (input.country && country_metadata &&
-			countryCallingCode !== get_country_calling_code(country_metadata))
+		if (input.country && metadata.selectedCountry() &&
+			countryCallingCode !== metadata.countryCallingCode())
 		{
 			return input.phone
 		}
 
-		country_metadata = get_metadata_by_country_calling_code(countryCallingCode, metadata)
+		metadata.chooseCountryByCountryCallingCode(countryCallingCode)
 	}
 
-	if (!country_metadata)
+	if (!metadata.selectedCountry())
 	{
 		return input.phone
 	}
@@ -87,10 +73,10 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 		case 'International':
 			if (!number)
 			{
-				return `+${get_country_calling_code(country_metadata)}`
+				return `+${metadata.countryCallingCode()}`
 			}
-			const national_number = format_national_number(number, 'International', false, country_metadata)
-			const international_number = `+${get_country_calling_code(country_metadata)} ${national_number}`
+			const national_number = format_national_number(number, 'International', false, metadata)
+			const international_number = `+${metadata.countryCallingCode()} ${national_number}`
 			if (input.ext || input.ext === 0)
 			{
 				return options.formatExtension(international_number, input.ext)
@@ -99,17 +85,17 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 
 		case 'E.164':
 			// `E.164` doesn't define "phone number extensions".
-			return `+${get_country_calling_code(country_metadata)}${input.phone}`
+			return `+${metadata.countryCallingCode()}${input.phone}`
 
 		case 'RFC3966':
-			return `tel:+${get_country_calling_code(country_metadata)}${input.phone}${(input.ext || input.ext === 0) ? ';ext=' + input.ext : ''}`
+			return `tel:+${metadata.countryCallingCode()}${input.phone}${(input.ext || input.ext === 0) ? ';ext=' + input.ext : ''}`
 
 		case 'National':
 			if (!number)
 			{
 				return ''
 			}
-			const _national_number = format_national_number(number, 'National', false, country_metadata)
+			const _national_number = format_national_number(number, 'National', false, metadata)
 			if (input.ext || input.ext === 0)
 			{
 				return options.formatExtension(_national_number, input.ext)
@@ -124,28 +110,26 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 // group actually used in the pattern will be matched.
 export const FIRST_GROUP_PATTERN = /(\$\d)/
 
-export function format_national_number_using_format(number, format, international, enforce_national_prefix, country_metadata)
+export function format_national_number_using_format(number, format, international, enforce_national_prefix, metadata)
 {
-	const format_pattern_matcher = new RegExp(get_format_pattern(format))
-
-	const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format, country_metadata)
+	const format_pattern_matcher = new RegExp(format.pattern())
 
 	// National prefix is omitted if there's no national prefix formatting rule
 	// set for this country, or when this rule is set but
 	// national prefix is optional for this phone number format
 	// (and it is not enforced explicitly)
-	const national_prefix_may_be_omitted = !national_prefix_formatting_rule ||
-		(national_prefix_formatting_rule && get_format_national_prefix_is_optional_when_formatting(format, country_metadata) && !enforce_national_prefix)
+	const national_prefix_may_be_omitted = !format.nationalPrefixFormattingRule() ||
+		(format.nationalPrefixFormattingRule() && format.nationalPrefixIsOptionalWhenFormatting() && !enforce_national_prefix)
 
 	if (!international && !national_prefix_may_be_omitted)
 	{
 		return number.replace
 		(
 			format_pattern_matcher,
-			get_format_format(format).replace
+			format.format().replace
 			(
 				FIRST_GROUP_PATTERN,
-				national_prefix_formatting_rule
+				format.nationalPrefixFormattingRule()
 			)
 		)
 	}
@@ -153,7 +137,7 @@ export function format_national_number_using_format(number, format, internationa
 	const formatted_number = number.replace
 	(
 		format_pattern_matcher,
-		international ? get_format_international_format(format) : get_format_format(format)
+		international ? format.internationalFormat() : format.format()
 	)
 
 	if (international)
@@ -164,16 +148,16 @@ export function format_national_number_using_format(number, format, internationa
 	return formatted_number
 }
 
-export function format_national_number(number, format_as, enforce_national_prefix, country_metadata)
+function format_national_number(number, format_as, enforce_national_prefix, metadata)
 {
-	const format = choose_format_for_number(get_formats(country_metadata), number)
+	const format = choose_format_for_number(metadata.formats(), number)
 
 	if (!format)
 	{
 		return number
 	}
 
-	return format_national_number_using_format(number, format, format_as === 'International', enforce_national_prefix, country_metadata)
+	return format_national_number_using_format(number, format, format_as === 'International', enforce_national_prefix, metadata)
 }
 
 export function choose_format_for_number(available_formats, national_number)
@@ -181,10 +165,10 @@ export function choose_format_for_number(available_formats, national_number)
 	for (const format of available_formats)
 	{
 		// Validate leading digits
-		if (get_format_leading_digits_patterns(format).length > 0)
+		if (format.leadingDigitsPatterns().length > 0)
 		{
 			// The last leading_digits_pattern is used here, as it is the most detailed
-			const last_leading_digits_pattern = get_format_leading_digits_patterns(format)[get_format_leading_digits_patterns(format).length - 1]
+			const last_leading_digits_pattern = format.leadingDigitsPatterns()[format.leadingDigitsPatterns().length - 1]
 
 			// If leading digits don't match then move on to the next phone number format
 			if (national_number.search(last_leading_digits_pattern) !== 0)
@@ -194,7 +178,7 @@ export function choose_format_for_number(available_formats, national_number)
 		}
 
 		// Check that the national number matches the phone number format regular expression
-		if (matches_entirely(national_number, new RegExp(get_format_pattern(format))))
+		if (matches_entirely(national_number, new RegExp(format.pattern())))
 		{
 			return format
 		}
@@ -322,7 +306,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 		options = default_options
 	}
 
-	return { input, format_type, options, metadata }
+	return { input, format_type, options, metadata: new Metadata(metadata) }
 }
 
 // Babel transforms `typeof` into some "branches"

@@ -53,3 +53,5 @@ exports.getCountryCallingCode = function(country)
 
 // `getPhoneCode` name is deprecated
 exports.getPhoneCode = exports.getCountryCallingCode
+
+exports.Metadata = require('./es6/metadata').default

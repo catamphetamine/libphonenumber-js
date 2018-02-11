@@ -1,5 +1,5 @@
-import metadata from '../metadata.min'
-import parser from '../source/parse'
+import metadata from './metadata.min'
+import parser from '../../../source/parse'
 
 function parse(...parameters)
 {
@@ -11,11 +11,8 @@ describe('parse', () =>
 {
 	it('should not parse invalid phone numbers', function()
 	{
-		// Too short.
 		parse('+7 (800) 55-35-35').should.deep.equal({})
-		// Too long.
-		parse('+7 (800) 55-35-35-55').should.deep.equal({})
-
+		parse('+7 (800) 55-35-35', undefined).should.deep.equal({})
 		parse('+7 (800) 55-35-35', 'US').should.deep.equal({})
 		parse('(800) 55 35 35', { defaultCountry: 'RU' }).should.deep.equal({})
 		parse('+1 187 215 5230', 'US').should.deep.equal({})
@@ -64,84 +61,6 @@ describe('parse', () =>
 
 		// No country could be derived.
 		// parse('+212569887076').should.deep.equal({ countryPhoneCode: '212', phone: '569887076' })
-	})
-
-	it('should parse possible numbers', function()
-	{
-		// Invalid phone number for a given country.
-		parse('1112223344', 'RU', { extended: true }).should.deep.equal
-		({
-			country            : 'RU',
-			countryCallingCode : '7',
-			phone              : '1112223344',
-			ext                : undefined,
-			valid              : false,
-			possible           : true
-		})
-
-		// International phone number.
-		// Several countries with the same country phone code.
-		parse('+71112223344').should.deep.equal({})
-		parse('+71112223344', { extended: true }).should.deep.equal
-		({
-			country            : undefined,
-			countryCallingCode : '7',
-			phone              : '1112223344',
-			ext                : undefined,
-			valid              : false,
-			possible           : true
-		})
-
-		// International phone number.
-		// Single country with the given country phone code.
-		parse('+33011222333', { extended: true }).should.deep.equal
-		({
-			country            : 'FR',
-			countryCallingCode : '33',
-			phone              : '011222333',
-			ext                : undefined,
-			valid              : false,
-			possible           : true
-		})
-
-		// Too short.
-		parse('+7 (800) 55-35-35', { extended: true }).should.deep.equal
-		({
-			country            : undefined,
-			countryCallingCode : '7',
-			phone              : '800553535',
-			ext                : undefined,
-			valid              : false,
-			possible           : false
-		})
-
-		// Too long.
-		parse('+7 (800) 55-35-35-55', { extended: true }).should.deep.equal
-		({
-			country            : undefined,
-			countryCallingCode : '7',
-			phone              : '80055353555',
-			ext                : undefined,
-			valid              : false,
-			possible           : false
-		})
-
-		// No national number to be parsed.
-		parse('+996', { extended: true }).should.deep.equal
-		({
-			countryCallingCode : '996'
-		})
-
-		// Valid number.
-		parse('+78005553535', { extended: true }).should.deep.equal
-		({
-			country            : 'RU',
-			countryCallingCode : '7',
-			phone              : '8005553535',
-			ext                : undefined,
-			valid              : true,
-			possible           : true
-		})
 	})
 
 	it('should parse non-European digits', function()
@@ -255,9 +174,6 @@ describe('parse', () =>
 			phone   : '8005553535',
 			ext     : '123'
 		})
-
-		// Invalid number.
-		parse('tel:+7x8005553535;ext:123').should.deep.equal({})
 
 		// With phone context
 		parse('tel:8005553535;ext:123;phone-context:+7').should.deep.equal

@@ -3,6 +3,7 @@
 
   * Fixed `RFC3966` format not prepending `tel:` to the output.
   * Renamed `{ possible: true }` option to `{ extended: true }` and the result is now more verbose (see the README).
+  * Added `possible_lengths` property in metadata: metadata generated using previous versions of the library should be re-generated with then new version.
 
 1.0.16 / 07.02.2018
 ===================

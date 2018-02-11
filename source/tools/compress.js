@@ -70,19 +70,11 @@ export default function compress(input)
 		countries[country_code] = trim_array(country_array)
 	}
 
-	// const output =
-	// [
-	// 	input.country_phone_code_to_countries,
-	// 	countries
-	// ]
-
-	const output =
-	{
-		country_phone_code_to_countries: input.country_phone_code_to_countries,
+	return {
+		version: input.version,
+		country_calling_codes: input.country_calling_codes,
 		countries
 	}
-
-	return output
 }
 
 // Empty strings are not considered "empty".

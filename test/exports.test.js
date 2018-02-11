@@ -17,6 +17,8 @@ import
 	// `getPhoneCodeCustom` name is deprecated.
 	getPhoneCodeCustom,
 
+	Metadata,
+
 	DIGIT_PLACEHOLDER,
 	DIGITS
 }
@@ -45,6 +47,8 @@ describe(`exports`, function()
 		getCountryCallingCode('KZ').should.equal('7')
 		thrower = () => getCountryCallingCode('ZZ')
 		thrower.should.throw('Unknown')
+
+		new Metadata({ countries: {} })
 	})
 
 	it(`should export ES6 custom functions`, function()
@@ -77,6 +81,8 @@ describe(`exports`, function()
 		Library.getCountryCallingCode('KZ').should.equal('7')
 		thrower = () => Library.getCountryCallingCode('ZZ')
 		thrower.should.throw('Unknown')
+
+		new Library.Metadata({ countries: {} })
 	})
 
 	it(`should export CommonJS custom functions`, function()

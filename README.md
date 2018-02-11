@@ -365,6 +365,8 @@ import metadata from './metadata.min.json'
 export const parse = (...args) => parseCustom(...args, metadata)
 ```
 
+Metadata should be re-generated each time the project is being deployed because Google constantly updates their metadata.
+
 <!-- ## To do -->
 
 <!--

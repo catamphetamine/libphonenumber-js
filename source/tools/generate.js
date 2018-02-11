@@ -82,7 +82,7 @@ const phone_number_types =
 // @returns
 //
 // {
-// 	country_phone_code_to_countries:
+// 	country_calling_codes:
 // 	{
 // 		'7': ['RU', 'KZ', ...],
 // 		...
@@ -120,34 +120,34 @@ const phone_number_types =
 // 	}
 // }
 //
-// `country_phone_code_to_countries` map is kinda redundant.
+// `country_calling_codes` map is kinda redundant.
 // Not sure why did I choose to place country phone codes
 // into a separate structure inside metadata instead of generating it in runtime.
 // One extra feature it gives though is it tells what's the
 // "default" country for a given country phone code.
 // E.g. for country phone code `1` the "default" country is "US"
 // and therefore "US" is the first country code in the
-// `country_phone_code_to_countries["1"]` list.
+// `country_calling_codes["1"]` list.
 // The "default" country is the one other countries
 // with the same country phone code inherit phone number formatting rules from.
 // For example, "CA" (Canada) inhertis phone number formatting rules from "US".
 //
-// `country_phone_code_to_countries` data takes about 3 KiloBytes
+// `country_calling_codes` data takes about 3 KiloBytes
 // so it could kinda make sense to drop it from the metadata file
 // replacing it with a "default" country flag (something like `1` for "yes").
-// In that scenario `country_phone_code_to_countries` would be generated on startup.
+// In that scenario `country_calling_codes` would be generated on startup.
 // It would have to also provide an exported `getCountryPhoneCodes()` function
-// which would take `metadata` and return `country_phone_code_to_countries` map
-// because some people use that `country_phone_code_to_countries` map in their projects.
+// which would take `metadata` and return `country_calling_codes` map
+// because some people use that `country_calling_codes` map in their projects.
 //
-// On the other hand, having `country_phone_code_to_countries`
+// On the other hand, having `country_calling_codes`
 // prepopulated yields more elegance to the exports
-// because if `country_phone_code_to_countries` wasn't part of metadata
+// because if `country_calling_codes` wasn't part of metadata
 // it would have to be computed somewhere in global scope
 // therefore the modules wouldn't be strictly "pure"
-// so maybe `country_phone_code_to_countries` stays as part of metadata.
+// so maybe `country_calling_codes` stays as part of metadata.
 //
-export default function(input, included_countries, extended, included_phone_number_types)
+export default function(input, version, included_countries, extended, included_phone_number_types)
 {
 	// Validate `included_phone_number_types`
 	if (included_phone_number_types)
@@ -495,7 +495,11 @@ export default function(input, included_countries, extended, included_phone_numb
 			}
 		}
 
-		return { countries, country_phone_code_to_countries: country_calling_code_to_countries }
+		return {
+			version,
+			countries,
+			country_calling_codes: country_calling_code_to_countries
+		}
 	})
 }
 

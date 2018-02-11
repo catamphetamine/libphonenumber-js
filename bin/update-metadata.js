@@ -8,6 +8,8 @@ var download = require('../build/tools/download').default
 var generate = require('../build/tools/generate').default
 var compress = require('../build/tools/compress').default
 
+var info = require('../package.json')
+
 var metadata_path = process.argv[2]
 
 if (!metadata_path)
@@ -53,7 +55,7 @@ download('https://raw.githubusercontent.com/googlei18n/libphonenumber/master/res
 	.then(function(xml)
 	{
 		// Generate and compress metadata
-		return generate(xml, included_countries, extended, included_phone_number_types)
+		return generate(xml, info.version, included_countries, extended, included_phone_number_types)
 	})
 	.then(function(output)
 	{

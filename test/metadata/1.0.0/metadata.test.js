@@ -1,6 +1,6 @@
-import metadata from '../metadata.min'
+import metadata from './metadata.min'
 
-import Metadata from '../source/metadata'
+import Metadata from '../../../source/metadata'
 
 describe('metadata', () =>
 {
@@ -9,12 +9,6 @@ describe('metadata', () =>
 		const FR = new Metadata(metadata).country('FR')
 		console.log(FR.type('FIXED_LINE'))
 		type(FR.type('FIXED_LINE')).should.equal('undefined')
-	})
-
-	it('should validate country', function()
-	{
-		const thrower = () => new Metadata(metadata).country('RUS')
-		thrower.should.throw('Unknown country')
 	})
 })
 

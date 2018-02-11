@@ -1,206 +1,252 @@
-export function get_country_calling_code(country_metadata)
+import compare from 'semver-compare'
+
+// Added "possibleLengths" and renamed
+// "country_phone_code_to_countries" to "country_calling_codes".
+const V2 = '1.0.18'
+
+export default class Metadata
 {
-	return country_metadata[0]
-}
-
-export function get_national_number_pattern(country_metadata)
-{
-	return country_metadata[1]
-}
-
-export function get_country_phone_number_possible_lengths(country_metadata)
-{
-	return country_metadata[2]
-}
-
-// export function get_country_phone_number_possible_lengths_local(country_metadata)
-// {
-// 	return country_metadata[3]
-// }
-
-export function get_formats(country_metadata)
-{
-	return country_metadata[3] || []
-}
-
-export function get_national_prefix(country_metadata)
-{
-	return country_metadata[4]
-}
-
-export function get_national_prefix_formatting_rule(country_metadata)
-{
-	return country_metadata[5]
-}
-
-export function get_national_prefix_for_parsing(country_metadata)
-{
-	let national_prefix_for_parsing = country_metadata[6]
-
-	// If `national_prefix_for_parsing` is not set explicitly,
-	// then infer it from `national_prefix` (if any)
-	if (!national_prefix_for_parsing)
+	constructor(metadata)
 	{
-		national_prefix_for_parsing = get_national_prefix(country_metadata)
+		// Metadata is required.
+		if (!metadata || !metadata.countries)
+		{
+			throw new Error('Metadata is required')
+		}
+
+		this.metadata = metadata
+
+		this.v1 = !metadata.version
+		this.v2 = metadata.version // && compare(version, V3) === -1
 	}
 
-	return national_prefix_for_parsing
+	hasCountry(country)
+	{
+		return this.metadata.countries[country] !== undefined
+	}
+
+	country(country)
+	{
+		if (!country)
+		{
+			this._country = undefined
+			this.country_metadata = undefined
+			return this
+		}
+
+		if (!this.hasCountry(country))
+		{
+			throw new Error(`Unknown country: ${country}`)
+		}
+
+		this._country = country
+		this.country_metadata = this.metadata.countries[country]
+		return this
+	}
+
+	countryCallingCode()
+	{
+		return this.country_metadata[0]
+	}
+
+	nationalNumberPattern()
+	{
+		return this.country_metadata[1]
+	}
+
+	possibleLengths()
+	{
+		if (this.v1) return
+		return this.country_metadata[2]
+	}
+
+	formats()
+	{
+		const formats = this.country_metadata[this.v1 ? 2 : 3] || []
+		return formats.map(_ => new Format(_, this))
+	}
+
+	nationalPrefix()
+	{
+		return this.country_metadata[this.v1 ? 3 : 4]
+	}
+
+	nationalPrefixFormattingRule()
+	{
+		return this.country_metadata[this.v1 ? 4 : 5]
+	}
+
+	nationalPrefixForParsing()
+	{
+		// If `national_prefix_for_parsing` is not set explicitly,
+		// then infer it from `national_prefix` (if any)
+		return this.country_metadata[this.v1 ? 5 : 6] || this.nationalPrefix()
+	}
+
+	nationalPrefixTransformRule()
+	{
+		return this.country_metadata[this.v1 ? 6 : 7]
+	}
+
+	nationalPrefixIsOptionalWhenFormatting()
+	{
+		return this.country_metadata[this.v1 ? 7 : 8]
+	}
+
+	leadingDigits()
+	{
+		return this.country_metadata[this.v1 ? 8 : 9]
+	}
+
+	types()
+	{
+		return this.country_metadata[this.v1 ? 9 : 10]
+	}
+
+	hasTypes()
+	{
+		return this.types() !== undefined
+	}
+
+	type(type)
+	{
+		if (this.hasTypes() && getType(this.types(), type))
+		{
+			return new Type(getType(this.types(), type), this)
+		}
+	}
+
+	countryCallingCodes()
+	{
+		if (this.v1) return this.metadata.country_phone_code_to_countries
+		return this.metadata.country_calling_codes
+	}
+
+	// Formatting information for regions which share
+	// a country calling code is contained by only one region
+	// for performance reasons. For example, for NANPA region
+	// ("North American Numbering Plan Administration",
+	//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
+	// it will be contained in the metadata for `US`.
+	chooseCountryByCountryCallingCode(country_calling_code)
+	{
+		const country = this.countryCallingCodes()[country_calling_code][0]
+		this.country(country)
+	}
+
+	selectedCountry()
+	{
+		return this._country
+	}
 }
 
-export function get_national_prefix_transform_rule(country_metadata)
+class Format
 {
-	return country_metadata[7]
+	constructor(format, metadata)
+	{
+		this._format = format
+		this.metadata = metadata
+	}
+
+	pattern()
+	{
+		return this._format[0]
+	}
+
+	format()
+	{
+		return this._format[1]
+	}
+
+	leadingDigitsPatterns()
+	{
+		return this._format[2] || []
+	}
+
+	nationalPrefixFormattingRule()
+	{
+		return this._format[3] || this.metadata.nationalPrefixFormattingRule()
+	}
+
+	nationalPrefixIsOptionalWhenFormatting()
+	{
+		return this._format[4] || this.metadata.nationalPrefixIsOptionalWhenFormatting()
+	}
+
+	nationalPrefixIsMandatoryWhenFormatting()
+	{
+		// National prefix is omitted if there's no national prefix formatting rule
+		// set for this country, or when the national prefix formatting rule
+		// contains no national prefix itself, or when this rule is set but
+		// national prefix is optional for this phone number format
+		// (and it is not enforced explicitly)
+		return this.nationalPrefixFormattingRule() &&
+			// Check that national prefix formatting rule is not a dummy one.
+			// Check that national prefix formatting rule actually has national prefix digit(s).
+			this.usesNationalPrefix() &&
+			// Or maybe national prefix is optional for this format
+			!this.nationalPrefixIsOptionalWhenFormatting()
+	}
+
+	// Checks whether national prefix formatting rule contains national prefix
+	usesNationalPrefix()
+	{
+		// Check that national prefix formatting rule is not a dummy one
+		return this.nationalPrefixFormattingRule() !== '$1' &&
+			// Check that national prefix formatting rule actually has national prefix digit(s)
+			/\d/.test(this.nationalPrefixFormattingRule().replace('$1', ''))
+	}
+
+	internationalFormat()
+	{
+		return this._format[5] || this.format()
+	}
 }
 
-export function get_national_prefix_is_optional_when_formatting(country_metadata)
+class Type
 {
-	return country_metadata[8]
+	constructor(type, metadata)
+	{
+		this.type = type
+		this.metadata = metadata
+	}
+
+	pattern()
+	{
+		if (this.metadata.v1) return this.type
+		return this.type[0]
+	}
+
+	possibleLengths()
+	{
+		if (this.metadata.v1) return
+		return this.type[1] || this.metadata.possibleLengths()
+	}
 }
 
-export function get_leading_digits(country_metadata)
+function getType(types, type)
 {
-	return country_metadata[9]
+	switch (type)
+	{
+		case 'FIXED_LINE':
+			return types[0]
+		case 'MOBILE':
+			return types[1]
+		case 'TOLL_FREE':
+			return types[2]
+		case 'PREMIUM_RATE':
+			return types[3]
+		case 'PERSONAL_NUMBER':
+			return types[4]
+		case 'VOICEMAIL':
+			return types[5]
+		case 'UAN':
+			return types[6]
+		case 'PAGER':
+			return types[7]
+		case 'VOIP':
+			return types[8]
+		case 'SHARED_COST':
+			return types[9]
+	}
 }
-
-export function get_types(country_metadata)
-{
-	return country_metadata[10]
-}
-
-export function get_format_pattern(format_array)
-{
-	return format_array[0]
-}
-
-export function get_format_format(format_array)
-{
-	return format_array[1]
-}
-
-export function get_format_leading_digits_patterns(format_array)
-{
-	return format_array[2] || []
-}
-
-export function get_format_national_prefix_formatting_rule(format_array, country_metadata)
-{
-	return format_array[3] || get_national_prefix_formatting_rule(country_metadata)
-}
-
-export function get_format_national_prefix_is_optional_when_formatting(format_array, country_metadata)
-{
-	return format_array[4] || get_national_prefix_is_optional_when_formatting(country_metadata)
-}
-
-export function get_format_national_prefix_is_mandatory_when_formatting(format_array, country_metadata)
-{
-	const national_prefix_formatting_rule = get_format_national_prefix_formatting_rule(format_array, country_metadata)
-
-	// National prefix is omitted if there's no national prefix formatting rule
-	// set for this country, or when the national prefix formatting rule
-	// contains no national prefix itself, or when this rule is set but
-	// national prefix is optional for this phone number format
-	// (and it is not enforced explicitly)
-	return national_prefix_formatting_rule &&
-		// Check that national prefix formatting rule is not a dummy one.
-		// Check that national prefix formatting rule actually has national prefix digit(s).
-		get_format_uses_national_prefix(national_prefix_formatting_rule) &&
-		// Or maybe national prefix is optional for this format
-		!get_format_national_prefix_is_optional_when_formatting(format_array, country_metadata)
-}
-
-// Checks whether national prefix formatting rule contains national prefix
-export function get_format_uses_national_prefix(national_prefix_formatting_rule)
-{
-	// Check that national prefix formatting rule is not a dummy one
-	return national_prefix_formatting_rule !== '$1' &&
-		// Check that national prefix formatting rule actually has national prefix digit(s)
-		/\d/.test(national_prefix_formatting_rule.replace('$1', ''))
-}
-
-export function get_format_international_format(format_array)
-{
-	return format_array[5] || get_format_format(format_array)
-}
-
-// Formatting information for regions which share
-// a country calling code is contained by only one region
-// for performance reasons. For example, for NANPA region
-// ("North American Numbering Plan Administration",
-//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
-// it will be contained in the metadata for `US`.
-export function get_metadata_by_country_calling_code(country_calling_code, metadata)
-{
-	const country_code = metadata.country_phone_code_to_countries[country_calling_code][0]
-	return metadata.countries[country_code]
-}
-
-function get_type(country_metadata, index)
-{
-	return get_types(country_metadata) ? get_types(country_metadata)[index] : undefined
-}
-
-export function get_type_fixed_line(country_metadata)
-{
-	return get_type(country_metadata, 0)
-}
-
-export function get_type_mobile(country_metadata)
-{
-	return get_type(country_metadata, 1)
-}
-
-export function get_type_toll_free(country_metadata)
-{
-	return get_type(country_metadata, 2)
-}
-
-export function get_type_premium_rate(country_metadata)
-{
-	return get_type(country_metadata, 3)
-}
-
-export function get_type_personal_number(country_metadata)
-{
-	return get_type(country_metadata, 4)
-}
-
-export function get_type_voice_mail(country_metadata)
-{
-	return get_type(country_metadata, 5)
-}
-
-export function get_type_uan(country_metadata)
-{
-	return get_type(country_metadata, 6)
-}
-
-export function get_type_pager(country_metadata)
-{
-	return get_type(country_metadata, 7)
-}
-
-export function get_type_voip(country_metadata)
-{
-	return get_type(country_metadata, 8)
-}
-
-export function get_type_shared_cost(country_metadata)
-{
-	return get_type(country_metadata, 9)
-}
-
-export function get_type_pattern(type)
-{
-	return type[0]
-}
-
-export function get_type_possible_lengths(type)
-{
-	return type[1]
-}
-
-// export function get_type_possible_lengths_local(type)
-// {
-// 	return type[2]
-// }

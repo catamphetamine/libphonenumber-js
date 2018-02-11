@@ -2,25 +2,7 @@ import parse, { is_viable_phone_number } from './parse'
 
 import { matches_entirely } from './common'
 
-import
-{
-	get_national_number_pattern,
-	get_type_fixed_line,
-	get_type_mobile,
-	get_type_toll_free,
-	get_type_premium_rate,
-	get_type_personal_number,
-	get_type_voice_mail,
-	get_type_uan,
-	get_type_pager,
-	get_type_voip,
-	get_type_shared_cost,
-	get_type_pattern,
-	get_type_possible_lengths,
-	get_country_phone_number_possible_lengths,
-	// get_country_phone_number_possible_lengths_local
-}
-from './metadata'
+import Metadata from './metadata'
 
 const non_fixed_line_types =
 [
@@ -53,27 +35,39 @@ export default function get_number_type(arg_1, arg_2, arg_3)
 		return
 	}
 
+	if (!metadata.hasCountry(input.country))
+	{
+		throw new Error(`Unknown country: ${input.country}`)
+	}
+
 	const national_number = input.phone
-	const country_metadata = metadata.countries[input.country]
+	metadata.country(input.country)
 
 	// The following is copy-pasted from the original function:
 	// https://github.com/googlei18n/libphonenumber/blob/3ea547d4fbaa2d0b67588904dfa5d3f2557c27ff/javascript/i18n/phonenumbers/phonenumberutil.js#L2835
 
 	// Is this national number even valid for this country
-	if (!matches_entirely(national_number, get_national_number_pattern(country_metadata)))
+	if (!matches_entirely(national_number, metadata.nationalNumberPattern()))
 	{
 		return
 	}
 
 	// Is it fixed line number
-	if (is_of_type(national_number, 'FIXED_LINE', country_metadata))
+	if (is_of_type(national_number, 'FIXED_LINE', metadata))
 	{
 		// Because duplicate regular expressions are removed
 		// to reduce metadata size, if "mobile" pattern is ""
 		// then it means it was removed due to being a duplicate of the fixed-line pattern.
 		//
-		if (get_type_mobile(country_metadata) &&
-			get_type_pattern(get_type_mobile(country_metadata)) === '')
+		if (metadata.type('MOBILE') && metadata.type('MOBILE').pattern() === '')
+		{
+			return 'FIXED_LINE_OR_MOBILE'
+		}
+
+		// v1 metadata.
+		// Legacy.
+		// Deprecated.
+		if (!metadata.type('MOBILE'))
 		{
 			return 'FIXED_LINE_OR_MOBILE'
 		}
@@ -81,7 +75,7 @@ export default function get_number_type(arg_1, arg_2, arg_3)
 		// Check if the number happens to qualify as both fixed line and mobile.
 		// (no such country in the minimal metadata set)
 		/* istanbul ignore if */
-		if (is_of_type(national_number, 'MOBILE', country_metadata))
+		if (is_of_type(national_number, 'MOBILE', metadata))
 		{
 			return 'FIXED_LINE_OR_MOBILE'
 		}
@@ -91,7 +85,7 @@ export default function get_number_type(arg_1, arg_2, arg_3)
 
 	for (const _type of non_fixed_line_types)
 	{
-		if (is_of_type(national_number, _type, country_metadata))
+		if (is_of_type(national_number, _type, metadata))
 		{
 			return _type
 		}
@@ -100,9 +94,9 @@ export default function get_number_type(arg_1, arg_2, arg_3)
 
 export function is_of_type(national_number, type, metadata)
 {
-	type = get_type_info(type, metadata)
+	type = metadata.type(type)
 
-	if (!type || !get_type_pattern(type))
+	if (!type || !type.pattern())
 	{
 		return false
 	}
@@ -113,13 +107,13 @@ export function is_of_type(national_number, type, metadata)
 	// If they are absent, this means they match
 	// the general description, which we have
 	// already checked before a specific number type.
-	if (get_type_possible_lengths(type) &&
-		get_type_possible_lengths(type).indexOf(national_number.length) < 0)
+	if (type.possibleLengths() &&
+		type.possibleLengths().indexOf(national_number.length) < 0)
 	{
 		return false
 	}
 
-	return matches_entirely(national_number, get_type_pattern(type))
+	return matches_entirely(national_number, type.pattern())
 }
 
 // Sort out arguments
@@ -188,12 +182,13 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 		throw new Error('Metadata is required')
 	}
 
-	return { input, metadata }
+	return { input, metadata: new Metadata(metadata) }
 }
 
+// Should only be called for the "new" metadata which has "possible lengths".
 export function check_number_length_for_type(national_number, type, metadata)
 {
-	const type_info = get_type_info(type, metadata)
+	const type_info = metadata.type(type)
 
 	// There should always be "<possiblePengths/>" set for every type element.
 	// This is declared in the XML schema.
@@ -202,21 +197,21 @@ export function check_number_length_for_type(national_number, type, metadata)
 	// so we fall back to the "general description". Where no numbers of the type
 	// exist at all, there is one possible length (-1) which is guaranteed
 	// not to match the length of any real phone number.
-	let possible_lengths = type_info && get_type_possible_lengths(type_info) || get_country_phone_number_possible_lengths(metadata)
-	// let local_lengths    = type_info && get_type_possible_lengths_local(type_info) || get_country_phone_number_possible_lengths_local(metadata)
+	let possible_lengths = type_info && type_info.possibleLengths() || metadata.possibleLengths()
+	// let local_lengths    = type_info && type.possibleLengthsLocal() || metadata.possibleLengthsLocal()
 
 	if (type === 'FIXED_LINE_OR_MOBILE')
 	{
 		// No such country in metadata.
 		/* istanbul ignore next */
-		if (!get_type_fixed_line(metadata))
+		if (!metadata.type('FIXED_LINE'))
 		{
 			// The rare case has been encountered where no fixedLine data is available
 			// (true for some non-geographical entities), so we just check mobile.
 			return test_number_length_for_type(national_number, 'MOBILE', metadata)
 		}
 
-		const mobile_type = get_type_mobile(metadata)
+		const mobile_type = metadata.type('MOBILE')
 
 		if (mobile_type)
 		{
@@ -225,18 +220,18 @@ export function check_number_length_for_type(national_number, type, metadata)
 			// Note that when adding the possible lengths from mobile, we have
 			// to again check they aren't empty since if they are this indicates
 			// they are the same as the general desc and should be obtained from there.
-			possible_lengths = merge_arrays(possible_lengths, get_type_possible_lengths(mobile_type) || get_country_phone_number_possible_lengths(metadata))
+			possible_lengths = merge_arrays(possible_lengths, mobile_type.possibleLengths())
 			// The current list is sorted; we need to merge in the new list and
 			// re-sort (duplicates are okay). Sorting isn't so expensive because
 			// the lists are very small.
 
 			// if (local_lengths)
 			// {
-			// 	local_lengths = merge_arrays(local_lengths, get_type_possible_lengths_local(mobile_type) || get_country_phone_number_possible_lengths_local(metadata))
+			// 	local_lengths = merge_arrays(local_lengths, mobile_type.possibleLengthsLocal())
 			// }
 			// else
 			// {
-			// 	local_lengths = get_type_possible_lengths_local(mobile_type)
+			// 	local_lengths = mobile_type.possibleLengthsLocal()
 			// }
 		}
 	}
@@ -274,35 +269,6 @@ export function check_number_length_for_type(national_number, type, metadata)
 
 	// We skip the first element since we've already checked it.
 	return possible_lengths.indexOf(actual_length, 1) >= 0 ? 'IS_POSSIBLE' : 'INVALID_LENGTH'
-}
-
-function get_type_info(type, metadata)
-{
-	switch (type)
-	{
-		case 'FIXED_LINE':
-			return get_type_fixed_line(metadata)
-		case 'MOBILE':
-			return get_type_mobile(metadata)
-		case 'PREMIUM_RATE':
-			return get_type_premium_rate(metadata)
-		case 'TOLL_FREE':
-			return get_type_toll_free(metadata)
-		case 'SHARED_COST':
-			return get_type_shared_cost(metadata)
-		case 'VOIP':
-			return get_type_voip(metadata)
-		case 'PERSONAL_NUMBER':
-			return get_type_personal_number(metadata)
-		case 'PAGER':
-			return get_type_pager(metadata)
-		case 'UAN':
-			return get_type_uan(metadata)
-		case 'VOICEMAIL':
-			return get_type_voice_mail(metadata)
-		// default:
-		// 	throw new Error(`Unknown phone number type: ${type}`)
-	}
 }
 
 // Babel transforms `typeof` into some "branches"

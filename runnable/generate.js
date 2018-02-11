@@ -1,9 +1,10 @@
-import generate from '../source/tools/generate'
-import compress from '../source/tools/compress'
-
 import minimist from 'minimist'
 import path from 'path'
 import fs   from 'fs'
+
+import generate from '../source/tools/generate'
+import compress from '../source/tools/compress'
+import info from '../package.json'
 
 const input = fs.readFileSync(path.join(__dirname, process.argv[2]), 'utf8')
 const output_file = process.argv[3]
@@ -37,7 +38,7 @@ if (command_line_arguments.types)
 }
 
 // Generate and compress metadata
-generate(input, included_countries, extended, included_phone_number_types).then((output) =>
+generate(input, info.version, included_countries, extended, included_phone_number_types).then((output) =>
 {
 	// Write uncompressed metadata into a file for easier debugging
 	if (command_line_arguments.debug)
