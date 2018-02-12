@@ -18,7 +18,7 @@ exports.getCountryCallingCode = function(country, metadata)
 
 	if (!metadata.hasCountry(country))
 	{
-		throw new Error(`Unknown country: ${country}`)
+		throw new Error('Unknown country: ' + country)
 	}
 
 	return metadata.country(country).countryCallingCode()
