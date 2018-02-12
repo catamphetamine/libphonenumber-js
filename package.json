@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "A simpler (and smaller) rewrite of Google Android's popular libphonenumber library",
   "main": "index.common.js",
   "module": "index.es6.js",
@@ -52,7 +52,7 @@
     "build-commonjs-modules": "better-npm-run build-commonjs-modules",
     "build-es6-modules": "better-npm-run build-es6-modules",
     "build": "npm-run-all clean-for-build build-commonjs-modules build-es6-modules",
-    "prepublish": "crlf --set=LF bin/* && npm-run-all metadata:generate build test browser-build"
+    "prepublish": "crlf --set=LF bin/* && crlf --set=LF metadata.*.json && npm-run-all metadata:generate build test browser-build"
   },
   "betterScripts": {
     "browser-build": {
