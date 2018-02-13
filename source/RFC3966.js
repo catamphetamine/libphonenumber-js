@@ -43,22 +43,20 @@ export function parseRFC3966(text)
 }
 
 /**
- * @param  {object} - `{ ?countryCallingCode, ?extension }`.
+ * @param  {object} - `{ ?number, ?extension }`.
  * @return {string} Phone URI (RFC 3966).
  */
-export function formatRFC3966({ countryCallingCode, number, ext })
+export function formatRFC3966({ number, ext })
 {
 	if (!number)
 	{
 		return ''
 	}
 
-	if (number[0] !== '+' && !countryCallingCode)
+	if (number[0] !== '+')
 	{
-		throw new Error(`"formatRFC3966()" expects country calling code (either in the form of "countryCallingCode" or as part of the "number").`)
+		throw new Error(`"formatRFC3966()" expects "number" to be in E.164 format.`)
 	}
 
-	const tel = number[0] === '+' ? number : `+${countryCallingCode}${number}`
-
-	return `tel:${tel}${ext ? ';ext=' + ext : ''}`
+	return `tel:${number}${ext ? ';ext=' + ext : ''}`
 }

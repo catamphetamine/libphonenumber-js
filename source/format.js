@@ -87,9 +87,8 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 		case 'RFC3966':
 			return formatRFC3966
 			({
-				countryCallingCode : metadata.countryCallingCode(),
-				number             : input.phone,
-				ext                : input.ext
+				number : `+${metadata.countryCallingCode()}${input.phone}`,
+				ext    : input.ext
 			})
 
 		case 'National':

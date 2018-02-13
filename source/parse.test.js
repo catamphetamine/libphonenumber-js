@@ -258,29 +258,5 @@ describe('parse', () =>
 
 		// Invalid number.
 		parse('tel:+7x8005553535;ext:123').should.deep.equal({})
-
-		// With phone context
-		parse('tel:8005553535;ext:123;phone-context:+7').should.deep.equal
-		({
-			country : 'RU',
-			phone   : '8005553535',
-			ext     : '123'
-		})
-
-		// Domain contexts are ignored
-		parse('tel:8005553535;ext:123;phone-context:www.leningrad.spb.ru', 'RU').should.deep.equal
-		({
-			country : 'RU',
-			phone   : '8005553535',
-			ext     : '123'
-		})
-
-		// // Missing `tel:` prefix is invalid as per the specs.
-		// // http://www.cdapro.com/know/26883
-		// parse('+78005553535;phone-context=').should.deep.equal
-		// ({
-		// 	country: 'RU',
-		// 	phone: '8005553535'
-		// })
 	})
 })
