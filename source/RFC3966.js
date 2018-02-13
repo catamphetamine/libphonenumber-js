@@ -1,5 +1,7 @@
 import { is_viable_phone_number } from './parse'
 
+// https://www.ietf.org/rfc/rfc3966.txt
+
 /**
  * @param  {string} text - Phone URI (RFC 3966).
  * @return {object} `{ ?number, ?ext }`.
