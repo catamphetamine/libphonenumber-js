@@ -18,6 +18,8 @@ import
 	getPhoneCodeCustom,
 
 	Metadata,
+	parseRFC3966,
+	formatRFC3966,
 
 	DIGIT_PLACEHOLDER,
 	DIGITS
@@ -49,6 +51,8 @@ describe(`exports`, function()
 		thrower.should.throw('Unknown')
 
 		new Metadata({ countries: {} })
+		parseRFC3966.should.be.a('function')
+		formatRFC3966.should.be.a('function')
 	})
 
 	it(`should export ES6 custom functions`, function()
@@ -83,6 +87,8 @@ describe(`exports`, function()
 		thrower.should.throw('Unknown')
 
 		new Library.Metadata({ countries: {} })
+		Library.parseRFC3966.should.be.a('function')
+		Library.formatRFC3966.should.be.a('function')
 	})
 
 	it(`should export CommonJS custom functions`, function()

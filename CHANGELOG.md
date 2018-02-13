@@ -1,3 +1,8 @@
+1.0.22 / 13.02.2018
+===================
+
+  * Added `parseRFC3966` and `formatRFC3966` functions which are exported.
+
 1.0.18 / 12.02.2018
 ===================
 

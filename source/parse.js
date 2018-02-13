@@ -17,6 +17,8 @@ import Metadata from './metadata'
 
 import get_number_type, { check_number_length_for_type } from './types'
 
+import { parseRFC3966 } from './RFC3966'
+
 // The minimum length of the national significant number.
 const MIN_LENGTH_FOR_NSN = 2
 
@@ -174,7 +176,7 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 	}
 
 	// Parse the phone number.
-	const { number: formatted_phone_number, extension } = parse_input(text)
+	const { number: formatted_phone_number, ext } = parse_input(text)
 
 	// If the phone number is not viable then return nothing.
 	if (!formatted_phone_number)
@@ -223,7 +225,7 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 
 	if (!options.extended)
 	{
-		return valid ? result(country, national_number, extension) : {}
+		return valid ? result(country, national_number, ext) : {}
 	}
 
 	return {
@@ -232,7 +234,7 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 		valid,
 		possible : valid ? true : (options.extended === true) && metadata.possibleLengths() && is_possible_number(national_number, countryCallingCode !== undefined, metadata),
 		phone    : national_number,
-		ext      : extension
+		ext
 	}
 }
 
@@ -476,8 +478,8 @@ function strip_extension(number)
 		if (matches[i] != null && matches[i].length > 0)
 		{
 			return {
-				number    : number_without_extension,
-				extension : matches[i]
+				number : number_without_extension,
+				ext    : matches[i]
 			}
 		}
 		i++
@@ -588,18 +590,17 @@ function get_country_and_national_number_local(formatted_phone_number, default_c
 
 /**
  * @param  {string} text - Input.
- * @return {object} `{ ?number, ?extension }`.
+ * @return {object} `{ ?number, ?ext }`.
  */
 function parse_input(text)
 {
 	// Parse RFC 3966 phone number URI.
 	if (text && text.indexOf('tel:') === 0)
 	{
-		return parse_phone_uri_input(text)
+		return parseRFC3966(text)
 	}
 
 	let number = extract_formatted_phone_number(text)
-	let extension
 
 	// If the phone number is not viable, then abort.
 	if (!is_viable_phone_number(number))
@@ -610,60 +611,15 @@ function parse_input(text)
 	// Attempt to parse extension first, since it doesn't require region-specific
 	// data and we want to have the non-normalised number here.
 	const with_extension_stripped = strip_extension(number)
-	if (with_extension_stripped.extension)
+	if (with_extension_stripped.ext)
 	{
 		return with_extension_stripped
 	}
 
-	return {
-		number,
-		extension
-	}
+	return { number }
 }
 
-/**
- * @param  {string} text - Phone URI (RFC 3966).
- * @return {object} `{ ?number, ?extension }`.
- */
-function parse_phone_uri_input(text)
-{
-	let number
-	let extension
-
-	for (const part of text.split(';'))
-	{
-		const [name, value] = part.split(':')
-		switch (name)
-		{
-			case 'tel':
-				number = value
-				break
-			case 'ext':
-				extension = value
-				break
-			case 'phone-context':
-				// Domain contexts are ignored.
-				if (value[0] === '+')
-				{
-					number = value + number
-				}
-				break
-		}
-	}
-
-	// If the phone number is not viable, then abort.
-	if (!is_viable_phone_number(number))
-	{
-		return {}
-	}
-
-	return {
-		number,
-		extension
-	}
-}
-
-function result(country, national_number, extension)
+function result(country, national_number, ext)
 {
 	const result =
 	{
@@ -671,9 +627,9 @@ function result(country, national_number, extension)
 		phone : national_number
 	}
 
-	if (extension)
+	if (ext)
 	{
-		result.ext = extension
+		result.ext = ext
 	}
 
 	return result

@@ -55,3 +55,6 @@ exports.getCountryCallingCode = function(country)
 exports.getPhoneCode = exports.getCountryCallingCode
 
 exports.Metadata = require('./build/metadata').default
+
+exports.parseRFC3966 = require('./build/RFC3966').parseRFC3966
+exports.formatRFC3966 = require('./build/RFC3966').formatRFC3966

@@ -9,6 +9,8 @@ import AsYouTypeCustom from './es6/AsYouType'
 import Metadata from './es6/metadata'
 export { default as Metadata } from './es6/metadata'
 
+export { parseRFC3966, formatRFC3966 } from './es6/RFC3966'
+
 export function parse()
 {
 	var parameters = Array.prototype.slice.call(arguments)

@@ -13,6 +13,8 @@ from './common'
 
 import Metadata from './metadata'
 
+import { formatRFC3966 } from './RFC3966'
+
 const default_options =
 {
 	formatExtension: (number, extension) => `${number} ext. ${extension}`
@@ -71,36 +73,27 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 	switch (format_type)
 	{
 		case 'International':
-			if (!number)
-			{
-				return `+${metadata.countryCallingCode()}`
-			}
-			const national_number = format_national_number(number, 'International', false, metadata)
-			const international_number = `+${metadata.countryCallingCode()} ${national_number}`
-			if (input.ext || input.ext === 0)
-			{
-				return options.formatExtension(international_number, input.ext)
-			}
-			return international_number
+			if (!number) return `+${metadata.countryCallingCode()}`
+			number = format_national_number(number, 'International', false, metadata)
+			number = `+${metadata.countryCallingCode()} ${number}`
+			return add_extension(number, input.ext, options.formatExtension)
 
 		case 'E.164':
 			// `E.164` doesn't define "phone number extensions".
 			return `+${metadata.countryCallingCode()}${input.phone}`
 
 		case 'RFC3966':
-			return `tel:+${metadata.countryCallingCode()}${input.phone}${(input.ext || input.ext === 0) ? ';ext=' + input.ext : ''}`
+			return formatRFC3966
+			({
+				countryCallingCode : metadata.countryCallingCode(),
+				number             : input.phone,
+				ext                : input.ext
+			})
 
 		case 'National':
-			if (!number)
-			{
-				return ''
-			}
-			const _national_number = format_national_number(number, 'National', false, metadata)
-			if (input.ext || input.ext === 0)
-			{
-				return options.formatExtension(_national_number, input.ext)
-			}
-			return _national_number
+			if (!number) return ''
+			number = format_national_number(number, 'National', false, metadata)
+			return add_extension(number, input.ext, options.formatExtension)
 	}
 }
 
@@ -313,3 +306,8 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 // so istanbul will show this as "branch not covered".
 /* istanbul ignore next */
 const is_object = _ => typeof _ === 'object'
+
+function add_extension(number, ext, formatExtension)
+{
+	return ext ? formatExtension(number, ext) : number
+}
