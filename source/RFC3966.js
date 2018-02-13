@@ -21,9 +21,9 @@ export function parseRFC3966(text)
 				ext = value
 				break
 			case 'phone-context':
-				// Domain contexts are ignored.
-				if (value[0] === '+')
-				{
+				// Only "country contexts" are supported.
+				// "Domain contexts" are ignored.
+				if (value[0] === '+') {
 					number = value + number
 				}
 				break

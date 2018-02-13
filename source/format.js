@@ -73,7 +73,9 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 	switch (format_type)
 	{
 		case 'International':
-			if (!number) return `+${metadata.countryCallingCode()}`
+			if (!number) {
+				return `+${metadata.countryCallingCode()}`
+			}
 			number = format_national_number(number, 'International', false, metadata)
 			number = `+${metadata.countryCallingCode()} ${number}`
 			return add_extension(number, input.ext, options.formatExtension)
@@ -91,7 +93,9 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 			})
 
 		case 'National':
-			if (!number) return ''
+			if (!number) {
+				return ''
+			}
 			number = format_national_number(number, 'National', false, metadata)
 			return add_extension(number, input.ext, options.formatExtension)
 	}
