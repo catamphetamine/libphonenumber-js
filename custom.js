@@ -3,11 +3,14 @@
 exports = module.exports = {}
 
 exports.parse             = require('./build/parse').default
-exports.DIGITS            = require('./build/common').DIGIT_MAPPINGS
 exports.format            = require('./build/format').default
 exports.getNumberType     = require('./build/types').default
 exports.isValidNumber     = require('./build/validate').default
 exports.AsYouType         = require('./build/AsYouType').default
+
+// `DIGITS` are used by `react-phone-number-input`.
+// `DIGIT_PLACEHOLDER` is used by `react-phone-number-input`.
+exports.DIGITS            = require('./build/common').DIGIT_MAPPINGS
 exports.DIGIT_PLACEHOLDER = require('./build/AsYouType').DIGIT_PLACEHOLDER
 
 var Metadata = require('./build/metadata').default
