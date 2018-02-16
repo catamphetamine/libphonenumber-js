@@ -165,6 +165,9 @@ export default class AsYouType
 		// Add digits to the national number
 		this.national_number += input
 
+		// TODO: Deprecated: rename `this.national_number`
+		// to `this.nationalNumber` and remove `.getNationalNumber()`.
+
 		// Try to format the parsed input
 
 		if (this.is_international())
