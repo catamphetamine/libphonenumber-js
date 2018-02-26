@@ -374,15 +374,6 @@ exports.AsYouType.prototype = Object.create(custom.AsYouType.prototype, {})
 exports.AsYouType.prototype.constructor = exports.AsYouType
 ```
 
-ES6 "tree-shaking" is a non-trivial thing and at the moment of writing it's not guaranteed that a given ES6-aware bundler will actually be intelligent enough to tree-shake unused code, so there's always another option for those cases (if they arise): using `libphonenumber-js/custom` [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) export.
-
-```js
-import { parse as parseCustom } from 'libphonenumber-js/custom'
-import metadata from './metadata.min.json'
-
-export const parse = (...args) => parseCustom(...args, metadata)
-```
-
 Metadata should be re-generated each time the project is being deployed because Google constantly updates their metadata.
 
 <!-- ## To do -->
