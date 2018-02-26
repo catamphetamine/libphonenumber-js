@@ -307,6 +307,7 @@ import {
 import metadata from 'libphonenumber-js/metadata.full.json'
 
 parse('+78005553535', metadata)
+format({ phone: '8005553535', country: 'RU' }, metadata)
 isValidNumber('+78005553535', metadata)
 getNumberType('+78005553535', metadata)
 new AsYouType('RU', metadata).input('+78005553535')
