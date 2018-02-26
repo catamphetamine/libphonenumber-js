@@ -301,8 +301,7 @@ import {
   format,
   isValidNumber,
   getNumberType,
-  AsYouType,
-  getCountryCallingCode
+  AsYouType
 } from 'libphonenumber-js/custom'
 
 import metadata from 'libphonenumber-js/metadata.full.json'
