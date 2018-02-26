@@ -293,18 +293,36 @@ The arguments are
 
 Then use the generated `metadata.min.json` with the exported "custom" functions.
 
-For a "tree-shaking" ES6-capable bundler (e.g. Webpack 2) that would be
+In ES6 that would be
 
 ```js
 import {
-  parseCustom,
-  formatCustom,
-  isValidNumberCustom,
-  AsYouTypeCustom,
-  getNumberTypeCustom
-} from 'libphonenumber-js'
+  parse,
+  format,
+  isValidNumber,
+  getNumberType,
+  AsYouType,
+  getCountryCallingCode
+} from 'libphonenumber-js/custom'
 
-import metadata from './metadata.min.json'
+import metadata from 'libphonenumber-js/metadata.full.json'
+
+parse('+78005553535', metadata)
+isValidNumber('+78005553535', metadata)
+getNumberType('+78005553535', metadata)
+new AsYouType('RU', metadata).input('+78005553535')
+```
+
+or
+
+```js
+import {
+  parse as parseCustom,
+  format as formatCustom,
+  isValidNumber as isValidNumberCustom,
+  getNumberType as getNumberTypeCustom,
+  AsYouType as AsYouTypeCustom
+} from 'libphonenumber-js/custom'
 
 export const parse = (...args) => parseCustom(...args, metadata)
 export const format = (...args) => formatCustom(...args, metadata)
@@ -322,7 +340,7 @@ And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) 
 
 ```js
 var custom = require('libphonenumber-js/custom')
-var metadata = require('./metadata.min.json')
+var metadata = require(libphonenumber-js/metadata.full.json)
 
 exports.parse = function parse() {
   var parameters = Array.prototype.slice.call(arguments)
