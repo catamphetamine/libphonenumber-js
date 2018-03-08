@@ -91,7 +91,7 @@
     "libphonenumber"
   ],
   "author": "catamphetamine <purecatamphetamine@gmail.com>",
-  "license": "Apache 2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/catamphetamine/libphonenumber-js/issues"
   },
