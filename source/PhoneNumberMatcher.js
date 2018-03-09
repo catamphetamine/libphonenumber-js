@@ -14,6 +14,8 @@ import
 }
 from './common'
 
+import format from './format'
+
 import PhoneNumberMatch from './PhoneNumberMatch'
 
 /**
@@ -223,6 +225,8 @@ const SECOND_NUMBER_START_PATTERN = /[\\/] *x/
 // const UNWANTED_END_CHAR_PATTERN = new RegExp(`[[\\P{N}&&\\P{L}]&&[^#]]+$`)
 //
 const UNWANTED_END_CHAR_PATTERN = new RegExp(`[^${_pN}${_pL}#]+$`)
+
+const NON_DIGITS_PATTERN = /(\D+)/
 
 /**
  * Leniency when {@linkplain PhoneNumberUtil#findNumbers finding} potential phone numbers in text
@@ -721,30 +725,33 @@ interface NumberGroupingChecker
    */
   boolean checkGroups
   (
-  	PhoneNumberUtil util,
-  	PhoneNumber number,
-    StringBuilder normalizedCandidate,
-    String[] expectedNumberGroups
+  	util,
+  	number,
+    normalizedCandidate,
+    expectedNumberGroups
   )
 }
 
 function allNumberGroupsRemainGrouped
 (
-	PhoneNumberUtil util,
-  PhoneNumber number,
-  StringBuilder normalizedCandidate,
-  String[] formattedNumberGroups
+	util,
+  number,
+  normalizedCandidate,
+  formattedNumberGroups
 )
 {
-  int fromIndex = 0;
-  if (number.getCountryCodeSource() != CountryCodeSource.FROM_DEFAULT_COUNTRY) {
+  int fromIndex = 0
+  if (number.getCountryCodeSource() != CountryCodeSource.FROM_DEFAULT_COUNTRY)
+  {
     // First skip the country code if the normalized candidate contained it.
     String countryCode = Integer.toString(number.getCountryCode());
     fromIndex = normalizedCandidate.indexOf(countryCode) + countryCode.length();
   }
+
   // Check each group of consecutive digits are not broken into separate groupings in the
   // {@code normalizedCandidate} string.
-  for (int i = 0; i < formattedNumberGroups.length; i++) {
+  for (int i = 0; i < formattedNumberGroups.length; i++)
+  {
     // Fails if the substring of {@code normalizedCandidate} starting from {@code fromIndex}
     // doesn't contain the consecutive digits in formattedNumberGroups[i].
     fromIndex = normalizedCandidate.indexOf(formattedNumberGroups[i], fromIndex);
@@ -765,11 +772,15 @@ function allNumberGroupsRemainGrouped
         // accept the number if there is no formatting symbol at all in the number, except
         // for extensions. This is only important for countries with national prefixes.
         String nationalSignificantNumber = util.getNationalSignificantNumber(number);
-        return normalizedCandidate.substring(fromIndex - formattedNumberGroups[i].length())
-            .startsWith(nationalSignificantNumber);
+        return starts_with
+        (
+        	normalizedCandidate.slice(fromIndex - formattedNumberGroups[i].length)
+          nationalSignificantNumber
+        )
       }
     }
   }
+
   // The check here makes sure that we haven't mistakenly already used the extension to
   // match the last group of the subscriber number. Note the extension cannot have
   // formatting in-between digits.
@@ -778,107 +789,131 @@ function allNumberGroupsRemainGrouped
 
 function allNumberGroupsAreExactlyPresent
 (
-	PhoneNumberUtil util,
-	PhoneNumber number,
-	StringBuilder normalizedCandidate,
-	String[] formattedNumberGroups
+	util,
+	number,
+	normalizedCandidate,
+	formattedNumberGroups
 )
 {
-  String[] candidateGroups =
-      PhoneNumberUtil.NON_DIGITS_PATTERN.split(normalizedCandidate.toString());
+  const candidateGroups = normalizedCandidate.split(NON_DIGITS_PATTERN)
+
   // Set this to the last group, skipping it if the number has an extension.
-  int candidateNumberGroupIndex =
-      number.hasExtension() ? candidateGroups.length - 2 : candidateGroups.length - 1;
+  const candidateNumberGroupIndex =
+      number.hasExtension() ? candidateGroups.length - 2 : candidateGroups.length - 1
+
   // First we check if the national significant number is formatted as a block.
   // We use contains and not equals, since the national significant number may be present with
   // a prefix such as a national number prefix, or the country code itself.
   if (candidateGroups.length == 1
       || candidateGroups[candidateNumberGroupIndex].contains(
-          util.getNationalSignificantNumber(number))) {
-    return true;
+          util.getNationalSignificantNumber(number)))
+  {
+    return true
   }
+
   // Starting from the end, go through in reverse, excluding the first group, and check the
   // candidate and number groups are the same.
   for (int formattedNumberGroupIndex = (formattedNumberGroups.length - 1);
        formattedNumberGroupIndex > 0 && candidateNumberGroupIndex >= 0;
-       formattedNumberGroupIndex--, candidateNumberGroupIndex--) {
-    if (!candidateGroups[candidateNumberGroupIndex].equals(
-        formattedNumberGroups[formattedNumberGroupIndex])) {
-      return false;
+       formattedNumberGroupIndex--, candidateNumberGroupIndex--)
+  {
+    if (candidateGroups[candidateNumberGroupIndex] !== formattedNumberGroups[formattedNumberGroupIndex])
+    {
+      return false
     }
   }
+
   // Now check the first group. There may be a national prefix at the start, so we only check
   // that the candidate group ends with the formatted number group.
   return (candidateNumberGroupIndex >= 0
-      && candidateGroups[candidateNumberGroupIndex].endsWith(formattedNumberGroups[0]));
+      && ends_with(candidateGroups[candidateNumberGroupIndex], formattedNumberGroups[0]))
 }
 
 /**
  * Helper method to get the national-number part of a number, formatted without any national
  * prefix, and return it as a set of digit blocks that would be formatted together.
  */
-function getNationalNumberGroups(PhoneNumberUtil util, PhoneNumber number, NumberFormat formattingPattern)
+function getNationalNumberGroups
+(
+	PhoneNumberUtil util,
+	PhoneNumber number,
+	NumberFormat formattingPattern,
+	metadata
+)
 {
-  if (formattingPattern == null) {
-    // This will be in the format +CC-DG;ext=EXT where DG represents groups of digits.
-    String rfc3966Format = util.format(number, PhoneNumberFormat.RFC3966);
-    // We remove the extension part from the formatted string before splitting it into different
-    // groups.
-    int endIndex = rfc3966Format.indexOf(';');
-    if (endIndex < 0) {
-      endIndex = rfc3966Format.length();
-    }
-    // The country-code will have a '-' following it.
-    int startIndex = rfc3966Format.indexOf('-') + 1;
-    return rfc3966Format.substring(startIndex, endIndex).split("-");
-  } else {
+  if (formattingPattern)
+  {
     // We format the NSN only, and split that according to the separator.
-    String nationalSignificantNumber = util.getNationalSignificantNumber(number);
+    const nationalSignificantNumber = util.getNationalSignificantNumber(number)
     return util.formatNsnUsingPattern(nationalSignificantNumber,
-                                      formattingPattern, PhoneNumberFormat.RFC3966).split("-");
+                                      formattingPattern, 'RFC3966', metadata).split('-')
+	}
+
+  // This will be in the format +CC-DG;ext=EXT where DG represents groups of digits.
+  const rfc3966Format = format(number, 'RFC3966', metadata)
+
+  // We remove the extension part from the formatted string before splitting it into different
+  // groups.
+  const endIndex = rfc3966Format.indexOf(';')
+  if (endIndex < 0)
+  {
+    endIndex = rfc3966Format.length
   }
+
+  // The country-code will have a '-' following it.
+  const startIndex = rfc3966Format.indexOf('-') + 1
+  return rfc3966Format.slice(startIndex, endIndex).split('-')
 }
 
 function checkNumberGroupingIsValid
 (
-  PhoneNumber number,
-  CharSequence candidate,
-  PhoneNumberUtil util,
-  NumberGroupingChecker checker
+  number,
+  candidate,
+  util,
+  checker
 )
 {
   // TODO: Evaluate how this works for other locales (testing has been limited to NANPA regions)
   // and optimise if necessary.
-  StringBuilder normalizedCandidate =
-      PhoneNumberUtil.normalizeDigits(candidate, true /* keep non-digits */);
-  String[] formattedNumberGroups = getNationalNumberGroups(util, number, null);
-  if (checker.checkGroups(util, number, normalizedCandidate, formattedNumberGroups)) {
+  const normalizedCandidate =
+      PhoneNumberUtil.normalizeDigits(candidate, true /* keep non-digits */)
+  let formattedNumberGroups = getNationalNumberGroups(util, number, null)
+  if (checker.checkGroups(util, number, normalizedCandidate, formattedNumberGroups))
+  {
     return true
   }
+
   // If this didn't pass, see if there are any alternate formats, and try them instead.
   PhoneMetadata alternateFormats =
-      MetadataManager.getAlternateFormatsForCountry(number.getCountryCode());
-  if (alternateFormats != null) {
-    for (NumberFormat alternateFormat : alternateFormats.numberFormats()) {
-      formattedNumberGroups = getNationalNumberGroups(util, number, alternateFormat);
-      if (checker.checkGroups(util, number, normalizedCandidate, formattedNumberGroups)) {
+      MetadataManager.getAlternateFormatsForCountry(number.getCountryCode())
+
+  if (alternateFormats)
+  {
+    for (const alternateFormat of alternateFormats.numberFormats())
+    {
+      formattedNumberGroups = getNationalNumberGroups(util, number, alternateFormat)
+
+      if (checker.checkGroups(util, number, normalizedCandidate, formattedNumberGroups))
+      {
         return true
       }
     }
   }
+
   return false
 }
 
-function containsMoreThanOneSlashInNationalNumber(PhoneNumber number, String candidate)
+function containsMoreThanOneSlashInNationalNumber(number, candidate)
 {
-  int firstSlashInBodyIndex = candidate.indexOf('/')
+  const firstSlashInBodyIndex = candidate.indexOf('/')
   if (firstSlashInBodyIndex < 0)
   {
     // No slashes, this is okay.
     return false
   }
+
   // Now look for a second one.
-  int secondSlashInBodyIndex = candidate.indexOf('/', firstSlashInBodyIndex + 1)
+  const secondSlashInBodyIndex = candidate.indexOf('/', firstSlashInBodyIndex + 1)
   if (secondSlashInBodyIndex < 0)
   {
     // Only one slash, this is okay.
@@ -886,15 +921,18 @@ function containsMoreThanOneSlashInNationalNumber(PhoneNumber number, String can
   }
 
   // If the first slash is after the country calling code, this is permitted.
-  boolean candidateHasCountryCode =
-      (number.getCountryCodeSource() == CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN
-       || number.getCountryCodeSource() == CountryCodeSource.FROM_NUMBER_WITHOUT_PLUS_SIGN);
+  const candidateHasCountryCode =
+      (number.getCountryCodeSource() === CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN
+       || number.getCountryCodeSource() === CountryCodeSource.FROM_NUMBER_WITHOUT_PLUS_SIGN)
+
   if (candidateHasCountryCode
       && PhoneNumberUtil.normalizeDigitsOnly(candidate.substring(0, firstSlashInBodyIndex))
-          .equals(Integer.toString(number.getCountryCode()))) {
+          === Integer.toString(number.getCountryCode()))
+  {
     // Any more slashes and this is illegal.
-    return candidate.substring(secondSlashInBodyIndex + 1).contains("/")
+    return candidate.slice(secondSlashInBodyIndex + 1).indexOf('/') >= 0
   }
+
   return true
 }
 
@@ -905,25 +943,33 @@ function containsOnlyValidXChars(PhoneNumber number, String candidate, PhoneNumb
   // extension number. We assume a carrier code is more than 1 digit, so the first case has to
   // have more than 1 consecutive 'x' or 'X', whereas the second case can only have exactly 1 'x'
   // or 'X'. We ignore the character if it appears as the last character of the string.
-  for (int index = 0; index < candidate.length() - 1; index++) {
-    char charAtIndex = candidate.charAt(index);
-    if (charAtIndex == 'x' || charAtIndex == 'X') {
-      char charAtNextIndex = candidate.charAt(index + 1);
-      if (charAtNextIndex == 'x' || charAtNextIndex == 'X') {
+  for (let index = 0; index < candidate.length - 1; index++)
+  {
+    const charAtIndex = candidate.charAt(index)
+
+    if (charAtIndex === 'x' || charAtIndex === 'X')
+    {
+      const charAtNextIndex = candidate.charAt(index + 1)
+
+      if (charAtNextIndex === 'x' || charAtNextIndex === 'X')
+      {
         // This is the carrier code case, in which the 'X's always precede the national
         // significant number.
-        index++;
-        if (util.isNumberMatch(number, candidate.substring(index)) != MatchType.NSN_MATCH) {
+        index++
+        if (util.isNumberMatch(number, candidate.substring(index)) != MatchType.NSN_MATCH)
+        {
           return false
         }
-      // This is the extension sign case, in which the 'x' or 'X' should always precede the
-      // extension number.
-      } else if (!PhoneNumberUtil.normalizeDigitsOnly(candidate.substring(index)).equals(
-          number.getExtension())) {
+	      // This is the extension sign case, in which the 'x' or 'X' should always precede the
+	      // extension number.
+      }
+      else if (!PhoneNumberUtil.normalizeDigitsOnly(candidate.substring(index)) === number.getExtension())
+      {
         return false
       }
     }
   }
+
   return true
 }
 
@@ -931,13 +977,12 @@ function isNationalPrefixPresentIfRequired(PhoneNumber number, PhoneNumberUtil u
 {
   // First, check how we deduced the country code. If it was written in international format, then
   // the national prefix is not required.
-  if (number.getCountryCodeSource() != CountryCodeSource.FROM_DEFAULT_COUNTRY)
+  if (number.getCountryCodeSource() != 'FROM_DEFAULT_COUNTRY')
   {
     return true
   }
 
-  String phoneNumberRegion =
-      util.getRegionCodeForCountryCode(number.getCountryCode())
+  const phoneNumberRegion = util.getRegionCodeForCountryCode(number.getCountryCode())
 
   PhoneMetadata metadata = util.getMetadataForRegion(phoneNumberRegion)
   if (metadata == null)
@@ -946,13 +991,12 @@ function isNationalPrefixPresentIfRequired(PhoneNumber number, PhoneNumberUtil u
   }
 
   // Check if a national prefix should be present when formatting this number.
-  String nationalNumber = util.getNationalSignificantNumber(number)
-  NumberFormat formatRule =
-      util.chooseFormattingPatternForNumber(metadata.numberFormats(), nationalNumber)
+  const nationalNumber = util.getNationalSignificantNumber(number)
+  const formatRule = util.chooseFormattingPatternForNumber(metadata.numberFormats(), nationalNumber)
 
   // To do this, we check that a national prefix formatting rule was present and that it wasn't
   // just the first-group symbol ($1) with punctuation.
-  if ((formatRule != null) && formatRule.getNationalPrefixFormattingRule().length() > 0)
+  if (formatRule && formatRule.getNationalPrefixFormattingRule().length > 0)
   {
     if (formatRule.getNationalPrefixOptionalWhenFormatting())
     {
@@ -969,13 +1013,61 @@ function isNationalPrefixPresentIfRequired(PhoneNumber number, PhoneNumberUtil u
     }
 
     // Normalize the remainder.
-    String rawInputCopy = PhoneNumberUtil.normalizeDigitsOnly(number.getRawInput())
-    StringBuilder rawInput = new StringBuilder(rawInputCopy)
+    const rawInputCopy = PhoneNumberUtil.normalizeDigitsOnly(number.getRawInput())
 
     // Check if we found a national prefix and/or carrier code at the start of the raw input, and
     // return the result.
-    return util.maybeStripNationalPrefixAndCarrierCode(rawInput, metadata, null)
+    return util.maybeStripNationalPrefixAndCarrierCode(rawInputCopy, metadata, null)
   }
 
   return true
+}
+
+export function starts_with(string, substring)
+{
+	let j = substring.length
+
+	if (j > string.length)
+	{
+		return false
+	}
+
+	while (j > 0)
+	{
+		j--
+
+		if (string[j] !== substring[j])
+		{
+			return false
+		}
+	}
+
+	return true
+}
+
+export function ends_with(string, substring)
+{
+	let i = string.length
+	let j = substring.length
+
+	if (j > i)
+	{
+		return false
+	}
+
+	while (j > 0)
+	{
+		i--
+		j--
+
+		if (string[i] !== substring[j])
+		{
+			return false
+		}
+	}
+
+	return true
+
+	// const index = string.lastIndexOf(substring)
+	// return index >= 0 && index === string.length - substring.length
 }
