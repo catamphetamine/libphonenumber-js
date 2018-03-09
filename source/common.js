@@ -2,8 +2,9 @@
 const DASHES = '-\u2010-\u2015\u2212\u30FC\uFF0D'
 const SLASHES = '\uFF0F/'
 const DOTS = '\uFF0E.'
-const WHITESPACE = ' \u00A0\u00AD\u200B\u2060\u3000'
+export const WHITESPACE = ' \u00A0\u00AD\u200B\u2060\u3000'
 const BRACKETS = '()\uFF08\uFF09\uFF3B\uFF3D\\[\\]'
+// export const OPENING_BRACKETS = '(\uFF08\uFF3B\\\['
 const TILDES = '~\u2053\u223C\uFF5E'
 
 // Digits accepted in phone numbers

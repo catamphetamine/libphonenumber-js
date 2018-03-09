@@ -4,6 +4,7 @@ import
 	parse,
 	getNumberType,
 	isValidNumber,
+	findPhoneNumbers,
 	AsYouType,
 	getCountryCallingCode,
 	// `getPhoneCode` name is deprecated.
@@ -13,6 +14,7 @@ import
 	parseCustom,
 	getNumberTypeCustom,
 	isValidNumberCustom,
+	findPhoneNumbersCustom,
 	getCountryCallingCodeCustom,
 	// `getPhoneCodeCustom` name is deprecated.
 	getPhoneCodeCustom,
@@ -36,6 +38,7 @@ describe(`exports`, function()
 		format('', 'US', 'National')
 		getNumberType('', 'RU')
 		isValidNumber('', 'US')
+		findPhoneNumbers('', 'US')
 		new AsYouType('US').input('+')
 
 		DIGIT_PLACEHOLDER.length
@@ -61,6 +64,7 @@ describe(`exports`, function()
 		formatCustom('', 'US', 'National', metadata)
 		getNumberTypeCustom('', 'RU', metadata)
 		isValidNumberCustom('', 'US', metadata)
+		findPhoneNumbers('', 'US', metadata)
 		getPhoneCodeCustom('KZ', metadata).should.equal('7')
 	})
 
@@ -72,6 +76,7 @@ describe(`exports`, function()
 		Library.format('', 'US', 'National')
 		Library.getNumberType('', 'RU')
 		Library.isValidNumber('', 'US')
+		Library.findPhoneNumbers('', 'US')
 		new Library.AsYouType('US').input('+')
 
 		Library.DIGIT_PLACEHOLDER.length
@@ -96,6 +101,7 @@ describe(`exports`, function()
 		Library.format('', 'US', 'National', metadata)
 		Library.getNumberType('', 'RU', metadata)
 		Library.isValidNumber('', 'US', metadata)
+		Library.findPhoneNumbers('', 'US', metadata)
 		Library.getPhoneCode('KZ', metadata).should.equal('7')
 
 		new Library.Metadata({ countries: {} })

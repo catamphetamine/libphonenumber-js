@@ -199,9 +199,36 @@ getCountryCallingCode('RU') === '7'
 getCountryCallingCode('IL') === '972'
 ```
 
-### findNumbers(text, defaultCountry, [leniency], [maxTries])
+### findPhoneNumbers(text, [defaultCountry], [options])
 
-Searches for phone numbers in a given text.
+Searches for phone numbers in a given text. This is a basic substitute for Google's original `findNumbers()` function (see below).
+
+```js
+findPhoneNumbers(`
+  The number is +7 (800) 555-35-35 and
+  not (213) 373-4253 as written
+  in the document.
+`, 'US')
+
+// Outputs:
+//
+// [{
+//   phone    : '8005553535',
+//   country  : 'RU',
+//   startsAt : 14,
+//   endsAt   : 32
+// },
+// {
+//   phone    : '2133734253',
+//   country  : 'US',
+//   startsAt : 41,
+//   endsAt   : 55
+// }]
+```
+
+### findNumbers(text, [defaultCountry], [options])
+
+Searches for phone numbers in a given text. This is the Google's original implementation.
 
 Although Google's javascript port doesn't support this functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, I thought it might be interesting to provide such functionality given that javascript nowadays is the most popular programming language given its simplicity and user-friendliness.
 

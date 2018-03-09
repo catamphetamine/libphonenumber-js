@@ -80,15 +80,15 @@ const MIN_LENGTH_PHONE_NUMBER_PATTERN = '[' + VALID_DIGITS + ']{' + MIN_LENGTH_F
 // (see MIN_LENGTH_PHONE_NUMBER_PATTERN for a full description of this reg-exp)
 //
 const VALID_PHONE_NUMBER =
-		'[' + PLUS_CHARS + ']{0,1}' +
-		'(?:' +
-			'[' + VALID_PUNCTUATION + ']*' +
-			'[' + VALID_DIGITS + ']' +
-		'){3,}' +
-		'[' +
-			VALID_PUNCTUATION +
-			VALID_DIGITS +
-		']*'
+	'[' + PLUS_CHARS + ']{0,1}' +
+	'(?:' +
+		'[' + VALID_PUNCTUATION + ']*' +
+		'[' + VALID_DIGITS + ']' +
+	'){3,}' +
+	'[' +
+		VALID_PUNCTUATION +
+		VALID_DIGITS +
+	']*'
 
 // The combined regular expression for valid phone numbers:
 //
@@ -231,11 +231,16 @@ export function is_viable_phone_number(number)
 		matches_entirely(number, VALID_PHONE_NUMBER_PATTERN)
 }
 
+/**
+ * Extracts a parseable phone number.
+ * @param  {string} text - Input.
+ * @return {string}.
+ */
 export function extract_formatted_phone_number(text)
 {
 	if (!text || text.length > MAX_INPUT_STRING_LENGTH)
 	{
-		return ''
+		return
 	}
 
 	// Attempt to extract a possible number from the string passed in
@@ -244,7 +249,7 @@ export function extract_formatted_phone_number(text)
 
 	if (starts_at < 0)
 	{
-		return ''
+		return
 	}
 
 	return text
@@ -396,7 +401,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 			metadata = arg_3
 		}
 	}
-	// No "resrict country" argument is being passed.
+	// No "default country" argument is being passed.
 	// International phone number is passed.
 	// `parse('+78005553535', [options], metadata)`.
 	else
@@ -583,7 +588,7 @@ function parse_input(text)
 	let number = extract_formatted_phone_number(text)
 
 	// If the phone number is not viable, then abort.
-	if (!is_viable_phone_number(number))
+	if (!number || !is_viable_phone_number(number))
 	{
 		return {}
 	}
@@ -599,6 +604,9 @@ function parse_input(text)
 	return { number }
 }
 
+/**
+ * Creates `parse()` result object.
+ */
 function result(country, national_number, ext)
 {
 	const result =

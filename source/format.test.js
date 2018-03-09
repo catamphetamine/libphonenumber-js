@@ -1,5 +1,5 @@
 import metadata from '../metadata.min'
-import formatter, { local_to_international_style } from '../source/format'
+import formatter, { local_to_international_style } from './format'
 
 function format(...parameters)
 {

@@ -1,4 +1,4 @@
-import { matches_entirely } from '../source/common'
+import { matches_entirely } from './common'
 
 describe('common', () =>
 {

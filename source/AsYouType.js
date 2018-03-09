@@ -115,7 +115,7 @@ export default class AsYouType
 	{
 		// Parse input
 
-		let extracted_number = extract_formatted_phone_number(text)
+		let extracted_number = extract_formatted_phone_number(text) || ''
 
 		// Special case for a lone '+' sign
 		// since it's not considered a possible phone number.

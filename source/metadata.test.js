@@ -1,6 +1,6 @@
 import metadata from '../metadata.min'
 
-import Metadata from '../source/metadata'
+import Metadata from './metadata'
 
 describe('metadata', () =>
 {

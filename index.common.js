@@ -33,6 +33,13 @@ exports.isValidNumber = function isValidNumber()
 	return custom.isValidNumber.apply(this, parameters)
 }
 
+exports.findPhoneNumbers = function findPhoneNumbers()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.findPhoneNumbers.apply(this, parameters)
+}
+
 exports.AsYouType = function AsYouType(country)
 {
 	custom.AsYouType.call(this, country, metadata)

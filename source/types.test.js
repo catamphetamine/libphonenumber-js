@@ -1,6 +1,6 @@
 import metadata from '../metadata.full'
 import Metadata from './metadata'
-import get_number_type_custom, { check_number_length_for_type } from '../source/types'
+import get_number_type_custom, { check_number_length_for_type } from './types'
 
 function get_number_type(...parameters)
 {

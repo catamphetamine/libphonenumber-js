@@ -8,13 +8,25 @@ export interface Extension extends String { }
 export interface CountryCallingCode extends String { }
 
 export interface ParsedNumber {
-    countryCallingCode: CountryCallingCode,
-    country: CountryCode,
-    phone: TelephoneNumber,
-    ext: Extension,
-    possible: boolean,
-    valid: boolean
+  countryCallingCode: CountryCallingCode,
+  country: CountryCode,
+  phone: TelephoneNumber,
+  ext: Extension,
+  possible: boolean,
+  valid: boolean
 }
+
+// I don't use TypeScript.
+// Someone check these.
+// export interface NumberFound {
+//   country: CountryCode,
+//   phone: TelephoneNumber,
+//   ext: Extension,
+//   startsAt: number,
+//   endsAt: number
+// }
+//
+// export type NumbersFound = NumberFound[]
 
 export function parse(text: string, options?: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }): ParsedNumber;
 export function parseCustom(text: string, metadata: object): ParsedNumber;
@@ -39,6 +51,12 @@ export function isValidNumberCustom(parsedNumber: ParsedNumber, metadata: object
 export function isValidNumberCustom(phone: TelephoneNumber, metadata: object): boolean;
 export function isValidNumberCustom(phone: TelephoneNumber, country: CountryCode, metadata: object): boolean;
 
+// I don't use TypeScript.
+// Someone check these.
+// export function findPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumbersFound;
+// export function findPhoneNumbersCustom(text: string, metadata: object): NumbersFound;
+// export function findPhoneNumbersCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): NumbersFound;
+
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
 export function getCountryCallingCodeCustom(countryCode: CountryCode, metadata: object): CountryCallingCode;
 
@@ -46,10 +64,10 @@ export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;
 export function getPhoneCodeCustom(countryCode: CountryCode, metadata: object): CountryCallingCode;
 
 export class AsYouType {
-    constructor(defaultCountryCode?: CountryCode);
-    input(text: string): string;
-    reset(): void;
-    country: CountryCode;
-    getNationalNumber(): string;
-    template: string;
+  constructor(defaultCountryCode?: CountryCode);
+  input(text: string): string;
+  reset(): void;
+  country: CountryCode;
+  getNationalNumber(): string;
+  template: string;
 }

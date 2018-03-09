@@ -1,5 +1,5 @@
 import metadata from '../metadata.min'
-import as_you_type_custom, { close_dangling_braces, repeat } from '../source/AsYouType'
+import as_you_type_custom, { close_dangling_braces, repeat } from './AsYouType'
 
 class as_you_type extends as_you_type_custom
 {

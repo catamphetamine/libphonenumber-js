@@ -1,5 +1,5 @@
 import metadata from '../metadata.min'
-import parser from '../source/parse'
+import parser from './parse'
 
 function parse(...parameters)
 {
@@ -250,6 +250,14 @@ describe('parse', () =>
 	it('should parse RFC 3966 phone numbers', function()
 	{
 		parse('tel:+78005553535;ext:123').should.deep.equal
+		({
+			country : 'RU',
+			phone   : '8005553535',
+			ext     : '123'
+		})
+
+		// Should parse "visual separators".
+		parse('tel:+7(800)555-35.35;ext:123').should.deep.equal
 		({
 			country : 'RU',
 			phone   : '8005553535',

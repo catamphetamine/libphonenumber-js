@@ -16,8 +16,6 @@ from './common'
 
 import format from './format'
 
-import PhoneNumberMatch from './PhoneNumberMatch'
-
 /**
  * Matches strings that look like publication pages. Example:
  * <pre>Computing Complete Answers to Queries in the Presence of Limited Access Patterns.
@@ -399,7 +397,12 @@ class PhoneNumberMatcher
 		this.defaultCountry = defaultCountry
 
 		/** The degree of validation requested. */
-		this.leniency = leniency
+		this.leniency = Leniency[leniency]
+
+		if (!this.leniency)
+		{
+			throw new TypeError(`Unknown leniency: ${leniency}.`)
+		}
 
 		/** The maximum number of retries after matching an invalid number. */
 		this.maxTries = maxTries
@@ -614,7 +617,12 @@ class PhoneNumberMatcher
         number.clearRawInput()
         number.clearPreferredDomesticCarrierCode()
 
-        return new PhoneNumberMatch(offset, candidate.toString(), number)
+        return {
+        	startsAt : offset,
+        	endsAt   : offset + candidate.length
+        	raw      : candidate,
+        	number
+        }
       }
     }
     catch (NumberParseException error)
