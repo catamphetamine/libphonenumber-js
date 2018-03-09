@@ -18,7 +18,7 @@
 			padding: 40px;
 		}
 
-		body, input, button
+		body, input, button, textarea
 		{
 			font-family: Arial, Helvetica;
 			font-size: 20px;
@@ -103,6 +103,43 @@
 			margin-top: 10px;
 			margin-bottom: 10px;
 		}
+
+		.find-numbers-text, .find-numbers-highlighted
+		{
+			display: block;
+			box-sizing: border-box;
+			width: 100%;
+			line-height: 1.35em;
+		}
+
+		.find-numbers-text
+		{
+			min-height: 250px;
+			padding: 15px;
+			margin-bottom: 40px;
+		}
+
+		.find-numbers-highlighted
+		{
+			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+
+		.numbers-found li
+		{
+			margin-top: 15px;
+			margin-bottom: 15px;
+		}
+
+		mark
+		{
+			background-color: #b1d5e5;
+			border-radius: 5px;
+			padding-left: 5px;
+			padding-right: 5px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+		}
 	</style>
 
 	<body>
@@ -121,7 +158,8 @@
 						value   : '+12133734253',
 						parse   : '213-373-4253',
 						format  : '2133734253',
-						country : 'US'
+						country : 'US',
+						findNumbers : 'The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.'
 					}
 				},
 
@@ -141,8 +179,9 @@
 					let international_formatted_number = 'Unknown country'
 					let international_formatted_number_in_E164 = 'Unknown country'
 					let international_formatted_number_in_RFC3966 = 'Unknown country'
+					let numbers_found = []
 
-					const { country, parse, format, value } = this.state
+					const { country, parse, format, value, findNumbers } = this.state
 
 					const asYouType = new libphonenumber.AsYouType(country)
 					asYouType.input(value)
@@ -158,6 +197,8 @@
 						international_formatted_number = libphonenumber.format(number_to_format, 'International')
 						international_formatted_number_in_E164 = libphonenumber.format(number_to_format, 'E.164')
 						international_formatted_number_in_RFC3966 = libphonenumber.format(number_to_format, 'RFC3966')
+
+						numbers_found = libphonenumber.findPhoneNumbers(findNumbers, country)
 					}
 					catch (error)
 					{
@@ -278,8 +319,77 @@
 								<div className="section__line"><code>E.164: {international_formatted_number_in_E164}</code></div>
 								<div className="section__line"><code>RFC3966: {international_formatted_number_in_RFC3966}</code></div>
 							</div>
+
+							<h2>Find phone numbers</h2>
+
+							<textarea
+								value={this.state.findNumbers}
+								onChange={event => this.setState({ findNumbers: event.target.value })}
+								className="find-numbers-text"/>
+
+							{ numbers_found.length === 0 && 'No phone numbers found' }
+							{ numbers_found.length > 0 && 'Phone numbers found: ' + numbers_found.length }
+
+							{ numbers_found.length > 0 &&
+								<ContentEditable
+									html={highlight_phones(this.state.findNumbers, numbers_found)}
+									onChange={event => this.setState({ findNumbers: strip_marks(event.target.value) })}
+									readOnly
+									className="find-numbers-highlighted" />
+							}
+
+							{ numbers_found.length > 0 &&
+								<ul className="numbers-found">
+									{numbers_found.map((number, i) => (
+										<li key={i}>
+											Country: {number.country},
+											Phone: {number.phone},
+											Starts at: {number.startsAt},
+											Ends at: {number.endsAt}
+										</li>
+									))}
+								</ul>
+							}
 						</div>
 					)
+				}
+			})
+
+			// https://stackoverflow.com/questions/22677931/react-js-onchange-event-for-contenteditable/27255103#27255103
+			var ContentEditable = React.createClass({
+				render: function(){
+					return <div id="contenteditable"
+						onInput={this.emitChange}
+						onBlur={this.emitChange}
+						className={this.props.className}
+						contentEditable={!this.props.readOnly}
+						dangerouslySetInnerHTML={{__html: this.props.html}}></div>;
+				},
+
+				getDOMNode: function() {
+					return ReactDOM.findDOMNode(this);
+				},
+
+				shouldComponentUpdate: function(nextProps) {
+					return nextProps.html !== this.getDOMNode().innerHTML;
+				},
+
+				componentDidUpdate: function() {
+					if ( this.props.html !== this.getDOMNode().innerHTML ) {
+						this.getDOMNode().innerHTML = this.props.html;
+					}
+				},
+
+				emitChange: function() {
+					var html = this.getDOMNode().innerHTML;
+					if (this.props.onChange && html !== this.lastHtml) {
+						this.props.onChange({
+							target: {
+								value: html
+							}
+						});
+					}
+					this.lastHtml = html;
 				}
 			})
 
@@ -288,6 +398,25 @@
 				<Content />,
 				document.getElementById('content')
 			)
+
+			function highlight_phones(html, phones)
+			{
+				let endedAt = 0
+				return phones.reduce((result, { startsAt, endsAt }) => {
+					const previousEndsAt = endedAt
+					endedAt = endsAt
+					return result +
+						html.slice(previousEndsAt, startsAt) +
+						'<mark>' +
+						html.slice(startsAt, endsAt) +
+						'</mark>'
+				}, '') + html.slice(endedAt)
+			}
+
+			function strip_marks(html)
+			{
+				return html.replace(/<\/?mark>/g, '')
+			}
 		</script>
 	</body>
 </html>
