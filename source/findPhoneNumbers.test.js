@@ -61,8 +61,8 @@ describe('findPhoneNumbers', () =>
 			phone    : '8005553535',
 			country  : 'RU',
 			ext      : '123',
-			startsAt : 32,
-			endsAt   : 50
+			startsAt : 37,
+			endsAt   : 64
 		}])
 	})
 
