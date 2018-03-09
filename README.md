@@ -228,9 +228,9 @@ findPhoneNumbers(`
 
 ### findNumbers(text, [defaultCountry], [options])
 
-Searches for phone numbers in a given text. This is the Google's original implementation.
+Searches for phone numbers in a given text. This is the Google's original implementation and it's not implemented in this library.
 
-Although Google's javascript port doesn't support this functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, I thought it might be interesting to provide such functionality given that javascript nowadays is the most popular programming language given its simplicity and user-friendliness.
+Although Google's javascript port doesn't support this functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness.
 
 I made my take on porting Google's `PhoneNumberMatcher.java` into javascirpt and seems that it's doable. The overall syntax has mostly been ported but it's still quite far from finished and the code has not been tested, and I'm not searching for phone numbers in my projects, but if anyone needs that feature they could continue where I left off: see `findNumbers.js`, `src/PhoneNumberMatcher.js` and `src/PhoneNumberMatcher.test.js`. Such a person must also let others (including me) know that he's working on the feature to avoid any conflicts: a pull request must be created right away and code must be committed on a daily basis regardless of whether it works or not.
 
