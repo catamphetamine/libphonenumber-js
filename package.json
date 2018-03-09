@@ -62,13 +62,13 @@
       }
     },
     "build-commonjs-modules": {
-      "command": "babel ./source --out-dir ./build --source-maps",
+      "command": "babel ./source --out-dir ./build --source-maps --ignore test.js,PhoneNumberMatcher.js",
       "env": {
         "BABEL_ENV": "commonjs"
       }
     },
     "build-es6-modules": {
-      "command": "babel ./source --out-dir ./es6 --source-maps",
+      "command": "babel ./source --out-dir ./es6 --source-maps --ignore test.js,PhoneNumberMatcher.js",
       "env": {
         "BABEL_ENV": "es6"
       }

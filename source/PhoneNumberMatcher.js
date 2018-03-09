@@ -224,7 +224,7 @@ export const Leniency =
 	 */
 	STRICT_GROUPING(number, candidate, util)
 	{
-		String candidateString = candidate.toString()
+		const candidateString = candidate.toString()
 
 		if (!util.isValidNumber(number)
 			|| !PhoneNumberMatcher.containsOnlyValidXChars(number, candidateString, util)
@@ -243,7 +243,8 @@ export const Leniency =
 			{
 				public boolean checkGroups
 				(
-					PhoneNumberUtil util, PhoneNumber number,
+					PhoneNumberUtil util,
+					PhoneNumber number,
 					StringBuilder normalizedCandidate,
 					String[] expectedNumberGroups
 				)
