@@ -7,9 +7,12 @@ import
 {
 	parse_phone_number_digits,
 	parse_national_number_and_country_calling_code,
+	VALID_DIGITS,
 	VALID_PUNCTUATION,
 	PLUS_CHARS,
-	matches_entirely
+	MAX_LENGTH_FOR_NSN,
+	matches_entirely,
+	create_extension_pattern
 }
 from './common'
 
@@ -22,24 +25,9 @@ import { parseRFC3966 } from './RFC3966'
 // The minimum length of the national significant number.
 const MIN_LENGTH_FOR_NSN = 2
 
-// The ITU says the maximum length should be 15,
-// but one can find longer numbers in Germany.
-const MAX_LENGTH_FOR_NSN = 17
-
 // We don't allow input strings for parsing to be longer than 250 chars.
 // This prevents malicious input from consuming CPU.
 const MAX_INPUT_STRING_LENGTH = 250
-
-// Digits accepted in phone numbers
-// (ascii, fullwidth, arabic-indic, and eastern arabic digits).
-export const VALID_DIGITS = '0-9\uFF10-\uFF19\u0660-\u0669\u06F0-\u06F9'
-
-// Pattern to capture digits used in an extension.
-// Places a maximum length of '7' for an extension.
-const CAPTURING_EXTN_DIGITS = '([' + VALID_DIGITS + ']{1,7})'
-
-// The RFC 3966 format for extensions.
-const RFC3966_EXTN_PREFIX = ';ext='
 
 /**
  * Regexp of all possible ways to write extensions, for use when parsing. This
@@ -56,15 +44,7 @@ const RFC3966_EXTN_PREFIX = ';ext='
  * character itself, and one in the unicode decomposed form with the combining
  * acute accent.
  */
-const EXTN_PATTERNS_FOR_PARSING =
-	RFC3966_EXTN_PREFIX +
-	CAPTURING_EXTN_DIGITS + '|' +
-	'[ \u00A0\\t,]*' +
-	'(?:e?xt(?:ensi(?:o\u0301?|\u00F3))?n?|\uFF45?\uFF58\uFF54\uFF4E?|' +
-	'[;,x\uFF58#\uFF03~\uFF5E]|int|anexo|\uFF49\uFF4E\uFF54)' +
-	'[:\\.\uFF0E]?[ \u00A0\\t,-]*' +
-	CAPTURING_EXTN_DIGITS + '#?|' +
-	'[- ]+([' + VALID_DIGITS + ']{1,5})#'
+const EXTN_PATTERNS_FOR_PARSING = create_extension_pattern('parsing')
 
 // Regexp of all known extension prefixes used by different regions followed by
 // 1 or more valid digits, for use when parsing.

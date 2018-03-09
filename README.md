@@ -199,6 +199,10 @@ getCountryCallingCode('RU') === '7'
 getCountryCallingCode('IL') === '972'
 ```
 
+### findNumbers(text, defaultCountry, [leniency], [maxTries])
+
+Although Google's javascript port doesn't support this functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, I thought it might be interesting to provide such functionality given that javascript nowadays is the most popular programming language given its simplicity and user-friendliness. I made my take on porting Google's `PhoneNumberMatcher.java` into javascirpt and seems that it's doable. Currently it's far from finished, and I'm not searching for phone numbers in my projects, but if anyone needs that feature they could continue where I left off and port the rest of the code: see `findNumbers.js`, `src/PhoneNumberMatcher.js` and `src/PhoneNumberMatcher.test.js`. Such a person must also let others (including me) know that he's working on the feature so that there's no conflicts: a pull request must be created right away and code must be committed on a daily basis regardless of whether it works or not.
+
 ## Metadata
 
 Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.

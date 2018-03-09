@@ -6,6 +6,10 @@ const WHITESPACE = ' \u00A0\u00AD\u200B\u2060\u3000'
 const BRACKETS = '()\uFF08\uFF09\uFF3B\uFF3D\\[\\]'
 const TILDES = '~\u2053\u223C\uFF5E'
 
+// Digits accepted in phone numbers
+// (ascii, fullwidth, arabic-indic, and eastern arabic digits).
+export const VALID_DIGITS = '0-9\uFF10-\uFF19\u0660-\u0669\u06F0-\u06F9'
+
 // Regular expression of acceptable punctuation found in phone numbers. This
 // excludes punctuation found as a leading character only. This consists of dash
 // characters, white space characters, full stops, slashes, square brackets,
@@ -15,8 +19,12 @@ export const VALID_PUNCTUATION = `${DASHES}${SLASHES}${DOTS}${WHITESPACE}${BRACK
 export const PLUS_CHARS = '+\uFF0B'
 const LEADING_PLUS_CHARS_PATTERN = new RegExp('^[' + PLUS_CHARS + ']+')
 
+// The ITU says the maximum length should be 15,
+// but one can find longer numbers in Germany.
+export const MAX_LENGTH_FOR_NSN = 17
+
 // The maximum length of the country calling code.
-const MAX_LENGTH_COUNTRY_CODE = 3
+export const MAX_LENGTH_COUNTRY_CODE = 3
 
 // These mappings map a character (key) to a specific digit that should
 // replace it for normalization purposes. Non-European digits that
@@ -169,4 +177,49 @@ function drop_and_substitute_characters(text, replacements)
 	}
 
 	return replaced
+}
+
+// The RFC 3966 format for extensions.
+const RFC3966_EXTN_PREFIX = ';ext='
+
+// Pattern to capture digits used in an extension.
+// Places a maximum length of '7' for an extension.
+const CAPTURING_EXTN_DIGITS = '([' + VALID_DIGITS + ']{1,7})'
+
+/**
+ * Regexp of all possible ways to write extensions, for use when parsing. This
+ * will be run as a case-insensitive regexp match. Wide character versions are
+ * also provided after each ASCII version. There are three regular expressions
+ * here. The first covers RFC 3966 format, where the extension is added using
+ * ';ext='. The second more generic one starts with optional white space and
+ * ends with an optional full stop (.), followed by zero or more spaces/tabs
+ * /commas and then the numbers themselves. The other one covers the special
+ * case of American numbers where the extension is written with a hash at the
+ * end, such as '- 503#'. Note that the only capturing groups should be around
+ * the digits that you want to capture as part of the extension, or else parsing
+ * will fail! We allow two options for representing the accented o - the
+ * character itself, and one in the unicode decomposed form with the combining
+ * acute accent.
+ */
+export function create_extension_pattern(purpose)
+{
+	// One-character symbols that can be used to indicate an extension.
+	let single_extension_characters = 'x\uFF58#\uFF03~\uFF5E'
+
+	switch (purpose)
+	{
+		// For parsing, we are slightly more lenient in our interpretation than for matching. Here we
+		// allow "comma" and "semicolon" as possible extension indicators. When matching, these are
+		case 'parsing':
+			single_extension_characters = ',;' + single_extension_characters
+	}
+
+	return RFC3966_EXTN_PREFIX +
+		CAPTURING_EXTN_DIGITS + '|' +
+		'[ \u00A0\\t,]*' +
+		'(?:e?xt(?:ensi(?:o\u0301?|\u00F3))?n?|\uFF45?\uFF58\uFF54\uFF4E?|' +
+		'[' + single_extension_characters + ']|int|anexo|\uFF49\uFF4E\uFF54)' +
+		'[:\\.\uFF0E]?[ \u00A0\\t,-]*' +
+		CAPTURING_EXTN_DIGITS + '#?|' +
+		'[- ]+([' + VALID_DIGITS + ']{1,5})#'
 }

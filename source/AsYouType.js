@@ -8,6 +8,7 @@ import Metadata from './metadata'
 import
 {
 	matches_entirely,
+	VALID_DIGITS,
 	VALID_PUNCTUATION,
 	PLUS_CHARS,
 	parse_phone_number_digits,
@@ -17,7 +18,6 @@ from './common'
 
 import
 {
-	VALID_DIGITS,
 	extract_formatted_phone_number,
 	find_country_code,
 	strip_national_prefix
