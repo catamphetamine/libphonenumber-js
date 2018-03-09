@@ -1,5 +1,9 @@
 'use strict'
 
+// Not everyone needs `findNumbers()` function,
+// so to reduce application bundle size
+// it has been moved to a separate file.
+
 exports = module.exports = {}
 
 var PhoneNumberMatcher = require('./build/PhoneNumberMatcher').default
@@ -14,6 +18,7 @@ exports['default'] = function findNumbers(text, defaultCountry, leniency, maxTri
 
 	// Must return some kind of an iterator.
 	// Maybe a stream (async), or an array (sync).
+	// See `hasNext()` and `next()` methods of `PhoneNumberMatcher`.
 	return new PhoneNumberMatcher(text, defaultRegion, leniency, maxTries)
 
 	// Example:
