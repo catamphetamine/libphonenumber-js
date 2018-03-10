@@ -7,6 +7,7 @@ exports.format            = require('./build/format').default
 exports.getNumberType     = require('./build/types').default
 exports.isValidNumber     = require('./build/validate').default
 exports.findPhoneNumbers  = require('./build/findPhoneNumbers').default
+exports.PhoneNumberSearch = require('./build/findPhoneNumbers').PhoneNumberSearch
 exports.AsYouType         = require('./build/AsYouType').default
 
 // `DIGITS` are used by `react-phone-number-input`.

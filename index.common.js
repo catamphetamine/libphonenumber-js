@@ -40,6 +40,14 @@ exports.findPhoneNumbers = function findPhoneNumbers()
 	return custom.findPhoneNumbers.apply(this, parameters)
 }
 
+exports.PhoneNumberSearch = function PhoneNumberSearch(text, options)
+{
+	custom.PhoneNumberSearch.call(this, text, options, metadata)
+}
+
+exports.PhoneNumberSearch.prototype = Object.create(custom.PhoneNumberSearch.prototype, {})
+exports.PhoneNumberSearch.prototype.constructor = exports.PhoneNumberSearch
+
 exports.AsYouType = function AsYouType(country)
 {
 	custom.AsYouType.call(this, country, metadata)

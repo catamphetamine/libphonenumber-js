@@ -1,4 +1,4 @@
-import findNumbers, { extract_formatted_phone_numbers } from './findPhoneNumbers'
+import findNumbers, { PhoneNumberSearch } from './findPhoneNumbers'
 import metadata from '../metadata.min'
 
 describe('findPhoneNumbers', () =>
@@ -85,17 +85,44 @@ describe('findPhoneNumbers', () =>
 		thrower = () => findNumbers('')
 		thrower.should.throw('Metadata is required')
 	})
+})
 
-	it('should extract formatted numbers', function()
+describe('PhoneNumberSearch', () =>
+{
+	it('should search for phone numbers', function()
 	{
-		extract_formatted_phone_numbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.').should.deep.equal
-		([{
-			number   : '+7 (800) 555-35-35',
-			startsAt : 14
-		},
-		{
-			number   : '(213) 373-4253',
-			startsAt : 41
-		}])
+		const finder = new PhoneNumberSearch('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', { defaultCountry: 'US' }, metadata)
+
+		finder.hasNext().should.equal(true)
+		finder.next().should.deep.equal
+		({
+			country : 'RU',
+			phone   : '8005553535',
+			// number   : '+7 (800) 555-35-35',
+			startsAt : 14,
+			endsAt   : 32
+		})
+
+		finder.hasNext().should.equal(true)
+		finder.next().should.deep.equal
+		({
+			country : 'US',
+			phone   : '2133734253',
+			// number   : '(213) 373-4253',
+			startsAt : 41,
+			endsAt   : 55
+		})
+
+		finder.hasNext().should.equal(false)
+	})
+
+	it('should work in edge cases', function()
+	{
+		// No options
+		const search = new PhoneNumberSearch('', undefined, metadata)
+
+		// No next element
+		let thrower = () => search.next()
+		thrower.should.throw('No next element')
 	})
 })

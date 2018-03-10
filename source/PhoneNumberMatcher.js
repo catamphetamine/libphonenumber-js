@@ -358,7 +358,7 @@ export const Leniency =
  *
  * <p>This class is not thread-safe.
  */
-class PhoneNumberMatcher
+export default class PhoneNumberMatcher
 {
   /** The iteration tristate. */
   state = 'NOT_READY'
@@ -633,13 +633,13 @@ class PhoneNumberMatcher
 
   hasNext()
   {
-    if (this.state == 'NOT_READY')
+    if (this.state === 'NOT_READY')
     {
-      const lastMatch = find(this.searchIndex)
+      this.lastMatch = this.find(this.searchIndex)
 
-      if (lastMatch)
+      if (this.lastMatch)
       {
-        this.searchIndex = lastMatch.end()
+        this.searchIndex = this.lastMatch.end()
         this.state = 'READY'
       }
       else
@@ -656,11 +656,11 @@ class PhoneNumberMatcher
     // Check the state and find the next match as a side-effect if necessary.
     if (!this.hasNext())
     {
-      throw new NoSuchElementException()
+      throw new Error('No next element')
     }
 
     // Don't retain that memory any longer than necessary.
-    const result = lastMatch
+    const result = this.lastMatch
     this.lastMatch = null
     this.state = 'NOT_READY'
     return result

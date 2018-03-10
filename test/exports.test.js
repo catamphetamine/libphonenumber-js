@@ -5,6 +5,7 @@ import
 	getNumberType,
 	isValidNumber,
 	findPhoneNumbers,
+	PhoneNumberSearch,
 	AsYouType,
 	getCountryCallingCode,
 	// `getPhoneCode` name is deprecated.
@@ -15,6 +16,7 @@ import
 	getNumberTypeCustom,
 	isValidNumberCustom,
 	findPhoneNumbersCustom,
+	PhoneNumberSearchCustom,
 	getCountryCallingCodeCustom,
 	// `getPhoneCodeCustom` name is deprecated.
 	getPhoneCodeCustom,
@@ -39,6 +41,7 @@ describe(`exports`, function()
 		getNumberType('', 'RU')
 		isValidNumber('', 'US')
 		findPhoneNumbers('', 'US')
+		new PhoneNumberSearch('')
 		new AsYouType('US').input('+')
 
 		DIGIT_PLACEHOLDER.length
@@ -65,6 +68,7 @@ describe(`exports`, function()
 		getNumberTypeCustom('', 'RU', metadata)
 		isValidNumberCustom('', 'US', metadata)
 		findPhoneNumbers('', 'US', metadata)
+		new PhoneNumberSearchCustom('', metadata)
 		getPhoneCodeCustom('KZ', metadata).should.equal('7')
 	})
 
@@ -77,6 +81,7 @@ describe(`exports`, function()
 		Library.getNumberType('', 'RU')
 		Library.isValidNumber('', 'US')
 		Library.findPhoneNumbers('', 'US')
+		new Library.PhoneNumberSearch('')
 		new Library.AsYouType('US').input('+')
 
 		Library.DIGIT_PLACEHOLDER.length
@@ -102,6 +107,7 @@ describe(`exports`, function()
 		Library.getNumberType('', 'RU', metadata)
 		Library.isValidNumber('', 'US', metadata)
 		Library.findPhoneNumbers('', 'US', metadata)
+		new Library.PhoneNumberSearch('', undefined, metadata)
 		Library.getPhoneCode('KZ', metadata).should.equal('7')
 
 		new Library.Metadata({ countries: {} })

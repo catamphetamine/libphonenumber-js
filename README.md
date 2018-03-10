@@ -20,6 +20,7 @@ One part of me was curious about how all this phone matching machinery worked, a
 
   * Pure javascript, doesn't require any 3rd party libraries.
   * Metadata size is just about 80 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes.
+  * Can search for phone numbers in text.
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK`.
   * Doesn't parse or format ["carrier codes"](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md): they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number.
   * Doesn't parse or format special local-only phone numbers: emergency phone numbers like `911`, ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-), numbers starting with a [`*`](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md), etc.
@@ -119,6 +120,94 @@ format('017212345678', 'DE', 'E.164') !== '+4917212345678'
 format({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
 ```
 
+### `class` AsYouType(defaultCountry)
+
+Creates a formatter for partially entered phone number. The [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance has two methods:
+
+ * `input(text)` — Takes any text and appends it to the input. Returns the formatted phone number.
+ * `reset()` — Resets the input.
+
+The formatter also has the following getters:
+
+ * `country` — Phone number [country](https://github.com/catamphetamine/libphonenumber-js#country-code-definition).
+ * `getNationalNumber()` — Returns the national number part of the phone number.
+ * `template` — The template used to format the phone number. Digits (and the `+` sign, if present) are denoted by `x`-es.
+
+```js
+new AsYouType().input('+12133734') === '+1 213 373 4'
+new AsYouType('US').input('2133734') === '(213) 373-4'
+
+const asYouType = new AsYouType()
+asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
+asYouType.country === 'US'
+asYouType.getNationalNumber() === '2133734253'
+asYouType.template === 'xx xxx xxx xxxx'
+```
+
+"As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits. This solution is sufficient for all use cases except for phone number extensions which Google's "As You Type" formatter does not support. If your project requires phone number extensions input then use a separate input field for that.
+
+### findPhoneNumbers(text, [defaultCountry], [options])
+
+Searches for phone numbers in a given text. This is a basic substitute for Google's original `findNumbers()` function (described below).
+
+```js
+import { findPhoneNumbers } from 'libphonenumber-js'
+
+findPhoneNumbers(`
+  The number is +7 (800) 555-35-35 and
+  not (213) 373-4253 as written
+  in the document.
+`, 'US')
+
+// Outputs:
+//
+// [{
+//   phone    : '8005553535',
+//   country  : 'RU',
+//   startsAt : 14,
+//   endsAt   : 32
+// },
+// {
+//   phone    : '2133734253',
+//   country  : 'US',
+//   startsAt : 41,
+//   endsAt   : 55
+// }]
+```
+
+If the text being searched in is big enough (say, a hundred kilobytes) then one can use `PhoneNumberSearch` class to perform the search asynchronously.
+
+```js
+import { PhoneNumberSearch } from 'libphonenumber-js'
+
+const search = new PhoneNumberSearch(`
+  The number is +7 (800) 555-35-35 and
+  not (213) 373-4253 as written
+  in the document.
+`, {
+  defaultCountry: 'US'
+})
+
+// Search cycle iteration.
+const iteration = () => {
+  if (search.hasNext()) {
+    console.log(search.next())
+    setTimeout(iteration, 0)
+  }
+}
+
+// Run the search.
+iteration()
+```
+
+### findNumbers(text, [defaultCountry], [options])
+
+Searches for phone numbers in a given text. This is the Google's original implementation and it's not implemented in this library.
+
+Although Google's javascript port doesn't support this functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness.
+
+I made my take on porting Google's `PhoneNumberMatcher.java` into javascirpt and seems that it's doable. The overall syntax has mostly been ported but it's still quite far from finished and the code has not been tested, and I'm not searching for phone numbers in my projects, but if anyone needs that feature they could continue where I left off: see `findNumbers.js`, `src/PhoneNumberMatcher.js` and `src/PhoneNumberMatcher.test.js`. Such a person must also let others (including me) know that he's working on the feature to avoid any conflicts: a pull request must be created right away and code must be committed on a daily basis regardless of whether it works or not.
+
 ### getNumberType(number, [defaultCountry])
 
 Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
@@ -164,32 +253,6 @@ I personally wouldn't rely on Google's phone number validation too much because 
 
 Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
 
-### `class` AsYouType(defaultCountry)
-
-Creates a formatter for partially entered phone number. The [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance has two methods:
-
- * `input(text)` — Takes any text and appends it to the input. Returns the formatted phone number.
- * `reset()` — Resets the input.
-
-The formatter also has the following getters:
-
- * `country` — Phone number [country](https://github.com/catamphetamine/libphonenumber-js#country-code-definition).
- * `getNationalNumber()` — Returns the national number part of the phone number.
- * `template` — The template used to format the phone number. Digits (and the `+` sign, if present) are denoted by `x`-es.
-
-```js
-new AsYouType().input('+12133734') === '+1 213 373 4'
-new AsYouType('US').input('2133734') === '(213) 373-4'
-
-const asYouType = new AsYouType()
-asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
-asYouType.country === 'US'
-asYouType.getNationalNumber() === '2133734253'
-asYouType.template === 'xx xxx xxx xxxx'
-```
-
-"As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits. This solution is sufficient for all use cases except for phone number extensions which Google's "As You Type" formatter does not support. If your project requires phone number extensions input then use a separate input field for that.
-
 ### getCountryCallingCode(country)
 
 There have been requests for a function returning a country calling code by [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition).
@@ -198,41 +261,6 @@ There have been requests for a function returning a country calling code by [cou
 getCountryCallingCode('RU') === '7'
 getCountryCallingCode('IL') === '972'
 ```
-
-### findPhoneNumbers(text, [defaultCountry], [options])
-
-Searches for phone numbers in a given text. This is a basic substitute for Google's original `findNumbers()` function (see below).
-
-```js
-findPhoneNumbers(`
-  The number is +7 (800) 555-35-35 and
-  not (213) 373-4253 as written
-  in the document.
-`, 'US')
-
-// Outputs:
-//
-// [{
-//   phone    : '8005553535',
-//   country  : 'RU',
-//   startsAt : 14,
-//   endsAt   : 32
-// },
-// {
-//   phone    : '2133734253',
-//   country  : 'US',
-//   startsAt : 41,
-//   endsAt   : 55
-// }]
-```
-
-### findNumbers(text, [defaultCountry], [options])
-
-Searches for phone numbers in a given text. This is the Google's original implementation and it's not implemented in this library.
-
-Although Google's javascript port doesn't support this functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness.
-
-I made my take on porting Google's `PhoneNumberMatcher.java` into javascirpt and seems that it's doable. The overall syntax has mostly been ported but it's still quite far from finished and the code has not been tested, and I'm not searching for phone numbers in my projects, but if anyone needs that feature they could continue where I left off: see `findNumbers.js`, `src/PhoneNumberMatcher.js` and `src/PhoneNumberMatcher.test.js`. Such a person must also let others (including me) know that he's working on the feature to avoid any conflicts: a pull request must be created right away and code must be committed on a daily basis regardless of whether it works or not.
 
 ## Metadata
 

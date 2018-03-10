@@ -4,7 +4,7 @@ import parseCustom from './es6/parse'
 import getNumberTypeCustom from './es6/types'
 import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
-import findPhoneNumbersCustom from './es6/findPhoneNumbers'
+import findPhoneNumbersCustom, { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
 import AsYouTypeCustom from './es6/AsYouType'
 
 import Metadata from './es6/metadata'
@@ -47,6 +47,14 @@ export function findPhoneNumbers()
 	return findPhoneNumbersCustom.apply(this, parameters)
 }
 
+export function PhoneNumberSearch(text, options)
+{
+	PhoneNumberSearchCustom.call(this, text, options, metadata)
+}
+
+PhoneNumberSearch.prototype = Object.create(PhoneNumberSearchCustom.prototype, {})
+PhoneNumberSearch.prototype.constructor = PhoneNumberSearch
+
 export function AsYouType(country)
 {
 	AsYouTypeCustom.call(this, country, metadata)
@@ -68,9 +76,12 @@ export
 }
 from './es6/common'
 
+// Deprecated: remove this in 2.0.0 and make `custom.js` in ES6
+// (the old `custom.js` becomes `custom.commonjs.js`).
 export { default as formatCustom }           from './es6/format'
 export { default as isValidNumberCustom }    from './es6/validate'
 export { default as findPhoneNumbersCustom } from './es6/findPhoneNumbers'
+export { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
 export { default as getNumberTypeCustom }    from './es6/types'
 
 export

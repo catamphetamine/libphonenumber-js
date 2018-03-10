@@ -1,3 +1,8 @@
+1.1.1 / 10.03.2018
+===================
+
+  * Added `PhoneNumberSearch` class for asynchronous phone number search.
+
 1.1.0 / 09.03.2018
 ===================
 
