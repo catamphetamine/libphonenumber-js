@@ -2,13 +2,14 @@
 
 exports = module.exports = {}
 
-exports.parse             = require('./build/parse').default
-exports.format            = require('./build/format').default
-exports.getNumberType     = require('./build/types').default
-exports.isValidNumber     = require('./build/validate').default
-exports.findPhoneNumbers  = require('./build/findPhoneNumbers').default
-exports.PhoneNumberSearch = require('./build/findPhoneNumbers').PhoneNumberSearch
-exports.AsYouType         = require('./build/AsYouType').default
+exports.parse              = require('./build/parse').default
+exports.format             = require('./build/format').default
+exports.getNumberType      = require('./build/types').default
+exports.isValidNumber      = require('./build/validate').default
+exports.findPhoneNumbers   = require('./build/findPhoneNumbers').default
+exports.searchPhoneNumbers = require('./build/findPhoneNumbers').searchPhoneNumbers
+exports.PhoneNumberSearch  = require('./build/findPhoneNumbers').PhoneNumberSearch
+exports.AsYouType          = require('./build/AsYouType').default
 
 // `DIGITS` are used by `react-phone-number-input`.
 // `DIGIT_PLACEHOLDER` is used by `react-phone-number-input`.

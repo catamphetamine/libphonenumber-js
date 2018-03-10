@@ -40,6 +40,13 @@ exports.findPhoneNumbers = function findPhoneNumbers()
 	return custom.findPhoneNumbers.apply(this, parameters)
 }
 
+exports.searchPhoneNumbers = function searchPhoneNumbers()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.searchPhoneNumbers.apply(this, parameters)
+}
+
 exports.PhoneNumberSearch = function PhoneNumberSearch(text, options)
 {
 	custom.PhoneNumberSearch.call(this, text, options, metadata)

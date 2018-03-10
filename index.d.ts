@@ -16,15 +16,16 @@ export interface ParsedNumber {
   valid: boolean
 }
 
+export interface NumberFound {
+  country: CountryCode,
+  phone: TelephoneNumber,
+  ext: Extension,
+  startsAt: number,
+  endsAt: number
+}
+
 // I don't use TypeScript.
 // Someone check these.
-// export interface NumberFound {
-//   country: CountryCode,
-//   phone: TelephoneNumber,
-//   ext: Extension,
-//   startsAt: number,
-//   endsAt: number
-// }
 //
 // export type NumbersFound = NumberFound[]
 
@@ -53,9 +54,14 @@ export function isValidNumberCustom(phone: TelephoneNumber, country: CountryCode
 
 // I don't use TypeScript.
 // Someone check these.
+//
 // export function findPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumbersFound;
 // export function findPhoneNumbersCustom(text: string, metadata: object): NumbersFound;
 // export function findPhoneNumbersCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): NumbersFound;
+//
+// export function searchPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumbersFound;
+// export function searchPhoneNumbersCustom(text: string, metadata: object): NumbersFound;
+// export function searchPhoneNumbersCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): NumbersFound;
 
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
 export function getCountryCallingCodeCustom(countryCode: CountryCode, metadata: object): CountryCallingCode;
@@ -70,4 +76,10 @@ export class AsYouType {
   country: CountryCode;
   getNationalNumber(): string;
   template: string;
+}
+
+export class PhoneNumberSearch {
+  constructor(text: string, options?: { defaultCountry?: CountryCode });
+  hasNext(): boolean;
+  next(): NumberFound;
 }

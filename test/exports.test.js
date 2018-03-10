@@ -5,6 +5,7 @@ import
 	getNumberType,
 	isValidNumber,
 	findPhoneNumbers,
+	searchPhoneNumbers,
 	PhoneNumberSearch,
 	AsYouType,
 	getCountryCallingCode,
@@ -15,6 +16,7 @@ import
 	parseCustom,
 	getNumberTypeCustom,
 	isValidNumberCustom,
+	searchPhoneNumbersCustom,
 	findPhoneNumbersCustom,
 	PhoneNumberSearchCustom,
 	getCountryCallingCodeCustom,
@@ -41,6 +43,7 @@ describe(`exports`, function()
 		getNumberType('', 'RU')
 		isValidNumber('', 'US')
 		findPhoneNumbers('', 'US')
+		searchPhoneNumbers('', 'US')
 		new PhoneNumberSearch('')
 		new AsYouType('US').input('+')
 
@@ -68,6 +71,7 @@ describe(`exports`, function()
 		getNumberTypeCustom('', 'RU', metadata)
 		isValidNumberCustom('', 'US', metadata)
 		findPhoneNumbers('', 'US', metadata)
+		searchPhoneNumbers('', 'US', metadata)
 		new PhoneNumberSearchCustom('', metadata)
 		getPhoneCodeCustom('KZ', metadata).should.equal('7')
 	})
@@ -81,6 +85,7 @@ describe(`exports`, function()
 		Library.getNumberType('', 'RU')
 		Library.isValidNumber('', 'US')
 		Library.findPhoneNumbers('', 'US')
+		Library.searchPhoneNumbers('', 'US')
 		new Library.PhoneNumberSearch('')
 		new Library.AsYouType('US').input('+')
 
@@ -107,6 +112,7 @@ describe(`exports`, function()
 		Library.getNumberType('', 'RU', metadata)
 		Library.isValidNumber('', 'US', metadata)
 		Library.findPhoneNumbers('', 'US', metadata)
+		Library.searchPhoneNumbers('', 'US', metadata)
 		new Library.PhoneNumberSearch('', undefined, metadata)
 		Library.getPhoneCode('KZ', metadata).should.equal('7')
 
