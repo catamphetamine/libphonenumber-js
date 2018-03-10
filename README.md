@@ -175,7 +175,7 @@ findPhoneNumbers(`
 // }]
 ```
 
-If the text being searched in is big enough (say, a hundred kilobytes) then one can use `PhoneNumberSearch` class to perform the search asynchronously.
+If the text being searched in is big enough (say, a hundred kilobytes) then one can use `PhoneNumberSearch` class to perform the search asynchronously (e.g. by employing `requestIdleCallback` or `requestAnimationFrame` to avoid freezing the user interface).
 
 ```js
 import { PhoneNumberSearch } from 'libphonenumber-js'
@@ -193,6 +193,8 @@ const iteration = () => {
   if (search.hasNext()) {
     console.log(search.next())
     setTimeout(iteration, 0)
+  } else {
+    console.log('Finished')
   }
 }
 
