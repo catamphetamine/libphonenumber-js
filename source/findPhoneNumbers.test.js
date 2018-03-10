@@ -1,4 +1,4 @@
-import findNumbers, { PhoneNumberSearch } from './findPhoneNumbers'
+import findNumbers, { searchPhoneNumbers, PhoneNumberSearch } from './findPhoneNumbers'
 import metadata from '../metadata.min'
 
 describe('findPhoneNumbers', () =>
@@ -64,6 +64,32 @@ describe('findPhoneNumbers', () =>
 			startsAt : 37,
 			endsAt   : 64
 		}])
+	})
+
+	it('should iterate', function()
+	{
+		const expected_numbers =
+		[{
+			country : 'RU',
+			phone   : '8005553535',
+			// number   : '+7 (800) 555-35-35',
+			startsAt : 14,
+			endsAt   : 32
+		},
+		{
+			country : 'US',
+			phone   : '2133734253',
+			// number   : '(213) 373-4253',
+			startsAt : 41,
+			endsAt   : 55
+		}]
+
+		for (const number of searchPhoneNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata))
+		{
+			number.should.deep.equal(expected_numbers.shift())
+		}
+
+		expected_numbers.length.should.equal(0)
 	})
 
 	it('should work in edge cases', function()

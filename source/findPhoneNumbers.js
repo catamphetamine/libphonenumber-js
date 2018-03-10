@@ -33,20 +33,48 @@ const WHITESPACE_IN_THE_END_PATTERN = new RegExp('[' + WHITESPACE + ']+$')
 // // found using `PHONE_NUMBER_START_PATTERN` for prepending those brackets to the number.
 // const BEFORE_NUMBER_DIGITS_PUNCTUATION = new RegExp('[' + OPENING_BRACKETS + ']+' + '[' + WHITESPACE + ']*' + '$')
 
-export default function findNumbers(arg_1, arg_2, arg_3, arg_4)
+export default function findPhoneNumbers(arg_1, arg_2, arg_3, arg_4)
 {
 	const { text, options, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 
-	const finder = new PhoneNumberSearch(text, options, metadata.metadata)
+	const search = new PhoneNumberSearch(text, options, metadata.metadata)
 
 	const phones = []
 
-	while (finder.hasNext())
+	while (search.hasNext())
 	{
-		phones.push(finder.next())
+		phones.push(search.next())
 	}
 
 	return phones
+}
+
+/**
+ * @return ES6 `for ... of` iterator.
+ */
+export function searchPhoneNumbers(arg_1, arg_2, arg_3, arg_4)
+{
+	const { text, options, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
+
+	const search = new PhoneNumberSearch(text, options, metadata.metadata)
+
+	return  {
+		[Symbol.iterator]() {
+			return {
+	    		next: () => {
+	    			if (search.hasNext()) {
+						return {
+							done: false,
+							value: search.next()
+						}
+					}
+					return {
+						done: true
+					}
+	    		}
+			}
+		}
+	}
 }
 
 /**

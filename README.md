@@ -175,7 +175,29 @@ findPhoneNumbers(`
 // }]
 ```
 
-If the text being searched in is big enough (say, a hundred kilobytes) then one can use `PhoneNumberSearch` class to perform the search asynchronously (e.g. by employing `requestIdleCallback` or `requestAnimationFrame` to avoid freezing the user interface).
+If the text being searched in is big enough (say, a hundred thousand characters) then one can employ iterators to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame` to avoid freezing the user interface during the search).
+
+ES6 iterator:
+
+```js
+import { searchPhoneNumbers } from 'libphonenumber-js'
+
+const text = `
+  The number is +7 (800) 555-35-35 and
+  not (213) 373-4253 as written
+  in the document.
+`
+
+async function() {
+  for (const number of searchPhoneNumbers(text, 'US')) {
+    console.log(number)
+    await new Promise(resolve => setTimeout(resolve, 0))
+  }
+  console.log('Finished')
+}
+```
+
+Java-style iterator (for those still not using ES6):
 
 ```js
 import { PhoneNumberSearch } from 'libphonenumber-js'
