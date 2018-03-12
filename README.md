@@ -4,22 +4,21 @@
 [![npm downloads](https://img.shields.io/npm/dm/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
 [![coverage](https://img.shields.io/coveralls/catamphetamine/libphonenumber-js/master.svg?style=flat-square)](https://coveralls.io/r/catamphetamine/libphonenumber-js?branch=master)
 
-A simpler (and smaller) rewrite of Google Android's famous `libphonenumber` library: easy phone number parsing and formatting in javascript.
+A simpler and smaller rewrite of Google Android's `libphonenumber` library: easy phone number parsing and formatting in javascript.
 
 [See Demo](https://catamphetamine.github.io/libphonenumber-js/)
 
 ## LibPhoneNumber
 
-[`libphonenumber`](https://github.com/googlei18n/libphonenumber) is a phone number formatting and parsing library released by Google, originally developed for (and currently used in) Google's [Android](https://en.wikipedia.org/wiki/Android_(operating_system)) mobile phone operating system. Implementing a rigorous phone number formatting and parsing library was crucial for the phone OS overall usability (back then, in the early 2000s, it was originally meant to be a phone after all, not just a SnapChat device).
+[`libphonenumber`](https://github.com/googlei18n/libphonenumber) is a phone number formatting and parsing library released by Google, originally developed for (and currently used in) Google's [Android](https://en.wikipedia.org/wiki/Android_(operating_system)) mobile phone operating system. Implementing a rigorous phone number formatting and parsing library was crucial for the phone OS overall usability (back then, in the early 2000s, it was originally meant to be a phone after all, not just a social media device).
 
-`libphonenumber-js` is a simplified pure javascript port of the original `libphonenumber` library (written in C++ and Java because those are the programming languages used in Android OS). While `libphonenumber` has an [official javascript port](https://github.com/googlei18n/libphonenumber/tree/master/javascript) which is being maintained by Google, it is tightly coupled to Google's `closure` javascript utility framework. It still can be compiled into [one big bundle](http://stackoverflow.com/questions/18678031/how-to-host-the-google-libphonenumber-locally/) which weighs 220 KiloBytes — quite a size for a phone number input component. It [can be reduced](https://github.com/leodido/i18n.phonenumbers.js) to a specific set of countries only but that wouldn't be an option for a worldwide international solution.
+`libphonenumber-js` is a simplified pure javascript port of the original `libphonenumber` library (written in C++ and Java because those are the programming languages used in Android OS). While `libphonenumber` has an [official javascript port](https://github.com/googlei18n/libphonenumber/tree/master/javascript) which is being maintained by Google, it is tightly coupled to Google's `closure` javascript utility framework. It can still be compiled into [one big bundle](https://github.com/ruimarinho/google-libphonenumber) which weighs 530 kilobytes (330 kB code + 200 kB metadata) — quite a size for a phone number input component.
 
-One part of me was curious about how all this phone matching machinery worked, and another part of me was curious if there's a way to reduce those 220 KiloBytes to something more reasonable while also getting rid of the `closure` library and rewriting it all in pure javascript. So, that was my little hackathon for a couple of weeks, and seems that it succeeded. The resulting library does everything a modern web application needs while maintaining a much smaller size of about 120 KiloBytes.
+One part of me was curious about how all this phone number parsing and formatting machinery worked, and another part of me was curious if there was a way to reduce those 530 kilobytes to something more reasonable while also getting rid of all the unnecessary bulk and rewriting it all in pure javascript. The resulting library does everything a modern web application needs while maintaining a much smaller size of about 130 kilobytes.
 
 ## Difference from Google's `libphonenumber`
 
-  * Pure javascript, doesn't require any 3rd party libraries.
-  * Metadata size is just about 80 KiloBytes while the original `libphonenumber` metadata size is about 200 KiloBytes.
+  * Much smaller footprint: 130 kilobytes (50 kB code + 80 kB sufficient metadata) vs the original Google's 530 kilobytes (330 kB code + 200 kB full metadata).
   * Can search for phone numbers in text.
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK`.
   * Doesn't parse or format ["carrier codes"](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md): they're only used in Colombia and Brazil, and only when dialing within those countries from a mobile phone to a fixed line number.
@@ -263,7 +262,7 @@ The difference between using `parse()` and `isValidNumber()` for phone number va
 
 So, the general phone number rules for a country are mainly for phone number formatting: they dictate how different phone numbers (matching those general regular expressions) should be formatted. And `parse()` uses only those general regular expressions (as per the reference Google's `libphonenumber` implementation) to perform basic phone number validation. `isValidNumber()`, on the other hand, is all about validation, so it digs deeper into precise regular expressions (if they're included in metadata) for possible phone numbers in a given country. And that's the difference between them: `parse()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone number precisely (provided the precise regular expressions are included in metadata).
 
-By default those precise regular expressions aren't included in metadata at all because that would cause metadata to grow twice in its size (the complete metadata size is about 130 KiloBytes while the default reduced metadata size is about 70 KiloBytes). If anyone needs to use (or generate) custom metadata then it's very easy to do so: follow the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
+By default those precise regular expressions aren't included in metadata at all because that would cause metadata to grow twice in its size (the complete metadata size is about 130 kilobytes while the default reduced metadata size is about 70 kilobytes). If anyone needs to use (or generate) custom metadata then it's very easy to do so: follow the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
 
 #### Using phone number validation feature
 
@@ -353,11 +352,11 @@ For those who aren't using bundlers for some reason there's a way to build a sta
 
 This library comes prepackaged with three flavours of metadata
 
-* `metadata.full.json` — contains everything, including all regular expressions for precise phone number validation and getting phone number type, but weighs `145 KiloBytes`.
-* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type, weighs `80 KiloBytes`.
-* `metadata.mobile.json` — contains regular expressions for precise **mobile** phone number validation, weighs `105 KiloBytes`.
+* `metadata.full.json` — contains everything, including all regular expressions for precise phone number validation and getting phone number type, but weighs `145 kilobytes`.
+* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type, weighs `80 kilobytes`.
+* `metadata.mobile.json` — contains regular expressions for precise **mobile** phone number validation, weighs `105 kilobytes`.
 
-Furthermore, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 KiloBytes (even when including all regular expressions for precise phone number validation and getting phone number type), then he can generate such custom metadata and pass it as an extra argument to this library's functions.
+Furthermore, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 kilobytes (even when including all regular expressions for precise phone number validation and getting phone number type), then he can generate such custom metadata and pass it as an extra argument to this library's functions.
 
 First, add metadata generation script to **your project's** `package.json`
 

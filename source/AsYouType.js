@@ -384,13 +384,13 @@ export default class AsYouType
 
 	reset_country()
 	{
-		if (this.default_country && !this.is_international())
+		if (this.is_international())
 		{
-			this.country = this.default_country
+			this.country = undefined
 		}
 		else
 		{
-			this.country = undefined
+			this.country = this.default_country
 		}
 	}
 

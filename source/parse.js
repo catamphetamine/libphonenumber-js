@@ -653,3 +653,9 @@ function parse_phone_number(formatted_phone_number, default_country, metadata)
 
 	return {}
 }
+
+// Determines the country for a given (possibly incomplete) phone number.
+// export function get_country_from_phone_number(number, metadata)
+// {
+// 	return parse_phone_number(number, null, metadata).country
+// }
