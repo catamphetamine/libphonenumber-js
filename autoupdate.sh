@@ -5,6 +5,9 @@ export PATH=/usr/local/bin:$PATH
 # Enter this script's folder
 cd "${0%/*}"
 
+# Update dependencies (so that it doesn't throw "module not found").
+npm install
+
 now=$(date +'%d.%m.%Y')
 echo "================================================" | tee /dev/stderr
 echo "= Starting metadata update at $now"               | tee /dev/stderr
