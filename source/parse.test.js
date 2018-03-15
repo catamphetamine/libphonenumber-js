@@ -19,7 +19,17 @@ describe('parse', () =>
 		parse('+7 (800) 55-35-35', 'US').should.deep.equal({})
 		parse('(800) 55 35 35', { defaultCountry: 'RU' }).should.deep.equal({})
 		parse('+1 187 215 5230', 'US').should.deep.equal({})
-		parse('+1 1877 215 5230', 'US').should.deep.equal({})
+
+		// Parsing national prefixes and carrier codes
+		// is only required for local phone numbers
+		// but some people don't understand that
+		// and sometimes write international phone numbers
+		// with national prefixes (or maybe even carrier codes).
+		// http://ucken.blogspot.ru/2016/03/trunk-prefixes-in-skype4b.html
+		// Google's original library forgives such mistakes
+		// and so does this library, because it has been requested:
+		// https://github.com/catamphetamine/libphonenumber-js/issues/127
+		// parse('+1 1877 215 5230', 'US').should.deep.equal({})
 	})
 
 	it('should parse valid phone numbers', function()
@@ -74,6 +84,7 @@ describe('parse', () =>
 			country            : 'RU',
 			countryCallingCode : '7',
 			phone              : '1112223344',
+			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
 			possible           : true
@@ -87,6 +98,7 @@ describe('parse', () =>
 			country            : undefined,
 			countryCallingCode : '7',
 			phone              : '1112223344',
+			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
 			possible           : true
@@ -99,6 +111,7 @@ describe('parse', () =>
 			country            : 'FR',
 			countryCallingCode : '33',
 			phone              : '011222333',
+			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
 			possible           : true
@@ -110,17 +123,19 @@ describe('parse', () =>
 			country            : undefined,
 			countryCallingCode : '7',
 			phone              : '800553535',
+			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
 			possible           : false
 		})
 
 		// Too long.
-		parse('+7 (800) 55-35-35-55', { extended: true }).should.deep.equal
+		parse('+7 (800) 55-35-35-555', { extended: true }).should.deep.equal
 		({
 			country            : undefined,
 			countryCallingCode : '7',
-			phone              : '80055353555',
+			phone              : '00553535555',
+			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
 			possible           : false
@@ -138,6 +153,7 @@ describe('parse', () =>
 			country            : 'RU',
 			countryCallingCode : '7',
 			phone              : '8005553535',
+			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : true,
 			possible           : true
@@ -266,5 +282,28 @@ describe('parse', () =>
 
 		// Invalid number.
 		parse('tel:+7x8005553535;ext:123').should.deep.equal({})
+	})
+
+	it('should parse invalid international numbers even if they are invalid', () =>
+	{
+		parse('+49(0)15123020522', 'DE').should.deep.equal
+		({
+			country : 'DE',
+			phone   : '15123020522'
+		})
+	})
+
+	it('should parse carrier codes', () =>
+	{
+		parse('0 15 21 5555-5555', 'BR', { extended: true }).should.deep.equal
+		({
+			country            : 'BR',
+			countryCallingCode : '55',
+			phone              : '2155555555',
+			carrierCode        : '15',
+			ext                : undefined,
+			valid              : true,
+			possible           : true
+		})
 	})
 })

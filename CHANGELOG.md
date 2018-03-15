@@ -1,3 +1,8 @@
+1.1.4 / 15.03.2018
+===================
+
+  * `parse()` is now more forgiving when parsing invalid international numbers. E.g. `parse('+49(0)15123020522', 'DE')` doesn't return `{}` and instead removes the invalid `(0)` national prefix from the number.
+
 1.1.1 / 10.03.2018
 ===================
 

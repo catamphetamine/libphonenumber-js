@@ -6,10 +6,8 @@ import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
 import findPhoneNumbersCustom, { searchPhoneNumbers as searchPhoneNumbersCustom, PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
 import AsYouTypeCustom from './es6/AsYouType'
-
-import Metadata from './es6/metadata'
+import getCountryCallingCodeCustom from './es6/getCountryCallingCode'
 export { default as Metadata } from './es6/metadata'
-
 export { parseRFC3966, formatRFC3966 } from './es6/RFC3966'
 
 export function parse()
@@ -91,6 +89,7 @@ export { default as findPhoneNumbersCustom } from './es6/findPhoneNumbers'
 export { searchPhoneNumbers as searchPhoneNumbersCustom } from './es6/findPhoneNumbers'
 export { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
 export { default as getNumberTypeCustom }    from './es6/types'
+export { default as getCountryCallingCodeCustom } from './es6/getCountryCallingCode'
 
 export
 {
@@ -103,18 +102,6 @@ from './es6/AsYouType'
 export function getCountryCallingCode(country)
 {
 	return getCountryCallingCodeCustom(country, metadata)
-}
-
-export function getCountryCallingCodeCustom(country, metadata)
-{
-	metadata = new Metadata(metadata)
-
-	if (!metadata.hasCountry(country))
-	{
-		throw new Error('Unknown country: ' + country)
-	}
-
-	return metadata.country(country).countryCallingCode()
 }
 
 // `getPhoneCode` name is deprecated, use `getCountryCallingCode` instead.

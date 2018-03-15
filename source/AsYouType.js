@@ -20,7 +20,7 @@ import
 {
 	extract_formatted_phone_number,
 	find_country_code,
-	strip_national_prefix
+	strip_national_prefix_and_carrier_code
 }
 from './parse'
 
@@ -609,7 +609,7 @@ export default class AsYouType
 		// So no forgiveness for grandmas here.
 		// The issue asking for this fix:
 		// https://github.com/catamphetamine/libphonenumber-js/issues/159
-		const potential_national_number = strip_national_prefix(this.national_number, this.metadata)
+		const { number: potential_national_number } = strip_national_prefix_and_carrier_code(this.national_number, this.metadata)
 
 		// We require that the NSN remaining after stripping the national prefix and
 		// carrier code be long enough to be a possible length for the region.

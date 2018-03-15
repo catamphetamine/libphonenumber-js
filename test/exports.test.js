@@ -51,13 +51,8 @@ describe(`exports`, function()
 		Object.keys(DIGITS).length.should.be.above(0)
 
 		// `getPhoneCode` name is deprecated.
-		getPhoneCode('KZ').should.equal('7')
-		let thrower = () => getPhoneCode('ZZ')
-		thrower.should.throw('Unknown')
-
-		getCountryCallingCode('KZ').should.equal('7')
-		thrower = () => getCountryCallingCode('ZZ')
-		thrower.should.throw('Unknown')
+		getPhoneCode('KZ')
+		getCountryCallingCode('KZ')
 
 		new Metadata({ countries: {} })
 		parseRFC3966.should.be.a('function')
@@ -73,7 +68,9 @@ describe(`exports`, function()
 		findPhoneNumbers('', 'US', metadata)
 		searchPhoneNumbers('', 'US', metadata)
 		new PhoneNumberSearchCustom('', metadata)
-		getPhoneCodeCustom('KZ', metadata).should.equal('7')
+		// `getPhoneCode` name is deprecated.
+		getPhoneCodeCustom('KZ', metadata)
+		getCountryCallingCodeCustom('KZ', metadata)
 	})
 
 	it(`should export CommonJS`, function()
@@ -93,14 +90,8 @@ describe(`exports`, function()
 		Object.keys(Library.DIGITS).length.should.be.above(0)
 
 		// `getPhoneCode` name is deprecated.
-		Library.getPhoneCode('KZ').should.equal('7')
-		let thrower = () => Library.getPhoneCode('ZZ')
-		thrower.should.throw('Unknown')
-
-		Library.getCountryCallingCode('KZ').should.equal('7')
-		thrower = () => Library.getCountryCallingCode('ZZ')
-		thrower.should.throw('Unknown')
-
+		Library.getPhoneCode('KZ')
+		Library.getCountryCallingCode('KZ')
 	})
 
 	it(`should export CommonJS custom functions`, function()
@@ -114,7 +105,9 @@ describe(`exports`, function()
 		Library.findPhoneNumbers('', 'US', metadata)
 		Library.searchPhoneNumbers('', 'US', metadata)
 		new Library.PhoneNumberSearch('', undefined, metadata)
-		Library.getPhoneCode('KZ', metadata).should.equal('7')
+		// `getPhoneCode` name is deprecated.
+		Library.getPhoneCode('KZ', metadata)
+		Library.getCountryCallingCode('KZ', metadata)
 
 		new Library.Metadata({ countries: {} })
 		Library.parseRFC3966.should.be.a('function')
