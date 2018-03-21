@@ -14,11 +14,11 @@ A simpler and smaller rewrite of Google Android's `libphonenumber` library: easy
 
 `libphonenumber-js` is a simplified pure javascript port of the original `libphonenumber` library (written in C++ and Java because those are the programming languages used in Android OS). While `libphonenumber` has an [official javascript port](https://github.com/googlei18n/libphonenumber/tree/master/javascript) which is being maintained by Google, it is tightly coupled to Google's `closure` javascript utility framework. It can still be compiled into [one big bundle](https://github.com/ruimarinho/google-libphonenumber) which weighs 530 kilobytes (330 kB code + 200 kB metadata) — quite a size for a phone number input component.
 
-One part of me was curious about how all this phone number parsing and formatting machinery worked, and another part of me was curious if there was a way to reduce those 530 kilobytes to something more reasonable while also getting rid of all the unnecessary bulk and rewriting it all in pure javascript. The resulting library does everything a modern web application needs while maintaining a much smaller size of about 130 kilobytes.
+One part of me was curious about how all this phone number parsing and formatting machinery worked, and another part of me was curious if there was a way to reduce those 530 kilobytes to something more reasonable while also getting rid of all the unnecessary bulk and rewriting it all in pure javascript. The resulting library does everything a modern web application needs while maintaining a much smaller size of about 110 kilobytes.
 
 ## Difference from Google's `libphonenumber`
 
-  * Much smaller footprint: 130 kilobytes (50 kB code + 80 kB sufficient metadata) vs the original Google's 530 kilobytes (330 kB code + 200 kB full metadata).
+  * Much smaller footprint: 110 kilobytes (30 kB code + 80 kB sufficient metadata) vs the original Google's 530 kilobytes (330 kB code + 200 kB full metadata).
   * Can search for phone numbers in text.
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK`.
   * Doesn't use ["carrier codes"](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md) when formatting numbers: "carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
