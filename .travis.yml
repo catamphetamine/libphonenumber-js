@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-  - "4.7"
   - "stable"
 sudo: false
 before_install:
