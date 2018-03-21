@@ -11,7 +11,6 @@
 
 			"plugins":
 			[
-				"transform-runtime",
 				"transform-object-rest-spread"
 			]
 		},
@@ -25,7 +24,6 @@
 
 			"plugins":
 			[
-				"transform-runtime"
 			]
 		},
 		"es6":
@@ -38,7 +36,6 @@
 
 			"plugins":
 			[
-				"transform-runtime"
 			]
 		}
 	}

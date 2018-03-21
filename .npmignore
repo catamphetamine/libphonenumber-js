@@ -54,3 +54,5 @@ npm-debug.log
 # intermediary metadata
 /metadata.json
 /PhoneNumberMetadata.xml
+
+/test.no.babel.runtime.js

@@ -1,5 +1,4 @@
 import { parseString } from 'xml2js'
-import Promise from 'bluebird'
 
 import { DIGIT_PLACEHOLDER } from '../AsYouType'
 
@@ -162,7 +161,7 @@ export default function(input, version, included_countries, extended, included_p
 	}
 
 	// Parse the XML metadata
-	return Promise.promisify(parseString)(input).then((xml) =>
+	return parseStringPromisified(input).then((xml) =>
 	{
 		// https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml
 		// https://github.com/googlei18n/libphonenumber/blob/master/resources/phonemetadata.proto
@@ -707,4 +706,19 @@ function populate_possible_lengths(metadata)
 			delete types[_type].possible_lengths_local
 		}
 	}
+}
+
+function parseStringPromisified(input)
+{
+	return new Promise((resolve, reject) =>
+	{
+		parseString(input, (error, result) =>
+		{
+			if (error)
+			{
+				return reject(error)
+			}
+			resolve(result)
+		})
+	})
 }

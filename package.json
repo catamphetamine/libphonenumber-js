@@ -1,12 +1,10 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A simpler (and smaller) rewrite of Google Android's popular libphonenumber library",
   "main": "index.common.js",
   "module": "index.es6.js",
   "dependencies": {
-    "babel-runtime": "^6.6.1",
-    "bluebird": "^3.4.6",
     "minimist": "^1.2.0",
     "semver-compare": "^1.0.0",
     "xml2js": "^0.4.17"
