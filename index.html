@@ -173,6 +173,7 @@
 					const templateFormatter = input_format.templateFormatter
 					const parseDigit        = input_format.parseDigit
 
+					let asYouType
 					let parsed_number = 'Unknown country'
 					let parsed_number_extended = 'Unknown country'
 					let national_formatted_number = 'Unknown country'
@@ -183,11 +184,11 @@
 
 					const { country, parse, format, value, findNumbers } = this.state
 
-					const asYouType = new libphonenumber.AsYouType(country)
-					asYouType.input(value)
-
 					try
 					{
+						asYouType = new libphonenumber.AsYouType(country)
+						asYouType.input(value)
+
 						parsed_number = JSON.stringify(libphonenumber.parse(parse, country))
 						parsed_number_extended = JSON.stringify(libphonenumber.parse(parse, country, { extended: true }))
 
@@ -202,7 +203,7 @@
 					}
 					catch (error)
 					{
-						if (error.message.indexOf('Unknown country code') === 0)
+						if (error.message.indexOf('Unknown country') === 0)
 						{
 							//
 						}
@@ -242,10 +243,29 @@
 								}}
 								format={(value) =>
 								{
-									const asYouType = new libphonenumber.AsYouType(this.state.country)
-									const text = asYouType.input(value)
+									let text
+									let template
 
-									return { text: text, template: asYouType.template }
+									try
+									{
+										const asYouType = new libphonenumber.AsYouType(this.state.country)
+										text = asYouType.input(value)
+										template = asYouType.template
+									}
+									catch (error)
+									{
+										if (error.message.indexOf('Unknown country') === 0)
+										{
+											text = value
+											template = value.replace(/./g, 'x')
+										}
+										else
+										{
+											throw error
+										}
+									}
+
+									return { text, template }
 								}}/>
 
 							<div className="section">
@@ -257,9 +277,9 @@
 										onChange={event => this.setState({ country: event.target.value })}
 										style={{ width: '40px', marginLeft: '6px' }}/>
 								</div>
-								<div className="section__line">Actual country: {asYouType.country}</div>
-								<div className="section__line">National: {asYouType.country && libphonenumber.format(asYouType.national_number, asYouType.country, 'National')}</div>
-								<div className="section__line">Valid: {String(libphonenumber.isValidNumber(this.state.value, asYouType.country))}</div>
+								<div className="section__line">Actual country: {asYouType ? asYouType.country : 'Unknown country'}</div>
+								<div className="section__line">National: {asYouType ? asYouType.country && libphonenumber.format(asYouType.national_number, asYouType.country, 'National') : 'Unknown country'}</div>
+								<div className="section__line">Valid: {asYouType ? String(libphonenumber.isValidNumber(this.state.value, asYouType.country)) : 'Unknown country'}</div>
 
 								<br/>
 
