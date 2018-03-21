@@ -33,7 +33,8 @@ import { parse, format, AsYouType } from 'libphonenumber-js'
 parse('8 (800) 555 35 35', 'RU')
 // { country: 'RU', phone: '8005553535' }
 
-format('2133734253', 'US', 'International')
+format({ country: 'US', phone: '2133734253' }, 'International')
+format('+12133734253', 'International')
 // '+1 213 373 4253'
 
 new AsYouType().input('+12133734')
@@ -80,9 +81,9 @@ Available `options`:
 
 Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the 21st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
 
-### format(parsedNumber, format, [options])
+### format(number, format, [options])
 
-Formats a `parsedNumber` into a string according to a `format`.
+Formats a `number` into a string according to a `format`.
 
 Available `format`s:
   * `National` — e.g. `(213) 373-4253`
@@ -99,17 +100,20 @@ Available `options`:
 }
 ```
 
-`parsedNumber` argument **must** be an already `parse()`d phone number (to strip national prefix from it). That means that first a phone number is `parse()`d and only then is it `format()`ted and there's no other way around it. For example, a phone number is `parse()`d before storing it in a database and then it is `forrmat()`ted each time it is read from the database. The `parsedNumber` object argument can also be expanded into two string arguments (for those who prefer this kind of syntax):
+The `number` argument must be either a `parse()`d phone number object (to strip national prefix) or an E.164 phone number (e.g. `+12133734253`). The `parse()`d phone number object argument be expanded into two string arguments for those who prefer this kind of syntax.
 
 ```js
 format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
 format('2133734253', 'US', 'International') === '+1 213 373 4253'
+format('+12133734253', 'International') === '+1 213 373 4253'
 
-// The following won't work because the phone number argument is invalid
-// (has not been parsed previously and therefore contains the `0` national prefix)
+// An example of an invalid phone number argument.
+// (has not been parsed and therefore contains the `0` national prefix)
 format('017212345678', 'DE', 'E.164') !== '+4917212345678'
+// After proper parsing it works.
+format(parse('017212345678', 'DE'), 'E.164') === '+4917212345678'
 
-// Formats phone number extensions (except for E.164).
+// Formatting phone number extensions (except for E.164).
 format({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
 ```
 
