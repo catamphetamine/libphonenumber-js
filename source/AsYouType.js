@@ -835,7 +835,12 @@ export default class AsYouType
 
 	format_next_national_number_digits(digits)
 	{
-		for (const digit of digits)
+		// Using `.split('')` to iterate through a string here
+		// to avoid requiring `Symbol.iterator` polyfill.
+		// `.split('')` is generally not safe for Unicode,
+		// but in this particular case for `digits` it is safe.
+		// for (const digit of digits)
+		for (const digit of digits.split(''))
 		{
 			// If there is room for more digits in current `template`,
 			// then set the next digit in the `template`,
@@ -927,12 +932,18 @@ export function close_dangling_braces(template, cut_before)
 	return template.slice(0, cut_before)
 }
 
-// Counts all occurences of a symbol in a string
+// Counts all occurences of a symbol in a string.
+// Unicode-unsafe (because using `.split()`).
 export function count_occurences(symbol, string)
 {
 	let count = 0
 
-	for (let character of string)
+	// Using `.split('')` to iterate through a string here
+	// to avoid requiring `Symbol.iterator` polyfill.
+	// `.split('')` is generally not safe for Unicode,
+	// but in this particular case for counting brackets it is safe.
+	// for (const character of string)
+	for (const character of string.split(''))
 	{
 		if (character === symbol)
 		{

@@ -1,6 +1,6 @@
 import metadata from '../metadata.full'
 import Metadata from './metadata'
-import get_number_type_custom, { check_number_length_for_type } from './types'
+import get_number_type_custom, { check_number_length_for_type, merge_arrays } from './types'
 
 function get_number_type(...parameters)
 {
@@ -76,6 +76,11 @@ describe('get_number_type', () =>
 		// Numerical `value`
 		thrower = () => get_number_type(89150000000, 'RU')
 		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
+	})
+
+	it('should merge arrays', () =>
+	{
+		merge_arrays([1, 2], [2, 3]).should.deep.equal([1, 2, 3])
 	})
 })
 

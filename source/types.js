@@ -276,16 +276,25 @@ export function check_number_length_for_type(national_number, type, metadata)
 /* istanbul ignore next */
 const is_object = _ => typeof _ === 'object'
 
-function merge_arrays(a, b)
+export function merge_arrays(a, b)
 {
-	let merged = new Set(a)
+	const merged = a.slice()
 
-	for (const i of b)
+	for (const element of b)
 	{
-		merged.add(i)
+		if (a.indexOf(element) < 0)
+		{
+			merged.push(element)
+		}
 	}
 
-	merged = Array.from(merged)
-	merged.sort((a, b) => a - b)
-	return merged
+	return merged.sort((a, b) => a - b)
+
+	// ES6 version, requires Set polyfill.
+	// let merged = new Set(a)
+	// for (const element of b)
+	// {
+	// 	merged.add(i)
+	// }
+	// return Array.from(merged).sort((a, b) => a - b)
 }

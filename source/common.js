@@ -167,7 +167,12 @@ function drop_and_substitute_characters(text, replacements)
 {
 	let replaced = ''
 
-	for (const character of text)
+	// Using `.split('')` to iterate through a string here
+	// to avoid requiring `Symbol.iterator` polyfill.
+	// `.split('')` is generally not safe for Unicode,
+	// but in this particular case for `digits` it is safe.
+	// for (const character of text)
+	for (const character of text.split(''))
 	{
 		const replacement = replacements[character.toUpperCase()]
 
