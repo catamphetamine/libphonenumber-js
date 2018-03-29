@@ -89,6 +89,7 @@ Available `format`s:
   * `National` — e.g. `(213) 373-4253`
   * `International` — e.g. `+1 213 373 4253`
   * [`E.164`](https://en.wikipedia.org/wiki/E.164) — e.g. `+12133734253`
+  * [`MSISDN`](https://en.wikipedia.org/wiki/MSISDN) — e.g. `12133734253`
   * [`RFC3966`](https://www.ietf.org/rfc/rfc3966.txt) (the phone number URI) — e.g. `tel:+12133734253;ext=123`
 
 Available `options`:

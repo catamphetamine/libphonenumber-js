@@ -84,6 +84,9 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 			// `E.164` doesn't define "phone number extensions".
 			return `+${metadata.countryCallingCode()}${input.phone}`
 
+		case 'MSISDN':
+			return `${metadata.countryCallingCode()}${input.phone}`
+
 		case 'RFC3966':
 			return formatRFC3966
 			({
@@ -285,6 +288,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 	{
 		case 'International':
 		case 'E.164':
+		case 'MSISDN':
 		case 'National':
 		case 'RFC3966':
 			break
