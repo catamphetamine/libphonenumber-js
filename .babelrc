@@ -10,8 +10,9 @@
 
 			"plugins":
 			[
+				["transform-es2015-for-of", { loose: true }],
 				"transform-object-rest-spread",
-				["transform-es2015-for-of", { loose: true }]
+				"transform-class-properties"
 			]
 		},
 		"commonjs":
@@ -23,7 +24,9 @@
 
 			"plugins":
 			[
-				["transform-es2015-for-of", { loose: true }]
+				["transform-es2015-for-of", { loose: true }],
+				"transform-object-rest-spread",
+				"transform-class-properties"
 			]
 		},
 		"es6":
@@ -35,7 +38,9 @@
 
 			"plugins":
 			[
-				["transform-es2015-for-of", { loose: true }]
+				["transform-es2015-for-of", { loose: true }],
+				"transform-object-rest-spread",
+				"transform-class-properties"
 			]
 		}
 	}
