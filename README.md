@@ -28,7 +28,7 @@ One part of me was curious about how all this phone number parsing and formattin
 ## Usage
 
 ```js
-import { parse, format, AsYouType } from 'libphonenumber-js'
+import { parseNumber, formatNumber, AsYouType } from 'libphonenumber-js'
 
 parseNumber('8 (800) 555 35 35', 'RU')
 // { country: 'RU', phone: '8005553535' }
@@ -381,8 +381,8 @@ In ES6 that would be
 
 ```js
 import {
-  parse,
-  format,
+  parseNumber,
+  formatNumber,
   isValidNumber,
   getNumberType,
   AsYouType
