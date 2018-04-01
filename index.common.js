@@ -5,18 +5,36 @@ var metadata = require('./metadata.min.json')
 
 exports = module.exports = {}
 
+// Deprecated: remove `parse()` export in 2.0.0.
+// (renamed to `parseNumber()`)
 exports.parse = function parse()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
-	return custom.parse.apply(this, parameters)
+	return custom.parseNumber.apply(this, parameters)
 }
 
+exports.parseNumber = function parseNumber()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.parseNumber.apply(this, parameters)
+}
+
+// Deprecated: remove `format()` export in 2.0.0.
+// (renamed to `formatNumber()`)
 exports.format = function format()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
-	return custom.format.apply(this, parameters)
+	return custom.formatNumber.apply(this, parameters)
+}
+
+exports.formatNumber = function formatNumber()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.formatNumber.apply(this, parameters)
 }
 
 exports.getNumberType = function getNumberType()
@@ -62,6 +80,20 @@ exports.AsYouType = function AsYouType(country)
 
 exports.AsYouType.prototype = Object.create(custom.AsYouType.prototype, {})
 exports.AsYouType.prototype.constructor = exports.AsYouType
+
+exports.parseRFC3966 = function()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.parseRFC3966.apply(this, parameters)
+}
+
+exports.formatRFC3966 = function()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.formatRFC3966.apply(this, parameters)
+}
 
 // `DIGIT_PLACEHOLDER` is used by `react-phone-number-input`.
 exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER

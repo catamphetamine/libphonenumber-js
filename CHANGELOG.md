@@ -1,3 +1,10 @@
+1.1.7 / 01.04.2018
+===================
+
+  * Added `parseNumber()` and `formatNumber()` aliases for `parse()` and `format()`. Now these are the default ones, and `parse()` and `format()` names are considered deprecated. The rationale is that `parse()` and `format()` function names are too unspecific and can clash with other functions declared in a javascript file. And also searching in a project for `parseNumber` and `formatNumber` is easier than searching in a project for `parse` and `format`.
+
+  * Fixed `parseRFC3966()` and `formatRFC3966()` non-custom exports.
+
 1.1.4 / 15.03.2018
 ===================
 

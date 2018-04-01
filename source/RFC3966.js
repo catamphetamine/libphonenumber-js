@@ -38,10 +38,11 @@ export function parseRFC3966(text)
 		return {}
 	}
 
-	return {
-		number,
-		ext
+	const result = { number }
+	if (ext) {
+		result.ext = ext
 	}
+	return result
 }
 
 /**

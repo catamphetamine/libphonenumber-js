@@ -2,8 +2,14 @@
 
 exports = module.exports = {}
 
+// Deprecated: remove `parse()` export in 2.0.0.
+// (renamed to `parseNumber()`)
 exports.parse              = require('./build/parse').default
+exports.parseNumber        = require('./build/parse').default
+// Deprecated: remove `format()` export in 2.0.0.
+// (renamed to `formatNumber()`)
 exports.format             = require('./build/format').default
+exports.formatNumber       = require('./build/format').default
 exports.getNumberType      = require('./build/types').default
 exports.isValidNumber      = require('./build/validate').default
 exports.findPhoneNumbers   = require('./build/findPhoneNumbers').default

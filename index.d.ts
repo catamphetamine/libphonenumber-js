@@ -33,12 +33,23 @@ export function parse(text: string, options?: CountryCode | { defaultCountry?: C
 export function parseCustom(text: string, metadata: object): ParsedNumber;
 export function parseCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }, metadata: object): ParsedNumber;
 
+export function parseNumber(text: string, options?: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }): ParsedNumber;
+export function parseNumberCustom(text: string, metadata: object): ParsedNumber;
+export function parseNumberCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }, metadata: object): ParsedNumber;
+
 export function format(parsedNumber: ParsedNumber, format: NumberFormat): string;
 export function format(phone: TelephoneNumber, format: NumberFormat): string;
 export function format(phone: TelephoneNumber, country: CountryCode, format: NumberFormat): string;
 export function formatCustom(parsedNumber: ParsedNumber, format: NumberFormat, metadata: object): string;
 export function formatCustom(phone: TelephoneNumber, format: NumberFormat, metadata: object): string;
 export function formatCustom(phone: TelephoneNumber, country: CountryCode, format: NumberFormat, metadata: object): string;
+
+export function formatNumber(parsedNumber: ParsedNumber, format: NumberFormat): string;
+export function formatNumber(phone: TelephoneNumber, format: NumberFormat): string;
+export function formatNumber(phone: TelephoneNumber, country: CountryCode, format: NumberFormat): string;
+export function formatNumberCustom(parsedNumber: ParsedNumber, format: NumberFormat, metadata: object): string;
+export function formatNumberCustom(phone: TelephoneNumber, format: NumberFormat, metadata: object): string;
+export function formatNumberCustom(phone: TelephoneNumber, country: CountryCode, format: NumberFormat, metadata: object): string;
 
 export function getNumberType(parsedNumber: ParsedNumber): NumberType;
 export function getNumberType(phone: TelephoneNumber, country?: CountryCode): NumberType;

@@ -1,27 +1,45 @@
 import metadata from './metadata.min.json'
 
-import parseCustom from './es6/parse'
+import parseNumberCustom from './es6/parse'
+import formatNumberCustom from './es6/format'
 import getNumberTypeCustom from './es6/types'
-import formatCustom from './es6/format'
 import isValidNumberCustom from './es6/validate'
 import findPhoneNumbersCustom, { searchPhoneNumbers as searchPhoneNumbersCustom, PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
 import AsYouTypeCustom from './es6/AsYouType'
 import getCountryCallingCodeCustom from './es6/getCountryCallingCode'
 export { default as Metadata } from './es6/metadata'
-export { parseRFC3966, formatRFC3966 } from './es6/RFC3966'
+import { parseRFC3966 as parseRFC3966Custom, formatRFC3966 as formatRFC3966Custom } from './es6/RFC3966'
 
+export function parseNumber()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return parseNumberCustom.apply(this, parameters)
+}
+
+// Deprecated: remove `parse()` export in 2.0.0.
+// (renamed to `parseNumber()`)
 export function parse()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
-	return parseCustom.apply(this, parameters)
+	return parseNumberCustom.apply(this, parameters)
 }
 
+export function formatNumber()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return formatNumberCustom.apply(this, parameters)
+}
+
+// Deprecated: remove `format()` export in 2.0.0.
+// (renamed to `formatNumber()`)
 export function format()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
-	return formatCustom.apply(this, parameters)
+	return formatNumberCustom.apply(this, parameters)
 }
 
 export function getNumberType()
@@ -68,22 +86,27 @@ export function AsYouType(country)
 AsYouType.prototype = Object.create(AsYouTypeCustom.prototype, {})
 AsYouType.prototype.constructor = AsYouType
 
-export
+export function parseRFC3966()
 {
-	default as parseCustom
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return parseRFC3966Custom.apply(this, parameters)
 }
-from './es6/parse'
 
-export
+export function formatRFC3966()
 {
-	// `DIGITS` are used by `react-phone-number-input`.
-	DIGIT_MAPPINGS as DIGITS
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return formatRFC3966Custom.apply(this, parameters)
 }
-from './es6/common'
+
+// Deprecated: remove DIGITS export in 2.0.0 (unused).
+export { DIGIT_MAPPINGS as DIGITS } from './es6/common'
 
 // Deprecated: remove this in 2.0.0 and make `custom.js` in ES6
 // (the old `custom.js` becomes `custom.commonjs.js`).
-export { default as formatCustom }           from './es6/format'
+export { default as parseCustom } from './es6/parse'
+export { default as formatCustom } from './es6/format'
 export { default as isValidNumberCustom }    from './es6/validate'
 export { default as findPhoneNumbersCustom } from './es6/findPhoneNumbers'
 export { searchPhoneNumbers as searchPhoneNumbersCustom } from './es6/findPhoneNumbers'

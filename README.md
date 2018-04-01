@@ -30,11 +30,11 @@ One part of me was curious about how all this phone number parsing and formattin
 ```js
 import { parse, format, AsYouType } from 'libphonenumber-js'
 
-parse('8 (800) 555 35 35', 'RU')
+parseNumber('8 (800) 555 35 35', 'RU')
 // { country: 'RU', phone: '8005553535' }
 
-format({ country: 'US', phone: '2133734253' }, 'International')
-format('+12133734253', 'International')
+formatNumber({ country: 'US', phone: '2133734253' }, 'International')
+formatNumber('+12133734253', 'International')
 // '+1 213 373 4253'
 
 new AsYouType().input('+12133734')
@@ -49,7 +49,7 @@ new AsYouType('US').input('2133734')
 
 ## API
 
-### parse(text, [defaultCountry], [options])
+### parseNumber(text, [defaultCountry], [options])
 
 Attempts to parse a valid phone number from `text`.
 
@@ -63,25 +63,25 @@ Returns `{ country, phone, ext }` where
 If the phone number supplied isn't valid then an empty object `{}` is returned.
 
 ```js
-parse('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
-parse('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
+parseNumber('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
+parseNumber('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
 
 // Parses phone number extensions.
-parse('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '2133734253', ext: '123' }
+parseNumber('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '2133734253', ext: '123' }
 
 // Parses RFC 3966 phone number URIs.
-parse('tel:+78005553535;ext:123') === { country: 'RU', phone: '8005553535', ext: '123' }
+parseNumber('tel:+78005553535;ext:123') === { country: 'RU', phone: '8005553535', ext: '123' }
 ```
 
 Available `options`:
 
  * `defaultCountry : string` — Same as `defaultCountry` argument.
 
- * `extended : boolean` — If set to `true` then `parse()` will attempt to parse "possible" phone numbers even if they're classified as "invalid". The result of "extended" parsing has shape `{ country, countryCallingCode, carrierCode, phone, ext, valid: boolean, possible: boolean }`; some or all of these properties may be absent. The "extended" parsing is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid (but is kinda "possible"). Though I don't know who might need such an advanced feature, still it [has been requested](https://github.com/catamphetamine/libphonenumber-js/issues/176) and has been implemented.
+ * `extended : boolean` — If set to `true` then `parseNumber()` will attempt to parse "possible" phone numbers even if they're classified as "invalid". The result of "extended" parsing has shape `{ country, countryCallingCode, carrierCode, phone, ext, valid: boolean, possible: boolean }`; some or all of these properties may be absent. The "extended" parsing is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid (but is kinda "possible"). Though I don't know who might need such an advanced feature, still it [has been requested](https://github.com/catamphetamine/libphonenumber-js/issues/176) and has been implemented.
 
 Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the 21st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
 
-### format(number, format, [options])
+### formatNumber(number, format, [options])
 
 Formats a `number` into a string according to a `format`.
 
@@ -100,21 +100,21 @@ Available `options`:
 }
 ```
 
-The `number` argument must be either a `parse()`d phone number object (to strip national prefix) or an E.164 phone number (e.g. `+12133734253`). The `parse()`d phone number object argument be expanded into two string arguments for those who prefer this kind of syntax.
+The `number` argument must be either a `parseNumber()`d phone number object (to strip national prefix) or an E.164 phone number (e.g. `+12133734253`). The `parseNumber()`d phone number object argument be expanded into two string arguments for those who prefer this kind of syntax.
 
 ```js
-format({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
-format('2133734253', 'US', 'International') === '+1 213 373 4253'
-format('+12133734253', 'International') === '+1 213 373 4253'
+formatNumber({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
+formatNumber('2133734253', 'US', 'International') === '+1 213 373 4253'
+formatNumber('+12133734253', 'International') === '+1 213 373 4253'
 
 // An example of an invalid phone number argument.
 // (has not been parsed and therefore contains the `0` national prefix)
-format('017212345678', 'DE', 'E.164') !== '+4917212345678'
+formatNumber('017212345678', 'DE', 'E.164') !== '+4917212345678'
 // After proper parsing it works.
-format(parse('017212345678', 'DE'), 'E.164') === '+4917212345678'
+formatNumber(parseNumber('017212345678', 'DE'), 'E.164') === '+4917212345678'
 
 // Formatting phone number extensions (except for E.164).
-format({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
+formatNumber({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
 ```
 
 ### `class` AsYouType(defaultCountry)
@@ -233,7 +233,7 @@ I made my take on porting Google's `PhoneNumberMatcher.java` into javascirpt and
 
 Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
 
-The `number` argument can be either a result of the `parse()` function call — `{ country, phone }` — or a string possibly accompanied with `defaultCountry`.
+The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with `defaultCountry`.
 
 ```js
 getNumberType('9160151539', 'RU') === 'MOBILE'
@@ -244,7 +244,7 @@ getNumberType({ phone: '9160151539', country: 'RU' }) === 'MOBILE'
 
 Checks if a phone number is valid.
 
-The `number` argument can be either a result of the `parse()` function call — `{ country, phone }` — or a string possibly accompanied with `defaultCountry`.
+The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with `defaultCountry`.
 
 ```js
 isValidNumber('+1-213-373-4253') === true
@@ -256,9 +256,9 @@ isValidNumber('(213) 37', 'US') === false
 isValidNumber({ phone: '2133734253', country: 'US' }) === true
 ```
 
-The difference between using `parse()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parse('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see below) and the precise regular expressions for possible phone numbers are included in the metadata then `isValidNumber()` is gonna use those precise regular expressions for validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
+The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see below) and the precise regular expressions for possible phone numbers are included in the metadata then `isValidNumber()` is gonna use those precise regular expressions for validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
 
-So, the general phone number rules for a country are mainly for phone number formatting: they dictate how different phone numbers (matching those general regular expressions) should be formatted. And `parse()` uses only those general regular expressions (as per the reference Google's `libphonenumber` [implementation](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-)) to perform basic phone number validation. `isValidNumber()`, on the other hand, is all about validation, so it digs deeper into precise regular expressions (if they're included in metadata) for possible phone numbers for a given country. And that's the difference between them: `parse()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone number precisely (provided the precise regular expressions are included in metadata).
+So, the general phone number rules for a country are mainly for phone number formatting: they dictate how different phone numbers (matching those general regular expressions) should be formatted. And `parseNumber()` uses only those general regular expressions (as per the reference Google's `libphonenumber` [implementation](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-)) to perform basic phone number validation. `isValidNumber()`, on the other hand, is all about validation, so it digs deeper into precise regular expressions (if they're included in metadata) for possible phone numbers for a given country. And that's the difference between them: `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone number precisely (provided the precise regular expressions are included in metadata).
 
 By default those precise regular expressions aren't included in metadata because that would cause metadata to grow twice in its size (the complete metadata size is about 145 kilobytes while the default reduced metadata size is about 77 kilobytes). If anyone needs to use (or generate) custom metadata then it's quite easy to do so: follow the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
 
@@ -390,8 +390,8 @@ import {
 
 import metadata from 'libphonenumber-js/metadata.full.json'
 
-parse('+78005553535', metadata)
-format({ phone: '8005553535', country: 'RU' }, metadata)
+parseNumber('+78005553535', metadata)
+formatNumber({ phone: '8005553535', country: 'RU' }, metadata)
 isValidNumber('+78005553535', metadata)
 getNumberType('+78005553535', metadata)
 new AsYouType('RU', metadata).input('+78005553535')
@@ -426,16 +426,16 @@ And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) 
 var custom = require('libphonenumber-js/custom')
 var metadata = require(libphonenumber-js/metadata.full.json)
 
-exports.parse = function parse() {
+exports.parseNumber = function parseNumber() {
   var parameters = Array.prototype.slice.call(arguments)
   parameters.push(metadata)
-  return custom.parse.apply(this, parameters)
+  return custom.parseNumber.apply(this, parameters)
 }
 
-exports.format = function format() {
+exports.formatNumber = function formatNumber() {
   var parameters = Array.prototype.slice.call(arguments)
   parameters.push(metadata)
-  return custom.format.apply(this, parameters)
+  return custom.formatNumber.apply(this, parameters)
 }
 
 exports.isValidNumber = function isValidNumber() {
