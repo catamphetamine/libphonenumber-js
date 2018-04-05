@@ -174,12 +174,12 @@
 					const parseDigit        = input_format.parseDigit
 
 					let asYouType
-					let parsed_number = 'Unknown country'
-					let parsed_number_extended = 'Unknown country'
-					let national_formatted_number = 'Unknown country'
-					let international_formatted_number = 'Unknown country'
-					let international_formatted_number_in_E164 = 'Unknown country'
-					let international_formatted_number_in_RFC3966 = 'Unknown country'
+					let parsed_number = '-'
+					let parsed_number_extended = '-'
+					let national_formatted_number = '-'
+					let international_formatted_number = '-'
+					let international_formatted_number_in_E164 = '-'
+					let international_formatted_number_in_RFC3966 = '-'
 					let numbers_found = []
 
 					const { country, parse, format, value, findNumbers } = this.state
@@ -189,15 +189,15 @@
 						asYouType = new libphonenumber.AsYouType(country)
 						asYouType.input(value)
 
-						parsed_number = JSON.stringify(libphonenumber.parse(parse, country))
-						parsed_number_extended = JSON.stringify(libphonenumber.parse(parse, country, { extended: true }))
+						parsed_number = JSON.stringify(libphonenumber.parseNumber(parse, country))
+						parsed_number_extended = JSON.stringify(libphonenumber.parseNumber(parse, country, { extended: true }))
 
-						const number_to_format = libphonenumber.parse(format, country)
+						const number_to_format = libphonenumber.parseNumber(format, country)
 
-						national_formatted_number = libphonenumber.format(number_to_format, 'National')
-						international_formatted_number = libphonenumber.format(number_to_format, 'International')
-						international_formatted_number_in_E164 = libphonenumber.format(number_to_format, 'E.164')
-						international_formatted_number_in_RFC3966 = libphonenumber.format(number_to_format, 'RFC3966')
+						national_formatted_number = libphonenumber.formatNumber(number_to_format, 'National')
+						international_formatted_number = libphonenumber.formatNumber(number_to_format, 'International')
+						international_formatted_number_in_E164 = libphonenumber.formatNumber(number_to_format, 'E.164')
+						international_formatted_number_in_RFC3966 = libphonenumber.formatNumber(number_to_format, 'RFC3966')
 
 						numbers_found = libphonenumber.findPhoneNumbers(findNumbers, country)
 					}
@@ -277,9 +277,9 @@
 										onChange={event => this.setState({ country: event.target.value })}
 										style={{ width: '40px', marginLeft: '6px' }}/>
 								</div>
-								<div className="section__line">Actual country: {asYouType ? asYouType.country : 'Unknown country'}</div>
-								<div className="section__line">National: {asYouType ? asYouType.country && libphonenumber.format(asYouType.national_number, asYouType.country, 'National') : 'Unknown country'}</div>
-								<div className="section__line">Valid: {asYouType ? String(libphonenumber.isValidNumber(this.state.value, asYouType.country)) : 'Unknown country'}</div>
+								<div className="section__line">Actual country: {asYouType ? asYouType.country : '-'}</div>
+								<div className="section__line">National: {asYouType ? asYouType.country && libphonenumber.formatNumber(asYouType.national_number, asYouType.country, 'National') : '-'}</div>
+								<div className="section__line">Valid: {asYouType ? String(libphonenumber.isValidNumber(this.state.value, asYouType.country)) : '-'}</div>
 
 								<br/>
 
