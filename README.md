@@ -27,11 +27,18 @@ One part of me was curious about how all this phone number parsing and formattin
 
 ## Installation
 
-To install, you can use [npm](https://npmjs.org/) or [yarn](https://yarnpkg.com):
+To install, you can use [npm](https://npmjs.org/)
 
-    $ npm install libphonenumber-js
-    $ yarn add libphonenumber-js
-    
+```sh
+$ npm install libphonenumber-js --save
+```
+
+or [yarn](https://yarnpkg.com)
+
+```sh
+$ yarn add libphonenumber-js
+```
+
 ## Usage
 
 ```js
