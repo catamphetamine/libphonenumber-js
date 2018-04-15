@@ -42,7 +42,11 @@ module.exports = function()
 			!/^examples\.[a-z]+\.json$/.test(file)
 	})
 
-	if (unexpected_modified_files.length > 0)
+	// Turned off this "modified files" check
+	// because on Windows random files constantly got "modified"
+	// without actually being modified.
+	// (perhaps something related to line endings)
+	if (false && unexpected_modified_files.length > 0)
 	{
 		var error
 
