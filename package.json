@@ -29,7 +29,7 @@
     "webpack-cli": "^2.0.12"
   },
   "scripts": {
-    "metadata:update:job": "git reset --hard && git pull && npm run metadata:update:release",
+    "metadata:update:job": "git reset --hard && git pull && npm install && npm run metadata:update:release",
     "metadata:pull-request": "babel-node runnable/metadata-pull-request",
     "metadata:branch": "babel-node runnable/metadata-branch",
     "metadata:unbranch": "babel-node runnable/metadata-unbranch",
