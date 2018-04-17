@@ -12,6 +12,11 @@ describe('RFC3966', () =>
 
 	it('should parse', function()
 	{
+		parseRFC3966('tel:+78005553535').should.deep.equal
+		({
+			number : '+78005553535'
+		})
+
 		parseRFC3966('tel:+78005553535;ext:123').should.deep.equal
 		({
 			number : '+78005553535',
