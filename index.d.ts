@@ -27,7 +27,6 @@ export interface NumberFound {
 // I don't use TypeScript.
 // Someone check these.
 //
-// export type NumbersFound = NumberFound[]
 
 export function parse(text: string, options?: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }): ParsedNumber;
 export function parseCustom(text: string, metadata: object): ParsedNumber;
@@ -44,6 +43,7 @@ export function formatCustom(parsedNumber: ParsedNumber, format: NumberFormat, m
 export function formatCustom(phone: TelephoneNumber, format: NumberFormat, metadata: object): string;
 export function formatCustom(phone: TelephoneNumber, country: CountryCode, format: NumberFormat, metadata: object): string;
 
+export function formatNumber(countryAndNumber: {country: CountryCode, phone: TelephoneNumber}, format: NumberFormat): string;
 export function formatNumber(parsedNumber: ParsedNumber, format: NumberFormat): string;
 export function formatNumber(phone: TelephoneNumber, format: NumberFormat): string;
 export function formatNumber(phone: TelephoneNumber, country: CountryCode, format: NumberFormat): string;
@@ -66,7 +66,7 @@ export function isValidNumberCustom(phone: TelephoneNumber, country: CountryCode
 // I don't use TypeScript.
 // Someone check these.
 //
-// export function findPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumbersFound;
+export function findPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
 // export function findPhoneNumbersCustom(text: string, metadata: object): NumbersFound;
 // export function findPhoneNumbersCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): NumbersFound;
 //
