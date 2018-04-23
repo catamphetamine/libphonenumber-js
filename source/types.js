@@ -176,12 +176,6 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 	}
 	else throw new TypeError('A phone number must either be a string or an object of shape { phone, [country] }.')
 
-	// Metadata is required.
-	if (!metadata || !metadata.countries)
-	{
-		throw new Error('Metadata is required')
-	}
-
 	return { input, metadata: new Metadata(metadata) }
 }
 

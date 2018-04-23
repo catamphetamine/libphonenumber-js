@@ -8,11 +8,7 @@ export default class Metadata
 {
 	constructor(metadata)
 	{
-		// Metadata is required.
-		if (!metadata || !metadata.countries)
-		{
-			throw new Error('Metadata is required')
-		}
+		validateMetadata(metadata)
 
 		this.metadata = metadata
 
@@ -261,3 +257,33 @@ function getType(types, type)
 			return types[9]
 	}
 }
+
+export function validateMetadata(metadata)
+{
+	if (!metadata)
+	{
+		throw new Error('[libphonenumber-js] `metadata` argument not passed. Check your arguments.')
+	}
+
+	// `country_phone_code_to_countries` was renamed to
+	// `country_calling_codes` in `1.0.18`.
+	if
+	(
+		!is_object(metadata) ||
+		!is_object(metadata.countries) ||
+		(!is_object(metadata.country_calling_codes) && !is_object(metadata.country_phone_code_to_countries))
+	)
+	{
+		throw new Error(`[libphonenumber-js] \`metadata\` argument was passed but it's not a valid metadata. Must be an object having \`.countries\` and \`.country_calling_codes\` child object properties. Got ${is_object(metadata) ? 'an object of shape: { ' + Object.keys(metadata).join(', ') + ' }' : 'a ' + type_of(metadata) + ': ' + metadata}.`)
+	}
+}
+
+// Babel transforms `typeof` into some "branches"
+// so istanbul will show this as "branch not covered".
+/* istanbul ignore next */
+const is_object = _ => typeof _ === 'object'
+
+// Babel transforms `typeof` into some "branches"
+// so istanbul will show this as "branch not covered".
+/* istanbul ignore next */
+const type_of = _ => typeof _

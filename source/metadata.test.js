@@ -1,6 +1,6 @@
 import metadata from '../metadata.min'
 
-import Metadata from './metadata'
+import Metadata, { validateMetadata } from './metadata'
 
 describe('metadata', () =>
 {
@@ -15,6 +15,35 @@ describe('metadata', () =>
 	{
 		const thrower = () => new Metadata(metadata).country('RUS')
 		thrower.should.throw('Unknown country')
+	})
+
+	it('should validate metadata', function()
+	{
+		let thrower = () => validateMetadata()
+		thrower.should.throw('`metadata` argument not passed')
+
+		thrower = () => validateMetadata(123)
+		thrower.should.throw('Got a number: 123.')
+
+		thrower = () => validateMetadata('abc')
+		thrower.should.throw('Got a string: abc.')
+
+		thrower = () => validateMetadata({ a: true, b: 2 })
+		thrower.should.throw('Got an object of shape: { a, b }.')
+
+		thrower = () => validateMetadata({ a: true, countries: 2 })
+		thrower.should.throw('Got an object of shape: { a, countries }.')
+
+		thrower = () => validateMetadata({ country_calling_codes: true, countries: 2 })
+		thrower.should.throw('Got an object of shape')
+
+		thrower = () => validateMetadata({ country_calling_codes: {}, countries: 2 })
+		thrower.should.throw('Got an object of shape')
+
+		thrower = () => validateMetadata({ country_calling_codes: 1, countries: {} })
+		thrower.should.throw('Got an object of shape')
+
+		validateMetadata({ country_calling_codes: {}, countries: {}, b: 3 })
 	})
 })
 

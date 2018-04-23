@@ -82,8 +82,8 @@ describe('format', () =>
 		thrower.should.throw('Unknown format type')
 
 		// No metadata
-		thrower = () => formatter('123', 'US', 'Gay')
-		thrower.should.throw('Metadata is required')
+		thrower = () => formatter('123', 'US', 'E.164')
+		thrower.should.throw('`metadata` argument not passed')
 
 		// No formats
 		format('012345', 'AC', 'National').should.equal('012345')

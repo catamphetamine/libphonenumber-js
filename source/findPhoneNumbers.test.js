@@ -109,7 +109,7 @@ describe('findPhoneNumbers', () =>
 
 		// No metadata
 		thrower = () => findNumbers('')
-		thrower.should.throw('Metadata is required')
+		thrower.should.throw('`metadata` argument not passed')
 	})
 })
 

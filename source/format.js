@@ -274,12 +274,6 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 	}
 	else throw new TypeError('A phone number must either be a string or an object of shape { phone, [country] }.')
 
-	// Metadata is required.
-	if (!metadata)
-	{
-		throw new Error('Metadata is required')
-	}
-
 	// Validate `format_type`.
 	switch (format_type)
 	{

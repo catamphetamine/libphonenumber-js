@@ -57,7 +57,7 @@ describe('validate', () =>
 	{
 		// No metadata
 		let thrower = () => validate('+78005553535')
-		thrower.should.throw('Metadata is required')
+		thrower.should.throw('`metadata` argument not passed')
 
 		// Non-phone-number characters in a phone number
 		is_valid_number('+499821958a').should.equal(false)

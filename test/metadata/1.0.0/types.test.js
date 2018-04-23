@@ -38,7 +38,7 @@ describe('get_number_type', () =>
 	{
 		// No metadata
 		let thrower = () => get_number_type_custom({ phone: '+78005553535' })
-		thrower.should.throw('Metadata is required')
+		thrower.should.throw('`metadata` argument not passed')
 
 		// Parsed phone number
 		get_number_type({ phone: '8005553535', country: 'RU' }).should.equal('TOLL_FREE')

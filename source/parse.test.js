@@ -214,11 +214,7 @@ describe('parse', () =>
 
 		// No metadata
 		thrower = () => parser('')
-		thrower.should.throw('Metadata is required')
-
-		// No metadata
-		thrower = () => parser('', {})
-		thrower.should.throw('Metadata is required')
+		thrower.should.throw('`metadata` argument not passed')
 
 		// Numerical `value`
 		thrower = () => parse(2141111111, 'US')

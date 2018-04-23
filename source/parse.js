@@ -437,12 +437,6 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 		}
 	}
 
-	// Metadata is required.
-	if (!metadata || !metadata.countries)
-	{
-		throw new Error('Metadata is required')
-	}
-
 	// Apply default options.
 	if (options)
 	{
