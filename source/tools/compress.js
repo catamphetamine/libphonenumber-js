@@ -10,6 +10,9 @@ export default function compress(input)
 		const country_array =
 		[
 			country.phone_code,
+
+			country.idd_prefix,
+
 			country.national_number_pattern,
 
 			country.possible_lengths,
@@ -66,6 +69,12 @@ export default function compress(input)
 
 			country_array.push(trim_array(types_array))
 		}
+		else
+		{
+			country_array.push([])
+		}
+
+		country_array.push(country.default_idd_prefix)
 
 		countries[country_code] = trim_array(country_array)
 	}

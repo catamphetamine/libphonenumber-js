@@ -1,5 +1,5 @@
 import metadata from '../metadata.min'
-import validate from './validate'
+import validate from '../../../../source/validate'
 
 function is_valid_number(...parameters)
 {
@@ -29,10 +29,8 @@ describe('validate', () =>
 		is_valid_number('0123456', 'DE').should.equal(true)
 
 		// Extra regular expressions for precise national number validation.
-		// `types` index in compressed array is `9` for v1.
-		// For v2 it's 10.
-		// For v3 it's 11.
-		metadata.countries.DE[11] =
+		// `types` index in compressed array is `9`
+		metadata.countries.DE[10] =
 		[
          ["[246]\\d{5,13}|3(?:0\\d{3,13}|2\\d{9}|[3-9]\\d{4,13})|5(?:0[2-8]|[1256]\\d|[38][0-8]|4\\d{0,2}|[79][0-7])\\d{3,11}|7(?:0[2-8]|[1-9]\\d)\\d{3,10}|8(?:0[2-9]|[1-9]\\d)\\d{3,10}|9(?:0[6-9]\\d{3,10}|1\\d{4,12}|[2-9]\\d{4,11})"],
          ["1(?:5[0-25-9]\\d{8}|6[023]\\d{7,8}|7(?:[0-57-9]\\d?|6\\d)\\d{7})"],

@@ -1,6 +1,7 @@
 import { parseString } from 'xml2js'
 
 import { DIGIT_PLACEHOLDER } from '../AsYouType'
+// import { isSingleIDDPrefix } from '../IDD'
 
 const phone_number_types =
 [
@@ -193,6 +194,10 @@ export default function(input, version, included_countries, extended, included_p
 				//
 				phone_code: territory.$.countryCode,
 
+				// International Direct Dialing prefix.
+				idd_prefix: territory.$.internationalPrefix,
+				default_idd_prefix: territory.$.preferredInternationalPrefix,
+
 				// In case of several countries
 				// having the same country phone code,
 				// these leading digits are the means
@@ -316,6 +321,18 @@ export default function(input, version, included_countries, extended, included_p
 			{
 				throw new Error(`"generalDesc.nationalNumberPattern" is missing for country ${country_code} metadata`)
 			}
+
+			// Check that an IDD prefix is always defined.
+			if (country_code !== '001' && !country.idd_prefix)
+			{
+				throw new Error(`"generalDesc.internationalPrefix" is missing for country ${country_code} metadata`)
+			}
+
+			// // Check that a preferred IDD prefix is always defined if IDD prefix is a pattern.
+			// if (country_code !== '001' && !isSingleIDDPrefix(country.idd_prefix) && !country.default_idd_prefix)
+			// {
+			// 	throw new Error(`"generalDesc.preferredInternationalPrefix" is missing for country ${country_code} metadata`)
+			// }
 
 			// Some countries don't have `availableFormats` specified,
 			// because those formats are inherited from the "main country for region".

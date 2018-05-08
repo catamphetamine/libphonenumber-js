@@ -41,7 +41,8 @@ export default function(number, from_country, with_formatting, metadata)
 
 	// Not using the extension, as that part cannot normally be dialed
 	// together with the main number.
-	number = {
+	number =
+	{
 		phone   : number.phone,
 		country : number.country
 	}
@@ -90,23 +91,23 @@ export default function(number, from_country, with_formatting, metadata)
 			// result, we add it back here if it is a valid regular length phone
 			// number.
 
-      // Select country for `.nationalPrefix()`.
-      metadata.country(country)
+			// Select country for `.nationalPrefix()`.
+			metadata.country(country)
 
 			formatted_number = metadata.nationalPrefix() + ' ' + format(number, 'NATIONAL', metadata.metadata)
 		}
 		else if (getCountryCallingCode(country, metadata.metadata) === '1')
 		{
-      // For NANPA countries, we output international format for numbers that
-      // can be dialed internationally, since that always works, except for
-      // numbers which might potentially be short numbers, which are always
-      // dialled in national format.
+			// For NANPA countries, we output international format for numbers that
+			// can be dialed internationally, since that always works, except for
+			// numbers which might potentially be short numbers, which are always
+			// dialled in national format.
 
-      // Select country for `check_number_length_for_type()`.
-      metadata.country(country)
+			// Select country for `check_number_length_for_type()`.
+			metadata.country(country)
 
-      if (can_be_internationally_dialled(number) &&
-          check_number_length_for_type(number.phone, undefined, metadata) !== 'TOO_SHORT')
+			if (can_be_internationally_dialled(number) &&
+				check_number_length_for_type(number.phone, undefined, metadata) !== 'TOO_SHORT')
 			{
 				formatted_number = format(number, 'International', metadata.metadata)
 			}
@@ -117,55 +118,55 @@ export default function(number, from_country, with_formatting, metadata)
 		}
 		else
 		{
-      // For non-geographical countries, Mexican and Chilean fixed line and
-      // mobile numbers, we output international format for numbers that can be
-      // dialed internationally, as that always works.
-      if
-      (
-      	(
-      		country === REGION_CODE_FOR_NON_GEO_ENTITY
-      		||
-	        // MX fixed line and mobile numbers should always be formatted in
-	        // international format, even when dialed within MX. For national
-	        // format to work, a carrier code needs to be used, and the correct
-	        // carrier code depends on if the caller and callee are from the
-	        // same local area. It is trickier to get that to work correctly than
-	        // using international format, which is tested to work fine on all
-	        // carriers.
-	        // CL fixed line numbers need the national prefix when dialing in the
-	        // national format, but don't have it when used for display. The
-	        // reverse is true for mobile numbers. As a result, we output them in
-	        // the international format to make it work.
-	        ((country === 'MX' || country === 'CL') && is_fixed_line_or_mobile)
-        )
-      	&&
-        can_be_internationally_dialled(number)
-      )
-      {
-        formatted_number = format(number, 'International')
-      }
-      else
-      {
-        formatted_number = format(number, 'National')
-      }
-    }
-  }
-  else if (is_valid_number && can_be_internationally_dialled(number))
-  {
-    // We assume that short numbers are not diallable from outside their region,
-    // so if a number is not a valid regular length phone number, we treat it as
-    // if it cannot be internationally dialled.
-    return with_formatting ?
-        format(number, 'International', metadata.metadata) :
-        format(number, 'E.164', metadata.metadata)
-  }
+			// For non-geographical countries, Mexican and Chilean fixed line and
+			// mobile numbers, we output international format for numbers that can be
+			// dialed internationally, as that always works.
+			if
+			(
+				(
+					country === REGION_CODE_FOR_NON_GEO_ENTITY
+					||
+					// MX fixed line and mobile numbers should always be formatted in
+					// international format, even when dialed within MX. For national
+					// format to work, a carrier code needs to be used, and the correct
+					// carrier code depends on if the caller and callee are from the
+					// same local area. It is trickier to get that to work correctly than
+					// using international format, which is tested to work fine on all
+					// carriers.
+					// CL fixed line numbers need the national prefix when dialing in the
+					// national format, but don't have it when used for display. The
+					// reverse is true for mobile numbers. As a result, we output them in
+					// the international format to make it work.
+					((country === 'MX' || country === 'CL') && is_fixed_line_or_mobile)
+				)
+				&&
+				can_be_internationally_dialled(number)
+			)
+			{
+				formatted_number = format(number, 'International')
+			}
+			else
+			{
+				formatted_number = format(number, 'National')
+			}
+		}
+	}
+	else if (is_valid_number && can_be_internationally_dialled(number))
+	{
+		// We assume that short numbers are not diallable from outside their region,
+		// so if a number is not a valid regular length phone number, we treat it as
+		// if it cannot be internationally dialled.
+		return with_formatting ?
+			format(number, 'International', metadata.metadata) :
+			format(number, 'E.164', metadata.metadata)
+	}
 
-  if (!with_formatting)
-  {
-  	return diallable_chars(formatted_number)
-  }
+	if (!with_formatting)
+	{
+		return diallable_chars(formatted_number)
+	}
 
-  return formatted_number
+	return formatted_number
 }
 
 function can_be_internationally_dialled(number)
@@ -180,19 +181,19 @@ function can_be_internationally_dialled(number)
  */
 const DIALLABLE_CHARACTERS =
 {
-  '0': '0',
-  '1': '1',
-  '2': '2',
-  '3': '3',
-  '4': '4',
-  '5': '5',
-  '6': '6',
-  '7': '7',
-  '8': '8',
-  '9': '9',
-  '+': '+',
-  '*': '*',
-  '#': '#'
+	'0': '0',
+	'1': '1',
+	'2': '2',
+	'3': '3',
+	'4': '4',
+	'5': '5',
+	'6': '6',
+	'7': '7',
+	'8': '8',
+	'9': '9',
+	'+': '+',
+	'*': '*',
+	'#': '#'
 }
 
 function diallable_chars(formatted_number)

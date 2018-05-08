@@ -95,6 +95,11 @@ const VALID_INCOMPLETE_PHONE_NUMBER_PATTERN = new RegExp('^' + VALID_INCOMPLETE_
 
 export default class AsYouType
 {
+	// Not setting `options` to a constructor argument
+	// not to break backwards compatibility
+	// for older versions of the library.
+	options = {}
+
 	/**
 	 * @param {string} [country_code] - The default country used for parsing non-international phone numbers.
 	 * @param {Object} metadata
@@ -578,7 +583,7 @@ export default class AsYouType
 	// and places the remaining input into the `national_number`.
 	extract_country_calling_code()
 	{
-		const { countryCallingCode, number } = parse_national_number_and_country_calling_code(this.parsed_input, this.metadata)
+		const { countryCallingCode, number } = parse_national_number_and_country_calling_code(this.parsed_input, this.options.fromCountry, this.metadata)
 
 		if (!countryCallingCode)
 		{

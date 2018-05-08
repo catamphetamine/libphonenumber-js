@@ -1,3 +1,8 @@
+1.2.0 / 08.05.2018
+===================
+
+  * Added support for [IDD prefixes](https://en.wikipedia.org/wiki/International_direct_dialing) — `parse()` now parses IDD-prefixed phones if `fromCountry` option is passed, `format()` now has an `IDD` format.
+
 1.1.7 / 01.04.2018
 ===================
 

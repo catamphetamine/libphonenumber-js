@@ -11,6 +11,8 @@ import
 }
 from './common'
 
+import { getIDDPrefix } from './IDD'
+
 import Metadata from './metadata'
 
 import { formatRFC3966 } from './RFC3966'
@@ -49,7 +51,7 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 		metadata.country(input.country)
 	}
 
-	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(input.phone, metadata)
+	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(input.phone, null, metadata)
 
 	countryCallingCode = countryCallingCode || input.countryCallingCode
 
@@ -90,6 +92,27 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 				number : `+${metadata.countryCallingCode()}${input.phone}`,
 				ext    : input.ext
 			})
+
+		case 'IDD':
+			if (!options.fromCountry) {
+				return
+				// throw new Error('`fromCountry` option not passed for IDD-prefixed formatting.')
+			}
+			const IDDPrefix = getIDDPrefix(options.fromCountry, metadata.metadata)
+			if (!IDDPrefix) {
+				return
+			}
+			if (options.humanReadable)
+			{
+				const formattedForSameCountryCallingCode = countryCallingCode && formatIDDSameCountryCallingCodeNumber(number, countryCallingCode, options.fromCountry, metadata)
+				if (formattedForSameCountryCallingCode) {
+					number = formattedForSameCountryCallingCode
+				} else {
+					number = `${IDDPrefix} ${metadata.countryCallingCode()} ${format_national_number(number, 'International', false, metadata)}`
+				}
+				return add_extension(number, input.ext, options.formatExtension)
+			}
+			return `${IDDPrefix}${metadata.countryCallingCode()}${number}`
 
 		case 'National':
 			if (!number) {
@@ -281,6 +304,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 		case 'E.164':
 		case 'National':
 		case 'RFC3966':
+		case 'IDD':
 			break
 		default:
 			throw new Error(`Unknown format type argument passed to "format()": "${format_type}"`)
@@ -307,4 +331,31 @@ const is_object = _ => typeof _ === 'object'
 function add_extension(number, ext, formatExtension)
 {
 	return ext ? formatExtension(number, ext) : number
+}
+
+export function formatIDDSameCountryCallingCodeNumber(number, toCountryCallingCode, fromCountry, toCountryMetadata)
+{
+	const fromCountryMetadata = new Metadata(toCountryMetadata.metadata)
+	fromCountryMetadata.country(fromCountry)
+
+	// If calling within the same country calling code.
+	if (toCountryCallingCode === fromCountryMetadata.countryCallingCode())
+	{
+		// For NANPA regions, return the national format for these regions
+		// but prefix it with the country calling code.
+		if (toCountryCallingCode === '1')
+		{
+			return toCountryCallingCode + ' ' + format_national_number(number, 'National', false, toCountryMetadata)
+		}
+
+		// If regions share a country calling code, the country calling code need
+		// not be dialled. This also applies when dialling within a region, so this
+		// if clause covers both these cases. Technically this is the case for
+		// dialling from La Reunion to other overseas departments of France (French
+		// Guiana, Martinique, Guadeloupe), but not vice versa - so we don't cover
+		// this edge case for now and for those cases return the version including
+		// country calling code. Details here:
+		// http://www.petitfute.com/voyage/225-info-pratiques-reunion
+		return format_national_number(number, 'National', false, toCountryMetadata)
+	}
 }

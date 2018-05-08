@@ -1,3 +1,5 @@
+import { stripIDDPrefix } from './IDD'
+
 // `DASHES` will be right after the opening square bracket of the "character class"
 const DASHES = '-\u2010-\u2015\u2212\u30FC\uFF0D'
 const SLASHES = '\uFF0F/'
@@ -98,7 +100,7 @@ export function parse_phone_number_digits(number)
 //
 // (aka `maybeExtractCountryPhoneCode`)
 //
-export function parse_national_number_and_country_calling_code(number, metadata)
+export function parse_national_number_and_country_calling_code(number, country, metadata)
 {
 	number = parse_phone_number_digits(number)
 
@@ -111,7 +113,15 @@ export function parse_national_number_and_country_calling_code(number, metadata)
 	// then don't extract country phone code.
 	if (number[0] !== '+')
 	{
-		return { number }
+		// Convert an "out-of-country" dialing phone number
+		// to a proper international phone number.
+		const numberWithoutIDD = stripIDDPrefix(number, country, metadata.metadata)
+
+		if (numberWithoutIDD) {
+			number = '+' + numberWithoutIDD
+		} else {
+			return { number }
+		}
 	}
 
 	// Fast abortion: country codes do not begin with a '0'

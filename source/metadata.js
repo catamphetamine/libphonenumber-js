@@ -4,6 +4,9 @@ import compare from 'semver-compare'
 // "country_phone_code_to_countries" to "country_calling_codes".
 const V2 = '1.0.18'
 
+// Added "idd_prefix" and "default_idd_prefix".
+const V3 = '1.2.0'
+
 export default class Metadata
 {
 	constructor(metadata)
@@ -13,7 +16,8 @@ export default class Metadata
 		this.metadata = metadata
 
 		this.v1 = !metadata.version
-		this.v2 = metadata.version // && compare(version, V3) === -1
+		this.v2 = metadata.version !== undefined && compare(metadata.version, V3) === -1
+		this.v3 = metadata.version !== undefined // && compare(metadata.version, V4) === -1
 	}
 
 	hasCountry(country)
@@ -45,58 +49,71 @@ export default class Metadata
 		return this.country_metadata[0]
 	}
 
+	IDDPrefix()
+	{
+		if (this.v1 || this.v2) return
+		return this.country_metadata[1]
+	}
+
+	defaultIDDPrefix()
+	{
+		if (this.v1 || this.v2) return
+		return this.country_metadata[12]
+	}
+
 	nationalNumberPattern()
 	{
-		return this.country_metadata[1]
+		if (this.v1 || this.v2) return this.country_metadata[1]
+		return this.country_metadata[2]
 	}
 
 	possibleLengths()
 	{
 		if (this.v1) return
-		return this.country_metadata[2]
+		return this.country_metadata[this.v2 ? 2 : 3]
 	}
 
 	formats()
 	{
-		const formats = this.country_metadata[this.v1 ? 2 : 3] || []
+		const formats = this.country_metadata[this.v1 ? 2 : this.v2 ? 3 : 4] || []
 		return formats.map(_ => new Format(_, this))
 	}
 
 	nationalPrefix()
 	{
-		return this.country_metadata[this.v1 ? 3 : 4]
+		return this.country_metadata[this.v1 ? 3 : this.v2 ? 4 : 5]
 	}
 
 	nationalPrefixFormattingRule()
 	{
-		return this.country_metadata[this.v1 ? 4 : 5]
+		return this.country_metadata[this.v1 ? 4 : this.v2 ? 5 : 6]
 	}
 
 	nationalPrefixForParsing()
 	{
 		// If `national_prefix_for_parsing` is not set explicitly,
 		// then infer it from `national_prefix` (if any)
-		return this.country_metadata[this.v1 ? 5 : 6] || this.nationalPrefix()
+		return this.country_metadata[this.v1 ? 5 : this.v2 ? 6 : 7] || this.nationalPrefix()
 	}
 
 	nationalPrefixTransformRule()
 	{
-		return this.country_metadata[this.v1 ? 6 : 7]
+		return this.country_metadata[this.v1 ? 6 : this.v2 ? 7 : 8]
 	}
 
 	nationalPrefixIsOptionalWhenFormatting()
 	{
-		return this.country_metadata[this.v1 ? 7 : 8]
+		return this.country_metadata[this.v1 ? 7 : this.v2 ? 8 : 9]
 	}
 
 	leadingDigits()
 	{
-		return this.country_metadata[this.v1 ? 8 : 9]
+		return this.country_metadata[this.v1 ? 8 : this.v2 ? 9 : 10]
 	}
 
 	types()
 	{
-		return this.country_metadata[this.v1 ? 9 : 10]
+		return this.country_metadata[this.v1 ? 9 : this.v2 ? 10 : 11]
 	}
 
 	hasTypes()

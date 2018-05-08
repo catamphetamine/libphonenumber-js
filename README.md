@@ -23,7 +23,6 @@ One part of me was curious about how all this phone number parsing and formattin
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK`.
   * Doesn't use ["carrier codes"](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md) when formatting numbers: "carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
   * Doesn't parse or format special local-only phone numbers: emergency phone numbers like `911`, ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-), numbers starting with a [`*`](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md), etc.
-  * Doesn't parse or format phone numbers with ["dial out codes"](https://en.wikipedia.org/wiki/List_of_international_call_prefixes). The "dial out codes" are the prefixes prepended in order to call to another country. E.g. an international phone number `+ ...` would be called as `00 ...` from Europe and `011 ...` from the United States. The reason for not supporting "dial out codes" is that I don't see any use case where a user would input a phone number with a "dial out code" instead of using the `+ ...` notation.
 
 ## Installation
 
@@ -95,6 +94,13 @@ Available `options`:
 
 Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the 21st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
 
+Sometimes users icorrectly input phone numbers in ["out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) format instead of the proper international phone number format (the "+" notation). For handling such cases `fromCountry` option can be passed:
+
+```js
+parseNumber('+61 2 3456 7890') === { country: 'AU', phone: '234567890' }
+parseNumber('011 61 2 3456 7890', { fromCountry: 'US' }) === { country: 'AU', phone: '234567890' }
+```
+
 ### formatNumber(number, format, [options])
 
 Formats a `number` into a string according to a `format`.
@@ -104,6 +110,7 @@ Available `format`s:
   * `International` — e.g. `+1 213 373 4253`
   * [`E.164`](https://en.wikipedia.org/wiki/E.164) — e.g. `+12133734253`
   * [`RFC3966`](https://www.ietf.org/rfc/rfc3966.txt) (the phone number URI) — e.g. `tel:+12133734253;ext=123`
+  * `IDD` — ["Out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) format, e.g. `01178005553535` for `+7 800 555 35 35` being called out of `options.fromCountry === US`. If no `options.fromCountry` was passed or if there's no default IDD prefix for `options.fromCountry` then returns `undefined`. Pass `options.humanReadable: true` for a human-readable output (same output as Google's `formatOutOfCountryCallingNumber()`).
 
 Available `options`:
 

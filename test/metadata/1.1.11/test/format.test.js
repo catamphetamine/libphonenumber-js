@@ -1,5 +1,5 @@
 import metadata from '../metadata.min'
-import formatter, { local_to_international_style } from './format'
+import formatter, { local_to_international_style } from '../../../../source/format'
 
 function format(...parameters)
 {
@@ -87,12 +87,6 @@ describe('format', () =>
 
 		// No formats
 		format('012345', 'AC', 'National').should.equal('012345')
-
-		// No `fromCountry` for `IDD` format.
-		expect(format('+78005553535', 'IDD')).to.be.undefined
-
-		// `fromCountry` has no default IDD prefix.
-		expect(format('+78005553535', 'IDD', { fromCountry: 'BO' })).to.be.undefined
 	})
 
 	it('should convert local to international style format', function()
@@ -153,21 +147,5 @@ describe('format', () =>
 	{
 		format({ countryCallingCode: '7', phone: '1111111111' }, 'E.164')
 			.should.equal('+71111111111')
-	})
-
-	it('should format IDD-prefixed number', function()
-	{
-		// No `fromCountry`.
-		expect(format('+78005553535', 'IDD')).to.be.undefined
-
-		// No default IDD prefix.
-		expect(format('+78005553535', 'IDD', { fromCountry: 'BO' })).to.be.undefined
-
-		// Same country calling code.
-		format('+12133734253', 'IDD', { fromCountry: 'CA', humanReadable: true }).should.equal('1 (213) 373-4253')
-		format('+78005553535', 'IDD', { fromCountry: 'KZ', humanReadable: true }).should.equal('800 555-35-35')
-
-		format('+78005553535', 'IDD', { fromCountry: 'US' }).should.equal('01178005553535')
-		format('+78005553535', 'IDD', { fromCountry: 'US', humanReadable: true }).should.equal('011 7 800 555 35 35')
 	})
 })

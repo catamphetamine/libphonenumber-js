@@ -175,6 +175,7 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 	(
 		formatted_phone_number,
 		options.defaultCountry,
+		options.fromCountry,
 		metadata
 	)
 
@@ -359,15 +360,14 @@ export function find_country_code(country_calling_code, national_phone_number, m
 		return possible_countries[0]
 	}
 
-	const original_country = metadata.selectedCountry()
-	const country = _find_country_code(possible_countries, national_phone_number, metadata)
-	metadata.country(original_country)
-	return country
+	return _find_country_code(possible_countries, national_phone_number, metadata.metadata)
 }
 
 // Changes `metadata` `country`.
 function _find_country_code(possible_countries, national_phone_number, metadata)
 {
+	metadata = new Metadata(metadata)
+
 	for (const country of possible_countries)
 	{
 		metadata.country(country)
@@ -552,9 +552,9 @@ function result(country, national_number, ext)
  * Parses a viable phone number.
  * Returns `{ country, countryCallingCode, national_number }`.
  */
-function parse_phone_number(formatted_phone_number, default_country, metadata)
+function parse_phone_number(formatted_phone_number, default_country, from_country, metadata)
 {
-	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(formatted_phone_number, metadata)
+	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(formatted_phone_number, from_country, metadata)
 
 	if (!number) {
 		return { countryCallingCode }

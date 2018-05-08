@@ -1,3 +1,5 @@
+// This code hasn't been tested.
+
 import { sort_out_arguments } from './findPhoneNumbers'
 import PhoneNumberMatcher from './PhoneNumberMatcher'
 

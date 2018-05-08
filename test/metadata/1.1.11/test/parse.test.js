@@ -1,5 +1,5 @@
 import metadata from '../metadata.min'
-import parser from './parse'
+import parser from '../../../../source/parse'
 
 function parse(...parameters)
 {
@@ -300,25 +300,6 @@ describe('parse', () =>
 			ext                : undefined,
 			valid              : true,
 			possible           : true
-		})
-	})
-
-	it('should parse IDD prefixes', () =>
-	{
-		parse('011 61 2 3456 7890', { fromCountry: 'US' }).should.deep.equal
-		({
-			phone   : '234567890',
-			country : 'AU'
-		})
-
-		parse('011 61 2 3456 7890', { fromCountry: 'FR' }).should.deep.equal({})
-
-		parse('00 61 2 3456 7890', { fromCountry: 'US' }).should.deep.equal({})
-
-		parse('810 61 2 3456 7890', { fromCountry: 'RU' }).should.deep.equal
-		({
-			phone   : '234567890',
-			country : 'AU'
 		})
 	})
 })
