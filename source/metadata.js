@@ -7,6 +7,8 @@ const V2 = '1.0.18'
 // Added "idd_prefix" and "default_idd_prefix".
 const V3 = '1.2.0'
 
+const DEFAULT_EXT_PREFIX = ' ext. '
+
 export default class Metadata
 {
 	constructor(metadata)
@@ -127,6 +129,12 @@ export default class Metadata
 		{
 			return new Type(getType(this.types(), type), this)
 		}
+	}
+
+	ext()
+	{
+		if (this.v1 || this.v2) return DEFAULT_EXT_PREFIX
+		return this.country_metadata[13] || DEFAULT_EXT_PREFIX
 	}
 
 	countryCallingCodes()
@@ -304,3 +312,8 @@ const is_object = _ => typeof _ === 'object'
 // so istanbul will show this as "branch not covered".
 /* istanbul ignore next */
 const type_of = _ => typeof _
+
+export function getExtPrefix(country, metadata)
+{
+	return new Metadata(metadata).country(country).ext()
+}

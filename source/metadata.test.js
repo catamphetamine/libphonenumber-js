@@ -1,6 +1,6 @@
 import metadata from '../metadata.min'
 
-import Metadata, { validateMetadata } from './metadata'
+import Metadata, { validateMetadata, getExtPrefix } from './metadata'
 
 describe('metadata', () =>
 {
@@ -15,6 +15,13 @@ describe('metadata', () =>
 	{
 		const thrower = () => new Metadata(metadata).country('RUS')
 		thrower.should.throw('Unknown country')
+	})
+
+	it('should return ext prefix for a country', function()
+	{
+		getExtPrefix('US', metadata).should.equal(' ext. ')
+		getExtPrefix('CA', metadata).should.equal(' ext. ')
+		getExtPrefix('GB', metadata).should.equal(' x')
 	})
 
 	it('should validate metadata', function()

@@ -8,6 +8,7 @@ import findPhoneNumbersCustom, { searchPhoneNumbers as searchPhoneNumbersCustom,
 import AsYouTypeCustom from './es6/AsYouType'
 import getCountryCallingCodeCustom from './es6/getCountryCallingCode'
 export { default as Metadata } from './es6/metadata'
+import { getExtPrefix as getExtPrefixCustom } from './es6/metadata'
 import { parseRFC3966 as parseRFC3966Custom, formatRFC3966 as formatRFC3966Custom } from './es6/RFC3966'
 
 export function parseNumber()
@@ -85,6 +86,13 @@ export function AsYouType(country)
 
 AsYouType.prototype = Object.create(AsYouTypeCustom.prototype, {})
 AsYouType.prototype.constructor = AsYouType
+
+export function getExtPrefix()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return getExtPrefixCustom.apply(this, parameters)
+}
 
 export function parseRFC3966()
 {

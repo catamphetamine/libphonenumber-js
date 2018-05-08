@@ -304,6 +304,15 @@ getCountryCallingCode('RU') === '7'
 getCountryCallingCode('IL') === '972'
 ```
 
+### getExtPrefix(country)
+
+Returns phone number extension prefix for a given `country`. If no custom ext prefix is defined for a `country` then the default `" ext. "` prefix is returned.
+
+```js
+getExtPrefix('US') === ' ext. '
+getExtPrefix('GB') === ' x'
+```
+
 ## Metadata
 
 Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.

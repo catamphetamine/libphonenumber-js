@@ -41,7 +41,7 @@ const phone_number_types =
 //                                    like "011 ..." in the USA.
 //                                    this isn't XXth century, just use mobile phones.
 //
-// * `preferredExtnPrefix` — screw phone number extensions
+// * `preferredExtnPrefix` — Localized " ext. ". E.g. ", доб. " instead of " ext. " for Russia.
 //
 // * `leadingZeroPossible` — (aka "italian leading zero")
 //                           who needs to parse a phone number into an integer.
@@ -197,6 +197,9 @@ export default function(input, version, included_countries, extended, included_p
 				// International Direct Dialing prefix.
 				idd_prefix: territory.$.internationalPrefix,
 				default_idd_prefix: territory.$.preferredInternationalPrefix,
+
+				// Localized " ext. " prefix.
+				ext: territory.$.preferredExtnPrefix,
 
 				// In case of several countries
 				// having the same country phone code,

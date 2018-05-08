@@ -17,9 +17,9 @@ import Metadata from './metadata'
 
 import { formatRFC3966 } from './RFC3966'
 
-const default_options =
+const defaultOptions =
 {
-	formatExtension: (number, extension) => `${number} ext. ${extension}`
+	formatExtension: (number, extension, metadata) => `${number}${metadata.ext()}${extension}`
 }
 
 // Formats a phone number
@@ -80,7 +80,7 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 			}
 			number = format_national_number(number, 'International', false, metadata)
 			number = `+${metadata.countryCallingCode()} ${number}`
-			return add_extension(number, input.ext, options.formatExtension)
+			return add_extension(number, input.ext, metadata, options.formatExtension)
 
 		case 'E.164':
 			// `E.164` doesn't define "phone number extensions".
@@ -110,7 +110,7 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 				} else {
 					number = `${IDDPrefix} ${metadata.countryCallingCode()} ${format_national_number(number, 'International', false, metadata)}`
 				}
-				return add_extension(number, input.ext, options.formatExtension)
+				return add_extension(number, input.ext, metadata, options.formatExtension)
 			}
 			return `${IDDPrefix}${metadata.countryCallingCode()}${number}`
 
@@ -119,7 +119,7 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 				return ''
 			}
 			number = format_national_number(number, 'National', false, metadata)
-			return add_extension(number, input.ext, options.formatExtension)
+			return add_extension(number, input.ext, metadata, options.formatExtension)
 	}
 }
 
@@ -311,13 +311,10 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 	}
 
 	// Apply default options.
-	if (options)
-	{
-		options = { ...default_options, ...options }
-	}
-	else
-	{
-		options = default_options
+	if (options) {
+		options = { ...defaultOptions, ...options }
+	} else {
+		options = defaultOptions
 	}
 
 	return { input, format_type, options, metadata: new Metadata(metadata) }
@@ -328,9 +325,9 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 /* istanbul ignore next */
 const is_object = _ => typeof _ === 'object'
 
-function add_extension(number, ext, formatExtension)
+function add_extension(number, ext, metadata, formatExtension)
 {
-	return ext ? formatExtension(number, ext) : number
+	return ext ? formatExtension(number, ext, metadata) : number
 }
 
 export function formatIDDSameCountryCallingCodeNumber(number, toCountryCallingCode, fromCountry, toCountryMetadata)

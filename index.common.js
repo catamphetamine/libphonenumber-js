@@ -81,6 +81,13 @@ exports.AsYouType = function AsYouType(country)
 exports.AsYouType.prototype = Object.create(custom.AsYouType.prototype, {})
 exports.AsYouType.prototype.constructor = exports.AsYouType
 
+exports.getExtPrefix = function()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.getExtPrefix.apply(this, parameters)
+}
+
 exports.parseRFC3966 = function()
 {
 	var parameters = Array.prototype.slice.call(arguments)

@@ -76,6 +76,8 @@ export default function compress(input)
 
 		country_array.push(country.default_idd_prefix)
 
+		country_array.push(country.ext)
+
 		countries[country_code] = trim_array(country_array)
 	}
 

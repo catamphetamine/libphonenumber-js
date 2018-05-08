@@ -26,9 +26,10 @@ exports.getCountryCallingCode = require('./build/getCountryCallingCode').default
 // `getPhoneCode` name is deprecated, use `getCountryCallingCode` instead.
 exports.getPhoneCode = exports.getCountryCallingCode
 
+exports.Metadata = require('./build/metadata').default
+exports.getExtPrefix = require('./build/metadata').getExtPrefix
+
 exports.parseRFC3966 = require('./build/RFC3966').parseRFC3966
 exports.formatRFC3966 = require('./build/RFC3966').formatRFC3966
-
-exports.Metadata = require('./build/metadata').default
 
 // exports['default'] = ...

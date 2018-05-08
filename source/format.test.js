@@ -147,6 +147,15 @@ describe('format', () =>
 			ext     : '123'
 		},
 		'RFC3966').should.equal('tel:+12133734253;ext=123')
+
+		// Custom ext prefix.
+		format
+		({
+			country : 'GB',
+			phone   : '7912345678',
+			ext     : '123'
+		},
+		'International').should.equal('+44 7912 345678 x123')
 	})
 
 	it('should format possible numbers', function()
