@@ -8,18 +8,18 @@ export interface Extension extends String { }
 export interface CountryCallingCode extends String { }
 
 export interface ParsedNumber {
-  countryCallingCode: CountryCallingCode,
+  countryCallingCode?: CountryCallingCode,
   country: CountryCode,
   phone: TelephoneNumber,
-  ext: Extension,
-  possible: boolean,
-  valid: boolean
+  ext?: Extension,
+  possible?: boolean,
+  valid?: boolean
 }
 
 export interface NumberFound {
   country: CountryCode,
   phone: TelephoneNumber,
-  ext: Extension,
+  ext?: Extension,
   startsAt: number,
   endsAt: number
 }
