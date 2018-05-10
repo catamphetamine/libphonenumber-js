@@ -132,7 +132,7 @@ export class PhoneNumberSearch
 		//
 		// this.searching_from = matches.lastIndex
 
-		const result = parse(number, { defaultCountry: this.options.defaultCountry }, this.metadata)
+		const result = parse(number, this.options, this.metadata)
 
 		if (result.phone)
 		{
