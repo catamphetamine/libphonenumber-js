@@ -20,6 +20,9 @@ describe('validate', () =>
 		is_valid_number('(213) 37', 'US').should.equal(false)
 
 		is_valid_number({ country: 'US', phone: '2133734253' }).should.equal(true)
+
+		// No "types" info: should return `true`.
+		is_valid_number('+380972423740').should.equal(true)
 	})
 
 	it('should refine phone number validation in case extended regular expressions are set for a country', () =>
