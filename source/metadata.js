@@ -105,7 +105,7 @@ export default class Metadata
 
 	nationalPrefixIsOptionalWhenFormatting()
 	{
-		return this.country_metadata[this.v1 ? 7 : this.v2 ? 8 : 9]
+		return !!this.country_metadata[this.v1 ? 7 : this.v2 ? 8 : 9]
 	}
 
 	leadingDigits()
@@ -120,7 +120,13 @@ export default class Metadata
 
 	hasTypes()
 	{
-		return this.types() !== undefined && this.types().length !== 0
+		// Versions 1.2.0 - 1.2.4: can be `[]`.
+		if (this.types() && this.types().length === 0) {
+			return false
+		}
+		// Versions <= 1.2.4: can be `undefined`.
+		// Version >= 1.2.5: can be `0`.
+		return !!this.types()
 	}
 
 	type(type)
@@ -202,7 +208,7 @@ class Format
 
 	nationalPrefixIsOptionalWhenFormatting()
 	{
-		return this._format[4] || this.metadata.nationalPrefixIsOptionalWhenFormatting()
+		return !!this._format[4] || this.metadata.nationalPrefixIsOptionalWhenFormatting()
 	}
 
 	nationalPrefixIsMandatoryWhenFormatting()

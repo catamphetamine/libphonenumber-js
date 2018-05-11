@@ -71,7 +71,7 @@ export default function compress(input)
 		}
 		else
 		{
-			country_array.push([])
+			country_array.push(null)
 		}
 
 		country_array.push(country.default_idd_prefix)
@@ -100,10 +100,22 @@ function is_empty(value)
 // Removes trailing empty values from an `array`
 function trim_array(array)
 {
+	// First, trim any empty elements.
 	while (array.length > 0 && is_empty(array[array.length - 1]))
 	{
 		array.pop()
 	}
 
-	return array
+	// Then replace all remaining empty elements with `0`
+	// and also `true` with `1`.
+	return array.map((element) =>
+	{
+		if (is_empty(element)) {
+			return 0
+		}
+		if (element === true) {
+			return 1
+		}
+		return element
+	})
 }

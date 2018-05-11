@@ -346,7 +346,7 @@ export default function(input, version, included_countries, extended, included_p
 					pattern: number_format.$.pattern,
 					leading_digits_patterns: number_format.leadingDigits ? number_format.leadingDigits.map(leading_digits => leading_digits.replace(/\s/g, '')) : undefined,
 					national_prefix_formatting_rule: national_prefix_formatting_rule(number_format.$.nationalPrefixFormattingRule, territory.$.nationalPrefix),
-					national_prefix_is_optional_when_formatting: number_format.$.nationalPrefixOptionalWhenFormatting,
+					national_prefix_is_optional_when_formatting: number_format.$.nationalPrefixOptionalWhenFormatting ? Boolean(number_format.$.nationalPrefixOptionalWhenFormatting) : undefined,
 					format: number_format.format[0],
 					international_format: number_format.intlFormat ? number_format.intlFormat[0] : undefined
 				}))
