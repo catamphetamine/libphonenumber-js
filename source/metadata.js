@@ -120,7 +120,7 @@ export default class Metadata
 
 	hasTypes()
 	{
-		return this.types() !== undefined
+		return this.types() !== undefined && this.types().length !== 0
 	}
 
 	type(type)
