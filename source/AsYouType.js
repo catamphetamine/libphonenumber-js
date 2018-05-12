@@ -583,7 +583,7 @@ export default class AsYouType
 	// and places the remaining input into the `national_number`.
 	extract_country_calling_code()
 	{
-		const { countryCallingCode, number } = parse_national_number_and_country_calling_code(this.parsed_input, this.options.fromCountry, this.metadata)
+		const { countryCallingCode, number } = parse_national_number_and_country_calling_code(this.parsed_input, this.default_country, this.metadata)
 
 		if (!countryCallingCode)
 		{

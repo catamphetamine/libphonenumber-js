@@ -117,7 +117,9 @@ export function parse_national_number_and_country_calling_code(number, country, 
 		// to a proper international phone number.
 		const numberWithoutIDD = stripIDDPrefix(number, country, metadata.metadata)
 
-		if (numberWithoutIDD) {
+		// If an IDD prefix was stripped then
+		// convert the number to international one.
+		if (numberWithoutIDD && numberWithoutIDD !== number) {
 			number = '+' + numberWithoutIDD
 		} else {
 			return { number }

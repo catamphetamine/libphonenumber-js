@@ -1,3 +1,13 @@
+1.2.6 / 12.05.2018
+===================
+
+  * Removed `parseNumber()`'s `fromCountry` parameter used for parsing IDD prefixes: now it uses `defaultCountry` instead. `formatNumber()`'s `fromCountry` parameter stays and is not removed.
+
+1.2.5 / 11.05.2018
+===================
+
+  * Optimized metadata a bit: using `0` instead of `null`/`false` and `1` instead of `true`.
+
 1.2.0 / 08.05.2018
 ===================
 

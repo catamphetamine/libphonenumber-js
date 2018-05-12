@@ -94,11 +94,11 @@ Available `options`:
 
 Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the 21st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
 
-Sometimes users icorrectly input phone numbers in ["out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) (IDD-prefixed) format instead of the proper international phone number format (the "+" notation). For handling such cases `fromCountry` option can be passed:
+Sometimes users icorrectly input phone numbers in ["out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) (IDD-prefixed) format instead of the proper international phone number format (the "+" notation). In such cases `parseNumber()` will attempt to parse such IDD-prefixed numbers if "default country" is provided:
 
 ```js
 parseNumber('+61 2 3456 7890') === { country: 'AU', phone: '234567890' }
-parseNumber('011 61 2 3456 7890', { fromCountry: 'US' }) === { country: 'AU', phone: '234567890' }
+parseNumber('011 61 2 3456 7890', 'US') === { country: 'AU', phone: '234567890' }
 ```
 
 ### formatNumber(number, format, [options])

@@ -175,7 +175,6 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 	(
 		formatted_phone_number,
 		options.defaultCountry,
-		options.fromCountry,
 		metadata
 	)
 
@@ -552,9 +551,9 @@ function result(country, national_number, ext)
  * Parses a viable phone number.
  * Returns `{ country, countryCallingCode, national_number }`.
  */
-function parse_phone_number(formatted_phone_number, default_country, from_country, metadata)
+function parse_phone_number(formatted_phone_number, default_country, metadata)
 {
-	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(formatted_phone_number, from_country, metadata)
+	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(formatted_phone_number, default_country, metadata)
 
 	if (!number) {
 		return { countryCallingCode }
