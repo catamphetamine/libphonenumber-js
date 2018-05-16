@@ -196,7 +196,7 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 		national_number.length > MAX_LENGTH_FOR_NSN)
 	{
 		// Google's demo just throws an error in this case.
-		return {}
+		return options.extended ? { countryCallingCode } : {}
 	}
 
 	// Check if national phone number pattern matches the number

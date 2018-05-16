@@ -158,6 +158,20 @@ describe('parse', () =>
 			valid              : true,
 			possible           : true
 		})
+
+		// https://github.com/catamphetamine/libphonenumber-js/issues/211
+		parse('+966', { extended: true }).should.deep.equal({ countryCallingCode: '966' })
+		parse('+9664', { extended: true }).should.deep.equal({ countryCallingCode: '966' })
+		parse('+96645', { extended: true }).should.deep.equal
+		({
+			carrierCode        : undefined,
+			phone              : '45',
+			ext                : undefined,
+			country            : 'SA',
+			countryCallingCode : '966',
+			possible           : false,
+			valid              : false
+		})
 	})
 
 	it('should parse non-European digits', function()
