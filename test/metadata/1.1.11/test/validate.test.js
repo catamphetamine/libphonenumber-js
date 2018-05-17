@@ -23,6 +23,8 @@ describe('validate', () =>
 
 		// No "types" info: should return `true`.
 		is_valid_number('+380972423740').should.equal(true)
+
+		is_valid_number('0912345678', 'TW').should.equal(true)
 	})
 
 	it('should refine phone number validation in case extended regular expressions are set for a country', () =>

@@ -19,8 +19,8 @@ const SINGLE_IDD_PREFIX = /[\d]+(?:[~\u2053\u223C\uFF5E][\d]+)?/
 // 	return matches_entirely(IDDPrefix, SINGLE_IDD_PREFIX)
 // }
 
-// For regions that have multiple international prefixes, the international format
-// of the number is returned, unless there is a preferred international prefix.
+// For regions that have multiple IDD prefixes
+// a preferred IDD prefix is returned.
 export function getIDDPrefix(country, metadata)
 {
 	const countryMetadata = new Metadata(metadata)
@@ -42,7 +42,10 @@ export function stripIDDPrefix(number, country, metadata)
 
 	// Check if the number is IDD-prefixed.
 
-	const IDDPrefixPattern = new RegExp(getIDDPrefix(country, metadata))
+	const countryMetadata = new Metadata(metadata)
+	countryMetadata.country(country)
+
+	const IDDPrefixPattern = new RegExp(countryMetadata.IDDPrefix())
 
 	if (number.search(IDDPrefixPattern) !== 0) {
 		return
