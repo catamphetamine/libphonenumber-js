@@ -142,6 +142,13 @@ describe('findPhoneNumbers', () =>
 			endsAt   : 30
 		}])
 
+		// Should parse phone numbers inside UUIDs in `{ extended: true }` mode.
+		const possibleNumbers = findNumbers('The UUID is CA801c26f98cd16e231354125ad046e40b.', 'FR', { extended: true }, metadata)
+		possibleNumbers.length.should.equal(3)
+		possibleNumbers[1].country.should.equal('FR')
+		possibleNumbers[1].phone.should.equal('231354125')
+
+		// Should node parse phone numbers inside UUIDs (in default mode).
 		findNumbers('The UUID is CA801c26f98cd16e231354125ad046e40b.', 'FR', metadata).should.deep.equal([])
 	})
 })

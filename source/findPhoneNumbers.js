@@ -131,7 +131,7 @@ export class PhoneNumberSearch
 		// due to being part of something else (e.g. a UUID).
 		// https://github.com/catamphetamine/libphonenumber-js/issues/213
 		// Copy-pasted from Google's `PhoneNumberMatcher.js` (`.parseAndValidate()`).
-		if (!isValidCandidate(number, startsAt, this.text)) {
+		if (!this.options.extended && !isValidCandidate(number, startsAt, this.text)) {
 			return
 		}
 
