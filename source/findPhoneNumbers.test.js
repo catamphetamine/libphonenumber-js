@@ -5,6 +5,14 @@ describe('findPhoneNumbers', () =>
 {
 	it('should find numbers', function()
 	{
+		findNumbers('2133734253', 'US', metadata).should.deep.equal
+		([{
+			phone    : '2133734253',
+			country  : 'US',
+			startsAt : 0,
+			endsAt   : 10
+		}])
+
 		findNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata).should.deep.equal
 		([{
 			phone    : '8005553535',
@@ -66,6 +74,18 @@ describe('findPhoneNumbers', () =>
 		}])
 	})
 
+	it('should find non-European digits', function()
+	{
+		// E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
+		findNumbers('العَرَبِيَّة‎ +٤٤٣٣٣٣٣٣٣٣٣٣عَرَبِيّ‎', metadata).should.deep.equal
+		([{
+			country  : 'GB',
+			phone    : '3333333333',
+			startsAt : 14,
+			endsAt   : 27
+		}])
+	})
+
 	it('should iterate', function()
 	{
 		const expected_numbers =
@@ -110,6 +130,19 @@ describe('findPhoneNumbers', () =>
 		// No metadata
 		thrower = () => findNumbers('')
 		thrower.should.throw('`metadata` argument not passed')
+	})
+
+	it('shouldn\'t find phone numbers which are part of non-phone-numbers', function()
+	{
+		findNumbers('The phone number is 231354125.', 'FR', metadata).should.deep.equal
+		([{
+			country  : 'FR',
+			phone    : '231354125',
+			startsAt : 20,
+			endsAt   : 30
+		}])
+
+		findNumbers('The UUID is CA801c26f98cd16e231354125ad046e40b.', 'FR', metadata).should.deep.equal([])
 	})
 })
 

@@ -12,6 +12,12 @@ import
 }
 from './common'
 
+import
+{
+	isValidCandidate
+}
+from './findNumbers.common'
+
 // Copy-pasted from `./parse.js`.
 const VALID_PHONE_NUMBER =
 	'[' + PLUS_CHARS + ']{0,1}' +
@@ -32,6 +38,8 @@ const WHITESPACE_IN_THE_END_PATTERN = new RegExp('[' + WHITESPACE + ']+$')
 // // Regular expression for getting opening brackets for a valid number
 // // found using `PHONE_NUMBER_START_PATTERN` for prepending those brackets to the number.
 // const BEFORE_NUMBER_DIGITS_PUNCTUATION = new RegExp('[' + OPENING_BRACKETS + ']+' + '[' + WHITESPACE + ']*' + '$')
+
+const VALID_PRECEDING_CHARACTER_PATTERN = /[^a-zA-Z0-9]/
 
 export default function findPhoneNumbers(arg_1, arg_2, arg_3, arg_4)
 {
@@ -108,8 +116,7 @@ export class PhoneNumberSearch
 	{
 		const matches = this.regexp.exec(this.text)
 
-		if (!matches)
-		{
+		if (!matches) {
 			return
 		}
 
@@ -119,6 +126,14 @@ export class PhoneNumberSearch
 		number = number.replace(WHITESPACE_IN_THE_BEGINNING_PATTERN, '')
 		startsAt += matches[0].length - number.length
 		number = number.replace(WHITESPACE_IN_THE_END_PATTERN, '')
+
+		// Don't parse phone numbers which are non-phone numbers
+		// due to being part of something else (e.g. a UUID).
+		// https://github.com/catamphetamine/libphonenumber-js/issues/213
+		// Copy-pasted from Google's `PhoneNumberMatcher.js` (`.parseAndValidate()`).
+		if (!isValidCandidate(number, startsAt, this.text)) {
+			return
+		}
 
 		// // Prepend any opening brackets left behind by the
 		// // `PHONE_NUMBER_START_PATTERN` regexp.
