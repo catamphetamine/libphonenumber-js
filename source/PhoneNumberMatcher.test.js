@@ -4,59 +4,47 @@
  * Date: 08.03.2018
  */
 
-// import PhoneNumberMatcher from './PhoneNumberMatcher'
+import PhoneNumberMatcher,
+{
+	containsMoreThanOneSlashInNationalNumber
+}
+from './PhoneNumberMatcher'
 
 describe('PhoneNumberMatcher', () =>
 {
-	it('should ...', function()
+	/*
+	it('testContainsMoreThanOneSlashInNationalNumber', () =>
 	{
-		// new PhoneNumberMatcher(...)
+		// A date should return true.
+		number.setCountryCode(1)
+		number.setCountryCodeSource(CountryCodeSource.FROM_DEFAULT_COUNTRY)
+		containsMoreThanOneSlashInNationalNumber(number, '1/05/2013').should.equal(true)
+
+		// Here, the country code source thinks it started with a country calling code, but this is not
+		// the same as the part before the slash, so it's still true.
+		number.setCountryCode(274)
+		number.setCountryCodeSource(CountryCodeSource.FROM_NUMBER_WITHOUT_PLUS_SIGN)
+		containsMoreThanOneSlashInNationalNumber(number, '27/4/2013').should.equal(true)
+
+		// Now it should be false, because the first slash is after the country calling code.
+		number.setCountryCode(49)
+		number.setCountryCodeSource(CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN)
+		containsMoreThanOneSlashInNationalNumber(number, '49/69/2013').should.equal(false)
+
+		number.setCountryCode(49)
+		number.setCountryCodeSource(CountryCodeSource.FROM_NUMBER_WITHOUT_PLUS_SIGN)
+		containsMoreThanOneSlashInNationalNumber(number, '+49/69/2013').should.equal(false)
+		containsMoreThanOneSlashInNationalNumber(number, '+ 49/69/2013').should.equal(false)
+		containsMoreThanOneSlashInNationalNumber(number, '+ 49/69/20/13').should.equal(true)
+
+		// Here, the first group is not assumed to be the country calling code, even though it is the
+		// same as it, so this should return true.
+		number.setCountryCode(49)
+		number.setCountryCodeSource(CountryCodeSource.FROM_DEFAULT_COUNTRY)
+		containsMoreThanOneSlashInNationalNumber(number, '49/69/2013').should.equal(true)
 	})
+	*/
 })
-
-//   public void testContainsMoreThanOneSlashInNationalNumber() throws Exception {
-//     // A date should return true.
-//     PhoneNumber number = new PhoneNumber();
-//     number.setCountryCode(1);
-//     number.setCountryCodeSource(CountryCodeSource.FROM_DEFAULT_COUNTRY);
-//     String candidate = "1/05/2013";
-//     assertTrue(PhoneNumberMatcher.containsMoreThanOneSlashInNationalNumber(number, candidate));
-
-//     // Here, the country code source thinks it started with a country calling code, but this is not
-//     // the same as the part before the slash, so it's still true.
-//     number = new PhoneNumber();
-//     number.setCountryCode(274);
-//     number.setCountryCodeSource(CountryCodeSource.FROM_NUMBER_WITHOUT_PLUS_SIGN);
-//     candidate = "27/4/2013";
-//     assertTrue(PhoneNumberMatcher.containsMoreThanOneSlashInNationalNumber(number, candidate));
-
-//     // Now it should be false, because the first slash is after the country calling code.
-//     number = new PhoneNumber();
-//     number.setCountryCode(49);
-//     number.setCountryCodeSource(CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN);
-//     candidate = "49/69/2013";
-//     assertFalse(PhoneNumberMatcher.containsMoreThanOneSlashInNationalNumber(number, candidate));
-
-//     number = new PhoneNumber();
-//     number.setCountryCode(49);
-//     number.setCountryCodeSource(CountryCodeSource.FROM_NUMBER_WITHOUT_PLUS_SIGN);
-//     candidate = "+49/69/2013";
-//     assertFalse(PhoneNumberMatcher.containsMoreThanOneSlashInNationalNumber(number, candidate));
-
-//     candidate = "+ 49/69/2013";
-//     assertFalse(PhoneNumberMatcher.containsMoreThanOneSlashInNationalNumber(number, candidate));
-
-//     candidate = "+ 49/69/20/13";
-//     assertTrue(PhoneNumberMatcher.containsMoreThanOneSlashInNationalNumber(number, candidate));
-
-//     // Here, the first group is not assumed to be the country calling code, even though it is the
-//     // same as it, so this should return true.
-//     number = new PhoneNumber();
-//     number.setCountryCode(49);
-//     number.setCountryCodeSource(CountryCodeSource.FROM_DEFAULT_COUNTRY);
-//     candidate = "49/69/2013";
-//     assertTrue(PhoneNumberMatcher.containsMoreThanOneSlashInNationalNumber(number, candidate));
-//   }
 
 //   /** See {@link PhoneNumberUtilTest#testParseNationalNumber()}. */
 //   public void testFindNationalNumber() throws Exception {
