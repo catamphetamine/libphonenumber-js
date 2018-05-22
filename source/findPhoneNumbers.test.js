@@ -13,6 +13,14 @@ describe('findPhoneNumbers', () =>
 			endsAt   : 10
 		}])
 
+		findNumbers('(213) 373-4253', 'US', metadata).should.deep.equal
+		([{
+			phone    : '2133734253',
+			country  : 'US',
+			startsAt : 0,
+			endsAt   : 14
+		}])
+
 		findNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata).should.deep.equal
 		([{
 			phone    : '8005553535',
@@ -76,6 +84,7 @@ describe('findPhoneNumbers', () =>
 
 	it('shouldn\'t find non-valid numbers', function()
 	{
+		// Not a valid phone number for US.
 		findNumbers('1111111111', 'US', metadata).should.deep.equal([])
 	})
 
@@ -137,8 +146,27 @@ describe('findPhoneNumbers', () =>
 		thrower.should.throw('`metadata` argument not passed')
 	})
 
-	it('shouldn\'t find phone numbers which are part of non-phone-numbers', function()
+	it('shouldn\'t find phone numbers which are not phone numbers', function()
 	{
+		// A timestamp.
+		findNumbers('2012-01-02 08:00', 'US', metadata).should.deep.equal([])
+
+		// A valid number (not a complete timestamp).
+		findNumbers('2012-01-02 08', 'US', metadata).should.deep.equal
+		([{
+			country  : 'US',
+			phone    : '2012010208',
+			startsAt : 0,
+			endsAt   : 13
+		}])
+
+		// Invalid parens.
+		findNumbers('213(3734253', 'US', metadata).should.deep.equal([])
+
+		// Letters after phone number.
+		findNumbers('2133734253a', 'US', metadata).should.deep.equal([])
+
+		// Valid phone (same as the one found in the UUID below).
 		findNumbers('The phone number is 231354125.', 'FR', metadata).should.deep.equal
 		([{
 			country  : 'FR',
@@ -147,13 +175,15 @@ describe('findPhoneNumbers', () =>
 			endsAt   : 30
 		}])
 
-		// Should parse phone numbers inside UUIDs in `{ extended: true }` mode.
+		// Not a phone number (part of a UUID).
+		// Should parse in `{ extended: true }` mode.
 		const possibleNumbers = findNumbers('The UUID is CA801c26f98cd16e231354125ad046e40b.', 'FR', { extended: true }, metadata)
 		possibleNumbers.length.should.equal(3)
 		possibleNumbers[1].country.should.equal('FR')
 		possibleNumbers[1].phone.should.equal('231354125')
 
-		// Should node parse phone numbers inside UUIDs (in default mode).
+		// Not a phone number (part of a UUID).
+		// Shouldn't parse by default.
 		findNumbers('The UUID is CA801c26f98cd16e231354125ad046e40b.', 'FR', metadata).should.deep.equal([])
 	})
 })

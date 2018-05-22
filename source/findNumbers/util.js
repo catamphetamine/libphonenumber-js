@@ -1,8 +1,7 @@
 /** Returns a regular expression quantifier with an upper and lower limit. */
 export function limit(lower, upper)
 {
-	if ((lower < 0) || (upper <= 0) || (upper < lower))
-	{
+	if ((lower < 0) || (upper <= 0) || (upper < lower)) {
 		throw new TypeError()
 	}
 	return `{${lower},${upper}}`

@@ -43,12 +43,10 @@ const BRACKET_PAIR_LIMIT = limit(0, 3)
 const MATCHING_BRACKETS_ENTIRE = new RegExp
 (
 	'^'
-
 	+ "(?:[" + OPENING_PARENS + "])?" + "(?:" + NON_PARENS + "+" + "[" + CLOSING_PARENS + "])?"
 	+ NON_PARENS + "+"
 	+ "(?:[" + OPENING_PARENS + "]" + NON_PARENS + "+[" + CLOSING_PARENS + "])" + BRACKET_PAIR_LIMIT
 	+ NON_PARENS + "*"
-
 	+ '$'
 )
 
