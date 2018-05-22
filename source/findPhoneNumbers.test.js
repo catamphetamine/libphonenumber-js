@@ -74,6 +74,11 @@ describe('findPhoneNumbers', () =>
 		}])
 	})
 
+	it('shouldn\'t find non-valid numbers', function()
+	{
+		findNumbers('1111111111', 'US', metadata).should.deep.equal([])
+	})
+
 	it('should find non-European digits', function()
 	{
 		// E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.

@@ -121,6 +121,7 @@ export default class Metadata
 	hasTypes()
 	{
 		// Versions 1.2.0 - 1.2.4: can be `[]`.
+		/* istanbul ignore next */
 		if (this.types() && this.types().length === 0) {
 			return false
 		}

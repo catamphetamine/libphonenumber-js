@@ -12,11 +12,9 @@ import
 }
 from './common'
 
-import
-{
-	isValidCandidate
-}
-from './findNumbers.common'
+import parsePreCandidate from './findNumbers/parsePreCandidate'
+import isValidPreCandidate from './findNumbers/isValidPreCandidate'
+import isValidCandidate from './findNumbers/isValidCandidate'
 
 // Copy-pasted from `./parse.js`.
 const VALID_PHONE_NUMBER =
@@ -127,11 +125,31 @@ export class PhoneNumberSearch
 		startsAt += matches[0].length - number.length
 		number = number.replace(WHITESPACE_IN_THE_END_PATTERN, '')
 
+		number = parsePreCandidate(number)
+
+		const result = this.parseCandidate(number, startsAt)
+
+		if (result) {
+			return result
+		}
+
+		// Tail recursion.
+		// Try the next one if this one is not a valid phone number.
+		return this.find()
+	}
+
+	parseCandidate(number, startsAt)
+	{
+		if (!isValidPreCandidate(number, startsAt, this.text)) {
+			return
+		}
+
 		// Don't parse phone numbers which are non-phone numbers
 		// due to being part of something else (e.g. a UUID).
 		// https://github.com/catamphetamine/libphonenumber-js/issues/213
 		// Copy-pasted from Google's `PhoneNumberMatcher.js` (`.parseAndValidate()`).
-		if (!this.options.extended && !isValidCandidate(number, startsAt, this.text)) {
+		if (!isValidCandidate(number, startsAt, this.text, this.options.extended ? 'POSSIBLE' : 'VALID'))
+		{
 			return
 		}
 
@@ -149,17 +167,14 @@ export class PhoneNumberSearch
 
 		const result = parse(number, this.options, this.metadata)
 
-		if (result.phone)
-		{
-			result.startsAt = startsAt
-			result.endsAt   = startsAt + number.length
-
-			return result
+		if (!result.phone) {
+			return
 		}
 
-		// Tail recursion.
-		// Try the next one if this one is not a valid phone number.
-		return this.find()
+		result.startsAt = startsAt
+		result.endsAt   = startsAt + number.length
+
+		return result
 	}
 
 	hasNext()
