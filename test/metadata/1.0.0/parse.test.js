@@ -161,14 +161,4 @@ describe('parse', () =>
 		// Not a valid extension
 		parse('2134567890 ext. 1234567890', 'US').should.deep.equal({})
 	})
-
-	it('should parse RFC 3966 phone numbers', function()
-	{
-		parse('tel:+78005553535;ext:123').should.deep.equal
-		({
-			country : 'RU',
-			phone   : '8005553535',
-			ext     : '123'
-		})
-	})
 })

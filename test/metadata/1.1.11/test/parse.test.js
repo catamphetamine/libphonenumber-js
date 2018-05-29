@@ -259,27 +259,6 @@ describe('parse', () =>
 		parse('2134567890 ext. 1234567890', 'US').should.deep.equal({})
 	})
 
-	it('should parse RFC 3966 phone numbers', function()
-	{
-		parse('tel:+78005553535;ext:123').should.deep.equal
-		({
-			country : 'RU',
-			phone   : '8005553535',
-			ext     : '123'
-		})
-
-		// Should parse "visual separators".
-		parse('tel:+7(800)555-35.35;ext:123').should.deep.equal
-		({
-			country : 'RU',
-			phone   : '8005553535',
-			ext     : '123'
-		})
-
-		// Invalid number.
-		parse('tel:+7x8005553535;ext:123').should.deep.equal({})
-	})
-
 	it('should parse invalid international numbers even if they are invalid', () =>
 	{
 		parse('+49(0)15123020522', 'DE').should.deep.equal

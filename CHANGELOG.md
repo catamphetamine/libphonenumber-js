@@ -1,3 +1,8 @@
+1.2.13 / 30.05.2018
+===================
+
+  * Fixed a previously unnoticed [bug](https://github.com/catamphetamine/libphonenumber-js/issues/217) regarding parsing RFC3966 phone URIs: previously `:` was mistakenly being considered a key-value separator instead of `=`. E.g. it was parsing RFC3966 phone numbers as `tel:+78005553535;ext:123` instead of `tel:+78005553535;ext=123`. The bug was found and reported by @cdunn.
+
 1.2.6 / 12.05.2018
 ===================
 

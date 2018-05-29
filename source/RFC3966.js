@@ -11,9 +11,12 @@ export function parseRFC3966(text)
 	let number
 	let ext
 
+	// Replace "tel:" with "tel=" for parsing convenience.
+	text = text.replace(/^tel:/, 'tel=')
+
 	for (const part of text.split(';'))
 	{
-		const [name, value] = part.split(':')
+		const [name, value] = part.split('=')
 		switch (name)
 		{
 			case 'tel':

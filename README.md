@@ -83,7 +83,7 @@ parseNumber('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
 parseNumber('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '2133734253', ext: '123' }
 
 // Parses RFC 3966 phone number URIs.
-parseNumber('tel:+78005553535;ext:123') === { country: 'RU', phone: '8005553535', ext: '123' }
+parseNumber('tel:+78005553535;ext=123') === { country: 'RU', phone: '8005553535', ext: '123' }
 ```
 
 Available `options`:
