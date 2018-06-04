@@ -27,50 +27,30 @@ export interface NumberFound {
 // `parse()` and `parseCustom` are deprecated.
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
 export function parse(text: string, options?: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }): ParsedNumber;
-export function parseCustom(text: string, metadata: object): ParsedNumber;
-export function parseCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }, metadata: object): ParsedNumber;
 
 export function parseNumber(text: string, options?: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }): ParsedNumber;
-export function parseNumberCustom(text: string, metadata: object): ParsedNumber;
-export function parseNumberCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }, metadata: object): ParsedNumber;
 
 // `format()` and `formatCustom` are deprecated.
 // Use `formatNumber()` and `formatNumberCustom()` instead.
 export function format(parsedNumber: ParsedNumber, format: NumberFormat): string;
 export function format(phone: TelephoneNumber, format: NumberFormat): string;
 export function format(phone: TelephoneNumber, country: CountryCode, format: NumberFormat): string;
-export function formatCustom(parsedNumber: ParsedNumber, format: NumberFormat, metadata: object): string;
-export function formatCustom(phone: TelephoneNumber, format: NumberFormat, metadata: object): string;
-export function formatCustom(phone: TelephoneNumber, country: CountryCode, format: NumberFormat, metadata: object): string;
 
 export function formatNumber(parsedNumber: ParsedNumber, format: NumberFormat): string;
 export function formatNumber(phone: TelephoneNumber, format: NumberFormat): string;
 export function formatNumber(phone: TelephoneNumber, country: CountryCode, format: NumberFormat): string;
-export function formatNumberCustom(parsedNumber: ParsedNumber, format: NumberFormat, metadata: object): string;
-export function formatNumberCustom(phone: TelephoneNumber, format: NumberFormat, metadata: object): string;
-export function formatNumberCustom(phone: TelephoneNumber, country: CountryCode, format: NumberFormat, metadata: object): string;
 
 export function getNumberType(parsedNumber: ParsedNumber): NumberType;
 export function getNumberType(phone: TelephoneNumber, country?: CountryCode): NumberType;
-export function getNumberTypeCustom(parsedNumber: ParsedNumber, metadata: object): NumberType;
-export function getNumberTypeCustom(phone: TelephoneNumber, metadata: object): NumberType;
-export function getNumberTypeCustom(phone: TelephoneNumber, country: CountryCode, metadata: object): NumberType;
 
 export function isValidNumber(parsedNumber: ParsedNumber): boolean;
 export function isValidNumber(phone: TelephoneNumber, country?: CountryCode): boolean;
-export function isValidNumberCustom(parsedNumber: ParsedNumber, metadata: object): boolean;
-export function isValidNumberCustom(phone: TelephoneNumber, metadata: object): boolean;
-export function isValidNumberCustom(phone: TelephoneNumber, country: CountryCode, metadata: object): boolean;
 
 export function findPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
-export function findPhoneNumbersCustom(text: string, metadata: object): NumberFound[];
-export function findPhoneNumbersCustom(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): NumberFound[];
 
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
-export function getCountryCallingCodeCustom(countryCode: CountryCode, metadata: object): CountryCallingCode;
 
 export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;
-export function getPhoneCodeCustom(countryCode: CountryCode, metadata: object): CountryCallingCode;
 
 export class AsYouType {
   constructor(defaultCountryCode?: CountryCode);
