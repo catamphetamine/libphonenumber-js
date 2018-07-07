@@ -74,7 +74,7 @@ new AsYouType('US').input('2133734')
 
 ### parseNumber(text, [defaultCountry], [options])
 
-Attempts to parse a valid phone number from `text`.
+Attempts to parse a phone number from `text`.
 
 If [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code) is passed then it's gonna be the default country for parsing non-international phone numbers.
 
