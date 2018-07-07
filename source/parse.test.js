@@ -38,9 +38,9 @@ describe('parse', () =>
 		// https://www.youtube.com/watch?v=6e1pMrYH5jI
 		//
 		// Restrict to RU
-		parse('8 (800) 555 35 35', 'RU').should.deep.equal({ country: 'RU', phone: '8005553535' })
+		parse('Phone: 8 (800) 555 35 35.', 'RU').should.deep.equal({ country: 'RU', phone: '8005553535' })
 		// International format
-		parse('+7 (800) 555-35-35').should.deep.equal({ country: 'RU', phone: '8005553535' })
+		parse('Phone: +7 (800) 555-35-35.').should.deep.equal({ country: 'RU', phone: '8005553535' })
 		// // Restrict to US, but not a US country phone code supplied
 		// parse('+7 (800) 555-35-35', 'US').should.deep.equal({})
 		// Restrict to RU
