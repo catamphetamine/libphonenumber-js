@@ -180,7 +180,7 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 
 	if (!metadata.selectedCountry())
 	{
-		return options.extended ? { countryCallingCode } : {}
+		return options.extended && countryCallingCode ? { countryCallingCode } : {}
 	}
 
 	// Validate national (significant) number length.

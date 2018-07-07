@@ -203,6 +203,9 @@ describe('parse', () =>
 		// Invalid country phone code
 		parse('+210').should.deep.equal({})
 
+		// Invalid country phone code (extended parsing mode)
+		parse('+210', { extended: true }).should.deep.equal({})
+
 		// Country phone code beginning with a '0'
 		parse('+0123').should.deep.equal({})
 
