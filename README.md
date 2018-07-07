@@ -356,7 +356,7 @@ Google's "As You Type" formatter does not support entering phone number extensio
 
 ### findPhoneNumbers(text, [defaultCountry], [options])
 
-Searches for phone numbers in a given text. This is a basic substitute for Google's original `findNumbers()` function (described below).
+Searches for phone numbers in a given text.
 
 ```js
 import { findPhoneNumbers } from 'libphonenumber-js'
@@ -383,7 +383,7 @@ findPhoneNumbers(`
 // }]
 ```
 
-If the text being searched in is big enough (say, a hundred thousand characters) then one can employ iterators to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame` to avoid freezing the user interface during the search).
+By default it processes the whole text and then outputs the phone numbers found. If the text is very big (say, a hundred thousand characters) then it might freeze the user interface for a couple of seconds. To avoid such lags one can employ iterators to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame`).
 
 ES6 iterator:
 
@@ -434,11 +434,13 @@ iteration()
 
 ### findNumbers(text, [defaultCountry], [options])
 
-Searches for phone numbers in a given text. This is the Google's original implementation and it's not implemented in this library.
+Searches for phone numbers in a given text. This is the Google's original implementation and it's not implemented in this library (though `findPhoneNumbers()` uses some parts of it).
 
 Although Google's javascript port doesn't support this functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness.
 
 I made my take on porting Google's `PhoneNumberMatcher.java` into javascript. The overall syntax has mostly been ported: see `findNumbers.js`, `src/PhoneNumberMatcher.js` and `src/PhoneNumberMatcher.test.js`. If someone wants they can finish the porting process and submit a pull request.
+
+Use `findPhoneNumbers()` instead.
 
 ### getNumberType(number, [defaultCountry])
 
