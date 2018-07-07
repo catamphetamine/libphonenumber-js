@@ -350,7 +350,7 @@ asYouType.getNationalNumber() === '2133734253'
 asYouType.template === 'xx xxx xxx xxxx'
 ```
 
-"As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits.
+"As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits (and a `+` sign in the start of an international number).
 
 Google's "As You Type" formatter does not support entering phone number extensions. If your project requires phone number extensions input then use a separate input field for that.
 
