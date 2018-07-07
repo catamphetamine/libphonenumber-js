@@ -76,7 +76,7 @@ If [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#countr
 
 Returns `{ country, phone, ext }` object where
  * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
- * `phone` is a national (significant) number.
+ * `phone` is a [national (significant) number](https://github.com/catamphetamine/libphonenumber-js#national-significant-number).
  * `ext` is a phone number extension.
 
 ```js
@@ -112,7 +112,7 @@ Available `options`:
 The result of "extended" parsing is an object where
 
  * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
- * `phone` is a national (significant) number.
+ * `phone` is a [national (significant) number](https://github.com/catamphetamine/libphonenumber-js#national-significant-number).
  * `ext` is a phone number extension.
  * `countryCallingCode` are the digits between `+` and the national (significant) number.
  * [`carrierCode`](https://www.voip-info.org/carrier-identification-codes/)s are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
