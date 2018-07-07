@@ -271,8 +271,8 @@ formatNumber('+11111111111', 'International') === '+1 111 111 1111'
 
 // Formats E.164 phone numbers when
 // they're not "valid" and not "possible" (invalid length).
-formatNumber('+1111', 'National') === '111'
-formatNumber('+1111', 'International') === '+1 111'
+formatNumber('+11111', 'National') === '1111'
+formatNumber('+11111', 'International') === '+1 1111'
 
 // Formats a result of `parseNumber()` function call.
 const parsedNumber = parseNumber('2133734253', 'US')
