@@ -318,7 +318,9 @@ Available `options`:
 ```js
 {
   formatExtension(number, extension) — Formats `number` and `extension` into a string.
-                                       By default returns `${number} ext. ${extension}`.
+                                       By default returns `${number} ext. ${extension}`
+                                       for almost all countries with rare exceptions of
+                                       some special cases like `${number} x${extension}` for UK.
 }
 ```
 
@@ -436,13 +438,13 @@ Searches for phone numbers in a given text. This is the Google's original implem
 
 Although Google's javascript port doesn't support this functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness.
 
-I made my take on porting Google's `PhoneNumberMatcher.java` into javascirpt and seems that it's doable. The overall syntax has mostly been ported but it's still quite far from finished and the code has not been tested, and I'm not searching for phone numbers in my projects, but if anyone needs that feature they could continue where I left off: see `findNumbers.js`, `src/PhoneNumberMatcher.js` and `src/PhoneNumberMatcher.test.js`. Such a person must also let others (including me) know that he's working on the feature to avoid any conflicts: a pull request must be created right away and code must be committed on a daily basis regardless of whether it works or not.
+I made my take on porting Google's `PhoneNumberMatcher.java` into javascript. The overall syntax has mostly been ported: see `findNumbers.js`, `src/PhoneNumberMatcher.js` and `src/PhoneNumberMatcher.test.js`. If someone wants they can finish the porting process and submit a pull request.
 
 ### getNumberType(number, [defaultCountry])
 
 Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
 
-The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with `defaultCountry`.
+The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with the second `defaultCountry` argument.
 
 ```js
 getNumberType('9160151539', 'RU') === 'MOBILE'
@@ -451,9 +453,9 @@ getNumberType({ phone: '9160151539', country: 'RU' }) === 'MOBILE'
 
 ### isValidNumber(number, [defaultCountry])
 
-Checks if a phone number is valid.
+Checks if a phone number is valid, the validation is more strict than `parseNumber()`.
 
-The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with `defaultCountry`.
+The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with the second `defaultCountry` argument.
 
 ```js
 isValidNumber('+1-213-373-4253') === true
@@ -465,11 +467,11 @@ isValidNumber('(213) 37', 'US') === false
 isValidNumber({ phone: '2133734253', country: 'US' }) === true
 ```
 
-The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see below) and the precise regular expressions for possible phone numbers are included in the metadata then `isValidNumber()` is gonna use those precise regular expressions for validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
+The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see [Metadata](#metadata) section of this document) then `isValidNumber()` is gonna use those precise regular expressions for extensive validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
 
-So, the general phone number rules for a country are mainly for phone number formatting: they dictate how different phone numbers (matching those general regular expressions) should be formatted. And `parseNumber()` uses only those general regular expressions (as per the reference Google's `libphonenumber` [implementation](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-)) to perform basic phone number validation. `isValidNumber()`, on the other hand, is all about validation, so it digs deeper into precise regular expressions (if they're included in metadata) for possible phone numbers for a given country. And that's the difference between them: `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone number precisely (provided the precise regular expressions are included in metadata).
+This is how it is implemented in the original Google's [`libphonenumber`](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-): `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone number precisely (provided the precise regular expressions are included in metadata).
 
-Those precise regular expressions aren't included in the default metadata because that would cause the default metadata to grow twice in its size: the complete ("full") metadata size is about 145 kilobytes while the reduced ("default") metadata size is about 77 kilobytes. Hence in the default configuration `isValidNumber()` performs absolutely the same "lite" validation as `parseNumber()`. For enabling extensive phone number validation the simplest way is to import functions from `libphonenumber-js/custom` module and supply them with `metadata.full.json`. For generating custom metadata see the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
+The precise regular expressions aren't included in the default metadata because that would cause the default metadata to grow twice in its size: the complete ("full") metadata size is about 145 kilobytes while the reduced ("default") metadata size is about 77 kilobytes. Hence in the default configuration `isValidNumber()` performs absolutely the same "lite" validation as `parseNumber()`. For enabling extensive phone number validation the simplest way is to import functions from `libphonenumber-js/custom` module and supply them with `libphonenumber-js/metadata.full.json`. For generating custom metadata see the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
 
 #### Using phone number validation feature
 
@@ -477,15 +479,19 @@ I personally wouldn't rely on strict phone number validation too much because it
 
 * First, new phone number rules are added to Google's `libphonenumber` library after they have already been implemented in real life (which introduces a delay).
 
+<!--
 * Then those new rules from Google's `libphonenumber` are updated automatically in this library (the scheduled update script introduces a small delay of 1 day, unless it malfunctions).
+-->
 
-* And then there's still the web application itself using this library and until a developer installs `libphonenumber-js@latest` manually and redeploys the web application it's gonna use the old (potentially outdated) phone number validation rules which could result in losing customers with perfectly valid (but brand new) phone numbers if a website form is too strict about validating user's input.
+* From time to time those new rules from Google's `libphonenumber` are updated in this library.
+
+* And then there's still the web application itself using this library and until a developer installs `libphonenumber-js@latest` manually and redeploys the web application it's gonna use the old (potentially outdated) phone number validation rules which could result in losing customers with perfectly valid (but not yet supported) phone numbers if a website form is too strict about validating user's input.
 
 Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
 
 ### getCountryCallingCode(country)
 
-There have been requests for a function returning a country calling code by [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
+There have been requests for a function returning a [country calling code](https://github.com/catamphetamine/libphonenumber-js#country-calling-code) by [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
 
 ```js
 getCountryCallingCode('RU') === '7'
@@ -500,21 +506,6 @@ Returns phone number extension prefix for a given `country`. If no custom ext pr
 getExtPrefix('US') === ' ext. '
 getExtPrefix('GB') === ' x'
 ```
-
-## Metadata
-
-Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
-
-Currently I have a script set up monitoring changes to `PhoneNumberMetadata.xml` in Google's repo and automatically releasing new versions of this library when metadata in Google's repo gets updated. So this library's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
-
-  * Fork this repo
-  * `npm install`
-  * `npm run metadata:update:branch`
-  * Submit a Pull Request to this repo from the `update-metadata` branch of your fork
-
-`npm run metadata:update:branch` command creates a new `update-metadata` branch, downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one, generates JSON metadata out of the XML one, checks if the metadata has changed, runs the tests, commits the new metadata and pushes the commit to the remote `update-metadata` branch of your fork.
-
-Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Customizing metadata](#customizing-metadata) section of this document.
 
 ## React
 
@@ -538,23 +529,27 @@ Phone number validation bugs should **only** be reported if they appear when usi
 
 [TypeScript support](https://github.com/catamphetamine/libphonenumber-js/blob/master/index.d.ts) for this library is entirely community-driven. I myself don't use TypeScript. Send your pull requests.
 
-## Webpack
+## CDN
 
-If you're using Webpack 1 (which you most likely are) then make sure that
+One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.net](https://jsdelivr.net)
 
- * You have `json-loader` set up for `*.json` files in Webpack configuration (Webpack 2 has `json-loader` set up by default)
- * `json-loader` doesn't `exclude` `/node_modules/`
- * If you override `resolve.extensions` in Webpack configuration then make sure `.json` extension is present in the list
+```html
+<!-- `libphonenumber-js` (is used internally by `react-phone-number-input`). -->
+<script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
 
-Webpack 2 sets up `json-loader` by default so there's no need for any special configuration. So better upgrade to Webpack 2 instead.
+<script>
+  alert(new libphonenumber.AsYouType('US').input('213-373-4253'))
+</script>
+```
 
+<!--
 ## Standalone
 
 For those who aren't using bundlers for some reason there's a way to build a standalone version of the library
 
  * `git clone https://github.com/catamphetamine/libphonenumber-js.git`
  * `npm install`
- * `npm run browser-build`
+ * `npm run build`
  * See the `bundle` folder for `libphonenumber-js.min.js`
 
 ```html
@@ -563,6 +558,30 @@ For those who aren't using bundlers for some reason there's a way to build a sta
   alert(new libphonenumber.AsYouType('US').input('213-373-4253'))
 </script>
 ```
+-->
+
+## Metadata
+
+Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields.
+
+<!--
+Currently I have a script set up monitoring changes to `PhoneNumberMetadata.xml` in Google's repo and automatically releasing new versions of this library when metadata in Google's repo gets updated. So this library's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
+-->
+
+The metadata update process is automated through an "autoupdate" script (see `./autoupdate.sh` or `./autoupdate.cmd`). The script detects changes to `PhoneNumberMetadata.xml` in Google `libphonenumber`'s repo and if there are changes then it pulls the latest metadata, processes it, commits the changes to GitHub, builds a new version of the library and releases it to NPM. So this library's metadata is supposed to be up-to-date. I could set up this script to run automatically but on my Windows machine `ssh-agent` doesn't work properly so I run the "autoupdate" script manually from time to time.
+
+<!--
+In case I forget to run the "autoupdate" script for a long time anyone can request metadata update via a Pull Request here on GitHub:
+
+  * Fork this repo
+  * `npm install`
+  * `npm run metadata:update:branch`
+  * Submit a Pull Request to this repo from the `update-metadata` branch of your fork
+
+`npm run metadata:update:branch` command creates a new `update-metadata` branch, downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one, generates JSON metadata out of the XML one, checks if the metadata has changed, runs the tests, commits the new metadata and pushes the commit to the remote `update-metadata` branch of your fork.
+
+Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Customizing metadata](#customizing-metadata) section of this document.
+-->
 
 ## Customizing metadata
 
