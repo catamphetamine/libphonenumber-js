@@ -160,7 +160,7 @@ Available `options`:
 
  * `defaultCountry : string` — Same as the `defaultCountry` argument.
 
- * `extended : boolean` — If set to `true` then `parseNumber()` will attempt to parse "possible" phone numbers even if they're classified as "invalid".
+ * `extended : boolean` — If set to `true` then `parseNumber()` will attempt to parse even a remotely hypothetical phone number even if it is considered "invalid".
 
 The result of "extended" parsing is an object where
 
