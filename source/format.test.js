@@ -9,9 +9,16 @@ function format(...parameters)
 
 describe('format', () =>
 {
+	it('should work with the first argument being a E.164 number', function()
+	{
+		format('+11111111111', 'National').should.equal('(111) 111-1111')
+		format('+12133734253', 'National').should.equal('(213) 373-4253')
+		format('+12133734253', 'International').should.equal('+1 213 373 4253')
+	})
+
 	it('should work with the first object argument expanded', function()
 	{
-		format('+12133734253', 'National').should.equal('(213) 373-4253')
+		format('2133734253', 'US', 'National').should.equal('(213) 373-4253')
 		format('2133734253', 'US', 'International').should.equal('+1 213 373 4253')
 	})
 
