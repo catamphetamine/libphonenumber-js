@@ -66,6 +66,10 @@ new AsYouType('US').input('2133734')
 
 "National (significant) number" are the national phone number digits (without "national prefix"). For example, `+1 213 373 4253` (or `(213) 373-4253` in national format) is a US phone number and its national (significant) number is `213 373 4253`. Another example is `+33 1 45 45 32 45` (or `01 45 45 32 45` in national format) which is a [French](https://en.wikipedia.org/wiki/Telephone_numbers_in_France) phone number where they add `0` "national prefix" when writing phone numbers in national format; in this case the national (significant) number is `1 45 45 32 45`.
 
+### Country calling code
+
+"Country calling code" are the digits between `+` and national (significant) number when the number is written in international format. E.g. for US country calling code is `1` and for France it's `33`.
+
 ## API
 
 ### parseNumber(text, [defaultCountry], [options])
@@ -114,11 +118,73 @@ The result of "extended" parsing is an object where
  * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
  * `phone` is a [national (significant) number](https://github.com/catamphetamine/libphonenumber-js#national-significant-number).
  * `ext` is a phone number extension.
- * `countryCallingCode` are the digits between `+` and the national (significant) number.
+ * `countryCallingCode` is a [country calling code](https://github.com/catamphetamine/libphonenumber-js#country-calling-code).
  * [`carrierCode`](https://www.voip-info.org/carrier-identification-codes/)s are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
  * `valid: boolean` — whether it's a "valid" (real) phone number.
  * `possible: boolean` — a phone number is considered "possible" when it fits the phone number length rules for a given country. E.g. for US national (significant) number regexp is `[2-9]\d{9}` and possible national (significant) number length is `10` so a phone number `(111) 111-1111` is not a "valid" number because it doesn't match the US national (significant) number regexp but it is a "possible" number because it's `10` digits long.
  * Some or all of these properties may be absent from the result object.
+
+```js
+// If the number is valid.
+parseNumber('(213) 373-4253', 'US', { extended: true }) ===
+{
+  country: 'US',
+  phone: '2133734253',
+  ext: undefined,
+  countryCallingCode: 1,
+  carrierCode: undefined,
+  valid: true,
+  possible: true
+}
+
+// If the number is not "valid" but "possible".
+parseNumber('(111) 111-1111', 'US', { extended: true }) ===
+{
+  country: 'US',
+  phone: '1111111111',
+  ext: undefined,
+  countryCallingCode: 1,
+  carrierCode: undefined,
+  valid: false,
+  possible: true
+}
+
+// If the number is not "valid" but "possible"
+// and country can't be derived from it.
+// (e.g. can't tell if it's a US number or a Canadian number)
+parseNumber('+1 111 111 1111', { extended: true }) ===
+{
+  country: undefined,
+  phone: '1111111111',
+  ext: undefined,
+  countryCallingCode: 1,
+  carrierCode: undefined,
+  valid: false,
+  possible: true
+}
+
+// If the number is not "possible" (invalid length).
+parseNumber('(213) 373', 'US', { extended: true }) ===
+{
+  country: 'US',
+  phone: '213373',
+  ext: undefined,
+  countryCallingCode: 1,
+  carrierCode: undefined,
+  valid: false,
+  possible: false
+}
+
+// In some cases if the number is extremely not "possible"
+// then an empty object `{}` is returned.
+//
+// Too short (or too long) for any country's phone number.
+parseNumber('1', 'US', { extended: true }) === {}
+// Non-existent country calling code.
+parseNumber('+210', { extended: true }) === {}
+// No phone number.
+parseNumber('abcdefg', { extended: true }) === {}
+```
 
 The "extended" parsing mode is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid (but is kinda "possible"). I guess this kind of behaviour is better for crawling websites for phone numbers because when mining "big data" it is better to extract all possible info rather than discard some pieces of it prematurely, e.g. when national (significant) number regexp for some country gets outdated which might very well happen because phone numbering plans are changing constantly around the world.
 
@@ -149,10 +215,32 @@ The `number` argument must be either a result of `parseNumber()` function call (
 formatNumber('+12133734253', 'National') === '(213) 373-4253'
 formatNumber('+12133734253', 'International') === '+1 213 373 4253'
 
+// Formats E.164 phone numbers when
+// they're not "valid" but still "possible".
+formatNumber('+11111111111', 'National') === '(111) 111-1111'
+formatNumber('+11111111111', 'International') === '+1 111 111 1111'
+
+// Formats E.164 phone numbers when
+// they're not "valid" and not "possible" (invalid length).
+formatNumber('+1111', 'National') === '111'
+formatNumber('+1111', 'International') === '+1 111'
+
 // Formats a result of `parseNumber()` function call.
 const parsedNumber = parseNumber('2133734253', 'US')
 formatNumber(parsedNumber, 'National') === '(213) 373-4253'
 formatNumber(parsedNumber, 'International') === '+1 213 373 4253'
+
+// Formats a result of `parseNumber()` function call in "extended" mode
+// when it's not a "valid" number but still a "possible" one.
+const possibleNumber = parseNumber('+11111111111', { extended: true })
+formatNumber(possibleNumber, 'National') === '(111) 111-1111'
+formatNumber(possibleNumber, 'International') === '+1 111 111 1111'
+
+// Formats a result of `parseNumber()` function call in "extended" mode
+// when it's neither a "valid" number nor a "possible" one (invalid length).
+const possibleNumber = parseNumber('+1111', { extended: true })
+formatNumber(possibleNumber, 'National') === '111'
+formatNumber(possibleNumber, 'International') === '+1 111'
 
 // The result of `parseNumber()` function call
 // can be expanded into two separate arguments
@@ -170,6 +258,10 @@ formatNumber('17212345678', 'DE', 'E.164') === '+4917212345678'
 
 // Formats phone number extensions.
 formatNumber({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
+
+// When given an object not having `phone` property
+// (e.g. a empty object `{}`) it will throw.
+formatNumber({}) throws Error
 ```
 
 Available `options`:
