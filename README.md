@@ -287,9 +287,9 @@ formatNumber(possibleNumber, 'International') === '+1 111 111 1111'
 
 // Formats a result of `parseNumber()` function call in "extended" mode
 // when it's neither a "valid" number nor a "possible" one (invalid length).
-const possibleNumber = parseNumber('+1111', { extended: true })
-formatNumber(possibleNumber, 'National') === '111'
-formatNumber(possibleNumber, 'International') === '+1 111'
+const possibleNumber = parseNumber('+11111', { extended: true })
+formatNumber(possibleNumber, 'National') === '1111'
+formatNumber(possibleNumber, 'International') === '+1 1111'
 
 // The result of `parseNumber()` function call
 // can be expanded into two separate arguments
