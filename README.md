@@ -280,7 +280,7 @@ formatNumber(parsedNumber, 'National') === '(213) 373-4253'
 formatNumber(parsedNumber, 'International') === '+1 213 373 4253'
 
 // Formats a result of `parseNumber()` function call in "extended" mode
-// when it's not a "valid" number but still a "possible" one.
+// when it's not a "valid" number but is still a "possible" one.
 const possibleNumber = parseNumber('+11111111111', { extended: true })
 formatNumber(possibleNumber, 'National') === '(111) 111-1111'
 formatNumber(possibleNumber, 'International') === '+1 111 111 1111'
