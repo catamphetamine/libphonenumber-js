@@ -68,7 +68,7 @@ new AsYouType('US').input('2133734')
 
 ### Country calling code
 
-"Country calling code" are the digits between `+` and national (significant) number when the number is written in international format. E.g. for US country calling code is `1` and for France it's `33`.
+"Country calling code" are the digits between the `+` and the national (significant) number when the number is written in international format. E.g. for US country calling code is `1` and for France it's `33`.
 
 ## API
 
