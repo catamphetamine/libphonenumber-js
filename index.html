@@ -192,22 +192,21 @@
 						parsed_number = JSON.stringify(libphonenumber.parseNumber(parse, country))
 						parsed_number_extended = JSON.stringify(libphonenumber.parseNumber(parse, country, { extended: true }))
 
-						const number_to_format = libphonenumber.parseNumber(format, country)
+						const number_to_format = libphonenumber.parseNumber(format, country, { extended: true })
 
-						national_formatted_number = libphonenumber.formatNumber(number_to_format, 'National')
-						international_formatted_number = libphonenumber.formatNumber(number_to_format, 'International')
-						international_formatted_number_in_E164 = libphonenumber.formatNumber(number_to_format, 'E.164')
-						international_formatted_number_in_RFC3966 = libphonenumber.formatNumber(number_to_format, 'RFC3966')
+						if (number_to_format.phone)
+						{
+							national_formatted_number = libphonenumber.formatNumber(number_to_format, 'National')
+							international_formatted_number = libphonenumber.formatNumber(number_to_format, 'International')
+							international_formatted_number_in_E164 = libphonenumber.formatNumber(number_to_format, 'E.164')
+							international_formatted_number_in_RFC3966 = libphonenumber.formatNumber(number_to_format, 'RFC3966')
+						}
 
 						numbers_found = libphonenumber.findPhoneNumbers(findNumbers, country)
 					}
 					catch (error)
 					{
 						if (error.message.indexOf('Unknown country') === 0)
-						{
-							//
-						}
-						else if (error.message.indexOf('A phone number must either be a string or an object of shape') === 0)
 						{
 							//
 						}
