@@ -446,7 +446,7 @@ Use `findPhoneNumbers()` instead.
 
 Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
 
-The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with the second `defaultCountry` argument.
+The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with the second `defaultCountry` argument (the string is gonna be parsed in this case).
 
 ```js
 getNumberType('9160151539', 'RU') === 'MOBILE'
@@ -457,7 +457,7 @@ getNumberType({ phone: '9160151539', country: 'RU' }) === 'MOBILE'
 
 Checks if a phone number is valid, the validation is more strict than `parseNumber()`.
 
-The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with the second `defaultCountry` argument.
+The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with the second `defaultCountry` argument (the string is gonna be parsed in this case).
 
 ```js
 isValidNumber('+1-213-373-4253') === true
@@ -471,7 +471,7 @@ isValidNumber({ phone: '2133734253', country: 'US' }) === true
 
 The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see [Metadata](#metadata) section of this document) then `isValidNumber()` is gonna use those precise regular expressions for extensive validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
 
-This is how it is implemented in the original Google's [`libphonenumber`](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-): `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone number precisely (provided the precise regular expressions are included in metadata).
+This is how it is implemented in the original Google's [`libphonenumber`](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-): `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone numbers precisely (provided the precise regular expressions are included in metadata).
 
 The precise regular expressions aren't included in the default metadata because that would cause the default metadata to grow twice in its size: the complete ("full") metadata size is about 145 kilobytes while the reduced ("default") metadata size is about 77 kilobytes. Hence in the default configuration `isValidNumber()` performs absolutely the same "lite" validation as `parseNumber()`. For enabling extensive phone number validation the simplest way is to import functions from `libphonenumber-js/custom` module and supply them with `libphonenumber-js/metadata.full.json`. For generating custom metadata see the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
 
@@ -515,7 +515,7 @@ There's also a React component utilizing this library: [`react-phone-number-inpu
 
 ## Examples
 
-For those asking for phone number examples for use in `<input placeholder/>`s there's `examples.mobile.json`.
+For those asking for phone number examples for use in `<input placeholder/>`s: see `libphonenumber-js/examples.mobile.json`.
 
 <!-- ## To do
 
