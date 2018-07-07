@@ -291,20 +291,6 @@ const possibleNumber = parseNumber('+11111', { extended: true })
 formatNumber(possibleNumber, 'National') === '1111'
 formatNumber(possibleNumber, 'International') === '+1 1111'
 
-// The result of `parseNumber()` function call
-// can be expanded into two separate arguments
-// for those who prefer this kind of syntax.
-const parsedNumber = parseNumber('2133734253', 'US')
-formatNumber(parsedNumber.phone, parsedNumber.country, 'National') === '(213) 373-4253'
-formatNumber(parsedNumber.phone, parsedNumber.country, 'International') === '+1 213 373 4253'
-//
-// An example of an invalid phone number argument.
-// (has not been parsed and therefore contains the `0` national prefix)
-formatNumber('017212345678', 'DE', 'E.164') !== '+4917212345678'
-// After proper parsing it works.
-parseNumber('017212345678', 'DE').phone === '17212345678'
-formatNumber('17212345678', 'DE', 'E.164') === '+4917212345678'
-
 // Formats phone number extensions.
 formatNumber({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
 

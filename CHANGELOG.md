@@ -1,6 +1,8 @@
-<!-- Maybe change the behaviour of `parseNumber` to default to `extended: true` mode and introduce a `strict: true` mode for strict parsing (also add notes for how is it different from `isValidNumber()`). -->
+<!-- (breaking change) `parseNumber()` is now `extended: true` by default (and the `extended` flag is no longer supported) meaning that by default it will parse all even remotely hypothetical phone numbers (this was decided to be the primary use case for this function, and it's how Google's libphonenumber does it). Pass `strict: true` flag for the old "only parse valid numbers" behaviour. -->
 
-<!-- Maybe add `type` parameter to `isValidNumber()`. -->
+<!-- (breaking change) `formatNumber()` no longer supports `formatNumber(numberString, countryString, format)` notation, use `formatNumber({ phone, country }, format)` notation instead. -->
+
+<!-- `type` parameter has been added to `isValidNumber()` for validating phone numbers of a particual type (fixed line, mobile, etc). -->
 
 1.2.13 / 30.05.2018
 ===================
