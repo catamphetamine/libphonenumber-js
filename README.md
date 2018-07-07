@@ -40,20 +40,69 @@ $ yarn add libphonenumber-js
 
 ## Usage
 
-```js
-import { parseNumber, formatNumber, AsYouType } from 'libphonenumber-js'
+### Parse phone number
 
-parseNumber('8 (800) 555 35 35', 'RU')
-// { country: 'RU', phone: '8005553535' }
+```js
+import { parseNumber} from 'libphonenumber-js'
+
+parseNumber('Phone: 8 (800) 555 35 35.', 'RU')
+// Outputs: { country: 'RU', phone: '8005553535' }
+```
+
+### Format phone number
+
+```js
+import { formatNumber } from 'libphonenumber-js'
+
+formatNumber('+12133734253', 'International')
+// Outputs: '+1 213 373 4253'
+
+formatNumber('+12133734253', 'National')
+// Outputs: '(213) 373-4253'
 
 formatNumber({ country: 'US', phone: '2133734253' }, 'International')
-formatNumber('+12133734253', 'International')
-// '+1 213 373 4253'
+// Outputs: '+1 213 373 4253'
+
+formatNumber({ country: 'US', phone: '2133734253' }, 'National')
+// Outputs: '(213) 373-4253'
+```
+
+### "As You Type" formatter
+
+```js
+import { AsYouType } from 'libphonenumber-js'
 
 new AsYouType().input('+12133734')
-// '+1 213 373 4'
+// Outputs: '+1 213 373 4'
+
 new AsYouType('US').input('2133734')
-// '(213) 373-4'
+// Outputs: '(213) 373-4'
+```
+
+### Full-text search
+
+```js
+import { findPhoneNumbers } from 'libphonenumber-js'
+
+findPhoneNumbers(`
+  The number is +7 (800) 555-35-35 and
+  not (213) 373-4253 as written
+  in the document.
+`, 'US')
+
+// Outputs:
+//
+// [{
+//   phone    : '8005553535',
+//   country  : 'RU',
+//   startsAt : 14,
+//   endsAt   : 32
+// }, {
+//   phone    : '2133734253',
+//   country  : 'US',
+//   startsAt : 41,
+//   endsAt   : 55
+// }]
 ```
 
 ## Definitions
