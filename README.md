@@ -86,11 +86,11 @@ Returns `{ country, phone, ext }` object where
 ```js
 // Parses international numbers.
 parseNumber('+1 213 373 4253') === { country: 'US', phone: '2133734253' }
-parseNumber('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
-parseNumber('+12133734253')    === { country: 'US', phone: '2133734253' }
+parseNumber('Phone: +1-213-373-4253.') === { country: 'US', phone: '2133734253' }
+parseNumber('+12133734253') === { country: 'US', phone: '2133734253' }
 
 // Parses national numbers provided a default country.
-parseNumber('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
+parseNumber('Phone: (213) 373-4253.', 'US') === { country: 'US', phone: '2133734253' }
 
 // Parses phone number extensions.
 parseNumber('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '2133734253', ext: '123' }
@@ -126,7 +126,7 @@ The result of "extended" parsing is an object where
 
 ```js
 // If the number is valid.
-parseNumber('(213) 373-4253', 'US', { extended: true }) ===
+parseNumber('Phone: (213) 373-4253.', 'US', { extended: true }) ===
 {
   country: 'US',
   phone: '2133734253',
@@ -182,8 +182,8 @@ parseNumber('(213) 373', 'US', { extended: true }) ===
 parseNumber('1', 'US', { extended: true }) === {}
 // Non-existent country calling code.
 parseNumber('+210', { extended: true }) === {}
-// No phone number.
-parseNumber('abcdefg', { extended: true }) === {}
+// No phone number found.
+parseNumber('abcdefg', 'US', { extended: true }) === {}
 ```
 
 The "extended" parsing mode is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid (but is kinda "possible"). I guess this kind of behaviour is better for crawling websites for phone numbers because when mining "big data" it is better to extract all possible info rather than discard some pieces of it prematurely, e.g. when national (significant) number regexp for some country gets outdated which might very well happen because phone numbering plans are changing constantly around the world.
