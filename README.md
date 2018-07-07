@@ -235,9 +235,7 @@ parseNumber('+210', { extended: true }) === {}
 parseNumber('abcdefg', 'US', { extended: true }) === {}
 ```
 
-The "extended" parsing mode is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid (but is kinda "possible"). I guess this kind of behaviour is better for crawling websites for phone numbers because when mining "big data" it is better to extract all possible info rather than discard some pieces of it prematurely, e.g. when national (significant) number regexp for some country gets outdated which might very well happen because phone numbering plans are changing constantly around the world.
-
-Maybe it would make sense to make the "extended" parsing mode the default one in the next major version. I guess it would.
+The "extended" parsing mode is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid (but is kinda "possible"). I guess this kind of behaviour is better for crawling websites for phone numbers because when mining "big data" it is better to extract all possible info rather than discard some pieces of it prematurely, e.g. when national (significant) number regexp for some country gets outdated which might very well happen because phone numbering plans are changing constantly around the world. Maybe after all it would make sense to make the "extended" parsing mode the default one in the next major version. I guess it would.
 
 Sometimes users icorrectly input phone numbers in ["out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) (IDD-prefixed) format instead of the proper international phone number format (the "+" notation). In such cases `parseNumber()` will attempt to parse such IDD-prefixed numbers if "default country" is provided:
 
