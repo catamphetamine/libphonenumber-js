@@ -56,9 +56,15 @@ new AsYouType('US').input('2133734')
 // '(213) 373-4'
 ```
 
-## Country code definition
+## Definitions
+
+### Country code
 
 "Country code" means either a [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) (like `US`) or a special `001` country code used for non-geographical entities (as per [Google's libphonenumber library](https://github.com/googlei18n/libphonenumber/blob/0068d861a68d3d4612f7bf8646ab844dd3cefce5/java/libphonenumber/test/com/google/i18n/phonenumbers/RegionCode.java#L23-L24)). For example, `+7 800 555 35 35` phone number belongs to Russia so it has `RU` country code where as `+800 1 1111 1111` phone number could belong to any country so it has `001` country code.
+
+### National (significant) number
+
+"National (significant) number" are the national phone number digits (without "national prefix"). For example, `+1 213 373 4253` (or `(213) 373-4253` in national format) is a US phone number and its national (significant) number is `213 373 4253`. Another example is `+33 1 45 45 32 45` (or `01 45 45 32 45` in national format) which is a [French](https://en.wikipedia.org/wiki/Telephone_numbers_in_France) phone number where they add `0` "national prefix" when writing phone numbers in national format; in this case the national (significant) number is `1 45 45 32 45`.
 
 ## API
 
@@ -66,17 +72,20 @@ new AsYouType('US').input('2133734')
 
 Attempts to parse a valid phone number from `text`.
 
-If [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is passed then it's gonna be the default country for parsing non-international phone numbers.
+If [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code) is passed then it's gonna be the default country for parsing non-international phone numbers.
 
-Returns `{ country, phone, ext }` where
- * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition)
- * `phone` is a national (significant) number
- * `ext` is a phone number extension
-
-If the phone number supplied isn't valid then an empty object `{}` is returned.
+Returns `{ country, phone, ext }` object where
+ * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
+ * `phone` is a national (significant) number.
+ * `ext` is a phone number extension.
 
 ```js
+// Parses international numbers.
+parseNumber('+1 213 373 4253') === { country: 'US', phone: '2133734253' }
 parseNumber('+1-213-373-4253') === { country: 'US', phone: '2133734253' }
+parseNumber('+12133734253')    === { country: 'US', phone: '2133734253' }
+
+// Parses national numbers provided a default country.
 parseNumber('(213) 373-4253', 'US') === { country: 'US', phone: '2133734253' }
 
 // Parses phone number extensions.
@@ -86,18 +95,39 @@ parseNumber('(213) 373-4253 ext. 123', 'US') === { country: 'US', phone: '213373
 parseNumber('tel:+78005553535;ext=123') === { country: 'RU', phone: '8005553535', ext: '123' }
 ```
 
+If the phone number supplied isn't valid then an empty object `{}` is returned.
+
+```js
+parseNumber('+1 111 111 1111') === {}
+parseNumber('(111) 111-1111', 'US') === {}
+parseNumber('abcdefg') === {}
+```
+
 Available `options`:
 
- * `defaultCountry : string` — Same as `defaultCountry` argument.
+ * `defaultCountry : string` — Same as the `defaultCountry` argument.
 
- * `extended : boolean` — If set to `true` then `parseNumber()` will attempt to parse "possible" phone numbers even if they're classified as "invalid". The result of "extended" parsing has shape `{ country, countryCallingCode, carrierCode, phone, ext, valid: boolean, possible: boolean }`; some or all of these properties may be absent. The "extended" parsing is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid (but is kinda "possible"). Though I don't know who might need such an advanced feature, still it [has been requested](https://github.com/catamphetamine/libphonenumber-js/issues/176) and has been implemented.
+ * `extended : boolean` — If set to `true` then `parseNumber()` will attempt to parse "possible" phone numbers even if they're classified as "invalid".
 
-Speaking of phone number extensions, I myself consider them obsolete and I'd just discard the extension part given we're in the 21st century. Still, some people [asked](https://github.com/catamphetamine/libphonenumber-js/issues/129) for phone number extensions support so it has been added. But I personally think it's an unnecessary complication.
+The result of "extended" parsing is an object where
+
+ * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
+ * `phone` is a national (significant) number.
+ * `ext` is a phone number extension.
+ * `countryCallingCode` are the digits between `+` and the national (significant) number.
+ * [`carrierCode`](https://www.voip-info.org/carrier-identification-codes/)s are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
+ * `valid: boolean` — whether it's a "valid" (real) phone number.
+ * `possible: boolean` — a phone number is considered "possible" when it fits the phone number length rules for a given country. E.g. for US national (significant) number regexp is `[2-9]\d{9}` and possible national (significant) number length is `10` so a phone number `(111) 111-1111` is not a "valid" number because it doesn't match the US national (significant) number regexp but it is a "possible" number because it's `10` digits long.
+ * Some or all of these properties may be absent from the result object.
+
+The "extended" parsing mode is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid (but is kinda "possible"). I guess this kind of behaviour is better for crawling websites for phone numbers because when mining "big data" it is better to extract all possible info rather than discard some pieces of it prematurely, e.g. when national (significant) number regexp for some country gets outdated which might very well happen because phone numbering plans are changing constantly around the world.
 
 Sometimes users icorrectly input phone numbers in ["out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) (IDD-prefixed) format instead of the proper international phone number format (the "+" notation). In such cases `parseNumber()` will attempt to parse such IDD-prefixed numbers if "default country" is provided:
 
 ```js
+// International format.
 parseNumber('+61 2 3456 7890') === { country: 'AU', phone: '234567890' }
+// IDD-prefixed format.
 parseNumber('011 61 2 3456 7890', 'US') === { country: 'AU', phone: '234567890' }
 ```
 
@@ -110,7 +140,37 @@ Available `format`s:
   * `International` — e.g. `+1 213 373 4253`
   * [`E.164`](https://en.wikipedia.org/wiki/E.164) — e.g. `+12133734253`
   * [`RFC3966`](https://www.ietf.org/rfc/rfc3966.txt) (the phone number URI) — e.g. `tel:+12133734253;ext=123`
-  * `IDD` — ["Out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) format, e.g. `01178005553535` for `+7 800 555 35 35` being called out of `options.fromCountry === US`. If no `options.fromCountry` was passed or if there's no default IDD prefix for `options.fromCountry` then returns `undefined`. Pass `options.humanReadable: true` for a human-readable output (same output as Google's `formatOutOfCountryCallingNumber()`).
+  * `IDD` — ["Out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) format, e.g. `01178005553535` for `+7 800 555 35 35` being called out of `options.fromCountry === US`. If no `options.fromCountry` was passed or if there's no default IDD prefix for `options.fromCountry` then returns `undefined`. Pass `options.humanReadable: true` for a human-readable output (same output as Google `liphonenumber`'s `formatOutOfCountryCallingNumber()`).
+
+The `number` argument must be either a result of `parseNumber()` function call (to strip national prefix) or an E.164 phone number string (e.g. `+12133734253`).
+
+```js
+// Formats E.164 phone numbers.
+formatNumber('+12133734253', 'National') === '(213) 373-4253'
+formatNumber('+12133734253', 'International') === '+1 213 373 4253'
+
+// Formats a result of `parseNumber()` function call.
+const parsedNumber = parseNumber('2133734253', 'US')
+formatNumber(parsedNumber, 'National') === '(213) 373-4253'
+formatNumber(parsedNumber, 'International') === '+1 213 373 4253'
+
+// The result of `parseNumber()` function call
+// can be expanded into two separate arguments
+// for those who prefer this kind of syntax.
+const parsedNumber = parseNumber('2133734253', 'US')
+formatNumber(parsedNumber.phone, parsedNumber.country, 'National') === '(213) 373-4253'
+formatNumber(parsedNumber.phone, parsedNumber.country, 'International') === '+1 213 373 4253'
+//
+// An example of an invalid phone number argument.
+// (has not been parsed and therefore contains the `0` national prefix)
+formatNumber('017212345678', 'DE', 'E.164') !== '+4917212345678'
+// After proper parsing it works.
+parseNumber('017212345678', 'DE').phone === '17212345678'
+formatNumber('17212345678', 'DE', 'E.164') === '+4917212345678'
+
+// Formats phone number extensions.
+formatNumber({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
+```
 
 Available `options`:
 
@@ -121,40 +181,25 @@ Available `options`:
 }
 ```
 
-The `number` argument must be either a `parseNumber()`d phone number object (to strip national prefix) or an E.164 phone number (e.g. `+12133734253`). The `parseNumber()`d phone number object argument be expanded into two string arguments for those who prefer this kind of syntax.
-
-```js
-formatNumber({ country: 'US', phone: '2133734253' }, 'International') === '+1 213 373 4253'
-formatNumber('2133734253', 'US', 'International') === '+1 213 373 4253'
-formatNumber('+12133734253', 'International') === '+1 213 373 4253'
-
-// An example of an invalid phone number argument.
-// (has not been parsed and therefore contains the `0` national prefix)
-formatNumber('017212345678', 'DE', 'E.164') !== '+4917212345678'
-// After proper parsing it works.
-formatNumber(parseNumber('017212345678', 'DE'), 'E.164') === '+4917212345678'
-
-// Formatting phone number extensions (except for E.164).
-formatNumber({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
-```
-
 ### `class` AsYouType(defaultCountry)
 
-Creates a formatter for partially entered phone number. The [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code-definition) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance has two methods:
+Creates a formatter for a partially entered phone number. The [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance provides two methods:
 
  * `input(text)` — Takes any text and appends it to the input. Returns the formatted phone number.
  * `reset()` — Resets the input.
 
-The formatter also has the following getters:
-
- * `country` — Phone number [country](https://github.com/catamphetamine/libphonenumber-js#country-code-definition).
- * `getNationalNumber()` — Returns the national number part of the phone number.
- * `template` — The template used to format the phone number. Digits (and the `+` sign, if present) are denoted by `x`-es.
-
 ```js
 new AsYouType().input('+12133734') === '+1 213 373 4'
 new AsYouType('US').input('2133734') === '(213) 373-4'
+```
 
+The formatter also provides the following getters:
+
+ * `country` — Phone number [country](https://github.com/catamphetamine/libphonenumber-js#country-code).
+ * `getNationalNumber()` — Returns the national (significant) number part of the phone number.
+ * `template` — The template used to format the phone number. Digits (and the `+` sign, if present) are denoted by `x`-es.
+
+```js
 const asYouType = new AsYouType()
 asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
 asYouType.country === 'US'
@@ -162,7 +207,9 @@ asYouType.getNationalNumber() === '2133734253'
 asYouType.template === 'xx xxx xxx xxxx'
 ```
 
-"As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits. This solution is sufficient for all use cases except for phone number extensions which Google's "As You Type" formatter does not support. If your project requires phone number extensions input then use a separate input field for that.
+"As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits.
+
+Google's "As You Type" formatter does not support entering phone number extensions. If your project requires phone number extensions input then use a separate input field for that.
 
 ### findPhoneNumbers(text, [defaultCountry], [options])
 
@@ -297,7 +344,7 @@ Phone number validation rules are [constantly changing](https://github.com/googl
 
 ### getCountryCallingCode(country)
 
-There have been requests for a function returning a country calling code by [country code](https://github.com/catamphetamine/libphonenumber-js#country-code-definition).
+There have been requests for a function returning a country calling code by [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
 
 ```js
 getCountryCallingCode('RU') === '7'

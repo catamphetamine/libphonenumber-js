@@ -1,3 +1,7 @@
+<!-- Maybe change the behaviour of `parseNumber` to default to `extended: true` mode and introduce a `strict: true` mode for strict parsing (also add notes for how is it different from `isValidNumber()`). -->
+
+<!-- Maybe add `type` parameter to `isValidNumber()`. -->
+
 1.2.13 / 30.05.2018
 ===================
 
