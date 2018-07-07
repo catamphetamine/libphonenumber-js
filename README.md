@@ -81,7 +81,7 @@ If [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#countr
 Returns `{ country, phone, ext }` object where
  * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
  * `phone` is a [national (significant) number](https://github.com/catamphetamine/libphonenumber-js#national-significant-number).
- * `ext` is a phone number extension.
+ * `ext` is a [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)).
 
 ```js
 // Parses international numbers.
@@ -117,7 +117,7 @@ The result of "extended" parsing is an object where
 
  * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
  * `phone` is a [national (significant) number](https://github.com/catamphetamine/libphonenumber-js#national-significant-number).
- * `ext` is a phone number extension.
+ * `ext` is a [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)).
  * `countryCallingCode` is a [country calling code](https://github.com/catamphetamine/libphonenumber-js#country-calling-code).
  * [`carrierCode`](https://www.voip-info.org/carrier-identification-codes/)s are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
  * `valid: boolean` — whether it's a "valid" (real) phone number.
