@@ -381,17 +381,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
       <voip>
@@ -466,17 +463,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -1394,17 +1388,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -2254,17 +2245,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
       <voip>
@@ -3214,7 +3202,8 @@
          available in these regions are used. In these cases, if getRegionCodeForNumber is used, one
          of these region codes will be returned, although numbers will be valid for both regions. -->
     <!-- Calling code and formatting shared with 'GP' -->
-    <territory id="BL" countryCode="590" internationalPrefix="00" nationalPrefix="0">
+    <territory id="BL" countryCode="590" internationalPrefix="00" nationalPrefix="0"
+               mobileNumberPortableRegion="true">
       <references>
         <sourceUrl>http://www.itu.int/oth/T0202000058/en</sourceUrl>
         <sourceUrl>https://extranet.arcep.fr/portail/Op%C3%A9rateursCE/Num%C3%A9rotation.aspx</sourceUrl>
@@ -3321,17 +3310,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -3747,7 +3733,7 @@
          https://www.verizon.com/support/residential/phone/homephone/general+support/long+distance+calling/general/98762.htm -->
     <!-- Calling code and formatting shared with 'US' -->
     <territory id="BS" countryCode="1" leadingDigits="242" preferredInternationalPrefix="011"
-               internationalPrefix="011?" nationalPrefix="1">
+               internationalPrefix="011?" nationalPrefix="1" mobileNumberPortableRegion="true">
       <references>
         <sourceUrl>http://www.itu.int/oth/T0202000010/en</sourceUrl>
       </references>
@@ -3854,17 +3840,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
       <uan>
@@ -4353,9 +4336,8 @@
               8[17]
             )|
             6(?:
-              0[04]|
+              04|
               13|
-              22|
               39|
               47
             )|
@@ -4404,9 +4386,8 @@
               8[17]
             )|
             6(?:
-              0[04]|
+              04|
               13|
-              22|
               39|
               47
             )|
@@ -4450,20 +4431,27 @@
         <exampleNumber>5002345678</exampleNumber>
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
-          5(?:
-            (?:
+          (?:
+            5(?:
               00|
-              22|
+              2[12]|
               33|
               44|
               66|
               77|
               88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            )|
+            622
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
+      <voip>
+        <possibleLengths national="10"/>
+        <exampleNumber>6002012345</exampleNumber>
+        <!-- 600 (Canadian Non-Geographic Tariffed Services) are satellite numbers as per Wikipedia:
+             https://en.wikipedia.org/wiki/Area_code_600 -->
+        <nationalNumberPattern>600[2-9]\d{6}</nationalNumberPattern>
+      </voip>
     </territory>
 
     <!-- Cocos Islands -->
@@ -4858,13 +4846,13 @@
         <!-- Added the prefixes 4[0-2] (Moov), 5[7-9] and 61 because SMS messages have been
              successfully delivered. Supported by numbers found on the internet. Also added 43
              (Moov) based on numbers found online. Added 8[456] MTN ranges based on Wikipedia page.
-             50 has been removed since Warid seems to have stopped operation in Côte d'Ivoire. -->
+             50 has been removed since Warid seems to have stopped operation in Côte d'Ivoire.
+             Prefix 73 added based on user report. -->
         <nationalNumberPattern>
           (?:
-            0[1-9]|
+            [07][1-9]|
             [45]\d|
             6[014-9]|
-            7[124-9]|
             8[4-9]
           )\d{6}
         </nationalNumberPattern>
@@ -6808,17 +6796,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -6922,17 +6907,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -8740,17 +8722,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -8853,7 +8832,7 @@
          numbers were changed from 087 to the 09 prefix in 2009. It is likely this occurred here
          too. -->
     <territory id="GF" countryCode="594" internationalPrefix="00" nationalPrefix="0"
-               nationalPrefixFormattingRule="$NP$FG">
+               nationalPrefixFormattingRule="$NP$FG" mobileNumberPortableRegion="true">
       <references>
         <sourceUrl>http://www.itu.int/oth/T020200004C/en</sourceUrl>
         <sourceUrl>http://www.arcep.fr/index.php?id=2137&amp;bloc=0594&amp;CMD=RESULTS_NUMEROTATION</sourceUrl>
@@ -9297,7 +9276,8 @@
     <!-- Guadeloupe -->
     <!-- Main region for 'BL,MF' -->
     <territory id="GP" mainCountryForCode="true" countryCode="590" internationalPrefix="00"
-               nationalPrefix="0" nationalPrefixFormattingRule="$NP$FG">
+               nationalPrefix="0" nationalPrefixFormattingRule="$NP$FG"
+               mobileNumberPortableRegion="true">
       <references>
         <sourceUrl>http://www.itu.int/oth/T0202000058/en</sourceUrl>
         <!-- Linked from http://www.arcep.fr/index.php?id=interactivenumeros -->
@@ -9732,17 +9712,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -10950,7 +10927,8 @@
             [0-489][2-9]\d|
             5(?:
               01|
-              [23][23]|
+              2[2-5]|
+              3[23]|
               4[45]|
               5[015689]|
               6[6-8]|
@@ -13011,17 +12989,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -14265,7 +14240,7 @@
       <availableFormats>
         <numberFormat pattern="(\d{3})(\d{3})(\d{3})">
           <leadingDigits>
-            [25-7]|
+            [25-79]|
             31[25]
           </leadingDigits>
           <format>$1 $2 $3</format>
@@ -14285,7 +14260,7 @@
         </numberFormat>
       </availableFormats>
       <generalDesc>
-        <nationalNumberPattern>[235-8]\d{8,9}</nationalNumberPattern>
+        <nationalNumberPattern>[235-9]\d{8,9}</nationalNumberPattern>
       </generalDesc>
       <fixedLine>
         <possibleLengths national="9" localOnly="5,6"/>
@@ -14354,7 +14329,8 @@
             7(?:
               [07]\d|
               55
-            )
+            )|
+            99[69]
           )\d{6}
         </nationalNumberPattern>
       </mobile>
@@ -14683,17 +14659,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -15127,7 +15100,7 @@
     <!-- Cayman Islands -->
     <!-- Calling code and formatting shared with 'US' -->
     <territory id="KY" countryCode="1" leadingDigits="345" internationalPrefix="011"
-               nationalPrefix="1">
+               nationalPrefix="1" mobileNumberPortableRegion="true">
       <references>
         <sourceUrl>http://www.itu.int/oth/T0202000027/en</sourceUrl>
       </references>
@@ -15230,17 +15203,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -15636,17 +15606,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -16692,7 +16659,8 @@
 
     <!-- Saint-Martin, French Antilles -->
     <!-- Calling code and formatting shared with 'GP' -->
-    <territory id="MF" countryCode="590" internationalPrefix="00" nationalPrefix="0">
+    <territory id="MF" countryCode="590" internationalPrefix="00" nationalPrefix="0"
+               mobileNumberPortableRegion="true">
       <references>
         <sourceUrl>http://www.itu.int/oth/T0202000058/en</sourceUrl>
         <!-- Linked from http://www.arcep.fr/index.php?id=interactivenumeros -->
@@ -17521,17 +17489,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -17541,7 +17506,7 @@
          numbers were changed from 087 to the 09 prefix in 2009. It is likely this occurred here
          too. -->
     <territory id="MQ" countryCode="596" internationalPrefix="00" nationalPrefix="0"
-               nationalPrefixFormattingRule="$NP$FG">
+               nationalPrefixFormattingRule="$NP$FG" mobileNumberPortableRegion="true">
       <references>
         <sourceUrl>http://www.itu.int/oth/T0202000086/en</sourceUrl>
         <sourceUrl>http://www.arcep.fr/index.php?id=2137&amp;bloc=0596&amp;CMD=RESULTS_NUMEROTATION</sourceUrl>
@@ -17673,17 +17638,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -20701,20 +20663,25 @@
         <sourceUrl>http://www.itu.int/oth/T02020000EC/en</sourceUrl>
         <sourceUrl>http://en.wikipedia.org/wiki/Telephone_numbers_in_Niue</sourceUrl>
       </references>
-      <!-- Numbers are always formatted as a block. -->
+      <availableFormats>
+        <numberFormat pattern="(\d{3})(\d{4})">
+          <leadingDigits>888</leadingDigits>
+          <format>$1 $2</format>
+        </numberFormat>
+      </availableFormats>
+      <!-- All other numbers are always formatted as a block. -->
       <generalDesc>
-        <nationalNumberPattern>[1-5]\d{3}</nationalNumberPattern>
+        <nationalNumberPattern>[478]\d{3,7}</nationalNumberPattern>
       </generalDesc>
       <fixedLine>
         <possibleLengths national="4"/>
-        <exampleNumber>4002</exampleNumber>
-        <!-- Putting FWT (fixed-wireless-terminals) numbers here too. -->
-        <nationalNumberPattern>[34]\d{3}</nationalNumberPattern>
+        <exampleNumber>7012</exampleNumber>
+        <nationalNumberPattern>[47]\d{3}</nationalNumberPattern>
       </fixedLine>
       <mobile>
-        <possibleLengths national="4"/>
-        <exampleNumber>1234</exampleNumber>
-        <nationalNumberPattern>[125]\d{3}</nationalNumberPattern>
+        <possibleLengths national="7"/>
+        <exampleNumber>8884012</exampleNumber>
+        <nationalNumberPattern>888[4-9]\d{3}</nationalNumberPattern>
       </mobile>
     </territory>
 
@@ -21940,7 +21907,7 @@
     <!-- Puerto Rico -->
     <!-- Calling code and formatting shared with 'US' -->
     <territory id="PR" countryCode="1" leadingDigits="787|939" internationalPrefix="011"
-               nationalPrefix="1">
+               nationalPrefix="1" mobileNumberPortableRegion="true">
       <references>
         <sourceUrl>http://www.itu.int/oth/T02020000AA/en</sourceUrl>
       </references>
@@ -21993,17 +21960,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -23127,11 +23091,33 @@
     <territory id="SE" countryCode="46" internationalPrefix="00" nationalPrefix="0"
                nationalPrefixFormattingRule="$NP$FG" mobileNumberPortableRegion="true">
       <references>
-        <sourceUrl>http://www.pts.se/upload/Ovrigt/Tele/Nummerfragor/swedish-numbering-plan-for-telephony-acc-itu-140407.pdf</sourceUrl>
+        <sourceUrl>https://www.pts.se/en/english-b/telephony/national-numbering-and-addressing-plans/</sourceUrl>
       </references>
       <availableFormats>
         <!-- Formatting patterns are from the numbering plan and from the Swedish yellow pages
              http://gulasidorna.eniro.se -->
+        <numberFormat pattern="([1-469]\d)(\d{3})(\d{2})">
+          <leadingDigits>
+            [12][136]|
+            3[356]|
+            4[0246]|
+            6[03]|
+            90[1-9]
+          </leadingDigits>
+          <format>$1-$2 $3</format>
+          <intlFormat>$1 $2 $3</intlFormat>
+        </numberFormat>
+        <numberFormat pattern="(9[034]\d)(\d{4})">
+          <leadingDigits>
+            9(?:
+              00|
+              39|
+              44
+            )
+          </leadingDigits>
+          <format>$1-$2</format>
+          <intlFormat>$1 $2</intlFormat>
+        </numberFormat>
         <numberFormat pattern="(8)(\d{2,3})(\d{2,3})(\d{2})">
           <leadingDigits>8</leadingDigits>
           <format>$1-$2 $3 $4</format>
@@ -23149,17 +23135,6 @@
           </leadingDigits>
           <format>$1-$2 $3 $4</format>
           <intlFormat>$1 $2 $3 $4</intlFormat>
-        </numberFormat>
-        <numberFormat pattern="([1-469]\d)(\d{3})(\d{2})">
-          <leadingDigits>
-            [12][136]|
-            3[356]|
-            4[0246]|
-            6[03]|
-            90
-          </leadingDigits>
-          <format>$1-$2 $3</format>
-          <intlFormat>$1 $2 $3</intlFormat>
         </numberFormat>
         <numberFormat pattern="(\d{3})(\d{2})(\d{2})(\d{2})">
           <leadingDigits>
@@ -23226,11 +23201,6 @@
           <leadingDigits>9[034]</leadingDigits>
           <format>$1-$2 $3 $4</format>
           <intlFormat>$1 $2 $3 $4</intlFormat>
-        </numberFormat>
-        <numberFormat pattern="(9[034]\d)(\d{4})">
-          <leadingDigits>9[034]</leadingDigits>
-          <format>$1-$2</format>
-          <intlFormat>$1 $2</intlFormat>
         </numberFormat>
         <numberFormat pattern="(\d{3})(\d{2})(\d{3})(\d{2})(\d{2})">
           <leadingDigits>
@@ -24371,17 +24341,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -24583,17 +24550,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
       <voip>
@@ -25409,17 +25373,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
       <voicemail>
@@ -25809,6 +25770,11 @@
       <fixedLine>
         <possibleLengths national="9" localOnly="[5-7]"/>
         <exampleNumber>311234567</exampleNumber>
+        <!-- Official numbering plan https://regulation.gov.ua/documents/id89506 (Dated: 23.11.2006)
+             mentions that xx[018] (xx represents valid area code) fixed-line numbers as invalid and
+             we are also unable to find valid numbers online. This doc is already outdated and
+             contradicted (Eg: length of NSN) by some more recent evidence. Considering the impact
+             we choose not to mark those ranges as invalid. -->
         <nationalNumberPattern>
           (?:
             3[1-8]|
@@ -25821,7 +25787,10 @@
       <mobile>
         <possibleLengths national="9"/>
         <exampleNumber>391234567</exampleNumber>
-        <!-- Added 71 prefix based on user report and 72 based on online numbers. -->
+        <!-- Added 71 prefix based on user report and 72 based on online numbers. 39X mobile range
+             is mentioned in ITU doc dated 10.VIII.2006 but not in new one (dated 6.II.2017) and no
+             numbers found online. Considering the impact and lack of authoritative evidence we
+             choose not to mark 39X range as invalid. -->
         <nationalNumberPattern>
           (?:
             39|
@@ -26055,7 +26024,7 @@
             )|
             7(?:
               0[1-46-8]|
-              1[02-9]|
+              1[2-9]|
               2[04-7]|
               3[1247]|
               4[037]|
@@ -26148,7 +26117,7 @@
             )|
             7(?:
               0[1-46-8]|
-              1[02-9]|
+              1[2-9]|
               2[04-7]|
               3[1247]|
               4[037]|
@@ -26206,19 +26175,23 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
+      <uan>
+        <possibleLengths national="10"/>
+        <exampleNumber>7102123456</exampleNumber>
+        <!-- 710 range is assigned to federal government of the US. As these are service numbers
+             (non geographical) supporting them here. -->
+        <nationalNumberPattern>710[2-9]\d{6}</nationalNumberPattern>
+      </uan>
     </territory>
 
     <!-- Uruguay -->
@@ -26821,17 +26794,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -26978,17 +26948,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -27110,17 +27077,14 @@
         <!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
         <nationalNumberPattern>
           5(?:
-            (?:
-              00|
-              22|
-              33|
-              44|
-              66|
-              77|
-              88
-            )[2-9]|
-            21[23]
-          )\d{6}
+            00|
+            2[12]|
+            33|
+            44|
+            66|
+            77|
+            88
+          )[2-9]\d{6}
         </nationalNumberPattern>
       </personalNumber>
     </territory>
@@ -27173,8 +27137,8 @@
           </leadingDigits>
           <format>$1 $2 $3</format>
         </numberFormat>
-        <numberFormat pattern="(86[89])(\d{3})(\d{3})">
-          <leadingDigits>86[89]</leadingDigits>
+        <numberFormat pattern="(86[689])(\d{3})(\d{3})">
+          <leadingDigits>86[689]</leadingDigits>
           <format>$1 $2 $3</format>
         </numberFormat>
         <numberFormat pattern="(1[89]00)(\d{4,6})" nationalPrefixFormattingRule="$FG">
@@ -27203,23 +27167,27 @@
         </nationalNumberPattern>
       </noInternationalDialling>
       <!-- While 24 and 28 are the new area codes for Hanoi and Ho Chi Minh respectively, currently
-           only 24[2-8] and 28[2-7] are in use. -->
+           only 24[2-8] and 28[2-7] are in use. Reporter mentioned prefix 866 is Mobile but was
+           unable to receive SMS so for now supporting in both Mobile and Fixed-line -->
       <fixedLine>
-        <possibleLengths national="10"/>
+        <possibleLengths national="9,10"/>
         <exampleNumber>2101234567</exampleNumber>
         <nationalNumberPattern>
-          2(?:
-            0[3-9]|
-            1[0-689]|
-            2[0-25-9]|
-            3[2-9]|
-            4[2-8]|
-            5[124-9]|
-            6[0-39]|
-            7[0-7]|
-            8[2-7]|
-            9[0-4679]
-          )\d{7}
+          (?:
+            2(?:
+              0[3-9]|
+              1[0-689]|
+              2[0-25-9]|
+              3[2-9]|
+              4[2-8]|
+              5[124-9]|
+              6[0-39]|
+              7[0-7]|
+              8[2-7]|
+              9[0-4679]
+            )\d|
+            866
+          )\d{6}
         </nationalNumberPattern>
       </fixedLine>
       <mobile>
@@ -27227,21 +27195,25 @@
         <exampleNumber>912345678</exampleNumber>
         <!-- For the 8\d{8} range, we have clearer & more recent information available from IR.21
              docs than from ITU. Thus we consider 88x, 868, 89[89] as mobile ranges. 869 has been
-             added to Mobile as per a user report. -->
+             added to Mobile as per a user report. Reporter mentioned prefix 866 is Mobile but was
+             unable to receive SMS so for now supporting in both Mobile and Fixed-line -->
         <nationalNumberPattern>
           (?:
-            9\d|
+            9(?:
+              [0-8]\d|
+              9[013-9]
+            )|
             1(?:
               2\d|
               6[2-9]|
               8[68]|
               99
+            )\d|
+            8(?:
+              6[689]|
+              8\d|
+              9[89]
             )
-          )\d{7}|
-          8(?:
-            6[89]|
-            8\d|
-            9[89]
           )\d{6}
         </nationalNumberPattern>
       </mobile>
@@ -27255,6 +27227,12 @@
         <exampleNumber>1900123456</exampleNumber>
         <nationalNumberPattern>1900\d{4,6}</nationalNumberPattern>
       </premiumRate>
+      <!-- 992 is a VSAT numbering range as per ITU doc. -->
+      <voip>
+        <possibleLengths national="9"/>
+        <exampleNumber>992012345</exampleNumber>
+        <nationalNumberPattern>992\d{6}</nationalNumberPattern>
+      </voip>
       <uan>
         <possibleLengths national="7,8"/>
         <exampleNumber>1992000</exampleNumber>
