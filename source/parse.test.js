@@ -144,7 +144,7 @@ describe('parse', () =>
 		// No national number to be parsed.
 		parse('+996', { extended: true }).should.deep.equal
 		({
-			countryCallingCode : '996'
+			// countryCallingCode : '996'
 		})
 
 		// Valid number.
@@ -160,8 +160,8 @@ describe('parse', () =>
 		})
 
 		// https://github.com/catamphetamine/libphonenumber-js/issues/211
-		parse('+966', { extended: true }).should.deep.equal({ countryCallingCode: '966' })
-		parse('+9664', { extended: true }).should.deep.equal({ countryCallingCode: '966' })
+		parse('+966', { extended: true }).should.deep.equal({})
+		parse('+9664', { extended: true }).should.deep.equal({})
 		parse('+96645', { extended: true }).should.deep.equal
 		({
 			carrierCode        : undefined,
@@ -208,6 +208,9 @@ describe('parse', () =>
 
 		// Too short of a number.
 		parse('1', 'US', { extended: true }).should.deep.equal({})
+
+		// Too long of a number.
+		parse('1111111111111111111', 'US', { extended: true }).should.deep.equal({})
 
 		// Not a number.
 		parse('abcdefg', 'US', { extended: true }).should.deep.equal({})

@@ -144,7 +144,7 @@ describe('parse', () =>
 		// No national number to be parsed.
 		parse('+996', { extended: true }).should.deep.equal
 		({
-			countryCallingCode : '996'
+			// countryCallingCode : '996'
 		})
 
 		// Valid number.
