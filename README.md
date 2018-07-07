@@ -43,7 +43,7 @@ $ yarn add libphonenumber-js
 ### Parse phone number
 
 ```js
-import { parseNumber} from 'libphonenumber-js'
+import { parseNumber } from 'libphonenumber-js'
 
 parseNumber('Phone: 8 (800) 555 35 35.', 'RU')
 // Outputs: { country: 'RU', phone: '8005553535' }
