@@ -109,7 +109,7 @@ export function formatRFC3966()
 }
 
 // Deprecated: remove DIGITS export in 2.0.0 (unused).
-export { DIGIT_MAPPINGS as DIGITS } from './es6/common'
+export { DIGITS } from './es6/common'
 
 // Deprecated: remove this in 2.0.0 and make `custom.js` in ES6
 // (the old `custom.js` becomes `custom.commonjs.js`).

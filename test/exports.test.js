@@ -137,5 +137,8 @@ describe(`exports`, function()
 		Library.getExtPrefix('US', metadata).should.equal(' ext. ')
 		Library.parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })
 		Library.formatRFC3966({ number: '+12133734253' }).should.equal('tel:+12133734253')
+
+		Library.formatIncompletePhoneNumber('+121337342', null, metadata).should.deep.equal('+1 213 373 42')
+		Library.parseIncompletePhoneNumber('+1 213 373 42').should.equal('+121337342')
 	})
 })

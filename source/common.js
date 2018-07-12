@@ -35,7 +35,7 @@ export const MAX_LENGTH_COUNTRY_CODE = 3
 //
 // E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
 //
-export const DIGIT_MAPPINGS =
+export const DIGITS =
 {
 	'0': '0',
 	'1': '1',
@@ -79,6 +79,11 @@ export const DIGIT_MAPPINGS =
 	'\u06F9': '9'  // Eastern-Arabic digit 9
 }
 
+export function parseDigit(character)
+{
+	return DIGITS[character]
+}
+
 /**
  * Drops all punctuation leaving only digits and the leading `+` sign (if any).
  * Also converts wide-ascii and arabic-indic numerals to conventional numerals.
@@ -91,7 +96,7 @@ export const DIGIT_MAPPINGS =
 export function parse_phone_number_digits(number)
 {
 	return (LEADING_PLUS_CHARS_PATTERN.test(number) ? '+' : '') +
-		drop_and_substitute_characters(number, DIGIT_MAPPINGS)
+		drop_and_substitute_characters(number, DIGITS)
 }
 
 // Parses a formatted phone number

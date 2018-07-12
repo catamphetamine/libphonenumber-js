@@ -495,9 +495,34 @@ getExtPrefix('US') === ' ext. '
 getExtPrefix('GB') === ' x'
 ```
 
+### parseIncompletePhoneNumber(text)
+
+Parses incomplete phone number characters (`+` and digits). Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
+
+```js
+parseIncompletePhoneNumber('8 (800) 555') === '8800555'
+parseIncompletePhoneNumber('+7 800 555') === '+7800555'
+```
+
+### formatIncompletePhoneNumber(value, country, metadata, options)
+
+Formats incomplete phone number as a national one for a given `country`. If `country` is not specified then outputs the phone number in international format. Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
+
+```js
+formatIncompletePhoneNumber('8800555', 'RU', metadata) === '8 (800) 555'
+formatIncompletePhoneNumber('+7800555', null, metadata) === '+7 800 555'
+```
+
+The `options` argument can be omitted. If `options.template` is `true` then returns an object of shape `{ number, template }`.
+
+```js
+formatIncompletePhoneNumber('8800555', 'RU', metadata, { template: true }) === { number: '8 (800) 555', template: 'x (xxx) xxx' }
+formatIncompletePhoneNumber('+7800555', null, metadata, { template: true }) === { number: '+7 800 555', template: 'xx xxx xxx' }
+```
+
 ## React
 
-There's also a React component utilizing this library: [`react-phone-number-input`](https://github.com/catamphetamine/react-phone-number-input)
+There's also a React component utilizing this library — [`react-phone-number-input`](https://github.com/catamphetamine/react-phone-number-input) (or [without country select](https://github.com/catamphetamine/react-phone-number-input#without-country-select)).
 
 ## Examples
 

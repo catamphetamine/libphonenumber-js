@@ -4,6 +4,10 @@
 
 <!-- `type` parameter has been added to `isValidNumber()` for validating phone numbers of a particual type (fixed line, mobile, etc). -->
 
+<!-- (breaking change) Renamed `findPhoneNumbers()` to `findNumbers()`. -->
+
+<!-- (breaking change) Replaced `phone: ...` with `number: ...` in returned objects and arguments in all functions: `formatNumber()`, `parseNumber()`, `isValidNumber()`, `getNumberType()`, `findPhoneNumbers()`. -->
+
 1.2.13 / 30.05.2018
 ===================
 

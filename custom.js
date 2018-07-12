@@ -17,9 +17,12 @@ exports.searchPhoneNumbers = require('./build/findPhoneNumbers').searchPhoneNumb
 exports.PhoneNumberSearch  = require('./build/findPhoneNumbers').PhoneNumberSearch
 exports.AsYouType          = require('./build/AsYouType').default
 
+exports.formatIncompletePhoneNumber = require('./build/formatIncompletePhoneNumber').default
+exports.parseIncompletePhoneNumber  = require('./build/parseIncompletePhoneNumber').default
+
 // `DIGITS` are used by `react-phone-number-input`.
 // `DIGIT_PLACEHOLDER` is used by `react-phone-number-input`.
-exports.DIGITS            = require('./build/common').DIGIT_MAPPINGS
+exports.DIGITS            = require('./build/common').DIGITS
 exports.DIGIT_PLACEHOLDER = require('./build/AsYouType').DIGIT_PLACEHOLDER
 
 exports.getCountryCallingCode = require('./build/getCountryCallingCode').default
