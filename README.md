@@ -495,6 +495,19 @@ getExtPrefix('US') === ' ext. '
 getExtPrefix('GB') === ' x'
 ```
 
+<!--
+### parsePhoneNumberCharacter(nextCharacter, value)
+
+Parses next character while parsing `value` from text: discards everything except `+` and digits, and `+` is only allowed at the start of a phone number. Can be used for [`input-format`](https://github.com/catamphetamine/input-format).
+
+```js
+parsePhoneNumberCharacter('5', '880055') === '5'
+parsePhoneNumberCharacter('+', '') === '+'
+parsePhoneNumberCharacter('+', '+7800') === ''
+parsePhoneNumberCharacter('a', '') === ''
+```
+-->
+
 ### parseIncompletePhoneNumber(text)
 
 Parses incomplete phone number characters (`+` and digits). Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).

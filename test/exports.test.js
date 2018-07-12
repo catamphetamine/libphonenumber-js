@@ -140,5 +140,6 @@ describe(`exports`, function()
 
 		Library.formatIncompletePhoneNumber('+121337342', null, metadata).should.deep.equal('+1 213 373 42')
 		Library.parseIncompletePhoneNumber('+1 213 373 42').should.equal('+121337342')
+		Library.parsePhoneNumberCharacter('+').should.equal('+')
 	})
 })
