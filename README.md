@@ -658,15 +658,15 @@ or
 
 ```js
 import {
-  parse as parseCustom,
-  format as formatCustom,
+  parseNumber as parseNumberCustom,
+  formatNumber as formatNumberCustom,
   isValidNumber as isValidNumberCustom,
   getNumberType as getNumberTypeCustom,
   AsYouType as AsYouTypeCustom
 } from 'libphonenumber-js/custom'
 
-export const parse = (...args) => parseCustom(...args, metadata)
-export const format = (...args) => formatCustom(...args, metadata)
+export const parseNumber = (...args) => parseNumberCustom(...args, metadata)
+export const formatNumber = (...args) => formatNumberCustom(...args, metadata)
 export const isValidNumber = (...args) => isValidNumberCustom(...args, metadata)
 export const getNumberType = (...args) => getNumberTypeCustom(...args, metadata)
 
