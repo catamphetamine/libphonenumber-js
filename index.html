@@ -273,7 +273,7 @@
 									<input
 										type="text"
 										value={this.state.country}
-										onChange={event => this.setState({ country: event.target.value })}
+										onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
 										style={{ width: '40px', marginLeft: '6px' }}/>
 								</div>
 								<div className="section__line">Actual country: {asYouType ? asYouType.country : '-'}</div>
@@ -290,7 +290,7 @@
 							<input
 								type="text"
 								value={this.state.country}
-								onChange={event => this.setState({ country: event.target.value })}
+								onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
 								style={{ width: '40px', marginRight: '10px' }}/>
 
 							<input
@@ -307,7 +307,7 @@
 							<input
 								type="text"
 								value={this.state.country}
-								onChange={event => this.setState({ country: event.target.value })}
+								onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
 								style={{ width: '40px', marginRight: '10px' }}/>
 
 							<input
@@ -324,7 +324,7 @@
 							<input
 								type="text"
 								value={this.state.country}
-								onChange={event => this.setState({ country: event.target.value })}
+								onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
 								style={{ width: '40px', marginRight: '10px' }}/>
 
 							<input
