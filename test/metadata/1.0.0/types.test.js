@@ -1,5 +1,5 @@
 import metadata from './metadata.full'
-import get_number_type_custom from '../../../source/types'
+import get_number_type_custom from '../../../source/getNumberType'
 
 function get_number_type(...parameters)
 {

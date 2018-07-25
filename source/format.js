@@ -5,7 +5,7 @@
 
 import
 {
-	parse_national_number_and_country_calling_code,
+	extractCountryCallingCode,
 	VALID_PUNCTUATION,
 	matches_entirely
 }
@@ -51,7 +51,8 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 		metadata.country(input.country)
 	}
 
-	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(input.phone, null, metadata)
+	// `number` is a national (significant) number in this case.
+	let { countryCallingCode, number } = extractCountryCallingCode(input.phone, null, metadata)
 
 	countryCallingCode = countryCallingCode || input.countryCallingCode
 

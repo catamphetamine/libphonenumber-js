@@ -2,6 +2,9 @@ import { parseDigit } from './common'
 
 /**
  * Parses phone number characters from a string.
+ * Drops all punctuation leaving only digits and the leading `+` sign (if any).
+ * Also converts wide-ascii and arabic-indic numerals to conventional numerals.
+ * E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
  * @param  {string} string
  * @return {string}
  * @example

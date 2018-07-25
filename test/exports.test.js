@@ -8,6 +8,7 @@ import
 	parseNumber,
 	getNumberType,
 	isValidNumber,
+	isValidNumberForRegion,
 	findPhoneNumbers,
 	searchPhoneNumbers,
 	PhoneNumberSearch,
@@ -51,6 +52,7 @@ describe(`exports`, function()
 		formatNumber('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
 		isValidNumber('+12133734253', 'US').should.equal(true)
+		isValidNumberForRegion('+12133734253', 'US').should.equal(true)
 		findPhoneNumbers('+12133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		searchPhoneNumbers('+12133734253', 'US')[Symbol.iterator]().next.should.be.a('function')
 		new PhoneNumberSearch('+12133734253', undefined).find.should.be.a('function')
@@ -96,6 +98,7 @@ describe(`exports`, function()
 		Library.formatNumber('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		Library.getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
 		Library.isValidNumber('+12133734253', 'US').should.equal(true)
+		Library.isValidNumberForRegion('+12133734253', 'US').should.equal(true)
 		Library.findPhoneNumbers('+12133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.searchPhoneNumbers('+12133734253', 'US')[Symbol.iterator]().next.should.be.a('function')
 		new Library.PhoneNumberSearch('+12133734253', undefined).find.should.be.a('function')
@@ -126,6 +129,7 @@ describe(`exports`, function()
 		Library.formatNumber('2133734253', 'US', 'E.164', metadata).should.equal('+12133734253')
 		Library.getNumberType('2133734253', 'US', metadata).should.equal('FIXED_LINE_OR_MOBILE')
 		Library.isValidNumber('+12133734253', 'US', metadata).should.equal(true)
+		Library.isValidNumberForRegion('+12133734253', 'US', metadata).should.equal(true)
 		Library.findPhoneNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.searchPhoneNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')
 		new Library.PhoneNumberSearch('+12133734253', undefined, metadata).find.should.be.a('function')

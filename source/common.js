@@ -1,5 +1,7 @@
 import { stripIDDPrefix } from './IDD'
 
+import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
+
 // `DASHES` will be right after the opening square bracket of the "character class"
 const DASHES = '-\u2010-\u2015\u2212\u30FC\uFF0D'
 const SLASHES = '\uFF0F/'
@@ -84,30 +86,16 @@ export function parseDigit(character)
 	return DIGITS[character]
 }
 
-/**
- * Drops all punctuation leaving only digits and the leading `+` sign (if any).
- * Also converts wide-ascii and arabic-indic numerals to conventional numerals.
- *
- * E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
- *
- * @param  {string} number
- * @return {string}
- */
-export function parse_phone_number_digits(number)
-{
-	return (LEADING_PLUS_CHARS_PATTERN.test(number) ? '+' : '') +
-		drop_and_substitute_characters(number, DIGITS)
-}
-
 // Parses a formatted phone number
-// and returns `{ country_calling_code, number }`
-// where `number` is the national (significant) phone number.
+// and returns `{ countryCallingCode, number }`
+// where `number` is just the "number" part
+// which is left after extracting `countryCallingCode`
+// and is not necessarily a "national (significant) number"
+// and might as well contain national prefix.
 //
-// (aka `maybeExtractCountryPhoneCode`)
-//
-export function parse_national_number_and_country_calling_code(number, country, metadata)
+export function extractCountryCallingCode(number, country, metadata)
 {
-	number = parse_phone_number_digits(number)
+	number = parseIncompletePhoneNumber(number)
 
 	if (!number)
 	{
@@ -123,7 +111,8 @@ export function parse_national_number_and_country_calling_code(number, country, 
 		const numberWithoutIDD = stripIDDPrefix(number, country, metadata.metadata)
 
 		// If an IDD prefix was stripped then
-		// convert the number to international one.
+		// convert the number to international one
+		// for subsequent parsing.
 		if (numberWithoutIDD && numberWithoutIDD !== number) {
 			number = '+' + numberWithoutIDD
 		} else {
@@ -176,30 +165,6 @@ export function matches_entirely(text = '', regular_expression)
 
 	const matched_groups = text.match(regular_expression)
 	return matched_groups !== null && matched_groups[0].length === text.length
-}
-
-// For any character not being part of `replacements`
-// it is removed from the phone number.
-function drop_and_substitute_characters(text, replacements)
-{
-	let replaced = ''
-
-	// Using `.split('')` to iterate through a string here
-	// to avoid requiring `Symbol.iterator` polyfill.
-	// `.split('')` is generally not safe for Unicode,
-	// but in this particular case for `digits` it is safe.
-	// for (const character of text)
-	for (const character of text.split(''))
-	{
-		const replacement = replacements[character.toUpperCase()]
-
-		if (replacement)
-		{
-			replaced += replacement
-		}
-	}
-
-	return replaced
 }
 
 // The RFC 3966 format for extensions.

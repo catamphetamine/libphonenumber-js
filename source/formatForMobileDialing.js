@@ -7,7 +7,7 @@
 import Metadata from './metadata'
 
 import format from './format'
-import get_number_type, { check_number_length_for_type } from './types'
+import get_number_type, { check_number_length_for_type } from './getNumberType'
 import getCountryCallingCode from './getCountryCallingCode'
 import { REGION_CODE_FOR_NON_GEO_ENTITY } from './common'
 

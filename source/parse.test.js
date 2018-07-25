@@ -74,6 +74,9 @@ describe('parse', () =>
 
 		// No country could be derived.
 		// parse('+212569887076').should.deep.equal({ countryPhoneCode: '212', phone: '569887076' })
+
+		// GB. Moible numbers starting 07624* are Isle of Man.
+		parse('07624369230', 'GB').should.deep.equal({ country: 'IM', phone: '7624369230' })
 	})
 
 	it('should parse possible numbers', function()

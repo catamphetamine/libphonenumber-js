@@ -432,9 +432,10 @@ Use `findPhoneNumbers()` instead.
 
 Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
 
-The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with the second `defaultCountry` argument (the string is gonna be parsed in this case).
+The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string (phone number digits only) possibly accompanied with the second `defaultCountry` argument.
 
 ```js
+getNumberType('+79160151539') === 'MOBILE'
 getNumberType('9160151539', 'RU') === 'MOBILE'
 getNumberType({ phone: '9160151539', country: 'RU' }) === 'MOBILE'
 ```
@@ -443,14 +444,14 @@ getNumberType({ phone: '9160151539', country: 'RU' }) === 'MOBILE'
 
 Checks if a phone number is valid, the validation is more strict than `parseNumber()`.
 
-The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string possibly accompanied with the second `defaultCountry` argument (the string is gonna be parsed in this case).
+The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string (phone number digits only) possibly accompanied with the second `defaultCountry` argument.
 
 ```js
-isValidNumber('+1-213-373-4253') === true
-isValidNumber('+1-213-373') === false
+isValidNumber('+12133734253') === true
+isValidNumber('+1213373') === false
 
-isValidNumber('(213) 373-4253', 'US') === true
-isValidNumber('(213) 37', 'US') === false
+isValidNumber('2133734253', 'US') === true
+isValidNumber('21337', 'US') === false
 
 isValidNumber({ phone: '2133734253', country: 'US' }) === true
 ```
@@ -460,6 +461,20 @@ The difference between using `parseNumber()` and `isValidNumber()` for phone num
 This is how it is implemented in the original Google's [`libphonenumber`](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-): `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone numbers precisely (provided the precise regular expressions are included in metadata).
 
 The precise regular expressions aren't included in the default metadata because that would cause the default metadata to grow twice in its size: the complete ("full") metadata size is about 145 kilobytes while the reduced ("default") metadata size is about 77 kilobytes. Hence in the default configuration `isValidNumber()` performs absolutely the same "lite" validation as `parseNumber()`. For enabling extensive phone number validation the simplest way is to import functions from `libphonenumber-js/custom` module and supply them with `libphonenumber-js/metadata.full.json`. For generating custom metadata see the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
+
+The optional `defaultCountry` argument is the _default_ country, i.e. it does not restrict to just that country, e.g. in those cases where several countries share the same phone numbering rules (NANPA, Britain, etc). For example, even though the number `07624 369230` belongs to the Isle of Man ("IM" country code) calling `isValidNumber('07624369230', 'GB')` still returns `true` because the country is not restricted to `GB`, it's just that `GB` is the default one for the phone numbering rules. For restricting the country see `isValidNumberForRegion()` though restricting a country [might not be a good idea](https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-use-isvalidnumberforregion).
+
+```js
+// Even though '07624 369230' number belongs to the Isle of Man ("IM")
+// the `defaultCountry` argument "GB" still works here because
+// "GB" and "IM" both share the same phone numbering rules ("+44").
+isValidNumber('07624369230', 'GB') === true
+isValidNumber('07624369230', 'IM') === true
+
+// Imposing country restrictions.
+isValidNumberForRegion('07624369230', 'GB') === false
+isValidNumberForRegion('07624369230', 'IM') === true
+```
 
 #### Using phone number validation feature
 

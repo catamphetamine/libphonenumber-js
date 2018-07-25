@@ -1,6 +1,6 @@
 import metadata from '../metadata.full'
 import Metadata from '../../../../source/metadata'
-import get_number_type_custom, { check_number_length_for_type, merge_arrays } from '../../../../source/types'
+import get_number_type_custom, { check_number_length_for_type, merge_arrays } from '../../../../source/getNumberType'
 
 function get_number_type(...parameters)
 {

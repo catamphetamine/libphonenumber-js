@@ -7,7 +7,6 @@ describe('metadata', () =>
 	it('should return undefined for non-defined types', function()
 	{
 		const FR = new Metadata(metadata).country('FR')
-		console.log(FR.type('FIXED_LINE'))
 		type(FR.type('FIXED_LINE')).should.equal('undefined')
 	})
 })

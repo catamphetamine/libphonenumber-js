@@ -2,8 +2,9 @@ import metadata from './metadata.min.json'
 
 import parseNumberCustom from './es6/parse'
 import formatNumberCustom from './es6/format'
-import getNumberTypeCustom from './es6/types'
+import getNumberTypeCustom from './es6/getNumberType'
 import isValidNumberCustom from './es6/validate'
+import isValidNumberForRegionCustom from './es6/isValidNumberForRegion'
 import findPhoneNumbersCustom, { searchPhoneNumbers as searchPhoneNumbersCustom, PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
 import AsYouTypeCustom from './es6/AsYouType'
 import getCountryCallingCodeCustom from './es6/getCountryCallingCode'
@@ -55,6 +56,13 @@ export function isValidNumber()
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return isValidNumberCustom.apply(this, parameters)
+}
+
+export function isValidNumberForRegion()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return isValidNumberForRegionCustom.apply(this, parameters)
 }
 
 export function findPhoneNumbers()
@@ -115,11 +123,11 @@ export { DIGITS } from './es6/common'
 // (the old `custom.js` becomes `custom.commonjs.js`).
 export { default as parseCustom } from './es6/parse'
 export { default as formatCustom } from './es6/format'
-export { default as isValidNumberCustom }    from './es6/validate'
+export { default as isValidNumberCustom } from './es6/validate'
 export { default as findPhoneNumbersCustom } from './es6/findPhoneNumbers'
 export { searchPhoneNumbers as searchPhoneNumbersCustom } from './es6/findPhoneNumbers'
 export { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
-export { default as getNumberTypeCustom }    from './es6/types'
+export { default as getNumberTypeCustom } from './es6/getNumberType'
 export { default as getCountryCallingCodeCustom } from './es6/getCountryCallingCode'
 
 export

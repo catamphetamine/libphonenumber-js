@@ -25,6 +25,13 @@ describe('validate', () =>
 		is_valid_number('+380972423740').should.equal(true)
 
 		is_valid_number('0912345678', 'TW').should.equal(true)
+
+		// Moible numbers starting 07624* are Isle of Man
+		// which has its own "country code" "IM"
+		// which is in the "GB" "country calling code" zone.
+		// So while this number is for "IM" it's still supposed to
+		// be valid when passed "GB" as a default country.
+		is_valid_number('07624369230', 'GB').should.equal(true)
 	})
 
 	it('should refine phone number validation in case extended regular expressions are set for a country', () =>
@@ -33,21 +40,21 @@ describe('validate', () =>
 		is_valid_number('123456', 'DE').should.equal(true)
 		is_valid_number('0123456', 'DE').should.equal(true)
 
-		// Extra regular expressions for precise national number validation.
+		// Different regular expressions for precise national number validation.
 		// `types` index in compressed array is `9` for v1.
 		// For v2 it's 10.
 		// For v3 it's 11.
 		metadata.countries.DE[11] =
 		[
-         ["[246]\\d{5,13}|3(?:0\\d{3,13}|2\\d{9}|[3-9]\\d{4,13})|5(?:0[2-8]|[1256]\\d|[38][0-8]|4\\d{0,2}|[79][0-7])\\d{3,11}|7(?:0[2-8]|[1-9]\\d)\\d{3,10}|8(?:0[2-9]|[1-9]\\d)\\d{3,10}|9(?:0[6-9]\\d{3,10}|1\\d{4,12}|[2-9]\\d{4,11})"],
-         ["1(?:5[0-25-9]\\d{8}|6[023]\\d{7,8}|7(?:[0-57-9]\\d?|6\\d)\\d{7})"],
-         ["800\\d{7,12}"],
-         ["137[7-9]\\d{6}|900(?:[135]\\d{6}|9\\d{7})"],
-         ["700\\d{8}"],
-         ["1(?:5(?:(?:2\\d55|7\\d99|9\\d33)\\d{7}|(?:[034568]00|113)\\d{8})|6(?:013|255|399)\\d{7,8}|7(?:[015]13|[234]55|[69]33|[78]99)\\d{7,8})"],
-         ["18(?:1\\d{5,11}|[2-9]\\d{8})"],
-         ["16(?:4\\d{1,10}|[89]\\d{1,11})"]
-      ]
+			["[246]\\d{5,13}|3(?:0\\d{3,13}|2\\d{9}|[3-9]\\d{4,13})|5(?:0[2-8]|[1256]\\d|[38][0-8]|4\\d{0,2}|[79][0-7])\\d{3,11}|7(?:0[2-8]|[1-9]\\d)\\d{3,10}|8(?:0[2-9]|[1-9]\\d)\\d{3,10}|9(?:0[6-9]\\d{3,10}|1\\d{4,12}|[2-9]\\d{4,11})"],
+			["1(?:5[0-25-9]\\d{8}|6[023]\\d{7,8}|7(?:[0-57-9]\\d?|6\\d)\\d{7})"],
+			["800\\d{7,12}"],
+			["137[7-9]\\d{6}|900(?:[135]\\d{6}|9\\d{7})"],
+			["700\\d{8}"],
+			["1(?:5(?:(?:2\\d55|7\\d99|9\\d33)\\d{7}|(?:[034568]00|113)\\d{8})|6(?:013|255|399)\\d{7,8}|7(?:[015]13|[234]55|[69]33|[78]99)\\d{7,8})"],
+			["18(?:1\\d{5,11}|[2-9]\\d{8})"],
+			["16(?:4\\d{1,10}|[89]\\d{1,11})"]
+		]
 
 		// Germany extended validation must not pass for an invalid phone number
 		is_valid_number('123456', 'DE').should.equal(false)

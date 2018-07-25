@@ -8,6 +8,13 @@
 
 <!-- (breaking change) Replaced `phone: ...` with `number: ...` in returned objects and arguments in all functions: `formatNumber()`, `parseNumber()`, `isValidNumber()`, `getNumberType()`, `findPhoneNumbers()`. -->
 
+1.3.0 / 25.07.2018
+==================
+
+  * Fixed `parseNumber()`, `isValidNumber()` and `getNumberType()` in some rare cases (made them a bit less strict where it fits): previously they were treating `defaultCountry` argument as "the country" in case of local numbers, e.g. `isValidNumber('07624 369230', 'GB')` would be `false` because `07624 369230` number belongs to `IM` (the Isle of Man). While `IM` is not `GB` it should still be `true` because `GB` is the _default_ country, without it necessarily being _the_ country.
+
+  * Added a new function `isValidNumberForRegion(number, country)` which mimics [Google's `libphonenumber`'s one](https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-use-isvalidnumberforregion).
+
 1.2.13 / 30.05.2018
 ===================
 

@@ -10,8 +10,9 @@ exports.parseNumber        = require('./build/parse').default
 // (renamed to `formatNumber()`)
 exports.format             = require('./build/format').default
 exports.formatNumber       = require('./build/format').default
-exports.getNumberType      = require('./build/types').default
+exports.getNumberType      = require('./build/getNumberType').default
 exports.isValidNumber      = require('./build/validate').default
+exports.isValidNumberForRegion = require('./build/isValidNumberForRegion').default
 exports.findPhoneNumbers   = require('./build/findPhoneNumbers').default
 exports.searchPhoneNumbers = require('./build/findPhoneNumbers').searchPhoneNumbers
 exports.PhoneNumberSearch  = require('./build/findPhoneNumbers').PhoneNumberSearch

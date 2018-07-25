@@ -11,8 +11,7 @@ import
 	VALID_DIGITS,
 	VALID_PUNCTUATION,
 	PLUS_CHARS,
-	parse_phone_number_digits,
-	parse_national_number_and_country_calling_code
+	extractCountryCallingCode
 }
 from './common'
 
@@ -36,7 +35,9 @@ import
 {
 	check_number_length_for_type
 }
-from './types'
+from './getNumberType'
+
+import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
 
 // Used in phone number format template creation.
 // Could be any digit, I guess.
@@ -138,7 +139,7 @@ export default class AsYouType
 			return this.current_output
 		}
 
-		return this.process_input(parse_phone_number_digits(extracted_number))
+		return this.process_input(parseIncompletePhoneNumber(extracted_number))
 	}
 
 	process_input(input)
@@ -583,7 +584,7 @@ export default class AsYouType
 	// and places the remaining input into the `national_number`.
 	extract_country_calling_code()
 	{
-		const { countryCallingCode, number } = parse_national_number_and_country_calling_code(this.parsed_input, this.default_country, this.metadata)
+		const { countryCallingCode, number } = extractCountryCallingCode(this.parsed_input, this.default_country, this.metadata)
 
 		if (!countryCallingCode)
 		{
@@ -591,6 +592,15 @@ export default class AsYouType
 		}
 
 		this.countryCallingCode = countryCallingCode
+
+		// Sometimes people erroneously write national prefix
+		// as part of an international number, e.g. +44 (0) ....
+		// This violates the standards for international phone numbers,
+		// so "As You Type" formatter assumes no national prefix
+		// when parsing a phone number starting from `+`.
+		// Even if it did attempt to filter-out that national prefix
+		// it would look weird for a user trying to enter a digit
+		// because from user's perspective the keyboard "wouldn't be working".
 		this.national_number = number
 
 		this.metadata.chooseCountryByCountryCallingCode(countryCallingCode)

@@ -51,6 +51,13 @@ exports.isValidNumber = function isValidNumber()
 	return custom.isValidNumber.apply(this, parameters)
 }
 
+exports.isValidNumberForRegion = function isValidNumberForRegion()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.isValidNumberForRegion.apply(this, parameters)
+}
+
 exports.findPhoneNumbers = function findPhoneNumbers()
 {
 	var parameters = Array.prototype.slice.call(arguments)

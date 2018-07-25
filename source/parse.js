@@ -5,8 +5,7 @@
 
 import
 {
-	parse_phone_number_digits,
-	parse_national_number_and_country_calling_code,
+	extractCountryCallingCode,
 	VALID_DIGITS,
 	VALID_PUNCTUATION,
 	PLUS_CHARS,
@@ -16,9 +15,13 @@ import
 }
 from './common'
 
+import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
+
 import Metadata from './metadata'
 
-import get_number_type, { check_number_length_for_type } from './types'
+import getCountryCallingCode from './getCountryCallingCode'
+
+import get_number_type, { check_number_length_for_type } from './getNumberType'
 
 import { parseRFC3966 } from './RFC3966'
 
@@ -553,7 +556,7 @@ function result(country, national_number, ext)
  */
 function parse_phone_number(formatted_phone_number, default_country, metadata)
 {
-	let { countryCallingCode, number } = parse_national_number_and_country_calling_code(formatted_phone_number, default_country, metadata)
+	let { countryCallingCode, number } = extractCountryCallingCode(formatted_phone_number, default_country, metadata)
 
 	if (!number) {
 		return { countryCallingCode }
@@ -561,54 +564,36 @@ function parse_phone_number(formatted_phone_number, default_country, metadata)
 
 	let country
 
-	// Attempt to extract country from international phone number.
 	if (countryCallingCode)
 	{
-		// Sometimes there are several countries
-		// corresponding to the same country phone code
-		// (e.g. NANPA countries all having `1` country phone code).
-		// Therefore, to reliably determine the exact country,
-		// national (significant) number should have been parsed first.
-		//
-		// When `metadata.json` is generated, all "ambiguous" country phone codes
-		// get their countries populated with the full set of
-		// "phone number type" regular expressions.
-		//
-		country = find_country_code(countryCallingCode, number, metadata)
-
-		if (country)
-		{
-			metadata.country(country)
-		}
-		else
-		{
-			// Formatting information for regions which share
-			// a country calling code is contained by only one region
-			// for performance reasons. For example, for NANPA region
-			// ("North American Numbering Plan Administration",
-			//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
-			// it will be contained in the metadata for `US`.
-			metadata.chooseCountryByCountryCallingCode(countryCallingCode)
-		}
+		metadata.chooseCountryByCountryCallingCode(countryCallingCode)
 	}
 	else if (default_country)
 	{
+		metadata.country(default_country)
 		country = default_country
-		metadata.country(country)
-		countryCallingCode = metadata.countryCallingCode()
+		countryCallingCode = getCountryCallingCode(default_country, metadata.metadata)
 	}
 	else return {}
 
-	// Parsing national prefixes and carrier codes
-	// is only required for local phone numbers
-	// but some people don't understand that
-	// and sometimes write international phone numbers
-	// with national prefixes (or maybe even carrier codes).
-	// http://ucken.blogspot.ru/2016/03/trunk-prefixes-in-skype4b.html
-	// Google's original library forgives such mistakes
-	// and so does this library, because it has been requested:
-	// https://github.com/catamphetamine/libphonenumber-js/issues/127
 	const { national_number, carrier_code } = parse_national_number(number, metadata)
+
+	// Sometimes there are several countries
+	// corresponding to the same country phone code
+	// (e.g. NANPA countries all having `1` country phone code).
+	// Therefore, to reliably determine the exact country,
+	// national (significant) number should have been parsed first.
+	//
+	// When `metadata.json` is generated, all "ambiguous" country phone codes
+	// get their countries populated with the full set of
+	// "phone number type" regular expressions.
+	//
+	const exactCountry = find_country_code(countryCallingCode, national_number, metadata)
+	if (exactCountry)
+	{
+		country = exactCountry
+		metadata.country(country)
+	}
 
 	return {
 		country,
@@ -620,7 +605,7 @@ function parse_phone_number(formatted_phone_number, default_country, metadata)
 
 function parse_national_number(number, metadata)
 {
-	let national_number = parse_phone_number_digits(number)
+	let national_number = parseIncompletePhoneNumber(number)
 	let carrier_code
 
 	// Only strip national prefixes for non-international phone numbers
