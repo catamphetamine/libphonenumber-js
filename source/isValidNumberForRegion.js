@@ -28,7 +28,6 @@ export default function isValidNumberForRegion(number, country, _metadata)
 	}
 
 	const { input, metadata } = sort_out_arguments(number, country, _metadata)
-	const isValid = isValidNumber(input, metadata.metadata)
 
-	return isValid && input.country === country
+	return input.country === country && isValidNumber(input, metadata.metadata)
 }
