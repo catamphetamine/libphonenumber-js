@@ -311,10 +311,10 @@ describe('parse', () =>
 
 	it('should parse invalid international numbers even if they are invalid', () =>
 	{
-		parse('+49(0)15123020522', 'DE').should.deep.equal
+		parse('+7(8)8005553535', 'RU').should.deep.equal
 		({
-			country : 'DE',
-			phone   : '15123020522'
+			country : 'RU',
+			phone   : '8005553535'
 		})
 	})
 
