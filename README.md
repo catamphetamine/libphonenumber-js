@@ -562,6 +562,8 @@ Phone number validation bugs should **only** be reported if they appear when usi
 
 There is also a possibility of this library's demo metadata being outdated, or this library's metadata lagging behind Google's (I have to update it manually from time to time due to `ssh-agent` not working properly on Windows).
 
+There also have been cases when Google's demo wasn't updated to the latest metadata and showed incorrect results. So Google's demo is not a reliable source of truth.
+
 ## TypeScript
 
 [TypeScript support](https://github.com/catamphetamine/libphonenumber-js/blob/master/index.d.ts) for this library is entirely community-driven. I myself don't use TypeScript. Send your pull requests.
@@ -791,9 +793,11 @@ launchctl list | grep 'libphonenumber-js'
 ```
 -->
 
-## Contributing
+## Maintenance
 
 Google periodically releases new metadata with the changes described in the [release notes](https://github.com/googlei18n/libphonenumber/blob/master/release_notes.txt). Sometimes those are minor non-breaking updates, sometimes those are major-version breaking updates. The metadata should be periodically updated via `autoupdate.cmd` (Windows) and `autoupdate.sh` (Linux/macOS) scripts. Also Google sometimes (very rarely) updates their code: [`phonenumberutil.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js) (`parseNumber()`, `formatNumber()`, `isValidNumber()`, `getNumberType()`), [`asyoutypeformatter.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/asyoutypeformatter.js) (`AsYouType`), [`PhoneNumberMatcher`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) (`findPhoneNumbers()`). The latest sync-up was performed on August 1st, 2018.
+
+## Contributing
 
 After cloning this repo, ensure dependencies are installed by running:
 
