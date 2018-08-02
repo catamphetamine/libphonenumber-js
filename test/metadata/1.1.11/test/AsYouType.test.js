@@ -172,9 +172,7 @@ describe('as you type', () =>
 		formatter = new as_you_type('RU')
 
 		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('8 (9  )')
-		formatter.input('9').should.equal('8 (99 )')
-		formatter.input('9').should.equal('8 (999)')
+		formatter.input('999').should.equal('8 (999)')
 		formatter.input('-').should.equal('8 (999)')
 		formatter.input('1234').should.equal('8 (999) 123-4')
 		formatter.input('567').should.equal('8 (999) 123-45-67')
@@ -194,9 +192,7 @@ describe('as you type', () =>
 		formatter.reset()
 
 		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('8 (9  )')
-		formatter.input('9').should.equal('8 (99 )')
-		formatter.input('9').should.equal('8 (999)')
+		formatter.input('999').should.equal('8 (999)')
 		formatter.input('-').should.equal('8 (999)')
 		formatter.input('1234').should.equal('8 (999) 123-4')
 		formatter.input('567').should.equal('8 (999) 123-45-67')
@@ -206,7 +202,7 @@ describe('as you type', () =>
 		// when formatting local NANPA phone numbers.
 		new as_you_type('US').input('1').should.equal('1')
 		new as_you_type('US').input('12').should.equal('12')
-		new as_you_type('US').input('123').should.equal('(23 )')
+		new as_you_type('US').input('123').should.equal('23')
 
 		// Bulgaria
 		// (should not prepend national prefix `0`)
@@ -247,9 +243,7 @@ describe('as you type', () =>
 
 		formatter = new as_you_type('US')
 
-		formatter.input('9').should.equal('(9  )')
-		formatter.input('9').should.equal('(99 )')
-		formatter.input('9').should.equal('(999)')
+		formatter.input('999').should.equal('(999)')
 		formatter.input('1').should.equal('(999) 1')
 
 		// Test braces (RU)
@@ -257,9 +251,7 @@ describe('as you type', () =>
 		formatter = new as_you_type('RU')
 
 		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('8 (9  )')
-		formatter.input('9').should.equal('8 (99 )')
-		formatter.input('9').should.equal('8 (999)')
+		formatter.input('999').should.equal('8 (999)')
 		formatter.input('1').should.equal('8 (999) 1')
 	})
 
@@ -268,9 +260,7 @@ describe('as you type', () =>
 		const formatter = new as_you_type('RU')
 
 		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('8 (9  )')
-		formatter.input('9').should.equal('8 (99 )')
-		formatter.input('9').should.equal('8 (999)')
+		formatter.input('999').should.equal('8 (999)')
 
 		// formatter.valid.should.be.false
 		formatter.template.should.equal('x (xxx) xxx-xx-xx')

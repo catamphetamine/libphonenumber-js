@@ -1,5 +1,5 @@
 import metadata from '../metadata.min'
-import as_you_type_custom, { close_dangling_braces, repeat } from './AsYouType'
+import as_you_type_custom, { close_dangling_braces, strip_dangling_braces, repeat } from './AsYouType'
 
 class as_you_type extends as_you_type_custom
 {
@@ -172,8 +172,8 @@ describe('as you type', () =>
 		formatter = new as_you_type('RU')
 
 		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('8 (9  )')
-		formatter.input('9').should.equal('8 (99 )')
+		formatter.input('9').should.equal('8 9')
+		formatter.input('9').should.equal('8 99')
 		formatter.input('9').should.equal('8 (999)')
 		formatter.input('-').should.equal('8 (999)')
 		formatter.input('1234').should.equal('8 (999) 123-4')
@@ -194,8 +194,8 @@ describe('as you type', () =>
 		formatter.reset()
 
 		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('8 (9  )')
-		formatter.input('9').should.equal('8 (99 )')
+		formatter.input('9').should.equal('8 9')
+		formatter.input('9').should.equal('8 99')
 		formatter.input('9').should.equal('8 (999)')
 		formatter.input('-').should.equal('8 (999)')
 		formatter.input('1234').should.equal('8 (999) 123-4')
@@ -206,7 +206,7 @@ describe('as you type', () =>
 		// when formatting local NANPA phone numbers.
 		new as_you_type('US').input('1').should.equal('1')
 		new as_you_type('US').input('12').should.equal('12')
-		new as_you_type('US').input('123').should.equal('(23 )')
+		new as_you_type('US').input('123').should.equal('23')
 
 		// Bulgaria
 		// (should not prepend national prefix `0`)
@@ -239,28 +239,13 @@ describe('as you type', () =>
 
 	it('should close dangling braces', function()
 	{
-		close_dangling_braces('(9)', 2).should.equal('(9)')
+		close_dangling_braces('(000) 123-45 (9  )', 15).should.equal('(000) 123-45 (9  )')
+	})
 
-		let formatter
-
-		// Test braces (US)
-
-		formatter = new as_you_type('US')
-
-		formatter.input('9').should.equal('(9  )')
-		formatter.input('9').should.equal('(99 )')
-		formatter.input('9').should.equal('(999)')
-		formatter.input('1').should.equal('(999) 1')
-
-		// Test braces (RU)
-
-		formatter = new as_you_type('RU')
-
-		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('8 (9  )')
-		formatter.input('9').should.equal('8 (99 )')
-		formatter.input('9').should.equal('8 (999)')
-		formatter.input('1').should.equal('8 (999) 1')
+	it('should strip dangling braces', function()
+	{
+		strip_dangling_braces('(000) 123-45 (9').should.equal('(000) 123-45 9')
+		strip_dangling_braces('(000) 123-45 (9)').should.equal('(000) 123-45 (9)')
 	})
 
 	it(`should fall back to the default country`, function()
@@ -268,8 +253,8 @@ describe('as you type', () =>
 		const formatter = new as_you_type('RU')
 
 		formatter.input('8').should.equal('8')
-		formatter.input('9').should.equal('8 (9  )')
-		formatter.input('9').should.equal('8 (99 )')
+		formatter.input('9').should.equal('8 9')
+		formatter.input('9').should.equal('8 99')
 		formatter.input('9').should.equal('8 (999)')
 
 		// formatter.valid.should.be.false

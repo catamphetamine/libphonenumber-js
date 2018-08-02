@@ -878,9 +878,19 @@ export default class AsYouType
 			this.partially_populated_template = this.partially_populated_template.replace(DIGIT_PLACEHOLDER_MATCHER, digit)
 		}
 
-		// Return the formatted phone number so far
-		return close_dangling_braces(this.partially_populated_template, this.last_match_position + 1)
-			.replace(DIGIT_PLACEHOLDER_MATCHER_GLOBAL, ' ')
+		// Return the formatted phone number so far.
+		const next_digit_placeholder_position = this.partially_populated_template.indexOf(DIGIT_PLACEHOLDER)
+		let cut_at = this.last_match_position + 1
+		if (this.partially_populated_template[cut_at] === ')') {
+			cut_at++
+		}
+		const partially_entered_number = this.partially_populated_template.slice(0, cut_at)
+		return strip_dangling_braces(partially_entered_number)
+
+		// The old way which was good for `input-format` but is not so good
+		// for `react-phone-number-input`'s default input (`InputBasic`).
+		// return close_dangling_braces(this.partially_populated_template, this.last_match_position + 1)
+		// 	.replace(DIGIT_PLACEHOLDER_MATCHER_GLOBAL, ' ')
 	}
 
 	is_international()
@@ -926,6 +936,33 @@ export default class AsYouType
 	}
 }
 
+export function strip_dangling_braces(string)
+{
+	const dangling_braces =[]
+	let i = 0
+	while (i < string.length)
+	{
+		if (string[i] === '(') {
+			dangling_braces.push(i)
+		}
+		else if (string[i] === ')') {
+			dangling_braces.pop()
+		}
+		i++
+	}
+
+	let start = 0
+	let cleared_string = ''
+	dangling_braces.push(string.length)
+	for (const index of dangling_braces)
+	{
+		cleared_string += string.slice(start, index)
+		start = index + 1
+	}
+
+	return cleared_string
+}
+
 export function close_dangling_braces(template, cut_before)
 {
 	const retained_template = template.slice(0, cut_before)
@@ -934,7 +971,6 @@ export function close_dangling_braces(template, cut_before)
 	const closing_braces = count_occurences(')', retained_template)
 
 	let dangling_braces = opening_braces - closing_braces
-
 	while (dangling_braces > 0 && cut_before < template.length)
 	{
 		if (template[cut_before] === ')')

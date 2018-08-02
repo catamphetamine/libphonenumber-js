@@ -46,13 +46,13 @@
     "test": "mocha --require babel-core/register --colors --bail --reporter spec --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
     "test-coverage": "istanbul cover -x \"build/**\" -x \"es6/**\" -x \"*.test.js\" -x \"source/findNumbers/Leniency.js\" -x \"source/PhoneNumberMatcher.js\" node_modules/mocha/bin/_mocha -- --require babel-core/register --colors --reporter dot --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
     "test-travis": "istanbul cover -x \"build/**\" -x \"es6/**\" -x \"*.test.js\" -x \"source/findNumbers/Leniency.js\" -x \"source/PhoneNumberMatcher.js\" node_modules/mocha/bin/_mocha --report lcovonly -- --require babel-core/register --colors --reporter spec --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
-    "browser-build": "cross-env WEBPACK_ENV=build npm run build-es6-modules && webpack --mode production --progress --colors",
-    "browser-build-dev": "npm run build-es6-modules && WEBPACK_ENV=dev webpack --mode development --progress --colors --watch",
+    "browser-build": "cross-env WEBPACK_ENV=build webpack --mode production --progress --colors",
+    "browser-build-dev": "WEBPACK_ENV=dev webpack --mode development --progress --colors --watch",
     "clean-for-build": "rimraf ./build/**/* ./es6/**/*",
     "build-commonjs-modules": "cross-env BABEL_ENV=commonjs babel ./source --out-dir ./build --source-maps --ignore test.js,PhoneNumberMatcher.js,findNumbers.js",
     "build-es6-modules": "cross-env BABEL_ENV=es6 babel ./source --out-dir ./es6 --source-maps --ignore test.js,PhoneNumberMatcher.js,findNumbers.js",
-    "build": "npm-run-all clean-for-build build-commonjs-modules build-es6-modules",
-    "prepublish": "crlf --set=LF bin/* && crlf --set=LF metadata.*.json && npm-run-all metadata:generate build test browser-build"
+    "build": "npm-run-all clean-for-build build-commonjs-modules build-es6-modules browser-build",
+    "prepublish": "crlf --set=LF bin/* && crlf --set=LF metadata.*.json && npm-run-all metadata:generate build test"
   },
   "repository": {
     "type": "git",
