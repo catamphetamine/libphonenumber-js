@@ -133,11 +133,20 @@ export default function(number, from_country, with_formatting, metadata)
 					// same local area. It is trickier to get that to work correctly than
 					// using international format, which is tested to work fine on all
 					// carriers.
+					//
 					// CL fixed line numbers need the national prefix when dialing in the
 					// national format, but don't have it when used for display. The
 					// reverse is true for mobile numbers. As a result, we output them in
 					// the international format to make it work.
-					((country === 'MX' || country === 'CL') && is_fixed_line_or_mobile)
+					//
+					// UZ mobile and fixed-line numbers have to be formatted in
+					// international format or prefixed with special codes like 03, 04
+					// (for fixed-line) and 05 (for mobile) for dialling successfully
+					// from mobile devices. As we do not have complete information on
+					// special codes and to be consistent with formatting across all
+					// phone types we return the number in international format here.
+					//
+					((country === 'MX' || country === 'CL' || country == 'UZ') && is_fixed_line_or_mobile)
 				)
 				&&
 				can_be_internationally_dialled(number)
