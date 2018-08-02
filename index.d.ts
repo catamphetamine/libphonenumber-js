@@ -46,6 +46,8 @@ export function getNumberType(phone: TelephoneNumber, country?: CountryCode): Nu
 export function isValidNumber(parsedNumber: ParsedNumber): boolean;
 export function isValidNumber(phone: TelephoneNumber, country?: CountryCode): boolean;
 
+export function isValidNumberForRegion(phone: TelephoneNumber, country: CountryCode): boolean;
+
 export function findPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
 
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;

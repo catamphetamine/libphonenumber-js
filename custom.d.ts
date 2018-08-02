@@ -26,6 +26,8 @@ export function isValidNumber(parsedNumber: ParsedNumber, metadata: object): boo
 export function isValidNumber(phone: TelephoneNumber, metadata: object): boolean;
 export function isValidNumber(phone: TelephoneNumber, country: CountryCode, metadata: object): boolean;
 
+export function isValidNumberForRegion(phone: TelephoneNumber, country: CountryCode, metadata: object): boolean;
+
 export function findPhoneNumbers(text: string, metadata: object): NumberFound[];
 export function findPhoneNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): NumberFound[];
 
