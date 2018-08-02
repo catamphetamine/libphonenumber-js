@@ -52,7 +52,7 @@
     "build-commonjs-modules": "cross-env BABEL_ENV=commonjs babel ./source --out-dir ./build --source-maps --ignore test.js,PhoneNumberMatcher.js,findNumbers.js",
     "build-es6-modules": "cross-env BABEL_ENV=es6 babel ./source --out-dir ./es6 --source-maps --ignore test.js,PhoneNumberMatcher.js,findNumbers.js",
     "build": "npm-run-all clean-for-build build-commonjs-modules build-es6-modules browser-build",
-    "prepublish": "crlf --set=LF bin/* && crlf --set=LF metadata.*.json && npm-run-all metadata:generate build test"
+    "prepublish": "crlf --set=LF bin/* && npm run metadata:generate && crlf --set=LF metadata.*.json && npm-run-all build test"
   },
   "repository": {
     "type": "git",
