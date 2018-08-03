@@ -314,7 +314,7 @@ Available `options`:
 
 Creates a formatter for a partially entered phone number. The [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance provides two methods:
 
- * `input(text)` — Takes any text and appends it to the input. Returns the formatted phone number.
+ * `input(text)` — Takes any text, parses it and appends the digits to the input. Returns the formatted phone number.
  * `reset()` — Resets the input.
 
 ```js
@@ -322,18 +322,40 @@ new AsYouType().input('+12133734') === '+1 213 373 4'
 new AsYouType('US').input('2133734') === '(213) 373-4'
 ```
 
-The formatter also provides the following getters:
+The formatter instance also provides the following getters:
 
  * `country` — Phone number [country](https://github.com/catamphetamine/libphonenumber-js#country-code).
  * `getNationalNumber()` — Returns the national (significant) number part of the phone number.
- * `template` — The template used to format the phone number. Digits (and the `+` sign, if present) are denoted by `x`-es.
+ * `getTemplate()` — Returns the template used to format the output. Digits (and the `+` sign, if present) are denoted by `x`-es.
 
 ```js
+// National phone number input example.
+
+const asYouType = new AsYouType('US')
+
+asYouType.input('2') === '2'
+asYouType.getNationalNumber() === '2'
+asYouType.getTemplate() === undefined // Not enough digits yet.
+
+asYouType.input('1') === '21'
+asYouType.getNationalNumber() === '21'
+asYouType.getTemplate() === 'xx'
+
+asYouType.input('3') === '(213)'
+asYouType.getNationalNumber() === '213'
+asYouType.getTemplate() === '(xxx)'
+
+asYouType.input('3734253') === '(213) 373-4253'
+asYouType.getNationalNumber() === '2133734253'
+asYouType.getTemplate() === '(xxx) xxx-xxxx'
+
+// International phone number input example.
+
 const asYouType = new AsYouType()
 asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
 asYouType.country === 'US'
 asYouType.getNationalNumber() === '2133734253'
-asYouType.template === 'xx xxx xxx xxxx'
+asYouType.getTemplate() === 'xx xxx xxx xxxx'
 ```
 
 "As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits (and a `+` sign in the start of an international number).

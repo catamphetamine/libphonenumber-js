@@ -13,6 +13,8 @@
 
   * Changed the output of `AsYouType` formatter. E.g. before for `US` and input `21` it was outputting `(21 )` which is not good for phone number input (not intuitive and is confusing). Now it will not add closing braces which haven't been reached yet by the input cursor and it will also strip the corresponding opening braces, so for `US` and input `21` it now is just `21`, and for `213` it is `(213)`.
 
+  * (could be a breaking change for those who somehow used `.template` property of an `AsYouType` instance) Due to the change in `AsYouType` formatting the `.template` property no longer strictly corresponds to the output, e.g. for `US` and input `21` the output is now `21` but the `.template` is still `(xxx) xxx-xxxx` like it used to be in the older versions when the output was `(21 )`. Therefore, a new function has been added to `AsYouType` instance called `.getTemplate()` which will return the _partial_ template for the currently input value, so for input `21` the output will be `21` and `.getTemplate()` will return `xx`, and for input `213` the output will be `(213)` and `.getTemplate()` will return `(xxx)`. So there is this difference between the new `.getTemplate()` function and the old `.template` property: the old `.template` property always returns the template for a fully entered phone number and the new `.getTemplate()` function always returns the template for the _partially_ entered phone number, i.e. for the partially entered number `(213) 45` it will return template `(xxx) xx` so it's a one-to-one correspondence now.
+
 1.3.0 / 25.07.2018
 ==================
 

@@ -879,13 +879,7 @@ export default class AsYouType
 		}
 
 		// Return the formatted phone number so far.
-		const next_digit_placeholder_position = this.partially_populated_template.indexOf(DIGIT_PLACEHOLDER)
-		let cut_at = this.last_match_position + 1
-		if (this.partially_populated_template[cut_at] === ')') {
-			cut_at++
-		}
-		const partially_entered_number = this.partially_populated_template.slice(0, cut_at)
-		return strip_dangling_braces(partially_entered_number)
+		return cut_stripping_dangling_braces(this.partially_populated_template, this.last_match_position + 1)
 
 		// The old way which was good for `input-format` but is not so good
 		// for `react-phone-number-input`'s default input (`InputBasic`).
@@ -934,6 +928,24 @@ export default class AsYouType
 	{
 		return this.national_number
 	}
+
+	getTemplate()
+	{
+		if (!this.template) {
+			return
+		}
+
+		let index = -1
+
+		let i = 0
+		while (i < this.parsed_input.length)
+		{
+			index = this.template.indexOf(DIGIT_PLACEHOLDER, index + 1)
+			i++
+		}
+
+		return cut_stripping_dangling_braces(this.template, index + 1)
+	}
 }
 
 export function strip_dangling_braces(string)
@@ -961,6 +973,14 @@ export function strip_dangling_braces(string)
 	}
 
 	return cleared_string
+}
+
+export function cut_stripping_dangling_braces(string, cut_before_index)
+{
+	if (string[cut_before_index] === ')') {
+		cut_before_index++
+	}
+	return strip_dangling_braces(string.slice(0, cut_before_index))
 }
 
 export function close_dangling_braces(template, cut_before)

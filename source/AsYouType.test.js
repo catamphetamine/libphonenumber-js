@@ -237,6 +237,25 @@ describe('as you type', () =>
 		formatter.template.should.equal('xxx xx xxx xxxx')
 	})
 
+	it('should return a partial template for current value', function()
+	{
+		const asYouType = new as_you_type('US')
+
+		asYouType.input('').should.equal('')
+		expect(asYouType.getTemplate()).to.be.undefined
+
+		asYouType.input('2').should.equal('2')
+		// asYouType.getTemplate().should.equal('x')
+		// Doesn't format for a single digit.
+		expect(asYouType.getTemplate()).to.be.undefined
+
+		asYouType.input('1').should.equal('21')
+		asYouType.getTemplate().should.equal('xx')
+
+		asYouType.input('3').should.equal('(213)')
+		asYouType.getTemplate().should.equal('(xxx)')
+	})
+
 	it('should close dangling braces', function()
 	{
 		close_dangling_braces('(000) 123-45 (9  )', 15).should.equal('(000) 123-45 (9  )')
