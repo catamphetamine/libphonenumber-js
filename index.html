@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>Input Format</title>
+		<title>libphonenumber-js</title>
 
 		<script src="https://unpkg.com/react@15.3.1/dist/react.js"></script>
 		<script src="https://unpkg.com/react-dom@15.3.1/dist/react-dom.js"></script>
@@ -279,6 +279,7 @@
 								<div className="section__line">Actual country: {asYouType ? asYouType.country : '-'}</div>
 								<div className="section__line">National: {asYouType ? asYouType.country && libphonenumber.formatNumber(asYouType.national_number, asYouType.country, 'National') : '-'}</div>
 								<div className="section__line">Valid: {asYouType ? String(libphonenumber.isValidNumber(this.state.value, asYouType.country)) : '-'}</div>
+								<div className="section__line">Template: {asYouType ? asYouType.getTemplate() : '-'}</div>
 
 								<br/>
 
