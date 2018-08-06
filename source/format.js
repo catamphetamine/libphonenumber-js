@@ -198,7 +198,7 @@ export function choose_format_for_number(available_formats, national_number)
 		}
 
 		// Check that the national number matches the phone number format regular expression
-		if (matches_entirely(national_number, new RegExp(format.pattern())))
+		if (matches_entirely(national_number, format.pattern()))
 		{
 			return format
 		}

@@ -12,7 +12,7 @@ const CAPTURING_DIGIT_PATTERN = new RegExp('([' + VALID_DIGITS + '])')
  * region, they will be represented as a regex string that always contains one
  * or more characters that are not ASCII digits or a tilde.
  */
-const SINGLE_IDD_PREFIX = /[\d]+(?:[~\u2053\u223C\uFF5E][\d]+)?/
+const SINGLE_IDD_PREFIX = /^[\d]+(?:[~\u2053\u223C\uFF5E][\d]+)?$/
 
 // export function isSingleIDDPrefix(IDDPrefix)
 // {

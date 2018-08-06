@@ -635,7 +635,6 @@ export default class AsYouType
 			!this.is_possible_number(potential_national_number))
 		{
 			// Verify the parsed national (significant) number for this country
-			const national_number_rule = new RegExp(this.metadata.nationalNumberPattern())
 			//
 			// If the original number (before stripping national prefix) was viable,
 			// and the resultant number is not, then prefer the original phone number.
@@ -643,8 +642,8 @@ export default class AsYouType
 			// a national prefix and a leading digit of a valid national phone number,
 			// like `8` is the national prefix for Russia and both
 			// `8 800 555 35 35` and `800 555 35 35` are valid numbers.
-			if (matches_entirely(this.national_number, national_number_rule) &&
-				!matches_entirely(potential_national_number, national_number_rule))
+			if (matches_entirely(this.national_number, this.metadata.nationalNumberPattern()) &&
+				!matches_entirely(potential_national_number, this.metadata.nationalNumberPattern()))
 			{
 				return
 			}

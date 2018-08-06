@@ -237,6 +237,10 @@ describe('parse', () =>
 		// No `national_prefix_for_parsing`
 		parse('41111', 'AC').should.deep.equal({ country: 'AC', phone: '41111'})
 
+		// https://github.com/catamphetamine/libphonenumber-js/issues/235
+		// `matches_entirely()` bug fix.
+		parse('+4915784846111‬').should.deep.equal({ country: 'DE', phone: '15784846111' })
+
 		// National prefix transform rule (Mexico).
 		// Local cell phone from a land line: 044 -> 1.
 		parse('0445511111111', 'MX').should.deep.equal({ country: 'MX', phone: '15511111111' })
