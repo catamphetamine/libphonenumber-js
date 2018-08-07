@@ -28,7 +28,7 @@ export interface NumberFound {
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
 export function parse(text: string, options?: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }): ParsedNumber;
 
-export function parseNumber(text: string, options?: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }): ParsedNumber;
+export function parseNumber(text: string, options?: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }, metadata?: object): ParsedNumber;
 
 // `format()` and `formatCustom` are deprecated.
 // Use `formatNumber()` and `formatNumberCustom()` instead.
