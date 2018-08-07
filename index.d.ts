@@ -49,6 +49,7 @@ export function isValidNumber(phone: TelephoneNumber, country?: CountryCode): bo
 export function isValidNumberForRegion(phone: TelephoneNumber, country: CountryCode): boolean;
 
 export function findPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
+export function searchPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
 
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
 
