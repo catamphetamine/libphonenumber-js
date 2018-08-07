@@ -35,6 +35,6 @@ npm-debug.log
 # metadata
 /metadata.json
 /metadata.full.json
-/metadata.min.json
+
 /metadata.mobile.json
 /examples.mobile.json
