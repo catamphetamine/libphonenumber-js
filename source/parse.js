@@ -233,7 +233,7 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 export function is_viable_phone_number(number)
 {
 	return number.length >= MIN_LENGTH_FOR_NSN &&
-		matches_entirely(number, VALID_PHONE_NUMBER_PATTERN)
+		VALID_PHONE_NUMBER_PATTERN.test(number)
 }
 
 /**

@@ -134,7 +134,7 @@ export default class AsYouType
 		}
 
 		// Validate possible first part of a phone number
-		if (!matches_entirely(extracted_number, VALID_INCOMPLETE_PHONE_NUMBER_PATTERN))
+		if (!VALID_INCOMPLETE_PHONE_NUMBER_PATTERN.test(extracted_number))
 		{
 			return this.current_output
 		}

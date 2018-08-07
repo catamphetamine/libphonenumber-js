@@ -14,11 +14,6 @@ const CAPTURING_DIGIT_PATTERN = new RegExp('([' + VALID_DIGITS + '])')
  */
 const SINGLE_IDD_PREFIX = /^[\d]+(?:[~\u2053\u223C\uFF5E][\d]+)?$/
 
-// export function isSingleIDDPrefix(IDDPrefix)
-// {
-// 	return matches_entirely(IDDPrefix, SINGLE_IDD_PREFIX)
-// }
-
 // For regions that have multiple IDD prefixes
 // a preferred IDD prefix is returned.
 export function getIDDPrefix(country, metadata)
@@ -26,7 +21,7 @@ export function getIDDPrefix(country, metadata)
 	const countryMetadata = new Metadata(metadata)
 	countryMetadata.country(country)
 
-	if (matches_entirely(countryMetadata.IDDPrefix(), SINGLE_IDD_PREFIX))
+	if (SINGLE_IDD_PREFIX.test(countryMetadata.IDDPrefix()))
 	{
 		return countryMetadata.IDDPrefix()
 	}

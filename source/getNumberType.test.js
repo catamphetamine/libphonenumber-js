@@ -15,6 +15,7 @@ describe('get_number_type', () =>
 		get_number_type('9150000000', 'RU').should.equal('MOBILE')
 		get_number_type('7912345678', 'GB').should.equal('MOBILE')
 		get_number_type('91187654321', 'AR').should.equal('MOBILE')
+		// After "Metadata updates for release 8.9.11" it matches both `FIXED_LINE` and `MOBILE`.
 		// get_number_type('15123456789', 'DE').should.equal('MOBILE')
 		get_number_type('51234567', 'EE').should.equal('MOBILE')
 	})

@@ -158,13 +158,7 @@ export function extractCountryCallingCode(number, country, metadata)
 // against the regular expression.
 export function matches_entirely(text = '', regular_expression)
 {
-	if (typeof regular_expression === 'string')
-	{
-		regular_expression = '^(?:' + regular_expression + ')$'
-	}
-
-	const matched_groups = text.match(regular_expression)
-	return matched_groups !== null && matched_groups[0].length === text.length
+	return new RegExp('^' + regular_expression + '$').test(text)
 }
 
 // The RFC 3966 format for extensions.
