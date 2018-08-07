@@ -27,7 +27,6 @@ npm-debug.log
 
 # webpack build target folder
 /build/
-/es6/
 
 # browser builds
 /bundle/
