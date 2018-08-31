@@ -32,7 +32,7 @@ export function findPhoneNumbers(text: string, metadata: object): NumberFound[];
 export function findPhoneNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): NumberFound[];
 
 export function searchPhoneNumbers(text: string, metadata: object): IterableIterator<NumberFound>;
-export function searchPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }, metadata: object): IterableIterator<NumberFound>;
+export function searchPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }, metadata?: object): IterableIterator<NumberFound>;
 
 export function getCountryCallingCode(countryCode: CountryCode, metadata: object): CountryCallingCode;
 
