@@ -8,6 +8,11 @@
 
 <!-- (breaking change) Replaced `phone: ...` with `number: ...` in returned objects and arguments in all functions: `formatNumber()`, `parseNumber()`, `isValidNumber()`, `getNumberType()`, `findPhoneNumbers()`. -->
 
+1.4.5 / 07.09.2018
+==================
+
+  * A bug in `matches_entirely` was found by a user which resulted in incorrect regexp matching in some cases, e.g. when there was a `|` in a regexp. This could cause incorrect `parseNumber()` results, or any other weird behaviour.
+
 1.4.0 / 03.08.2018
 ==================
 
