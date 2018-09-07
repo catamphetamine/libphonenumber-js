@@ -30,6 +30,8 @@ describe('parse', () =>
 		// and so does this library, because it has been requested:
 		// https://github.com/catamphetamine/libphonenumber-js/issues/127
 		// parse('+1 1877 215 5230', 'US').should.deep.equal({})
+
+		parse('911231231', 'BE').should.deep.equal({})
 	})
 
 	it('should parse valid phone numbers', function()
