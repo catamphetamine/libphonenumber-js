@@ -446,6 +446,10 @@ export default function(input, version, included_countries, extended, included_p
 
 				// Populate possible lengths
 				populate_possible_lengths(countries[country_code])
+
+				if (countries[country_code].possible_lengths.length === 0) {
+					throw new Error(`No "possibleLengths" set for country "${country_code}". "react-phone-number-input" relies on "possibleLengths" being always present.`)
+				}
 			}
 
 			// Purge `types` regular expressions (they are huge)
