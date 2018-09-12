@@ -8,6 +8,11 @@
 
 <!-- (breaking change) Replaced `phone: ...` with `number: ...` in returned objects and arguments in all functions: `formatNumber()`, `parseNumber()`, `isValidNumber()`, `getNumberType()`, `findPhoneNumbers()`. -->
 
+1.4.6 / 12.09.2018
+==================
+
+  * Fixed `formatNumber('NATIONAL')` not formatting national phone numbers with a national prefix when it's marked as optional (e.g. Russia). Before it didn't add national prefix when formatting national numbers if national prefix was marked as optional. Now it always adds national prefix when formatting national numbers even when national prefix is marked as optional.
+
 1.4.5 / 07.09.2018
 ==================
 

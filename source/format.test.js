@@ -39,10 +39,10 @@ describe('format', () =>
 			country : 'RU',
 			ext     : '123'
 		},
-		'National', options).should.equal('800 555-35-35 доб. 123')
+		'National', options).should.equal('8 (800) 555-35-35 доб. 123')
 
-		format('+78005553535', 'National', options).should.equal('800 555-35-35')
-		format('8005553535', 'RU', 'National', options).should.equal('800 555-35-35')
+		format('+78005553535', 'National', options).should.equal('8 (800) 555-35-35')
+		format('8005553535', 'RU', 'National', options).should.equal('8 (800) 555-35-35')
 	})
 
 	it('should format valid phone numbers', function()
@@ -56,8 +56,14 @@ describe('format', () =>
 		// France
 		format({ country: 'FR', phone: '169454850' }, 'National').should.equal('01 69 45 48 50')
 
-		// KZ
-		format('+7 702 211 1111', 'National').should.deep.equal('702 211 1111')
+		// Kazakhstan
+		format('+7 702 211 1111', 'National').should.deep.equal('8 (702) 211 1111')
+	})
+
+	it('should format national numbers with national prefix even if it\'s optional', function()
+	{
+		// Russia
+		format({ country: 'RU', phone: '9991234567' }, 'National').should.equal('8 (999) 123-45-67')
 	})
 
 	it('should work in edge cases', function()

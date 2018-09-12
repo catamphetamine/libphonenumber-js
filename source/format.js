@@ -119,7 +119,7 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 			if (!number) {
 				return ''
 			}
-			number = format_national_number(number, 'National', false, metadata)
+			number = format_national_number(number, 'National', true, metadata)
 			return add_extension(number, input.ext, metadata, options.formatExtension)
 	}
 }
