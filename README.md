@@ -595,7 +595,6 @@ There also have been cases when Google's demo wasn't updated to the latest metad
 One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.net](https://jsdelivr.net)
 
 ```html
-<!-- `libphonenumber-js` (is used internally by `react-phone-number-input`). -->
 <script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
 
 <script>
