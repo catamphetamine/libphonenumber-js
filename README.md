@@ -38,6 +38,36 @@ via [yarn](https://yarnpkg.com)
 $ yarn add libphonenumber-js
 ```
 
+## CDN
+
+One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.net](https://jsdelivr.net)
+
+```html
+<script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
+
+<script>
+  alert(new libphonenumber.AsYouType('US').input('213-373-4253'))
+</script>
+```
+
+<!--
+## Standalone
+
+For those who aren't using bundlers for some reason there's a way to build a standalone version of the library
+
+ * `git clone https://github.com/catamphetamine/libphonenumber-js.git`
+ * `npm install`
+ * `npm run build`
+ * See the `bundle` folder for `libphonenumber-js.min.js`
+
+```html
+<script src="/scripts/libphonenumber-js.min.js"></script>
+<script>
+  alert(new libphonenumber.AsYouType('US').input('213-373-4253'))
+</script>
+```
+-->
+
 ## Usage
 
 ### Parse phone number
@@ -589,36 +619,6 @@ There also have been cases when Google's demo wasn't updated to the latest metad
 ## TypeScript
 
 [TypeScript support](https://github.com/catamphetamine/libphonenumber-js/blob/master/index.d.ts) for this library is entirely community-driven. I myself don't use TypeScript. Send your pull requests.
-
-## CDN
-
-One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.net](https://jsdelivr.net)
-
-```html
-<script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
-
-<script>
-  alert(new libphonenumber.AsYouType('US').input('213-373-4253'))
-</script>
-```
-
-<!--
-## Standalone
-
-For those who aren't using bundlers for some reason there's a way to build a standalone version of the library
-
- * `git clone https://github.com/catamphetamine/libphonenumber-js.git`
- * `npm install`
- * `npm run build`
- * See the `bundle` folder for `libphonenumber-js.min.js`
-
-```html
-<script src="/scripts/libphonenumber-js.min.js"></script>
-<script>
-  alert(new libphonenumber.AsYouType('US').input('213-373-4253'))
-</script>
-```
--->
 
 ## Metadata
 
