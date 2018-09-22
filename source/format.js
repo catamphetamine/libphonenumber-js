@@ -263,7 +263,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 
 			if (typeof arg_2 !== 'string')
 			{
-				throw new Error('Format type argument not passed for `format()`')
+				throw new Error('`type` argument not passed to `formatNumber(number, type)`')
 			}
 
 			format_type = arg_2
