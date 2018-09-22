@@ -246,12 +246,17 @@ export default class AsYouType
 				// therefore national number has changed
 				// therefore reset all previous formatting data.
 				// (and leading digits matching state)
-				this.matching_formats = this.available_formats
+				this.matching_formats = undefined
 				this.reset_format()
 			}
 		}
 
-		if (!this.should_format())
+		// if (!this.should_format())
+		// {
+		// 	return this.format_as_non_formatted_number()
+		// }
+
+		if (!this.national_number)
 		{
 			return this.format_as_non_formatted_number()
 		}
@@ -273,26 +278,15 @@ export default class AsYouType
 
 		// If the phone number couldn't be formatted,
 		// then just fall back to the raw phone number.
-		return this.parsed_input
+		return this.format_as_non_formatted_number()
 	}
 
 	format_as_non_formatted_number()
 	{
+		// Strip national prefix for incorrectly inputted international phones.
 		if (this.is_international() && this.countryCallingCode)
 		{
-			if (this.national_number)
-			{
-				// For convenience, the public `.template` property
-				// contains the whole international number
-				// if the phone number being input is international:
-				// 'x' for the '+' sign, 'x'es for the country phone code,
-				// a spacebar and then the template for the national number digits.
-				this.template = DIGIT_PLACEHOLDER + repeat(DIGIT_PLACEHOLDER, this.countryCallingCode.length) + ' ' + repeat(DIGIT_PLACEHOLDER, this.national_number.length)
-
-				return `+${this.countryCallingCode} ${this.national_number}`
-			}
-
-			return `+${this.countryCallingCode}`
+			return `+${this.countryCallingCode}${this.national_number}`
 		}
 
 		return this.parsed_input
@@ -326,11 +320,6 @@ export default class AsYouType
 		// are meant to stay non-formatted.
 		if (formatted_number)
 		{
-			// if (this.country)
-			// {
-			// 	this.valid = true
-			// }
-
 			return formatted_number
 		}
 
@@ -417,7 +406,7 @@ export default class AsYouType
 			this.countryCallingCode = undefined
 
 			this.available_formats = []
-			this.matching_formats = this.available_formats
+			this.matching_formats = undefined
 		}
 	}
 
@@ -446,36 +435,48 @@ export default class AsYouType
 			return ELIGIBLE_FORMAT_PATTERN.test(format.internationalFormat())
 		})
 
-		this.matching_formats = this.available_formats
+		this.matching_formats = undefined
 	}
 
 	match_formats_by_leading_digits()
 	{
 		const leading_digits = this.national_number
 
-		// "leading digits" pattern list starts with
-		// one of a maximum length of 3 digits,
-		// and then with each additional digit
-		// a more precise "leading digits" pattern is specified.
+		// "leading digits" pattern list starts with a
+		// "leading digits" pattern fitting a maximum of 3 leading digits.
+		// So, after a user inputs 3 digits of a national (significant) phone number
+		// this national (significant) number can already be formatted.
+		// The next "leading digits" pattern is for 4 leading digits max,
+		// and the "leading digits" pattern after it is for 5 leading digits max, etc.
 
+		// This implementation is different from Google's
+		// in that it searches for a fitting format
+		// even if the user has entered less than
+		// `MIN_LEADING_DIGITS_LENGTH` digits of a national number.
+		// Because some leading digits patterns already match for a single first digit.
 		let index_of_leading_digits_pattern = leading_digits.length - MIN_LEADING_DIGITS_LENGTH
-
-		if (index_of_leading_digits_pattern < 0)
-		{
+		if (index_of_leading_digits_pattern < 0) {
 			index_of_leading_digits_pattern = 0
 		}
 
-		this.matching_formats = this.matching_formats.filter((format) =>
-		{
-			const leading_digits_pattern_count = format.leadingDigitsPatterns().length
+		// If at least `MIN_LEADING_DIGITS_LENGTH` digits of a national number are available
+		// then format matching starts narrowing down the list of possible formats
+		// (only previously matched formats are considered for next digits).
+		const available_formats = this.had_enough_leading_digits && this.matching_formats || this.available_formats
+		this.had_enough_leading_digits = this.should_format()
 
-			// Keep everything that isn't restricted by leading digits.
-			if (leading_digits_pattern_count === 0)
+		this.matching_formats = available_formats.filter((format) =>
+		{
+			const leading_digits_patterns_count = format.leadingDigitsPatterns().length
+
+			// If this format is not restricted to a certain
+			// leading digits pattern then it fits.
+			if (leading_digits_patterns_count === 0)
 			{
 				return true
 			}
 
-			const leading_digits_pattern_index = Math.min(index_of_leading_digits_pattern, leading_digits_pattern_count - 1)
+			const leading_digits_pattern_index = Math.min(index_of_leading_digits_pattern, leading_digits_patterns_count - 1)
 			const leading_digits_pattern = format.leadingDigitsPatterns()[leading_digits_pattern_index]
 
 			// Brackets are required for `^` to be applied to
@@ -506,10 +507,13 @@ export default class AsYouType
 		// it's quite obvious in this case that the format could be the one
 		// but due to the absence of further digits it would give false negative.
 		//
-		// Google could have provided leading digits patterns starting
-		// with a single digit but they chose not to (for whatever reasons).
+		// Presumably the limitation of "3 digits min"
+		// is imposed to exclude false matches,
+		// e.g. when there are two different formats
+		// each one fitting one or two leading digits being input.
+		// But for this case I would propose a specific `if/else` condition.
 		//
-		return this.national_number >= MIN_LEADING_DIGITS_LENGTH
+		return this.national_number.length >= MIN_LEADING_DIGITS_LENGTH
 	}
 
 	// Check to see if there is an exact pattern match for these digits. If so, we
