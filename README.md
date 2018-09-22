@@ -335,7 +335,7 @@ const asYouType = new AsYouType('US')
 
 asYouType.input('2') === '2'
 asYouType.getNationalNumber() === '2'
-asYouType.getTemplate() === undefined // Not enough digits yet.
+asYouType.getTemplate() === 'x'
 
 asYouType.input('1') === '21'
 asYouType.getNationalNumber() === '21'
