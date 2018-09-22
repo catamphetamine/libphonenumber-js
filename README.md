@@ -24,7 +24,7 @@ One part of me was curious about how all this phone number parsing and formattin
   * Doesn't use ["carrier codes"](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md) when formatting numbers: "carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
   * Doesn't parse or format special local-only phone numbers: emergency phone numbers like `911`, ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-), numbers starting with a [`*`](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md), etc.
 
-## Installation
+## Install
 
 via [npm](https://npmjs.org/)
 
@@ -38,7 +38,9 @@ via [yarn](https://yarnpkg.com)
 $ yarn add libphonenumber-js
 ```
 
-## Usage
+If you're not using a bundler then use a [standalone version from a CDN](https://github.com/catamphetamine/libphonenumber-js/#cdn).
+
+## Use
 
 ### Parse phone number
 
