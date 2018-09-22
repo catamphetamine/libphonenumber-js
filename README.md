@@ -328,7 +328,7 @@ The formatter instance also provides the following getters:
 
  * `country` — Phone number [country](https://github.com/catamphetamine/libphonenumber-js#country-code).
  * `getNationalNumber()` — Returns the national (significant) number part of the phone number.
- * `getTemplate()` — Returns the template used to format the output. Digits (and the `+` sign, if present) are denoted by `x`-es.
+ * `getTemplate()` — Returns the template used to format the output (or `undefined`). Digits (and the `+` sign, if present) are denoted by `x`-es.
 
 ```js
 // National phone number input example.
