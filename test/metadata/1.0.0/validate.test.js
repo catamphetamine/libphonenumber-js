@@ -1,4 +1,4 @@
-import metadata from './metadata.min'
+import metadata from './metadata.min.json'
 import validate from '../../../source/validate'
 
 function is_valid_number(...parameters)

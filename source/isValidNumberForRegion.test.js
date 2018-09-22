@@ -1,4 +1,4 @@
-import metadata from '../metadata.min'
+import metadata from '../metadata.min.json'
 import isValidNumberForRegionCustom from './isValidNumberForRegion'
 
 function isValidNumberForRegion(...parameters)

@@ -1,4 +1,4 @@
-import metadata from './metadata.min'
+import metadata from './metadata.min.json'
 import parser from '../../../source/parse'
 
 function parse(...parameters)

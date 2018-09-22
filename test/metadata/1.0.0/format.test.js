@@ -1,4 +1,4 @@
-import metadata from './metadata.min'
+import metadata from './metadata.min.json'
 import formatter, { local_to_international_style } from '../../../source/format'
 
 function format(...parameters)

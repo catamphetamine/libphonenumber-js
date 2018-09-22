@@ -1,5 +1,5 @@
 import findNumbers, { searchPhoneNumbers, PhoneNumberSearch } from './findPhoneNumbers'
-import metadata from '../metadata.min'
+import metadata from '../metadata.min.json'
 
 describe('findPhoneNumbers', () =>
 {

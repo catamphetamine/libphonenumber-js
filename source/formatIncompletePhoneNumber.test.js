@@ -1,6 +1,6 @@
 import formatIncompletePhoneNumber from './formatIncompletePhoneNumber'
 
-import metadata from '../metadata.min'
+import metadata from '../metadata.min.json'
 
 describe('formatIncompletePhoneNumber', () =>
 {

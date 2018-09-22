@@ -1,4 +1,4 @@
-import metadata from '../metadata.min'
+import metadata from '../metadata.min.json'
 import as_you_type_custom, { close_dangling_braces, strip_dangling_braces, repeat } from './AsYouType'
 
 class as_you_type extends as_you_type_custom
