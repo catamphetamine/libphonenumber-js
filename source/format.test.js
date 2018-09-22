@@ -80,7 +80,7 @@ describe('format', () =>
 		// No suitable format
 		format('+121337342530', 'US', 'National').should.equal('21337342530')
 		// No suitable format (leading digits mismatch)
-		format('18199999', 'AD', 'National').should.equal('18199999')
+		format('28199999', 'AD', 'National').should.equal('28199999')
 
 		// Numerical `value`
 		thrower = () => format(89150000000, 'RU', 'National')
