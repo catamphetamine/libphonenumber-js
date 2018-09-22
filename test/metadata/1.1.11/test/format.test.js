@@ -75,7 +75,7 @@ describe('format', () =>
 
 		// No format type
 		thrower = () => format('+123')
-		thrower.should.throw('Format type argument not passed')
+		thrower.should.throw('`format` argument not passed')
 
 		// Unknown format type
 		thrower = () => format('123', 'US', 'Gay')
