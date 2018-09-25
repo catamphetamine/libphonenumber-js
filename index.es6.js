@@ -11,6 +11,8 @@ import getCountryCallingCodeCustom from './es6/getCountryCallingCode'
 export { default as Metadata } from './es6/metadata'
 import { getExtPrefix as getExtPrefixCustom } from './es6/metadata'
 import { parseRFC3966 as parseRFC3966Custom, formatRFC3966 as formatRFC3966Custom } from './es6/RFC3966'
+import formatIncompletePhoneNumberCustom from './es6/formatIncompletePhoneNumber'
+export { default as parseIncompletePhoneNumber, parsePhoneNumberCharacter } from './es6/parseIncompletePhoneNumber'
 
 export function parseNumber()
 {
@@ -114,6 +116,13 @@ export function formatRFC3966()
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return formatRFC3966Custom.apply(this, parameters)
+}
+
+export function formatIncompletePhoneNumber()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return formatIncompletePhoneNumberCustom.apply(this, parameters)
 }
 
 // Deprecated: remove DIGITS export in 2.0.0 (unused).

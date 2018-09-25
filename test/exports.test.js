@@ -28,6 +28,10 @@ import
 	// `getPhoneCodeCustom` name is deprecated.
 	getPhoneCodeCustom,
 
+	formatIncompletePhoneNumber,
+	parseIncompletePhoneNumber,
+	parsePhoneNumberCharacter,
+
 	Metadata,
 	getExtPrefix,
 	parseRFC3966,
@@ -69,6 +73,10 @@ describe(`exports`, function()
 		getExtPrefix('US', metadata).should.equal(' ext. ')
 		parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })
 		formatRFC3966({ number: '+12133734253' }).should.equal('tel:+12133734253')
+
+		formatIncompletePhoneNumber('+121337342').should.deep.equal('+1 213 373 42')
+		parseIncompletePhoneNumber('+1 213 373 42').should.equal('+121337342')
+		parsePhoneNumberCharacter('+').should.equal('+')
 	})
 
 	// Deprecated exports: remove in `2.0.0`.
@@ -115,6 +123,10 @@ describe(`exports`, function()
 
 		Library.parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })
 		Library.formatRFC3966({ number: '+12133734253' }).should.equal('tel:+12133734253')
+
+		Library.formatIncompletePhoneNumber('+121337342').should.deep.equal('+1 213 373 42')
+		Library.parseIncompletePhoneNumber('+1 213 373 42').should.equal('+121337342')
+		Library.parsePhoneNumberCharacter('+').should.equal('+')
 	})
 
 	it(`should export CommonJS custom functions`, function()

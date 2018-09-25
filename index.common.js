@@ -121,3 +121,13 @@ exports.getCountryCallingCode = function(country)
 
 // `getPhoneCode` name is deprecated
 exports.getPhoneCode = exports.getCountryCallingCode
+
+exports.formatIncompletePhoneNumber = function()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.formatIncompletePhoneNumber.apply(this, parameters)
+}
+
+exports.parseIncompletePhoneNumber = custom.parseIncompletePhoneNumber
+exports.parsePhoneNumberCharacter = custom.parsePhoneNumberCharacter

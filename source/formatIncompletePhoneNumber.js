@@ -10,5 +10,10 @@ import AsYouType from './AsYouType'
  */
 export default function formatIncompletePhoneNumber(value, country, metadata)
 {
+	if (!metadata)
+	{
+		metadata = country
+		country = undefined
+	}
 	return new AsYouType(country, metadata).input(value)
 }

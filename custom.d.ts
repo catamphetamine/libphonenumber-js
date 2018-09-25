@@ -37,3 +37,8 @@ export function searchPhoneNumbers(text: string, options: CountryCode | { defaul
 export function getCountryCallingCode(countryCode: CountryCode, metadata: object): CountryCallingCode;
 
 export function getPhoneCode(countryCode: CountryCode, metadata: object): CountryCallingCode;
+
+export function formatIncompletePhoneNumber(number: string, metadata: object): string;
+export function formatIncompletePhoneNumber(number: string, countryCode: CountryCode, metadata: object): string;
+export function parseIncompletePhoneNumber(text: string): string;
+export function parsePhoneNumberCharacter(character: string): string;
