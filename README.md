@@ -420,7 +420,7 @@ Java-style iterator (for those still not using ES6):
 ```js
 import { PhoneNumberMatcher } from 'libphonenumber-js'
 
-const search = new PhoneNumberMatcher(`
+const matcher = new PhoneNumberMatcher(`
   The number is +7 (800) 555-35-35 and
   not (213) 373-4253 as written
   in the document.
@@ -430,8 +430,8 @@ const search = new PhoneNumberMatcher(`
 
 // Search cycle iteration.
 const iteration = () => {
-  if (search.hasNext()) {
-    console.log(search.next())
+  if (matcher.hasNext()) {
+    console.log(matcher.next())
     setTimeout(iteration, 0)
   } else {
     console.log('Finished')
