@@ -11,7 +11,7 @@
 1.5.0 / 26.09.2018
 ==================
 
-  * Deprecated `findPhoneNumbers()`, `searchPhoneNumbers()` and `PhoneNumberSearch`. Use `findNumbers()`, `searchNumbers()` and `PhoneNumberMatcher` instead. The now-deprecated functions were a half-self-made implementation of Google's Java `findNumbers()` until the port of Java code was ported into javascript and passed tests. The port of Google's Java implementation is supposed to find numbers more correctly. It hasn't been tested by users in production yet, but the same tests as for the previous implementation of `findPhoneNumbers()` pass, so seems that it can be used in production.
+  * Deprecated `findPhoneNumbers()`, `searchPhoneNumbers()` and `PhoneNumberSearch`. Use `findNumbers()`, `searchNumbers()` and `PhoneNumberMatcher` instead. The now-deprecated functions were a half-self-made implementation of Google's Java `findNumbers()` until the Java code was ported into javascript and passed tests. The port of Google's Java implementation is supposed to find numbers more correctly. It hasn't been tested by users in production yet, but the same tests as for the previous implementation of `findPhoneNumbers()` pass, so seems that it can be used in production.
 
 1.4.6 / 12.09.2018
 ==================
