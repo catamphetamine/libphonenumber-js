@@ -28,11 +28,32 @@ export function isValidNumber(phone: TelephoneNumber, country: CountryCode, meta
 
 export function isValidNumberForRegion(phone: TelephoneNumber, country: CountryCode, metadata: object): boolean;
 
+// Deprecated.
 export function findPhoneNumbers(text: string, metadata: object): NumberFound[];
 export function findPhoneNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): NumberFound[];
 
+// Deprecated.
 export function searchPhoneNumbers(text: string, metadata: object): IterableIterator<NumberFound>;
 export function searchPhoneNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): IterableIterator<NumberFound>;
+
+// Deprecated.
+export class PhoneNumberSearch {
+  constructor(text: string, options?: { defaultCountry?: CountryCode }, metadata: object);
+  hasNext(): boolean;
+  next(): NumberFound;
+}
+
+export function findNumbers(text: string, metadata: object): NumberFound[];
+export function findNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): NumberFound[];
+
+export function searchNumbers(text: string, metadata: object): IterableIterator<NumberFound>;
+export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): IterableIterator<NumberFound>;
+
+export class PhoneNumberMatcher {
+  constructor(text: string, options?: { defaultCountry?: CountryCode }, metadata: object);
+  hasNext(): boolean;
+  next(): NumberFound;
+}
 
 export function getCountryCallingCode(countryCode: CountryCode, metadata: object): CountryCallingCode;
 

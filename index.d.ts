@@ -48,8 +48,25 @@ export function isValidNumber(phone: TelephoneNumber, country?: CountryCode): bo
 
 export function isValidNumberForRegion(phone: TelephoneNumber, country: CountryCode): boolean;
 
+// Deprecated.
 export function findPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
 export function searchPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
+
+// Deprecated.
+export class PhoneNumberSearch {
+  constructor(text: string, options?: { defaultCountry?: CountryCode });
+  hasNext(): boolean;
+  next(): NumberFound;
+}
+
+export function findNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
+export function searchNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
+
+export class PhoneNumberMatcher {
+  constructor(text: string, options?: { defaultCountry?: CountryCode });
+  hasNext(): boolean;
+  next(): NumberFound;
+}
 
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
 
@@ -66,10 +83,4 @@ export class AsYouType {
   country: CountryCode;
   getNationalNumber(): string;
   template: string;
-}
-
-export class PhoneNumberSearch {
-  constructor(text: string, options?: { defaultCountry?: CountryCode });
-  hasNext(): boolean;
-  next(): NumberFound;
 }

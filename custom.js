@@ -13,9 +13,16 @@ exports.formatNumber       = require('./build/format').default
 exports.getNumberType      = require('./build/getNumberType').default
 exports.isValidNumber      = require('./build/validate').default
 exports.isValidNumberForRegion = require('./build/isValidNumberForRegion').default
+
+exports.findNumbers        = require('./build/findNumbers').default
+exports.searchNumbers      = require('./build/searchNumbers').default
+exports.PhoneNumberMatcher = require('./build/PhoneNumberMatcher').default
+
+// Deprecated.
 exports.findPhoneNumbers   = require('./build/findPhoneNumbers').default
 exports.searchPhoneNumbers = require('./build/findPhoneNumbers').searchPhoneNumbers
 exports.PhoneNumberSearch  = require('./build/findPhoneNumbers').PhoneNumberSearch
+
 exports.AsYouType          = require('./build/AsYouType').default
 
 exports.formatIncompletePhoneNumber = require('./build/formatIncompletePhoneNumber').default

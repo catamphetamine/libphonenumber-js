@@ -5,8 +5,16 @@ import formatNumberCustom from './es6/format'
 import getNumberTypeCustom from './es6/getNumberType'
 import isValidNumberCustom from './es6/validate'
 import isValidNumberForRegionCustom from './es6/isValidNumberForRegion'
+
+// Deprecated
 import findPhoneNumbersCustom, { searchPhoneNumbers as searchPhoneNumbersCustom, PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
+
+import findNumbersCustom from './es6/findNumbers'
+import searchNumbersCustom from './es6/searchNumbers'
+import PhoneNumberMatcherCustom from './es6/PhoneNumberMatcher'
+
 import AsYouTypeCustom from './es6/AsYouType'
+
 import getCountryCallingCodeCustom from './es6/getCountryCallingCode'
 export { default as Metadata } from './es6/metadata'
 import { getExtPrefix as getExtPrefixCustom } from './es6/metadata'
@@ -67,6 +75,7 @@ export function isValidNumberForRegion()
 	return isValidNumberForRegionCustom.apply(this, parameters)
 }
 
+// Deprecated.
 export function findPhoneNumbers()
 {
 	var parameters = Array.prototype.slice.call(arguments)
@@ -74,6 +83,7 @@ export function findPhoneNumbers()
 	return findPhoneNumbersCustom.apply(this, parameters)
 }
 
+// Deprecated.
 export function searchPhoneNumbers()
 {
 	var parameters = Array.prototype.slice.call(arguments)
@@ -81,13 +91,37 @@ export function searchPhoneNumbers()
 	return searchPhoneNumbersCustom.apply(this, parameters)
 }
 
+// Deprecated.
 export function PhoneNumberSearch(text, options)
 {
 	PhoneNumberSearchCustom.call(this, text, options, metadata)
 }
 
+// Deprecated.
 PhoneNumberSearch.prototype = Object.create(PhoneNumberSearchCustom.prototype, {})
 PhoneNumberSearch.prototype.constructor = PhoneNumberSearch
+
+export function findNumbers()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return findNumbersCustom.apply(this, parameters)
+}
+
+export function searchNumbers()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return searchNumbersCustom.apply(this, parameters)
+}
+
+export function PhoneNumberMatcher(text, options)
+{
+	PhoneNumberMatcherCustom.call(this, text, options, metadata)
+}
+
+PhoneNumberMatcher.prototype = Object.create(PhoneNumberMatcherCustom.prototype, {})
+PhoneNumberMatcher.prototype.constructor = PhoneNumberMatcher
 
 export function AsYouType(country)
 {

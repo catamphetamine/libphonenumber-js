@@ -84,9 +84,9 @@ new AsYouType('US').input('2133734')
 ### Full-text search
 
 ```js
-import { findPhoneNumbers } from 'libphonenumber-js'
+import { findNumbers } from 'libphonenumber-js'
 
-findPhoneNumbers(`
+findNumbers(`
   The number is +7 (800) 555-35-35 and
   not (213) 373-4253 as written
   in the document.
@@ -364,14 +364,14 @@ asYouType.getTemplate() === 'xx xxx xxx xxxx'
 
 Google's "As You Type" formatter does not support entering phone number extensions. If your project requires phone number extensions input then use a separate input field for that.
 
-### findPhoneNumbers(text, [defaultCountry], [options])
+### findNumbers(text, [defaultCountry], [options])
 
 Searches for phone numbers in a given text.
 
 ```js
-import { findPhoneNumbers } from 'libphonenumber-js'
+import { findNumbers } from 'libphonenumber-js'
 
-findPhoneNumbers(`
+findNumbers(`
   The number is +7 (800) 555-35-35 and
   not (213) 373-4253 as written
   in the document.
@@ -398,7 +398,7 @@ By default it processes the whole text and then outputs the phone numbers found.
 ES6 iterator:
 
 ```js
-import { searchPhoneNumbers } from 'libphonenumber-js'
+import { searchNumbers } from 'libphonenumber-js'
 
 const text = `
   The number is +7 (800) 555-35-35 and
@@ -407,7 +407,7 @@ const text = `
 `
 
 async function() {
-  for (const number of searchPhoneNumbers(text, 'US')) {
+  for (const number of searchNumbers(text, 'US')) {
     console.log(number)
     await new Promise(resolve => setTimeout(resolve, 0))
   }
@@ -418,9 +418,9 @@ async function() {
 Java-style iterator (for those still not using ES6):
 
 ```js
-import { PhoneNumberSearch } from 'libphonenumber-js'
+import { PhoneNumberMatcher } from 'libphonenumber-js'
 
-const search = new PhoneNumberSearch(`
+const search = new PhoneNumberMatcher(`
   The number is +7 (800) 555-35-35 and
   not (213) 373-4253 as written
   in the document.
@@ -442,15 +442,7 @@ const iteration = () => {
 iteration()
 ```
 
-### findNumbers(text, [defaultCountry], [options])
-
-Searches for phone numbers in a given text. This is the Google's original implementation and it's not implemented in this library (though `findPhoneNumbers()` uses some parts of it).
-
-Although Google's javascript port doesn't support this functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness.
-
-I made my take on porting Google's `PhoneNumberMatcher.java` into javascript. The overall syntax has mostly been ported: see `findNumbers.js`, `src/PhoneNumberMatcher.js` and `src/PhoneNumberMatcher.test.js`. If someone wants they can finish the porting process and submit a pull request.
-
-Use `findPhoneNumbers()` instead.
+Although Google's javascript port doesn't have the `findNumbers()` functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness. The `findNumbers()` function provided is a port of Google's `PhoneNumberMatcher.java` into javascript.
 
 ### getNumberType(number, [defaultCountry])
 
@@ -818,7 +810,7 @@ launchctl list | grep 'libphonenumber-js'
 
 ## Maintenance
 
-Google periodically releases new metadata with the changes described in the [release notes](https://github.com/googlei18n/libphonenumber/blob/master/release_notes.txt). Sometimes those are minor non-breaking updates, sometimes those are major-version breaking updates. The metadata should be periodically updated via `autoupdate.cmd` (Windows) and `autoupdate.sh` (Linux/macOS) scripts. Also Google sometimes (very rarely) updates their code: [`phonenumberutil.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js) (`parseNumber()`, `formatNumber()`, `isValidNumber()`, `getNumberType()`), [`asyoutypeformatter.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/asyoutypeformatter.js) (`AsYouType`), [`PhoneNumberMatcher`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) (`findPhoneNumbers()`). The latest sync-up was performed on August 1st, 2018.
+Google periodically releases new metadata with the changes described in the [release notes](https://github.com/googlei18n/libphonenumber/blob/master/release_notes.txt). Sometimes those are minor non-breaking updates, sometimes those are major-version breaking updates. The metadata should be periodically updated via `autoupdate.cmd` (Windows) and `autoupdate.sh` (Linux/macOS) scripts. Also Google sometimes (very rarely) updates their code: [`phonenumberutil.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js) (`parseNumber()`, `formatNumber()`, `isValidNumber()`, `getNumberType()`), [`asyoutypeformatter.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/asyoutypeformatter.js) (`AsYouType`), [`PhoneNumberMatcher`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) (`findNumbers()`). The latest sync-up was performed on August 1st, 2018.
 
 ## Contributing
 

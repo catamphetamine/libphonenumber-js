@@ -52,26 +52,26 @@ import isValidNumber from './validate'
 const INNER_MATCHES =
 [
 	// Breaks on the slash - e.g. "651-234-2345/332-445-1234"
-	/\/+(.*)/,
+	'\\/+(.*)/',
 
 	// Note that the bracket here is inside the capturing group, since we consider it part of the
 	// phone number. Will match a pattern like "(650) 223 3345 (754) 223 3321".
-	/(\([^(]*)/,
+	'(\\([^(]*)',
 
 	// Breaks on a hyphen - e.g. "12345 - 332-445-1234 is my number."
 	// We require a space on either side of the hyphen for it to be considered a separator.
-	new RegExp(`(?:${pZ}-|-${pZ})${pZ}*(.+)`),
+	`(?:${pZ}-|-${pZ})${pZ}*(.+)`,
 
 	// Various types of wide hyphens. Note we have decided not to enforce a space here, since it's
 	// possible that it's supposed to be used to break two numbers without spaces, and we haven't
 	// seen many instances of it used within a number.
-	new RegExp(`[\u2012-\u2015\uFF0D]${pZ}*(.+)`),
+	`[\u2012-\u2015\uFF0D]${pZ}*(.+)`,
 
 	// Breaks on a full stop - e.g. "12345. 332-445-1234 is my number."
-	new RegExp(`\\.+${pZ}*([^.]+)`),
+	`\\.+${pZ}*([^.]+)`,
 
 	// Breaks on space - e.g. "3324451234 8002341234"
-	new RegExp(`${pZ}+(${PZ}+)`)
+	`${pZ}+(${PZ}+)`
 ]
 
 // Limit on the number of leading (plus) characters.
@@ -127,6 +127,8 @@ const UNWANTED_END_CHAR_PATTERN = new RegExp(`[^${_pN}${_pL}#]+$`)
 
 const NON_DIGITS_PATTERN = /(\D+)/
 
+const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1
+
 /**
  * A stateful class that finds and extracts telephone numbers from {@linkplain CharSequence text}.
  * Instances can be created using the {@linkplain PhoneNumberUtil#findNumbers factory methods} in
@@ -160,34 +162,40 @@ export default class PhoneNumberMatcher
    *     This is to cover degenerate cases where the text has a lot of false positives in it. Must
    *     be {@code >= 0}.
    */
-  constructor(text = '', defaultCountry, leniency, maxTries)
+  constructor(text = '', options = {}, metadata)
   {
-		if (!leniency)
+    options = {
+      ...options,
+      leniency : options.leniency || options.extended ? 'POSSIBLE' : 'VALID',
+      maxTries : options.maxTries || MAX_SAFE_INTEGER
+    }
+
+		if (!options.leniency)
 		{
 			throw new TypeError('`Leniency` not supplied')
 		}
 
-		if (maxTries < 0)
+		if (options.maxTries < 0)
 		{
 			throw new TypeError('`maxTries` not supplied')
 		}
 
 		this.text = text
-		this.defaultCountry = defaultCountry
+		this.options = options
+    this.metadata = metadata
 
 		/** The degree of validation requested. */
-		this._leniency = leniency
-		this.leniency = Leniency[leniency]
+		this.leniency = Leniency[options.leniency]
 
 		if (!this.leniency)
 		{
-			throw new TypeError(`Unknown leniency: ${leniency}.`)
+			throw new TypeError(`Unknown leniency: ${options.leniency}.`)
 		}
 
 		/** The maximum number of retries after matching an invalid number. */
-		this.maxTries = maxTries
+		this.maxTries = options.maxTries
 
-		this.PATTERN = new RegExp(PATTERN, 'i')
+		this.PATTERN = new RegExp(PATTERN, 'ig')
   }
 
   /**
@@ -197,10 +205,10 @@ export default class PhoneNumberMatcher
    * @param index  the search index to start searching at
    * @return  the phone number match found, null if none can be found
    */
-	find(index)
+	find() // (index)
 	{
-		// Reset the regular expression.
-		this.PATTERN.lastIndex = 0
+		// // Reset the regular expression.
+		// this.PATTERN.lastIndex = index
 
 		let matches
 		while ((this.maxTries > 0) && (matches = this.PATTERN.exec(this.text)) !== null)
@@ -234,13 +242,11 @@ export default class PhoneNumberMatcher
    */
   extractInnerMatch(candidate, offset, text)
   {
-    for (const possibleInnerMatch of INNER_MATCHES)
+    for (const innerMatchPattern of INNER_MATCHES)
     {
-      // Reset regular expression.
-      possibleInnerMatch.lastIndex = 0
-
       let isFirstMatch = true
       let matches
+      const possibleInnerMatch = new RegExp(innerMatchPattern, 'g')
       while ((matches = possibleInnerMatch.exec(candidate)) !== null && this.maxTries > 0)
       {
         if (isFirstMatch)
@@ -291,57 +297,64 @@ export default class PhoneNumberMatcher
    */
   parseAndVerify(candidate, offset, text)
   {
-    try
-    {
-    	if (!isValidCandidate(candidate, offset, text, this._leniency)) {
-    		return
-    	}
+    if (!isValidCandidate(candidate, offset, text, this.options.leniency)) {
+      return
+  	}
 
-      const number = phoneUtil.parseAndKeepRawInput(candidate, this.defaultCountry)
+    const number = parseNumber(
+      candidate, {
+        extended: true,
+        defaultCountry: this.options.defaultCountry
+      },
+      this.metadata.metadata
+    )
 
-      // Check Israel * numbers: these are a special case in that they are four-digit numbers that
-      // our library supports, but they can only be dialled with a leading *. Since we don't
-      // actually store or detect the * in our phone number library, this means in practice we
-      // detect most four digit numbers as being valid for Israel. We are considering moving these
-      // numbers to ShortNumberInfo instead, in which case this problem would go away, but in the
-      // meantime we want to restrict the false matches so we only allow these numbers if they are
-      // preceded by a star. We enforce this for all leniency levels even though these numbers are
-      // technically accepted by isPossibleNumber and isValidNumber since we consider it to be a
-      // deficiency in those methods that they accept these numbers without the *.
-      // TODO: Remove this or make it significantly less hacky once we've decided how to
-      // handle these short codes going forward in ShortNumberInfo. We could use the formatting
-      // rules for instance, but that would be slower.
-      if (phoneUtil.getRegionCodeForCountryCode(number.getCountryCode()) === 'IL'
-          && phoneUtil.getNationalSignificantNumber(number).length === 4
-          && (offset === 0 || (offset > 0 && text[offset - 1] !== '*')))
-      {
-        // No match.
-        return
-      }
-
-      if (this.leniency(number, candidate, phoneUtil))
-      {
-        // We used parseAndKeepRawInput to create this number, but for now we don't return the extra
-        // values parsed. TODO: stop clearing all values here and switch all users over
-        // to using rawInput() rather than the rawString() of PhoneNumberMatch.
-        number.clearCountryCodeSource()
-        number.clearRawInput()
-        number.clearPreferredDomesticCarrierCode()
-
-        return {
-        	startsAt : offset,
-        	endsAt   : offset + candidate.length,
-        	raw      : candidate,
-        	number
-        }
-      }
+    if (!number.possible) {
+      return
     }
-    catch (error)
+
+    // Check Israel * numbers: these are a special case in that they are four-digit numbers that
+    // our library supports, but they can only be dialled with a leading *. Since we don't
+    // actually store or detect the * in our phone number library, this means in practice we
+    // detect most four digit numbers as being valid for Israel. We are considering moving these
+    // numbers to ShortNumberInfo instead, in which case this problem would go away, but in the
+    // meantime we want to restrict the false matches so we only allow these numbers if they are
+    // preceded by a star. We enforce this for all leniency levels even though these numbers are
+    // technically accepted by isPossibleNumber and isValidNumber since we consider it to be a
+    // deficiency in those methods that they accept these numbers without the *.
+    // TODO: Remove this or make it significantly less hacky once we've decided how to
+    // handle these short codes going forward in ShortNumberInfo. We could use the formatting
+    // rules for instance, but that would be slower.
+    if (number.country === 'IL'
+        && number.phone.length === 4
+        && (offset === 0 || (offset > 0 && text[offset - 1] !== '*')))
     {
-    	// if (error instanceof NumberParseException) {
-      //   // ignore and continue
-      // }
-      // throw error
+      // No match.
+      return
+    }
+
+    if (this.leniency(number, candidate, this.metadata.metadata))
+    {
+      // // We used parseAndKeepRawInput to create this number,
+      // // but for now we don't return the extra values parsed.
+      // // TODO: stop clearing all values here and switch all users over
+      // // to using rawInput() rather than the rawString() of PhoneNumberMatch.
+      // number.clearCountryCodeSource()
+      // number.clearRawInput()
+      // number.clearPreferredDomesticCarrierCode()
+
+      const result = {
+        startsAt : offset,
+        endsAt   : offset + candidate.length,
+        country  : number.country,
+        phone    : number.phone
+      }
+
+      if (number.ext) {
+        result.ext = number.ext
+      }
+
+      return result
     }
   }
 
@@ -349,11 +362,11 @@ export default class PhoneNumberMatcher
   {
     if (this.state === 'NOT_READY')
     {
-      this.lastMatch = this.find(this.searchIndex)
+      this.lastMatch = this.find() // (this.searchIndex)
 
       if (this.lastMatch)
       {
-        this.searchIndex = this.lastMatch.end()
+        // this.searchIndex = this.lastMatch.endsAt
         this.state = 'READY'
       }
       else

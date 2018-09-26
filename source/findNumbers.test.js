@@ -1,7 +1,7 @@
-import findNumbers, { searchPhoneNumbers, PhoneNumberSearch } from './findPhoneNumbers'
+import findNumbers from './findNumbers'
 import metadata from '../metadata.min.json'
 
-describe('findPhoneNumbers', () =>
+describe('findNumbers', () =>
 {
 	it('should find numbers', function()
 	{
@@ -116,32 +116,6 @@ describe('findPhoneNumbers', () =>
 		}])
 	})
 
-	it('should iterate', function()
-	{
-		const expected_numbers =
-		[{
-			country : 'RU',
-			phone   : '8005553535',
-			// number   : '+7 (800) 555-35-35',
-			startsAt : 14,
-			endsAt   : 32
-		},
-		{
-			country : 'US',
-			phone   : '2133734253',
-			// number   : '(213) 373-4253',
-			startsAt : 41,
-			endsAt   : 55
-		}]
-
-		for (const number of searchPhoneNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata))
-		{
-			number.should.deep.equal(expected_numbers.shift())
-		}
-
-		expected_numbers.length.should.equal(0)
-	})
-
 	it('should work in edge cases', function()
 	{
 		let thrower
@@ -194,52 +168,12 @@ describe('findPhoneNumbers', () =>
 		// Not a phone number (part of a UUID).
 		// Should parse in `{ extended: true }` mode.
 		const possibleNumbers = findNumbers('The UUID is CA801c26f98cd16e231354125ad046e40b.', 'FR', { extended: true }, metadata)
-		possibleNumbers.length.should.equal(3)
-		possibleNumbers[1].country.should.equal('FR')
-		possibleNumbers[1].phone.should.equal('231354125')
+		possibleNumbers.length.should.equal(1)
+		possibleNumbers[0].country.should.equal('FR')
+		possibleNumbers[0].phone.should.equal('231354125')
 
 		// Not a phone number (part of a UUID).
 		// Shouldn't parse by default.
 		findNumbers('The UUID is CA801c26f98cd16e231354125ad046e40b.', 'FR', metadata).should.deep.equal([])
-	})
-})
-
-describe('PhoneNumberSearch', () =>
-{
-	it('should search for phone numbers', function()
-	{
-		const finder = new PhoneNumberSearch('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', { defaultCountry: 'US' }, metadata)
-
-		finder.hasNext().should.equal(true)
-		finder.next().should.deep.equal
-		({
-			country : 'RU',
-			phone   : '8005553535',
-			// number   : '+7 (800) 555-35-35',
-			startsAt : 14,
-			endsAt   : 32
-		})
-
-		finder.hasNext().should.equal(true)
-		finder.next().should.deep.equal
-		({
-			country : 'US',
-			phone   : '2133734253',
-			// number   : '(213) 373-4253',
-			startsAt : 41,
-			endsAt   : 55
-		})
-
-		finder.hasNext().should.equal(false)
-	})
-
-	it('should work in edge cases', function()
-	{
-		// No options
-		const search = new PhoneNumberSearch('', undefined, metadata)
-
-		// No next element
-		let thrower = () => search.next()
-		thrower.should.throw('No next element')
 	})
 })

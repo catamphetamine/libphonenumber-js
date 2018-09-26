@@ -58,6 +58,7 @@ exports.isValidNumberForRegion = function isValidNumberForRegion()
 	return custom.isValidNumberForRegion.apply(this, parameters)
 }
 
+// Deprecated.
 exports.findPhoneNumbers = function findPhoneNumbers()
 {
 	var parameters = Array.prototype.slice.call(arguments)
@@ -65,6 +66,7 @@ exports.findPhoneNumbers = function findPhoneNumbers()
 	return custom.findPhoneNumbers.apply(this, parameters)
 }
 
+// Deprecated.
 exports.searchPhoneNumbers = function searchPhoneNumbers()
 {
 	var parameters = Array.prototype.slice.call(arguments)
@@ -72,13 +74,37 @@ exports.searchPhoneNumbers = function searchPhoneNumbers()
 	return custom.searchPhoneNumbers.apply(this, parameters)
 }
 
+// Deprecated.
 exports.PhoneNumberSearch = function PhoneNumberSearch(text, options)
 {
 	custom.PhoneNumberSearch.call(this, text, options, metadata)
 }
 
+// Deprecated.
 exports.PhoneNumberSearch.prototype = Object.create(custom.PhoneNumberSearch.prototype, {})
 exports.PhoneNumberSearch.prototype.constructor = exports.PhoneNumberSearch
+
+exports.findNumbers = function findPhoneNumbers()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.findNumbers.apply(this, parameters)
+}
+
+exports.searchNumbers = function searchPhoneNumbers()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.searchNumbers.apply(this, parameters)
+}
+
+exports.PhoneNumberMatcher = function PhoneNumberMatcher(text, options)
+{
+	custom.PhoneNumberMatcher.call(this, text, options, metadata)
+}
+
+exports.PhoneNumberMatcher.prototype = Object.create(custom.PhoneNumberMatcher.prototype, {})
+exports.PhoneNumberMatcher.prototype.constructor = exports.PhoneNumberMatcher
 
 exports.AsYouType = function AsYouType(country)
 {

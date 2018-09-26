@@ -42,7 +42,6 @@ import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
 // Used in phone number format template creation.
 // Could be any digit, I guess.
 const DUMMY_DIGIT = '9'
-const DUMMY_DIGIT_MATCHER = new RegExp(DUMMY_DIGIT, 'g')
 // I don't know why is it exactly `15`
 const LONGEST_NATIONAL_PHONE_NUMBER_LENGTH = 15
 // Create a phone number consisting only of the digit 9 that matches the
@@ -53,18 +52,17 @@ const LONGEST_DUMMY_PHONE_NUMBER = repeat(DUMMY_DIGIT, LONGEST_NATIONAL_PHONE_NU
 // the punctuation space.
 export const DIGIT_PLACEHOLDER = 'x' // '\u2008' (punctuation space)
 const DIGIT_PLACEHOLDER_MATCHER = new RegExp(DIGIT_PLACEHOLDER)
-const DIGIT_PLACEHOLDER_MATCHER_GLOBAL = new RegExp(DIGIT_PLACEHOLDER, 'g')
 
 // A pattern that is used to match character classes in regular expressions.
 // An example of a character class is "[1-4]".
-const CHARACTER_CLASS_PATTERN = /\[([^\[\]])*\]/g
+const CREATE_CHARACTER_CLASS_PATTERN = () => /\[([^\[\]])*\]/g
 
 // Any digit in a regular expression that actually denotes a digit. For
 // example, in the regular expression "80[0-2]\d{6,10}", the first 2 digits
 // (8 and 0) are standalone digits, but the rest are not.
 // Two look-aheads are needed because the number following \\d could be a
 // two-digit number, since the phone number can be as long as 15 digits.
-const STANDALONE_DIGIT_PATTERN = /\d(?=[^,}][^,}])/g
+const CREATE_STANDALONE_DIGIT_PATTERN = () => /\d(?=[^,}][^,}])/g
 
 // A pattern that is used to determine if a `format` is eligible
 // to be used by the "as you type formatter".
@@ -781,9 +779,9 @@ export default class AsYouType
 		// A very smart trick by the guys at Google
 		const number_pattern = format.pattern()
 			// Replace anything in the form of [..] with \d
-			.replace(CHARACTER_CLASS_PATTERN, '\\d')
+			.replace(CREATE_CHARACTER_CLASS_PATTERN(), '\\d')
 			// Replace any standalone digit (not the one in `{}`) with \d
-			.replace(STANDALONE_DIGIT_PATTERN, '\\d')
+			.replace(CREATE_STANDALONE_DIGIT_PATTERN(), '\\d')
 
 		// This match will always succeed,
 		// because the "longest dummy phone number"
@@ -848,7 +846,7 @@ export default class AsYouType
 			// Format the dummy phone number according to the format
 			.replace(new RegExp(number_pattern), number_format)
 			// Replace each dummy digit with a DIGIT_PLACEHOLDER
-			.replace(DUMMY_DIGIT_MATCHER, DIGIT_PLACEHOLDER)
+			.replace(new RegExp(DUMMY_DIGIT, 'g'), DIGIT_PLACEHOLDER)
 	}
 
 	format_next_national_number_digits(digits)

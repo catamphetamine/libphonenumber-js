@@ -9,14 +9,22 @@ import
 	getNumberType,
 	isValidNumber,
 	isValidNumberForRegion,
+
+	// Deprecated
 	findPhoneNumbers,
 	searchPhoneNumbers,
 	PhoneNumberSearch,
+
+	findNumbers,
+	searchNumbers,
+	PhoneNumberMatcher,
+
 	AsYouType,
 	getCountryCallingCode,
 	// `getPhoneCode` name is deprecated.
 	getPhoneCode,
 
+	// Deprecated.
 	formatCustom,
 	parseCustom,
 	getNumberTypeCustom,
@@ -57,9 +65,16 @@ describe(`exports`, function()
 		getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
 		isValidNumber('+12133734253', 'US').should.equal(true)
 		isValidNumberForRegion('+12133734253', 'US').should.equal(true)
+
+		// Deprecated.
 		findPhoneNumbers('+12133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		searchPhoneNumbers('+12133734253', 'US')[Symbol.iterator]().next.should.be.a('function')
 		new PhoneNumberSearch('+12133734253', undefined).find.should.be.a('function')
+
+		findNumbers('+12133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
+		searchNumbers('+12133734253', 'US')[Symbol.iterator]().next.should.be.a('function')
+		new PhoneNumberMatcher('+12133734253', undefined).find.should.be.a('function')
+
 		new AsYouType('US').input('+12133734253').should.equal('+1 213 373 4253')
 
 		DIGIT_PLACEHOLDER.should.equal('x')
@@ -107,9 +122,16 @@ describe(`exports`, function()
 		Library.getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
 		Library.isValidNumber('+12133734253', 'US').should.equal(true)
 		Library.isValidNumberForRegion('+12133734253', 'US').should.equal(true)
+
+		// Deprecated.
 		Library.findPhoneNumbers('+12133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.searchPhoneNumbers('+12133734253', 'US')[Symbol.iterator]().next.should.be.a('function')
 		new Library.PhoneNumberSearch('+12133734253', undefined).find.should.be.a('function')
+
+		Library.findNumbers('+12133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
+		Library.searchNumbers('+12133734253', 'US')[Symbol.iterator]().next.should.be.a('function')
+		new Library.PhoneNumberMatcher('+12133734253', undefined).find.should.be.a('function')
+
 		new Library.AsYouType('US').input('+12133734253').should.equal('+1 213 373 4253')
 
 		Library.DIGIT_PLACEHOLDER.should.equal('x')
@@ -142,9 +164,16 @@ describe(`exports`, function()
 		Library.getNumberType('2133734253', 'US', metadata).should.equal('FIXED_LINE_OR_MOBILE')
 		Library.isValidNumber('+12133734253', 'US', metadata).should.equal(true)
 		Library.isValidNumberForRegion('+12133734253', 'US', metadata).should.equal(true)
+
+		// Deprecated.
 		Library.findPhoneNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.searchPhoneNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')
 		new Library.PhoneNumberSearch('+12133734253', undefined, metadata).find.should.be.a('function')
+
+		Library.findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
+		Library.searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')
+		new Library.PhoneNumberMatcher('+12133734253', undefined, metadata).find.should.be.a('function')
+
 		// `getPhoneCode` name is deprecated.
 		Library.getPhoneCode('KZ', metadata).should.equal('7')
 		Library.getCountryCallingCode('KZ', metadata).should.equal('7')
