@@ -38,7 +38,8 @@ export function searchPhoneNumbers(text: string, options: CountryCode | { defaul
 
 // Deprecated.
 export class PhoneNumberSearch {
-  constructor(text: string, options?: { defaultCountry?: CountryCode }, metadata: object);
+  constructor(text: string, metadata: object);
+  constructor(text: string, options: { defaultCountry?: CountryCode }, metadata: object);
   hasNext(): boolean;
   next(): NumberFound;
 }
@@ -50,7 +51,8 @@ export function searchNumbers(text: string, metadata: object): IterableIterator<
 export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: object): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
-  constructor(text: string, options?: { defaultCountry?: CountryCode }, metadata: object);
+  constructor(text: string, metadata: object);
+  constructor(text: string, options: { defaultCountry?: CountryCode }, metadata: object);
   hasNext(): boolean;
   next(): NumberFound;
 }
