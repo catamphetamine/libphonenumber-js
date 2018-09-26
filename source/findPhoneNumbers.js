@@ -6,7 +6,6 @@ import
 	PLUS_CHARS,
 	VALID_PUNCTUATION,
 	VALID_DIGITS,
-	// OPENING_BRACKETS,
 	WHITESPACE,
 	create_extension_pattern
 }
@@ -14,7 +13,7 @@ from './common'
 
 import parsePreCandidate from './findNumbers/parsePreCandidate'
 import isValidPreCandidate from './findNumbers/isValidPreCandidate'
-import isValidCandidate from './findNumbers/isValidCandidate'
+import isValidCandidate, { OPENING_PARENS } from './findNumbers/isValidCandidate'
 
 // Copy-pasted from `./parse.js`.
 const VALID_PHONE_NUMBER =
@@ -31,7 +30,7 @@ const VALID_PHONE_NUMBER =
 const EXTN_PATTERNS_FOR_PARSING = create_extension_pattern('parsing')
 
 const WHITESPACE_IN_THE_BEGINNING_PATTERN = new RegExp('^[' + WHITESPACE + ']+')
-const WHITESPACE_IN_THE_END_PATTERN = new RegExp('[' + WHITESPACE + ']+$')
+const WHITESPACE_AND_OPENING_PARENS_IN_THE_END_PATTERN = new RegExp('[' + WHITESPACE + OPENING_PARENS + ']+$')
 
 // // Regular expression for getting opening brackets for a valid number
 // // found using `PHONE_NUMBER_START_PATTERN` for prepending those brackets to the number.
@@ -123,7 +122,10 @@ export class PhoneNumberSearch
 
 		number = number.replace(WHITESPACE_IN_THE_BEGINNING_PATTERN, '')
 		startsAt += matches[0].length - number.length
-		number = number.replace(WHITESPACE_IN_THE_END_PATTERN, '')
+		// Fixes not parsing numbers with whitespace in the end.
+		// Also fixes not parsing numbers with opening parentheses in the end.
+		// https://github.com/catamphetamine/libphonenumber-js/issues/252
+		number = number.replace(WHITESPACE_AND_OPENING_PARENS_IN_THE_END_PATTERN, '')
 
 		number = parsePreCandidate(number)
 

@@ -19,7 +19,7 @@ import
 }
 from './utf-8'
 
-const OPENING_PARENS = '(\\[\uFF08\uFF3B'
+export const OPENING_PARENS = '(\\[\uFF08\uFF3B'
 const CLOSING_PARENS = ')\\]\uFF09\uFF3D'
 const NON_PARENS = `[^${OPENING_PARENS}${CLOSING_PARENS}]`
 
