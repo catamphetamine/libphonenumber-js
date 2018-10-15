@@ -8,6 +8,27 @@
 
 <!-- (breaking change) Removed deprecated `findPhoneNumbers()`, `searchPhoneNumbers()` and `PhoneNumberSearch` functions. Use `findNumbers()`, `searchNumbers()` and `PhoneNumberMatcher` instead. -->
 
+<!-- (breaking change) Better API.
+
+https://github.com/catamphetamine/libphonenumber-js/issues/259
+
+Maybe something like:
+
+const number = parseNumber(value)
+
+const {
+  number,
+  country,
+  nationalNumber,
+  carrierCode,
+  countryCallingCode,
+  valid,
+  possible
+} = parseNumber(value, { extended: true })
+
+// Maybe rename "extended" to something else.
+-->
+
 1.5.0 / 26.09.2018
 ==================
 
