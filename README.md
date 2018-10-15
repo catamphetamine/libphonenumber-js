@@ -259,7 +259,7 @@ Available `format`s:
   * [`RFC3966`](https://www.ietf.org/rfc/rfc3966.txt) (the phone number URI) — e.g. `tel:+12133734253;ext=123`
   * `IDD` — ["Out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) format, e.g. `01178005553535` for `+7 800 555 35 35` being called out of `options.fromCountry === US`. If no `options.fromCountry` was passed or if there's no default IDD prefix for `options.fromCountry` then returns `undefined`. Pass `options.humanReadable: true` for a human-readable output (same output as Google `liphonenumber`'s `formatOutOfCountryCallingNumber()`).
 
-The `number` argument must be either a result of `parseNumber()` function call (to strip national prefix) or an E.164 phone number string (e.g. `+12133734253`).
+The `number` argument must be either a (non-empty) result of `parseNumber()` function call (to strip national prefix) or an E.164 phone number string (e.g. `+12133734253`).
 
 ```js
 // Formats E.164 phone numbers.
