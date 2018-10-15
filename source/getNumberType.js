@@ -126,10 +126,10 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 	// `getNumberType('88005553535', ...)`.
 	if (typeof arg_1 === 'string')
 	{
-		// If "resrict country" argument is being passed
+		// If "default country" argument is being passed
 		// then convert it to an `options` object.
 		// `getNumberType('88005553535', 'RU', metadata)`.
-		if (typeof arg_2 === 'string' || arg_2 === undefined)
+		if (typeof arg_2 !== 'object')
 		{
 			metadata = arg_3
 

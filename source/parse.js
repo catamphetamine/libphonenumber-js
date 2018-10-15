@@ -410,7 +410,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 	// If "default country" argument is being passed
 	// then move it to `options`.
 	// `parse('88005553535', 'RU', [options], metadata)`.
-	if (typeof arg_2 === 'string')
+	if (typeof arg_2 !== 'object')
 	{
 		if (arg_4)
 		{
