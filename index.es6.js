@@ -3,6 +3,7 @@ import metadata from './metadata.min.json'
 import parseNumberCustom from './es6/parse'
 import formatNumberCustom from './es6/format'
 import getNumberTypeCustom from './es6/getNumberType'
+import isPossibleNumberCustom from './es6/isPossibleNumber'
 import isValidNumberCustom from './es6/validate'
 import isValidNumberForRegionCustom from './es6/isValidNumberForRegion'
 
@@ -59,6 +60,13 @@ export function getNumberType()
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return getNumberTypeCustom.apply(this, parameters)
+}
+
+export function isPossibleNumber()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return isPossibleNumberCustom.apply(this, parameters)
 }
 
 export function isValidNumber()

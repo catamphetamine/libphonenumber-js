@@ -30,15 +30,12 @@ import get_number_type, { sort_out_arguments } from './getNumberType'
  * isValidNumber({ phone: '8005553535', country: 'RU' }, metadata)
  * ```
  */
-export default function isValidNumber(arg_1, arg_2, arg_3)
+export default function isValidNumber(arg_1, arg_2, arg_3, arg_4)
 {
-	const { input, metadata } = sort_out_arguments(arg_1, arg_2, arg_3)
+	const { input, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 
-	if (!input)
-	{
-		return false
-	}
-
+	// This is just to support `isValidNumber({})`
+	// for cases when `parseNumber()` returns `{}`.
 	if (!input.country)
 	{
 		return false

@@ -23,6 +23,8 @@ import getCountryCallingCode from './getCountryCallingCode'
 
 import get_number_type, { check_number_length_for_type } from './getNumberType'
 
+import { is_possible_number } from './isPossibleNumber'
+
 import { parseRFC3966 } from './RFC3966'
 
 // The minimum length of the national significant number.
@@ -484,19 +486,6 @@ function strip_extension(number)
 			}
 		}
 		i++
-	}
-}
-
-function is_possible_number(national_number, is_international, metadata)
-{
-	switch (check_number_length_for_type(national_number, undefined, metadata))
-	{
-		case 'IS_POSSIBLE':
-			return true
-		// case 'IS_POSSIBLE_LOCAL_ONLY':
-		// 	return !is_international
-		default:
-			return false
 	}
 }
 

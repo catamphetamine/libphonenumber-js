@@ -44,6 +44,13 @@ exports.getNumberType = function getNumberType()
 	return custom.getNumberType.apply(this, parameters)
 }
 
+exports.isPossibleNumber = function isPossibleNumber()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.isPossibleNumber.apply(this, parameters)
+}
+
 exports.isValidNumber = function isValidNumber()
 {
 	var parameters = Array.prototype.slice.call(arguments)

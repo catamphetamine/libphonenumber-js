@@ -77,6 +77,11 @@ describe('get_number_type', () =>
 		// Numerical `value`
 		thrower = () => get_number_type(89150000000, 'RU')
 		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
+
+		// When `options` argument is passed.
+		get_number_type('8005553535', 'RU', {}).should.equal('TOLL_FREE')
+		get_number_type('+78005553535', {}).should.equal('TOLL_FREE')
+		get_number_type({ phone: '8005553535', country: 'RU' }, {}).should.equal('TOLL_FREE')
 	})
 
 	it('should merge arrays', () =>

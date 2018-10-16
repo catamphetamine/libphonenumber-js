@@ -18,15 +18,9 @@ const non_fixed_line_types =
 ]
 
 // Finds out national phone number type (fixed line, mobile, etc)
-export default function get_number_type(arg_1, arg_2, arg_3)
+export default function get_number_type(arg_1, arg_2, arg_3, arg_4)
 {
-	const { input, metadata } = sort_out_arguments(arg_1, arg_2, arg_3)
-
-	// When no input was passed
-	if (!input)
-	{
-		return
-	}
+	const { input, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 
 	// When `parse()` returned `{}`
 	// meaning that the phone number is not a valid one.
@@ -117,9 +111,10 @@ export function is_of_type(national_number, type, metadata)
 }
 
 // Sort out arguments
-export function sort_out_arguments(arg_1, arg_2, arg_3)
+export function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 {
 	let input
+	let options = {}
 	let metadata
 
 	// If the phone number is passed as a string.
@@ -131,7 +126,15 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 		// `getNumberType('88005553535', 'RU', metadata)`.
 		if (typeof arg_2 !== 'object')
 		{
-			metadata = arg_3
+			if (arg_4)
+			{
+				options = arg_3
+				metadata = arg_4
+			}
+			else
+			{
+				metadata = arg_3
+			}
 
 			// `parse` extracts phone numbers from raw text,
 			// therefore it will cut off all "garbage" characters,
@@ -142,13 +145,25 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 			{
 				input = parse(arg_1, arg_2, metadata)
 			}
+			else
+			{
+				input = {}
+			}
 		}
 		// No "resrict country" argument is being passed.
 		// International phone number is passed.
 		// `getNumberType('+78005553535', metadata)`.
 		else
 		{
-			metadata = arg_2
+			if (arg_3)
+			{
+				options = arg_2
+				metadata = arg_3
+			}
+			else
+			{
+				metadata = arg_2
+			}
 
 			// `parse` extracts phone numbers from raw text,
 			// therefore it will cut off all "garbage" characters,
@@ -159,6 +174,10 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 			{
 				input = parse(arg_1, metadata)
 			}
+			else
+			{
+				input = {}
+			}
 		}
 	}
 	// If the phone number is passed as a parsed phone number.
@@ -166,11 +185,20 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 	else if (is_object(arg_1))
 	{
 		input = arg_1
-		metadata = arg_2
+
+		if (arg_3)
+		{
+			options = arg_2
+			metadata = arg_3
+		}
+		else
+		{
+			metadata = arg_2
+		}
 	}
 	else throw new TypeError('A phone number must either be a string or an object of shape { phone, [country] }.')
 
-	return { input, metadata: new Metadata(metadata) }
+	return { input, options, metadata: new Metadata(metadata) }
 }
 
 // Should only be called for the "new" metadata which has "possible lengths".
@@ -231,6 +259,7 @@ export function check_number_length_for_type(national_number, type, metadata)
 
 	const actual_length = national_number.length
 
+	// In `libphonenumber-js` all "local-only" formats are dropped for simplicity.
 	// // This is safe because there is never an overlap beween the possible lengths
 	// // and the local-only lengths; this is checked at build time.
 	// if (local_lengths && local_lengths.indexOf(national_number.length) >= 0)

@@ -7,6 +7,7 @@ import
 	parse,
 	parseNumber,
 	getNumberType,
+	isPossibleNumber,
 	isValidNumber,
 	isValidNumberForRegion,
 
@@ -63,6 +64,7 @@ describe(`exports`, function()
 		format('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		formatNumber('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
+		isPossibleNumber('+12133734253', 'US').should.equal(true)
 		isValidNumber('+12133734253', 'US').should.equal(true)
 		isValidNumberForRegion('+12133734253', 'US').should.equal(true)
 
@@ -120,6 +122,7 @@ describe(`exports`, function()
 		Library.format('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		Library.formatNumber('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		Library.getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
+		Library.isPossibleNumber('+12133734253', 'US').should.equal(true)
 		Library.isValidNumber('+12133734253', 'US').should.equal(true)
 		Library.isValidNumberForRegion('+12133734253', 'US').should.equal(true)
 
@@ -162,6 +165,7 @@ describe(`exports`, function()
 		Library.format('2133734253', 'US', 'E.164', metadata).should.equal('+12133734253')
 		Library.formatNumber('2133734253', 'US', 'E.164', metadata).should.equal('+12133734253')
 		Library.getNumberType('2133734253', 'US', metadata).should.equal('FIXED_LINE_OR_MOBILE')
+		Library.isPossibleNumber('+12133734253', 'US', metadata).should.equal(true)
 		Library.isValidNumber('+12133734253', 'US', metadata).should.equal(true)
 		Library.isValidNumberForRegion('+12133734253', 'US', metadata).should.equal(true)
 

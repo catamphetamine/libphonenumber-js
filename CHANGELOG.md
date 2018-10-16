@@ -36,6 +36,21 @@ const {
 <!-- (breaking change) `examples.mobile.json` now provides phone numbers in E.164 format (e.g. `+78005553535`). Previously those numbers were in "national (significant) number" form (e.g. `8005553535`).
 -->
 
+<!-- (breaking change) AsYouType -> AsYouTypeFormatter (maybe, or maybe not). -->
+
+<!-- (breaking change) parse.js -> parseNumber.js, format.js -> formatNumber.js, validate.js -> isValidNumber.js. -->
+
+<!-- (breaking change metadata format) `country.formats = main_country_for_region.formats` optimized to `country.formats = main_country_for_region_code` (saves 5 kilobytes for default metadata). -->
+
+1.6.0 / 16.10.2018
+==================
+
+  * In `formatNumber()` renamed `National` to `NATIONAL` and `International` to `INTERNATIONAL`. The older variants still work but are considered deprecated.
+
+  * Added `isPossibleNumber()` function.
+
+  * `examples.mobile.json` is now deprecated, use `examples.json` instead. `examples.json` provides phone numbers in `E.164` format (e.g. `+78005553535`). In `examples.mobile.json` those numbers are in "national (significant) number" form (e.g. `8005553535`).
+
 1.5.0 / 26.09.2018
 ==================
 

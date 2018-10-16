@@ -22,6 +22,10 @@ export function getNumberType(parsedNumber: ParsedNumber, metadata: object): Num
 export function getNumberType(phone: NationalNumber, metadata: object): NumberType;
 export function getNumberType(phone: NationalNumber, country: CountryCode, metadata: object): NumberType;
 
+export function isPossibleNumber(parsedNumber: ParsedNumber, metadata: object): boolean;
+export function isPossibleNumber(phone: NationalNumber, metadata: object): boolean;
+export function isPossibleNumber(phone: NationalNumber, country: CountryCode, metadata: object): boolean;
+
 export function isValidNumber(parsedNumber: ParsedNumber, metadata: object): boolean;
 export function isValidNumber(phone: NationalNumber, metadata: object): boolean;
 export function isValidNumber(phone: NationalNumber, country: CountryCode, metadata: object): boolean;
