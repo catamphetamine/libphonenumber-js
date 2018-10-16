@@ -581,7 +581,7 @@ There's also a React component utilizing this library — [`react-phone-number-i
 
 ## Examples
 
-For those asking for phone number examples for use in `<input placeholder/>`s: see `libphonenumber-js/examples.mobile.json`.
+Example phone numbers are available as `libphonenumber-js/examples.mobile.json`.
 
 ```js
 import exampleNumbers from "libphonenumber-js/examples.mobile.json"
