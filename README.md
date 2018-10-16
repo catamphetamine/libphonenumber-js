@@ -458,6 +458,7 @@ getNumberType({ phone: '9160151539', country: 'RU' }) === 'MOBILE'
 
 <details>
 <summary>The list of possible return values</summary>
+
 * `undefined`
 * `MOBILE`
 * `FIXED_LINE`
