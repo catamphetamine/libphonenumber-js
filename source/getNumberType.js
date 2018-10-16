@@ -163,15 +163,9 @@ export function sort_out_arguments(arg_1, arg_2, arg_3)
 	}
 	// If the phone number is passed as a parsed phone number.
 	// `getNumberType({ phone: '88005553535', country: 'RU' }, ...)`.
-	else if (is_object(arg_1) && typeof arg_1.phone === 'string')
+	else if (is_object(arg_1))
 	{
-		// The `arg_1` must be a valid phone number
-		// as a whole, not just a part of it which gets parsed here.
-		if (is_viable_phone_number(arg_1.phone))
-		{
-			input = arg_1
-		}
-
+		input = arg_1
 		metadata = arg_2
 	}
 	else throw new TypeError('A phone number must either be a string or an object of shape { phone, [country] }.')
