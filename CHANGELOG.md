@@ -29,6 +29,10 @@ const {
 // Maybe rename "extended" to something else.
 -->
 
+<!-- (breaking change)
+`phone` property of phone number object renamed to `nationalNumber`
+-->
+
 1.5.0 / 26.09.2018
 ==================
 
