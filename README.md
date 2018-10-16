@@ -125,6 +125,8 @@ findNumbers(`
 
 ### parseNumber(text, [defaultCountry], [options])
 
+_(previously called `parse()`)_
+
 Attempts to parse a phone number from `text`.
 
 If [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code) is passed then it's gonna be the default country for parsing non-international phone numbers.
@@ -249,6 +251,8 @@ parseNumber('011 61 2 3456 7890', 'US') === { country: 'AU', phone: '234567890' 
 ```
 
 ### formatNumber(number, format, [options])
+
+_(previously called `format()`)_
 
 Formats a `number` into a string according to a `format`.
 
