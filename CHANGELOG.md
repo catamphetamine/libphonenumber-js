@@ -33,6 +33,9 @@ const {
 `phone` property of phone number object renamed to `nationalNumber`
 -->
 
+<!-- (breaking change) `examples.mobile.json` now provides phone numbers in E.164 format (e.g. `+78005553535`). Previously those numbers were in "national (significant) number" form (e.g. `8005553535`).
+-->
+
 1.5.0 / 26.09.2018
 ==================
 
