@@ -3,14 +3,14 @@ export type CountryCode = '001' | 'AC' | 'AD' | 'AE' | 'AF' | 'AG' | 'AI' | 'AL'
 export type NumberFormat = 'NATIONAL' | 'National' | 'INTERNATIONAL' | 'International' | 'E.164' | 'RFC3966' | 'IDD';
 export type NumberType = undefined | 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST' | 'VOIP' | 'PERSONAL_NUMBER' | 'PAGER' | 'UAN' | 'VOICEMAIL' | 'FIXED_LINE_OR_MOBILE' | 'FIXED_LINE' | 'MOBILE';
 
-export interface TelephoneNumber extends String { }
+export interface NationalNumber extends String { }
 export interface Extension extends String { }
 export interface CountryCallingCode extends String { }
 
 export interface ParsedNumber {
   countryCallingCode?: CountryCallingCode,
   country: CountryCode,
-  phone: TelephoneNumber,
+  phone: NationalNumber,
   ext?: Extension,
   possible?: boolean,
   valid?: boolean
@@ -18,7 +18,7 @@ export interface ParsedNumber {
 
 export interface NumberFound {
   country: CountryCode,
-  phone: TelephoneNumber,
+  phone: NationalNumber,
   ext?: Extension,
   startsAt: number,
   endsAt: number
@@ -33,27 +33,27 @@ export function parseNumber(text: string, options?: CountryCode | { defaultCount
 // `format()` and `formatCustom` are deprecated.
 // Use `formatNumber()` and `formatNumberCustom()` instead.
 export function format(parsedNumber: ParsedNumber, format: NumberFormat): string;
-export function format(phone: TelephoneNumber, format: NumberFormat): string;
-export function format(phone: TelephoneNumber, country: CountryCode, format: NumberFormat): string;
+export function format(phone: NationalNumber, format: NumberFormat): string;
+export function format(phone: NationalNumber, country: CountryCode, format: NumberFormat): string;
 
 export function formatNumber(parsedNumber: ParsedNumber, format: NumberFormat): string;
-export function formatNumber(phone: TelephoneNumber, format: NumberFormat): string;
-export function formatNumber(phone: TelephoneNumber, country: CountryCode, format: NumberFormat): string;
+export function formatNumber(phone: NationalNumber, format: NumberFormat): string;
+export function formatNumber(phone: NationalNumber, country: CountryCode, format: NumberFormat): string;
 
 export function getNumberType(parsedNumber: ParsedNumber): NumberType;
-export function getNumberType(phone: TelephoneNumber, country?: CountryCode): NumberType;
+export function getNumberType(phone: NationalNumber, country?: CountryCode): NumberType;
 
 export function isValidNumber(parsedNumber: ParsedNumber): boolean;
-export function isValidNumber(phone: TelephoneNumber, country?: CountryCode): boolean;
+export function isValidNumber(phone: NationalNumber, country?: CountryCode): boolean;
 
-export function isValidNumberForRegion(phone: TelephoneNumber, country: CountryCode): boolean;
-
-// Deprecated.
-export function findPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
-export function searchPhoneNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
+export function isValidNumberForRegion(phone: NationalNumber, country: CountryCode): boolean;
 
 // Deprecated.
-export class PhoneNumberSearch {
+export function findParsedNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
+export function searchParsedNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
+
+// Deprecated.
+export class ParsedNumberSearch {
   constructor(text: string, options?: { defaultCountry?: CountryCode });
   hasNext(): boolean;
   next(): NumberFound;
@@ -62,7 +62,7 @@ export class PhoneNumberSearch {
 export function findNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
 export function searchNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
 
-export class PhoneNumberMatcher {
+export class ParsedNumberMatcher {
   constructor(text: string, options?: { defaultCountry?: CountryCode });
   hasNext(): boolean;
   next(): NumberFound;
@@ -72,9 +72,9 @@ export function getCountryCallingCode(countryCode: CountryCode): CountryCallingC
 
 export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;
 
-export function formatIncompletePhoneNumber(number: string, countryCode?: CountryCode): string;
-export function parseIncompletePhoneNumber(text: string): string;
-export function parsePhoneNumberCharacter(character: string): string;
+export function formatIncompleteParsedNumber(number: string, countryCode?: CountryCode): string;
+export function parseIncompleteParsedNumber(text: string): string;
+export function parseParsedNumberCharacter(character: string): string;
 
 export class AsYouType {
   constructor(defaultCountryCode?: CountryCode);
