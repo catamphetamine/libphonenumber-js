@@ -196,7 +196,7 @@ export function check_number_length_for_type(national_number, type, metadata)
 		{
 			// The rare case has been encountered where no fixedLine data is available
 			// (true for some non-geographical entities), so we just check mobile.
-			return test_number_length_for_type(national_number, 'MOBILE', metadata)
+			return check_number_length_for_type(national_number, 'MOBILE', metadata)
 		}
 
 		const mobile_type = metadata.type('MOBILE')
