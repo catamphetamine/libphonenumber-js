@@ -413,8 +413,8 @@ export default function(input, version, included_countries, extended, included_p
 
 			// Some countries like Saint Helena and Falkland Islands
 			// ('AC', 'FK', 'KI', 'NU', 'SH', 'TA', ...)
-			// don't have any phone number formats
-			// and phone numbers are formatted as a block in those countries.
+			// don't have any phone number formats defined
+			// and phone numbers are not formatted in those countries.
 			if (!country.formats)
 			{
 				country.formats = []
