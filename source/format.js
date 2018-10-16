@@ -27,12 +27,12 @@ const defaultOptions =
 // Example use cases:
 //
 // ```js
-// format('8005553535', 'RU', 'International')
-// format('8005553535', 'RU', 'International', metadata)
-// format({ phone: '8005553535', country: 'RU' }, 'International')
-// format({ phone: '8005553535', country: 'RU' }, 'International', metadata)
-// format('+78005553535', 'National')
-// format('+78005553535', 'National', metadata)
+// format('8005553535', 'RU', 'INTERNATIONAL')
+// format('8005553535', 'RU', 'INTERNATIONAL', metadata)
+// format({ phone: '8005553535', country: 'RU' }, 'INTERNATIONAL')
+// format({ phone: '8005553535', country: 'RU' }, 'INTERNATIONAL', metadata)
+// format('+78005553535', 'NATIONAL')
+// format('+78005553535', 'NATIONAL', metadata)
 // ```
 //
 export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
@@ -75,11 +75,11 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 
 	switch (format_type)
 	{
-		case 'International':
+		case 'INTERNATIONAL':
 			if (!number) {
 				return `+${metadata.countryCallingCode()}`
 			}
-			number = format_national_number(number, 'International', false, metadata)
+			number = format_national_number(number, 'INTERNATIONAL', false, metadata)
 			number = `+${metadata.countryCallingCode()} ${number}`
 			return add_extension(number, input.ext, metadata, options.formatExtension)
 
@@ -109,17 +109,17 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 				if (formattedForSameCountryCallingCode) {
 					number = formattedForSameCountryCallingCode
 				} else {
-					number = `${IDDPrefix} ${metadata.countryCallingCode()} ${format_national_number(number, 'International', false, metadata)}`
+					number = `${IDDPrefix} ${metadata.countryCallingCode()} ${format_national_number(number, 'INTERNATIONAL', false, metadata)}`
 				}
 				return add_extension(number, input.ext, metadata, options.formatExtension)
 			}
 			return `${IDDPrefix}${metadata.countryCallingCode()}${number}`
 
-		case 'National':
+		case 'NATIONAL':
 			if (!number) {
 				return ''
 			}
-			number = format_national_number(number, 'National', true, metadata)
+			number = format_national_number(number, 'NATIONAL', true, metadata)
 			return add_extension(number, input.ext, metadata, options.formatExtension)
 	}
 }
@@ -177,7 +177,7 @@ function format_national_number(number, format_as, enforce_national_prefix, meta
 		return number
 	}
 
-	return format_national_number_using_format(number, format, format_as === 'International', enforce_national_prefix, metadata)
+	return format_national_number_using_format(number, format, format_as === 'INTERNATIONAL', enforce_national_prefix, metadata)
 }
 
 export function choose_format_for_number(available_formats, national_number)
@@ -229,7 +229,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 	if (typeof arg_1 === 'string')
 	{
 		// If country code is supplied.
-		// `format('8005553535', 'RU', 'National', [options], metadata)`.
+		// `format('8005553535', 'RU', 'NATIONAL', [options], metadata)`.
 		if (typeof arg_3 === 'string')
 		{
 			// Will be `parse()`d later in code
@@ -252,7 +252,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 			}
 		}
 		// Just an international phone number is supplied
-		// `format('+78005553535', 'National', [options], metadata)`.
+		// `format('+78005553535', 'NATIONAL', [options], metadata)`.
 		else
 		{
 			// Will be `parse()`d later in code
@@ -280,7 +280,7 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 		}
 	}
 	// If the phone number is passed as a parsed number object.
-	// `format({ phone: '8005553535', country: 'RU' }, 'National', [options], metadata)`.
+	// `format({ phone: '8005553535', country: 'RU' }, 'NATIONAL', [options], metadata)`.
 	else if (is_object(arg_1) && typeof arg_1.phone === 'string')
 	{
 		input       = arg_1
@@ -298,12 +298,18 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 	}
 	else throw new TypeError('A phone number must either be a string or an object of shape { phone, [country] }.')
 
+	if (format_type === 'International') {
+		format_type = 'INTERNATIONAL'
+	} else if (format_type === 'National') {
+		format_type = 'NATIONAL'
+	}
+
 	// Validate `format_type`.
 	switch (format_type)
 	{
-		case 'International':
 		case 'E.164':
-		case 'National':
+		case 'INTERNATIONAL':
+		case 'NATIONAL':
 		case 'RFC3966':
 		case 'IDD':
 			break
@@ -343,7 +349,7 @@ export function formatIDDSameCountryCallingCodeNumber(number, toCountryCallingCo
 		// but prefix it with the country calling code.
 		if (toCountryCallingCode === '1')
 		{
-			return toCountryCallingCode + ' ' + format_national_number(number, 'National', false, toCountryMetadata)
+			return toCountryCallingCode + ' ' + format_national_number(number, 'NATIONAL', false, toCountryMetadata)
 		}
 
 		// If regions share a country calling code, the country calling code need
@@ -354,6 +360,6 @@ export function formatIDDSameCountryCallingCodeNumber(number, toCountryCallingCo
 		// this edge case for now and for those cases return the version including
 		// country calling code. Details here:
 		// http://www.petitfute.com/voyage/225-info-pratiques-reunion
-		return format_national_number(number, 'National', false, toCountryMetadata)
+		return format_national_number(number, 'NATIONAL', false, toCountryMetadata)
 	}
 }

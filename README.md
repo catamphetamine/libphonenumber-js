@@ -56,16 +56,16 @@ parseNumber('Phone: 8 (800) 555 35 35.', 'RU')
 ```js
 import { formatNumber } from 'libphonenumber-js'
 
-formatNumber('+12133734253', 'International')
+formatNumber('+12133734253', 'INTERNATIONAL')
 // Outputs: '+1 213 373 4253'
 
-formatNumber('+12133734253', 'National')
+formatNumber('+12133734253', 'NATIONAL')
 // Outputs: '(213) 373-4253'
 
-formatNumber({ country: 'US', phone: '2133734253' }, 'International')
+formatNumber({ country: 'US', phone: '2133734253' }, 'INTERNATIONAL')
 // Outputs: '+1 213 373 4253'
 
-formatNumber({ country: 'US', phone: '2133734253' }, 'National')
+formatNumber({ country: 'US', phone: '2133734253' }, 'NATIONAL')
 // Outputs: '(213) 373-4253'
 ```
 
@@ -257,8 +257,8 @@ _(previously called `format()`)_
 Formats a `number` into a string according to a `format`.
 
 Available `format`s:
-  * `National` — e.g. `(213) 373-4253`
-  * `International` — e.g. `+1 213 373 4253`
+  * `NATIONAL` — e.g. `(213) 373-4253`
+  * `INTERNATIONAL` — e.g. `+1 213 373 4253`
   * [`E.164`](https://en.wikipedia.org/wiki/E.164) — e.g. `+12133734253`
   * [`RFC3966`](https://www.ietf.org/rfc/rfc3966.txt) (the phone number URI) — e.g. `tel:+12133734253;ext=123`
   * `IDD` — ["Out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) format, e.g. `01178005553535` for `+7 800 555 35 35` being called out of `options.fromCountry === US`. If no `options.fromCountry` was passed or if there's no default IDD prefix for `options.fromCountry` then returns `undefined`. Pass `options.humanReadable: true` for a human-readable output (same output as Google `liphonenumber`'s `formatOutOfCountryCallingNumber()`).
@@ -267,38 +267,38 @@ The `number` argument must be either a result of `parseNumber()` function call (
 
 ```js
 // Formats E.164 phone numbers.
-formatNumber('+12133734253', 'National') === '(213) 373-4253'
-formatNumber('+12133734253', 'International') === '+1 213 373 4253'
+formatNumber('+12133734253', 'NATIONAL') === '(213) 373-4253'
+formatNumber('+12133734253', 'INTERNATIONAL') === '+1 213 373 4253'
 
 // Formats E.164 phone numbers when
 // they're not "valid" but still "possible".
-formatNumber('+11111111111', 'National') === '(111) 111-1111'
-formatNumber('+11111111111', 'International') === '+1 111 111 1111'
+formatNumber('+11111111111', 'NATIONAL') === '(111) 111-1111'
+formatNumber('+11111111111', 'INTERNATIONAL') === '+1 111 111 1111'
 
 // Formats E.164 phone numbers when
 // they're not "valid" and not "possible" (invalid length).
-formatNumber('+11111', 'National') === '1111'
-formatNumber('+11111', 'International') === '+1 1111'
+formatNumber('+11111', 'NATIONAL') === '1111'
+formatNumber('+11111', 'INTERNATIONAL') === '+1 1111'
 
 // Formats a result of `parseNumber()` function call.
 const parsedNumber = parseNumber('2133734253', 'US')
-formatNumber(parsedNumber, 'National') === '(213) 373-4253'
-formatNumber(parsedNumber, 'International') === '+1 213 373 4253'
+formatNumber(parsedNumber, 'NATIONAL') === '(213) 373-4253'
+formatNumber(parsedNumber, 'INTERNATIONAL') === '+1 213 373 4253'
 
 // Formats a result of `parseNumber()` function call in "extended" mode
 // when it's not a "valid" number but is still a "possible" one.
 const possibleNumber = parseNumber('+11111111111', { extended: true })
-formatNumber(possibleNumber, 'National') === '(111) 111-1111'
-formatNumber(possibleNumber, 'International') === '+1 111 111 1111'
+formatNumber(possibleNumber, 'NATIONAL') === '(111) 111-1111'
+formatNumber(possibleNumber, 'INTERNATIONAL') === '+1 111 111 1111'
 
 // Formats a result of `parseNumber()` function call in "extended" mode
 // when it's neither a "valid" number nor a "possible" one (invalid length).
 const possibleNumber = parseNumber('+11111', { extended: true })
-formatNumber(possibleNumber, 'National') === '1111'
-formatNumber(possibleNumber, 'International') === '+1 1111'
+formatNumber(possibleNumber, 'NATIONAL') === '1111'
+formatNumber(possibleNumber, 'INTERNATIONAL') === '+1 1111'
 
 // Formats phone number extensions.
-formatNumber({ country: 'US', phone: '2133734253', ext: '123' }, 'National') ===  '(213) 373-4253 ext. 123'
+formatNumber({ country: 'US', phone: '2133734253', ext: '123' }, 'NATIONAL') ===  '(213) 373-4253 ext. 123'
 
 // When given an object not having `phone` property
 // (e.g. a empty object `{}`) it will throw.

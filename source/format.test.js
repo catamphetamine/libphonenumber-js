@@ -11,19 +11,19 @@ describe('format', () =>
 {
 	it('should work with the first argument being a E.164 number', function()
 	{
-		format('+11111111111', 'National').should.equal('(111) 111-1111')
-		format('+12133734253', 'National').should.equal('(213) 373-4253')
-		format('+12133734253', 'International').should.equal('+1 213 373 4253')
+		format('+11111111111', 'NATIONAL').should.equal('(111) 111-1111')
+		format('+12133734253', 'NATIONAL').should.equal('(213) 373-4253')
+		format('+12133734253', 'INTERNATIONAL').should.equal('+1 213 373 4253')
 
 		// Formatting invalid E.164 numbers.
-		format('+11111', 'International').should.equal('+1 1111')
-		format('+11111', 'National').should.equal('1111')
+		format('+11111', 'INTERNATIONAL').should.equal('+1 1111')
+		format('+11111', 'NATIONAL').should.equal('1111')
 	})
 
 	it('should work with the first object argument expanded', function()
 	{
-		format('2133734253', 'US', 'National').should.equal('(213) 373-4253')
-		format('2133734253', 'US', 'International').should.equal('+1 213 373 4253')
+		format('2133734253', 'US', 'NATIONAL').should.equal('(213) 373-4253')
+		format('2133734253', 'US', 'INTERNATIONAL').should.equal('+1 213 373 4253')
 	})
 
 	it('should sort out the arguments', function()
@@ -39,31 +39,31 @@ describe('format', () =>
 			country : 'RU',
 			ext     : '123'
 		},
-		'National', options).should.equal('8 (800) 555-35-35 доб. 123')
+		'NATIONAL', options).should.equal('8 (800) 555-35-35 доб. 123')
 
-		format('+78005553535', 'National', options).should.equal('8 (800) 555-35-35')
-		format('8005553535', 'RU', 'National', options).should.equal('8 (800) 555-35-35')
+		format('+78005553535', 'NATIONAL', options).should.equal('8 (800) 555-35-35')
+		format('8005553535', 'RU', 'NATIONAL', options).should.equal('8 (800) 555-35-35')
 	})
 
 	it('should format valid phone numbers', function()
 	{
 		// Switzerland
-		format({ country: 'CH', phone: '446681800' }, 'International').should.equal('+41 44 668 18 00')
+		format({ country: 'CH', phone: '446681800' }, 'INTERNATIONAL').should.equal('+41 44 668 18 00')
 		format({ country: 'CH', phone: '446681800' }, 'E.164').should.equal('+41446681800')
 		format({ country: 'CH', phone: '446681800' }, 'RFC3966').should.equal('tel:+41446681800')
-		format({ country: 'CH', phone: '446681800' }, 'National').should.equal('044 668 18 00')
+		format({ country: 'CH', phone: '446681800' }, 'NATIONAL').should.equal('044 668 18 00')
 
 		// France
-		format({ country: 'FR', phone: '169454850' }, 'National').should.equal('01 69 45 48 50')
+		format({ country: 'FR', phone: '169454850' }, 'NATIONAL').should.equal('01 69 45 48 50')
 
 		// Kazakhstan
-		format('+7 702 211 1111', 'National').should.deep.equal('8 (702) 211 1111')
+		format('+7 702 211 1111', 'NATIONAL').should.deep.equal('8 (702) 211 1111')
 	})
 
 	it('should format national numbers with national prefix even if it\'s optional', function()
 	{
 		// Russia
-		format({ country: 'RU', phone: '9991234567' }, 'National').should.equal('8 (999) 123-45-67')
+		format({ country: 'RU', phone: '9991234567' }, 'NATIONAL').should.equal('8 (999) 123-45-67')
 	})
 
 	it('should work in edge cases', function()
@@ -71,24 +71,24 @@ describe('format', () =>
 		let thrower
 
 		// Explicitly specified country and derived country conflict
-		format('+12133734253', 'RU', 'National').should.equal('+12133734253')
+		format('+12133734253', 'RU', 'NATIONAL').should.equal('+12133734253')
 
 		// No phone number
-		format('', 'RU', 'International').should.equal('+7')
-		format('', 'RU', 'National').should.equal('')
+		format('', 'RU', 'INTERNATIONAL').should.equal('+7')
+		format('', 'RU', 'NATIONAL').should.equal('')
 
 		// No suitable format
-		format('+121337342530', 'US', 'National').should.equal('21337342530')
+		format('+121337342530', 'US', 'NATIONAL').should.equal('21337342530')
 		// No suitable format (leading digits mismatch)
-		format('28199999', 'AD', 'National').should.equal('28199999')
+		format('28199999', 'AD', 'NATIONAL').should.equal('28199999')
 
 		// Numerical `value`
-		thrower = () => format(89150000000, 'RU', 'National')
+		thrower = () => format(89150000000, 'RU', 'NATIONAL')
 		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
 
 		// No metadata for country
-		format('+121337342530', 'USA', 'National').should.equal('21337342530')
-		format('21337342530', 'USA', 'National').should.equal('21337342530')
+		format('+121337342530', 'USA', 'NATIONAL').should.equal('21337342530')
+		format('21337342530', 'USA', 'NATIONAL').should.equal('21337342530')
 
 		// No format type
 		thrower = () => format('+123')
@@ -103,7 +103,7 @@ describe('format', () =>
 		thrower.should.throw('`metadata` argument not passed')
 
 		// No formats
-		format('012345', 'AC', 'National').should.equal('012345')
+		format('012345', 'AC', 'NATIONAL').should.equal('012345')
 
 		// No `fromCountry` for `IDD` format.
 		expect(format('+78005553535', 'IDD')).to.be.undefined
@@ -127,7 +127,7 @@ describe('format', () =>
 			phone: '2133734253',
 			ext: '123'
 		},
-		'National').should.equal('(213) 373-4253 ext. 123')
+		'NATIONAL').should.equal('(213) 373-4253 ext. 123')
 
 		// International
 		format
@@ -136,7 +136,7 @@ describe('format', () =>
 			phone   : '2133734253',
 			ext     : '123'
 		},
-		'International').should.equal('+1 213 373 4253 ext. 123')
+		'INTERNATIONAL').should.equal('+1 213 373 4253 ext. 123')
 
 		// International
 		format
@@ -145,7 +145,7 @@ describe('format', () =>
 			phone   : '2133734253',
 			ext     : '123'
 		},
-		'International').should.equal('+1 213 373 4253 ext. 123')
+		'INTERNATIONAL').should.equal('+1 213 373 4253 ext. 123')
 
 		// E.164
 		format
@@ -172,7 +172,7 @@ describe('format', () =>
 			phone   : '7912345678',
 			ext     : '123'
 		},
-		'International').should.equal('+44 7912 345678 x123')
+		'INTERNATIONAL').should.equal('+44 7912 345678 x123')
 	})
 
 	it('should format possible numbers', function()

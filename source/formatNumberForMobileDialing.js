@@ -109,11 +109,11 @@ export default function(number, from_country, with_formatting, metadata)
 			if (can_be_internationally_dialled(number) &&
 				check_number_length_for_type(number.phone, undefined, metadata) !== 'TOO_SHORT')
 			{
-				formatted_number = format(number, 'International', metadata.metadata)
+				formatted_number = format(number, 'INTERNATIONAL', metadata.metadata)
 			}
 			else
 			{
-				formatted_number = format(number, 'National', metadata.metadata)
+				formatted_number = format(number, 'NATIONAL', metadata.metadata)
 			}
 		}
 		else
@@ -152,11 +152,11 @@ export default function(number, from_country, with_formatting, metadata)
 				can_be_internationally_dialled(number)
 			)
 			{
-				formatted_number = format(number, 'International')
+				formatted_number = format(number, 'INTERNATIONAL')
 			}
 			else
 			{
-				formatted_number = format(number, 'National')
+				formatted_number = format(number, 'NATIONAL')
 			}
 		}
 	}
@@ -166,7 +166,7 @@ export default function(number, from_country, with_formatting, metadata)
 		// so if a number is not a valid regular length phone number, we treat it as
 		// if it cannot be internationally dialled.
 		return with_formatting ?
-			format(number, 'International', metadata.metadata) :
+			format(number, 'INTERNATIONAL', metadata.metadata) :
 			format(number, 'E.164', metadata.metadata)
 	}
 
