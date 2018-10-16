@@ -456,6 +456,22 @@ getNumberType('9160151539', 'RU') === 'MOBILE'
 getNumberType({ phone: '9160151539', country: 'RU' }) === 'MOBILE'
 ```
 
+<details>
+<summary>The list of possible return values</summary>
+* `undefined`
+* `MOBILE`
+* `FIXED_LINE`
+* `FIXED_LINE_OR_MOBILE`
+* `PREMIUM_RATE`
+* `TOLL_FREE`
+* `SHARED_COST`
+* `VOIP`
+* `PERSONAL_NUMBER`
+* `PAGER`
+* `UAN`
+* `VOICEMAIL`
+</details>
+
 ### isValidNumber(number, [defaultCountry])
 
 Checks if a phone number is valid, the validation is more strict than `parseNumber()`.
