@@ -9,6 +9,7 @@ import
 	parse,
 	parseNumber,
 	getNumberType,
+	getExampleNumber,
 	isPossibleNumber,
 	isValidNumber,
 	isValidNumberForRegion,
@@ -54,6 +55,7 @@ import
 from '../index.es6'
 
 import metadata from '../metadata.min.json'
+import examples from '../examples.mobile.json'
 
 describe(`exports`, function()
 {
@@ -68,6 +70,7 @@ describe(`exports`, function()
 		format('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		formatNumber('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
+		getExampleNumber('RU', examples).nationalNumber.should.equal('9123456789')
 		isPossibleNumber('+12133734253', 'US').should.equal(true)
 		isValidNumber('+12133734253', 'US').should.equal(true)
 		isValidNumberForRegion('+12133734253', 'US').should.equal(true)
@@ -128,6 +131,7 @@ describe(`exports`, function()
 		Library.format('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		Library.formatNumber('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		Library.getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
+		Library.getExampleNumber('RU', examples).nationalNumber.should.equal('9123456789')
 		Library.isPossibleNumber('+12133734253', 'US').should.equal(true)
 		Library.isValidNumber('+12133734253', 'US').should.equal(true)
 		Library.isValidNumberForRegion('+12133734253', 'US').should.equal(true)
@@ -173,6 +177,7 @@ describe(`exports`, function()
 		Library.format('2133734253', 'US', 'E.164', metadata).should.equal('+12133734253')
 		Library.formatNumber('2133734253', 'US', 'E.164', metadata).should.equal('+12133734253')
 		Library.getNumberType('2133734253', 'US', metadata).should.equal('FIXED_LINE_OR_MOBILE')
+		Library.getExampleNumber('RU', examples, metadata).nationalNumber.should.equal('9123456789')
 		Library.isPossibleNumber('+12133734253', 'US', metadata).should.equal(true)
 		Library.isValidNumber('+12133734253', 'US', metadata).should.equal(true)
 		Library.isValidNumberForRegion('+12133734253', 'US', metadata).should.equal(true)

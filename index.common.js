@@ -51,6 +51,13 @@ exports.getNumberType = function getNumberType()
 	return custom.getNumberType.apply(this, parameters)
 }
 
+exports.getExampleNumber = function getExampleNumber()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.getExampleNumber.apply(this, parameters)
+}
+
 exports.isPossibleNumber = function isPossibleNumber()
 {
 	var parameters = Array.prototype.slice.call(arguments)

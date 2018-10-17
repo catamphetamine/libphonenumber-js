@@ -779,6 +779,19 @@ I personally wouldn't rely on strict phone number validation too much because it
 
 Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
 
+## getExampleNumber(country, examples)
+
+Returns an instance of [`PhoneNumber`](#phonenumber) class.
+
+```js
+import examples from 'libphonenumber-js/examples.mobile.json'
+import { getExampleNumber } from 'libphonenumber-js'
+
+const phoneNumber = getExampleNumber('RU', examples)
+
+phoneNumber.formatNational() === '8 (912) 345-67-89'
+```
+
 ### getCountryCallingCode(country)
 
 There have been requests for a function returning a [country calling code](#country-calling-code) by [country code](#country-code).
@@ -832,19 +845,6 @@ formatIncompletePhoneNumber('+7800555') === '+7 800 555'
 ## React
 
 There's also a React component utilizing this library — [`react-phone-number-input`](https://github.com/catamphetamine/react-phone-number-input) (or [without country select](https://github.com/catamphetamine/react-phone-number-input#without-country-select)).
-
-## Examples
-
-Example phone numbers are available as `libphonenumber-js/examples.mobile.json`.
-
-```js
-import exampleNumbers from "libphonenumber-js/examples.mobile.json"
-
-exampleNumbers.RU === '9123456789'
-
-formatNumber({ country: 'RU', phone: exampleNumbers.RU }, 'National') === '8 (912) 345-67-89'
-formatNumber({ country: 'RU', phone: exampleNumbers.RU }, 'International') === '+7 912 345 67 89'
-```
 
 ## Bug reporting
 
