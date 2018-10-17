@@ -1,10 +1,10 @@
 import metadata from '../metadata.min.json'
-import parser from './parse'
+import _parse from './parse'
 
 function parse(...parameters)
 {
 	parameters.push(metadata)
-	return parser.apply(this, parameters)
+	return _parse.apply(this, parameters)
 }
 
 describe('parse', () =>
@@ -248,12 +248,15 @@ describe('parse', () =>
 		parse('0445511111111', 'MX').should.deep.equal({ country: 'MX', phone: '15511111111' })
 
 		// No metadata
-		thrower = () => parser('')
+		thrower = () => _parse('')
 		thrower.should.throw('`metadata` argument not passed')
 
 		// Numerical `value`
 		thrower = () => parse(2141111111, 'US')
 		thrower.should.throw('A phone number for parsing must be a string.')
+
+		// Input string too long.
+		parse('8005553535                                                                                                                                                                                                                                                 ', 'RU').should.deep.equal({})
 	})
 
 	it('should parse phone number extensions', function()
@@ -355,5 +358,10 @@ describe('parse', () =>
 			phone   : '234567890',
 			country : 'AU'
 		})
+	})
+
+	it('should work with v2 API', () =>
+	{
+		parse('+99989160151539')
 	})
 })

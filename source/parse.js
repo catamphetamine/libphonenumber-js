@@ -27,6 +27,8 @@ import { is_possible_number } from './isPossibleNumber'
 
 import { parseRFC3966 } from './RFC3966'
 
+import PhoneNumber from './PhoneNumber'
+
 // The minimum length of the national significant number.
 const MIN_LENGTH_FOR_NSN = 2
 
@@ -157,22 +159,28 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 	// Validate `defaultCountry`.
 	if (options.defaultCountry && !metadata.hasCountry(options.defaultCountry))
 	{
+		if (options.v2) {
+			throw new Error('INVALID_COUNTRY')
+		}
 		throw new Error(`Unknown country: ${options.defaultCountry}`)
 	}
 
 	// Parse the phone number.
-	const { number: formatted_phone_number, ext } = parse_input(text)
+	const { number: formatted_phone_number, ext } = parse_input(text, options.v2)
 
 	// If the phone number is not viable then return nothing.
 	if (!formatted_phone_number)
 	{
+		if (options.v2) {
+			throw new Error('NOT_A_NUMBER')
+		}
 		return {}
 	}
 
 	const
 	{
 		country,
-		national_number,
+		national_number : nationalNumber,
 		countryCallingCode,
 		carrierCode
 	}
@@ -185,6 +193,20 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 
 	if (!metadata.selectedCountry())
 	{
+		if (options.v2) {
+			throw new Error('INVALID_COUNTRY')
+		}
+		return {}
+	}
+
+	// Validate national (significant) number length.
+	if (nationalNumber.length < MIN_LENGTH_FOR_NSN) {
+		// Won't throw here because the regexp already demands length > 1.
+		/* istanbul ignore if */
+		if (options.v2) {
+			throw new Error('TOO_SHORT')
+		}
+		// Google's demo just throws an error in this case.
 		return {}
 	}
 
@@ -197,21 +219,43 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 	// https://github.com/googlei18n/libphonenumber/blob/7e1748645552da39c4e1ba731e47969d97bdb539/resources/phonenumber.proto#L36
 	// Such numbers will just be discarded.
 	//
-	if (national_number.length < MIN_LENGTH_FOR_NSN ||
-		national_number.length > MAX_LENGTH_FOR_NSN)
-	{
+	if (nationalNumber.length > MAX_LENGTH_FOR_NSN) {
+		if (options.v2) {
+			throw new Error('TOO_LONG')
+		}
 		// Google's demo just throws an error in this case.
 		return {}
+	}
+
+	if (options.v2)
+	{
+		const phoneNumber = new PhoneNumber(
+			countryCallingCode,
+			nationalNumber,
+			metadata.metadata
+		)
+
+		if (country) {
+			phoneNumber.country = country
+		}
+		if (carrierCode) {
+			phoneNumber.carrierCode = carrierCode
+		}
+		if (ext) {
+			phoneNumber.ext = ext
+		}
+
+		return phoneNumber
 	}
 
 	// Check if national phone number pattern matches the number
 	// National number pattern is different for each country,
 	// even for those ones which are part of the "NANPA" group.
-	const valid = country && matches_entirely(national_number, metadata.nationalNumberPattern()) ? true : false
+	const valid = country && matches_entirely(nationalNumber, metadata.nationalNumberPattern()) ? true : false
 
 	if (!options.extended)
 	{
-		return valid ? result(country, national_number, ext) : {}
+		return valid ? result(country, nationalNumber, ext) : {}
 	}
 
 	return {
@@ -219,8 +263,8 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 		countryCallingCode,
 		carrierCode,
 		valid,
-		possible : valid ? true : (options.extended === true) && metadata.possibleLengths() && is_possible_number(national_number, countryCallingCode !== undefined, metadata),
-		phone    : national_number,
+		possible : valid ? true : (options.extended === true) && metadata.possibleLengths() && is_possible_number(nationalNumber, countryCallingCode !== undefined, metadata),
+		phone : nationalNumber,
 		ext
 	}
 }
@@ -243,10 +287,18 @@ export function is_viable_phone_number(number)
  * @param  {string} text - Input.
  * @return {string}.
  */
-export function extract_formatted_phone_number(text)
+export function extract_formatted_phone_number(text, v2)
 {
-	if (!text || text.length > MAX_INPUT_STRING_LENGTH)
+	if (!text)
 	{
+		return
+	}
+
+	if (text.length > MAX_INPUT_STRING_LENGTH)
+	{
+		if (v2) {
+			throw new Error('TOO_LONG')
+		}
 		return
 	}
 
@@ -493,7 +545,7 @@ function strip_extension(number)
  * @param  {string} text - Input.
  * @return {object} `{ ?number, ?ext }`.
  */
-function parse_input(text)
+function parse_input(text, v2)
 {
 	// Parse RFC 3966 phone number URI.
 	if (text && text.indexOf('tel:') === 0)
@@ -501,7 +553,7 @@ function parse_input(text)
 		return parseRFC3966(text)
 	}
 
-	let number = extract_formatted_phone_number(text)
+	let number = extract_formatted_phone_number(text, v2)
 
 	// If the phone number is not viable, then abort.
 	if (!number || !is_viable_phone_number(number))

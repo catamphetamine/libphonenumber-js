@@ -44,14 +44,49 @@ If you're not using a bundler then use a [standalone version from a CDN](https:/
 
 ### Parse phone number
 
+_(new API)_
+
+```js
+import { parsePhoneNumber } from 'libphonenumber-js'
+
+try {
+  const phoneNumber = parsePhoneNumber('Phone: 8 (800) 555 35 35.', 'RU')
+  phoneNumber.country === 'RU'
+  phoneNumber.number === '+78005553535'
+  phoneNumber.isValid() === true
+  phoneNumber.getType() === 'TOLL_FREE'
+} catch (error) {
+  // Not a phone number, non-existent country, etc.
+}
+```
+
+<details>
+<summary>Legacy API</summary>
+
 ```js
 import { parseNumber } from 'libphonenumber-js'
 
 parseNumber('Phone: 8 (800) 555 35 35.', 'RU')
 // Outputs: { country: 'RU', phone: '8005553535' }
 ```
+</details>
 
 ### Format phone number
+
+_(new API)_
+
+```js
+import { parsePhoneNumber } from 'libphonenumber-js'
+
+const phoneNumber = parsePhoneNumber('+12133734253')
+
+phoneNumber.formatInternational() === '+1 213 373 4253'
+phoneNumber.formatNational() === '(213) 373-4253'
+phoneNumber.getURI() === 'tel:+12133734253'
+```
+
+<details>
+<summary>Legacy API</summary>
 
 ```js
 import { formatNumber } from 'libphonenumber-js'
@@ -68,6 +103,7 @@ formatNumber({ country: 'US', phone: '2133734253' }, 'INTERNATIONAL')
 formatNumber({ country: 'US', phone: '2133734253' }, 'NATIONAL')
 // Outputs: '(213) 373-4253'
 ```
+</details>
 
 ### "As You Type" formatter
 
@@ -82,6 +118,45 @@ new AsYouType('US').input('2133734')
 ```
 
 ### Full-text search
+
+_(new API)_
+
+```js
+import { findNumbers } from 'libphonenumber-js'
+
+findNumbers(`
+  The number is +7 (800) 555-35-35 and
+  not (213) 373-4253 as written
+  in the document.
+`, 'US', {
+  v2: true
+})
+
+// Outputs:
+//
+// [{
+//   number: PhoneNumber {
+//     country: 'RU',
+//     countryCallingCode: '7',
+//     number: '+78005553535',
+//     nationalNumber: '8005553535'
+//   },
+//   startsAt : 14,
+//   endsAt   : 32
+// }, {
+//   number: PhoneNumber {
+//     country: 'US',
+//     countryCallingCode: '1',
+//     number: '+12133734253',
+//     nationalNumber: '2133734253'
+//   },
+//   startsAt : 41,
+//   endsAt   : 55
+// }]
+```
+
+<details>
+<summary>Legacy API</summary>
 
 ```js
 import { findNumbers } from 'libphonenumber-js'
@@ -106,6 +181,7 @@ findNumbers(`
 //   endsAt   : 55
 // }]
 ```
+</details>
 
 ## Definitions
 
@@ -119,22 +195,124 @@ findNumbers(`
 
 ### Country calling code
 
-"Country calling code" are the digits between the `+` and the national (significant) number when the number is written in international format. E.g. for US country calling code is `1` and for France it's `33`.
+"Country calling code" are the digits between the `+` and the national (significant) number when the number is written in international format. E.g. for US country calling code is `1` and for France it's `33`. Several countries can share the same "country calling code", e.g. [NANPA](https://en.wikipedia.org/wiki/North_American_Numbering_Plan) countries like USA and Canada sharing the same `1` country calling code.
 
 ## API
+
+### parsePhoneNumber(text, [defaultCountry])
+
+Parses `text` extracting a phone number from it.
+
+```js
+import { parsePhoneNumber } from 'libphonenumber-js'
+
+try {
+  const phoneNumber = parsePhoneNumber('Call: (213) 373-42-53 ext. 1234.', 'US')
+} catch (error) {
+  // Not a phone number, non-existent country, etc.
+}
+```
+
+Returns an instance of [`PhoneNumber`](#phonenumber) class. Throws in case of an error: no phone number found, non-existent [country calling code](#country-calling-code), invalid default country, etc.
+
+### `PhoneNumber`
+
+`PhoneNumber` class instance has the following properties:
+
+* `number` — The phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format. Example: `"+12133734253"`.
+* `countryCallingCode` — The [country calling code](#country-calling-code). Example: `"1"`.
+* `nationalNumber` — The [national (significant) number](#national-significant-number). Example: `"2133734253"`.
+* `country` — The [country code](#country-code). Will be `undefined` when no `country` could be derived from the phone number. For example, when several countries have the same `countryCallingCode` and the `nationalNumber` doesn't look like it belongs to any of them. Example: `"US"`.
+* `ext` — The [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)), if any. Example: `"1234"`.
+* `carrierCode` — The ["carrier code"](https://www.voip-info.org/carrier-identification-codes/), if any. "Carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number. Example: `"15"`.
+
+`PhoneNumber` class instance provides the following methods:
+
+#### `format(format: String, [options])`
+
+Formats the phone number into a string according to a `format`.
+
+Available `format`s:
+
+  * `NATIONAL` — Example: `"(213) 373-4253"`
+  * `INTERNATIONAL` — Example: `"+1 213 373 4253"`
+  * [`E.164`](https://en.wikipedia.org/wiki/E.164) — Example: `"+12133734253"`
+  * [`RFC3966`](https://www.ietf.org/rfc/rfc3966.txt) (the phone number URI) — Example: `"tel:+12133734253;ext=123"`
+  * `IDD` — ["Out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) format. Example: `"01178005553535"` for `+7 800 555 35 35` being called out of `options.fromCountry === "US"`. If no `options.fromCountry` was passed or if there's no default IDD prefix for `options.fromCountry` then returns `undefined`. Pass `options.humanReadable: true` for a human-readable output (same output as Google `liphonenumber`'s `formatOutOfCountryCallingNumber()`).
+
+Available `options`:
+
+  * `formatExtension(number, extension)` — Formats `number` and `extension` into a string. By default returns `${number} ext. ${extension}` for almost all countries with rare exceptions of some special cases like `${number} x${extension}` for UK.
+
+  * `humanReadable: Boolean` — Is only used for `IDD` formatting.
+
+Examples:
+
+```js
+import { parsePhoneNumber } from 'libphonenumber-js'
+
+const phoneNumber = parsePhoneNumber('+12133734253')
+
+phoneNumber.format("NATIONAL") === '(213) 373-4253'
+phoneNumber.format("INTERNATIONAL") === '+1 213 373 4253'
+phoneNumber.format("RFC3966") === 'tel:+12133734253'
+
+// Aliases
+phoneNumber.formatNational() === phoneNumber.format("NATIONAL")
+phoneNumber.formatInternational() === phoneNumber.format("INTERNATIONAL")
+phoneNumber.getURI() === phoneNumber.format("RFC3966")
+```
+
+#### `isPossible()`
+
+Checks if the phone number is "possible". Only checks the phone number length, doesn't check the number digits against any regular expressions.
+
+#### `isValid()`
+
+Checks if the phone number is "valid". First checks the phone number length and then checks the phone number digits against all available regular expressions. By default the library uses the "minimal" metadata which is only 75 kilobytes in size but also doesn't include most of the validation regular expressions. Some very basic validation is still included for each country though. "Full" metadata (140 kilobytes) can be used (see [Customizing metadata](#customizing-metadata) section of this document).
+
+See also ["Using phone number validation feature"](#using-phone-number-validation-feature) considerations.
+
+#### `getType()`
+
+Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Customizing metadata](#customizing-metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the 140 kilobyte `--extended` library build) therefore they're not included in the bundle by default.
+
+<details>
+<summary>The list of possible return values</summary>
+
+* `undefined`
+* `MOBILE`
+* `FIXED_LINE`
+* `FIXED_LINE_OR_MOBILE`
+* `PREMIUM_RATE`
+* `TOLL_FREE`
+* `SHARED_COST`
+* `VOIP`
+* `PERSONAL_NUMBER`
+* `PAGER`
+* `UAN`
+* `VOICEMAIL`
+</details>
 
 ### parseNumber(text, [defaultCountry], [options])
 
 _(previously called `parse()`)_
 
+_(legacy API)_
+
 Attempts to parse a phone number from `text`.
 
-If [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code) is passed then it's gonna be the default country for parsing non-international phone numbers.
+If [`defaultCountry`](#country-code) is passed then it's gonna be the default country for parsing non-international phone numbers.
 
 Returns `{ country, phone, ext }` object where
- * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
- * `phone` is a [national (significant) number](https://github.com/catamphetamine/libphonenumber-js#national-significant-number).
+ * `country` is a [country code](#country-code).
+ * `phone` is a [national (significant) number](#national-significant-number).
  * `ext` is a [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)).
+
+If the phone number supplied isn't valid then an empty object `{}` is returned.
+
+<details>
+<summary>Examples</summary>
 
 ```js
 // Parses international numbers.
@@ -159,6 +337,9 @@ parseNumber('+1 111 111 1111') === {}
 parseNumber('(111) 111-1111', 'US') === {}
 parseNumber('abcdefg') === {}
 ```
+</details>
+
+####
 
 Available `options`:
 
@@ -166,12 +347,15 @@ Available `options`:
 
  * `extended : boolean` — If set to `true` then `parseNumber()` will attempt to parse even a remotely hypothetical phone number even if it is considered "invalid".
 
+<details>
+<summary><code>{ extended: true }</code> documentation and examples</summary>
+
 The result of "extended" parsing is an object where
 
- * `country` is a [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
- * `phone` is a [national (significant) number](https://github.com/catamphetamine/libphonenumber-js#national-significant-number).
+ * `country` is a [country code](#country-code).
+ * `phone` is a [national (significant) number](#national-significant-number).
  * `ext` is a [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)).
- * `countryCallingCode` is a [country calling code](https://github.com/catamphetamine/libphonenumber-js#country-calling-code).
+ * `countryCallingCode` is a [country calling code](#country-calling-code).
  * [`carrierCode`](https://www.voip-info.org/carrier-identification-codes/)s are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
  * `valid: boolean` — whether it's a "valid" (real) phone number.
  * `possible: boolean` — a phone number is considered "possible" when it fits the phone number length rules for a given country. E.g. for US national (significant) number regexp is `[2-9]\d{9}` and possible national (significant) number length is `10` so a phone number `(111) 111-1111` is not a "valid" number because it doesn't match the US national (significant) number regexp but it is a "possible" number because it's `10` digits long.
@@ -240,6 +424,12 @@ parseNumber('abcdefg', 'US', { extended: true }) === {}
 ```
 
 The "extended" parsing mode is the default behaviour of the original Google's `libphonenumber`: it still returns parsed data even if the phone number being parsed is not considered valid (but is kinda "possible"). I guess this kind of behaviour is better for crawling websites for phone numbers because when mining "big data" it is better to extract all possible info rather than discard some pieces of it prematurely, e.g. when national (significant) number regexp for some country gets outdated which might very well happen because phone numbering plans are changing constantly around the world. Maybe after all it would make sense to make the "extended" parsing mode the default one in the next major version. I guess it would.
+</details>
+
+####
+
+<details>
+<summary>Also parses IDD-prefixed phone numbers</summary>
 
 Sometimes users icorrectly input phone numbers in ["out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) (IDD-prefixed) format instead of the proper international phone number format (the "+" notation). In such cases `parseNumber()` will attempt to parse such IDD-prefixed numbers if "default country" is provided:
 
@@ -249,21 +439,22 @@ parseNumber('+61 2 3456 7890') === { country: 'AU', phone: '234567890' }
 // IDD-prefixed format.
 parseNumber('011 61 2 3456 7890', 'US') === { country: 'AU', phone: '234567890' }
 ```
+</details>
 
 ### formatNumber(number, format, [options])
 
 _(previously called `format()`)_
 
+_(legacy API)_
+
 Formats a `number` into a string according to a `format`.
 
-Available `format`s:
-  * `NATIONAL` — e.g. `(213) 373-4253`
-  * `INTERNATIONAL` — e.g. `+1 213 373 4253`
-  * [`E.164`](https://en.wikipedia.org/wiki/E.164) — e.g. `+12133734253`
-  * [`RFC3966`](https://www.ietf.org/rfc/rfc3966.txt) (the phone number URI) — e.g. `tel:+12133734253;ext=123`
-  * `IDD` — ["Out-of-country" dialing](https://en.wikipedia.org/wiki/International_direct_dialing) format, e.g. `01178005553535` for `+7 800 555 35 35` being called out of `options.fromCountry === US`. If no `options.fromCountry` was passed or if there's no default IDD prefix for `options.fromCountry` then returns `undefined`. Pass `options.humanReadable: true` for a human-readable output (same output as Google `liphonenumber`'s `formatOutOfCountryCallingNumber()`).
+Available `format`s and `options` are the same as for [`PhoneNumber.format(format)`](#formatformat-string-options).
 
 The `number` argument must be either a result of `parseNumber()` function call (to strip national prefix) or an E.164 phone number string (e.g. `+12133734253`).
+
+<details>
+<summary>Examples</summary>
 
 ```js
 // Formats E.164 phone numbers.
@@ -304,21 +495,11 @@ formatNumber({ country: 'US', phone: '2133734253', ext: '123' }, 'NATIONAL') ===
 // (e.g. a empty object `{}`) it will throw.
 formatNumber({}) throws Error
 ```
-
-Available `options`:
-
-```js
-{
-  formatExtension(number, extension) — Formats `number` and `extension` into a string.
-                                       By default returns `${number} ext. ${extension}`
-                                       for almost all countries with rare exceptions of
-                                       some special cases like `${number} x${extension}` for UK.
-}
-```
+</details>
 
 ### `class` AsYouType(defaultCountry)
 
-Creates a formatter for a partially entered phone number. The [`defaultCountry`](https://github.com/catamphetamine/libphonenumber-js#country-code) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance provides two methods:
+Creates a formatter for a partially entered phone number. The [`defaultCountry`](#country-code) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance provides two methods:
 
  * `input(text)` — Takes any text, parses it and appends the digits to the input. Returns the formatted phone number.
  * `reset()` — Resets the input.
@@ -330,7 +511,7 @@ new AsYouType('US').input('2133734') === '(213) 373-4'
 
 The formatter instance also provides the following getters:
 
- * `country` — Phone number [country](https://github.com/catamphetamine/libphonenumber-js#country-code).
+ * `country` — Phone number [country](#country-code).
  * `getNationalNumber()` — Returns the national (significant) number part of the phone number.
  * `getTemplate()` — Returns the template used to format the output (or `undefined`). Digits (and the `+` sign, if present) are denoted by `x`-es.
 
@@ -372,6 +553,47 @@ Google's "As You Type" formatter does not support entering phone number extensio
 
 Searches for phone numbers in a given text.
 
+New API returns phone numbers as instances of [`PhoneNumber`](#phonenumber) class. Legacy API returns phone numbers as objects having shape `{ country, phone }`.
+
+New API example:
+
+```js
+import { findNumbers } from 'libphonenumber-js'
+
+findNumbers(`
+  The number is +7 (800) 555-35-35 and
+  not (213) 373-4253 as written
+  in the document.
+`, 'US', {
+  v2: true
+})
+
+// Outputs:
+//
+// [{
+//   number: PhoneNumber {
+//     country: 'RU',
+//     countryCallingCode: '7',
+//     number: '+78005553535',
+//     nationalNumber: '8005553535'
+//   },
+//   startsAt : 14,
+//   endsAt   : 32
+// }, {
+//   number: PhoneNumber {
+//     country: 'US',
+//     countryCallingCode: '1',
+//     number: '+12133734253',
+//     nationalNumber: '2133734253'
+//   },
+//   startsAt : 41,
+//   endsAt   : 55
+// }]
+```
+
+<details>
+<summary>Legacy API example</summary>
+
 ```js
 import { findNumbers } from 'libphonenumber-js'
 
@@ -396,8 +618,14 @@ findNumbers(`
 //   endsAt   : 55
 // }]
 ```
+</details>
+
+####
 
 By default it processes the whole text and then outputs the phone numbers found. If the text is very big (say, a hundred thousand characters) then it might freeze the user interface for a couple of seconds. To avoid such lags one can employ iterators to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame`).
+
+<details>
+<summary>Asynchronous search example</summary>
 
 ES6 iterator:
 
@@ -445,43 +673,40 @@ const iteration = () => {
 // Run the search.
 iteration()
 ```
+</details>
+
+####
 
 Although Google's javascript port doesn't have the `findNumbers()` functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness. The `findNumbers()` function provided is a port of Google's `PhoneNumberMatcher.java` into javascript.
 
 ### getNumberType(number, [defaultCountry])
 
-Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Metadata](#metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the `--extended` library build) therefore they're not included in the bundle by default.
+_(legacy API)_
+
+See the description for [`PhoneNumber.getType()`](#gettype).
 
 The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string (phone number digits only) possibly accompanied with the second `defaultCountry` argument.
+
+<details>
+<summary>Examples</summary>
 
 ```js
 getNumberType('+79160151539') === 'MOBILE'
 getNumberType('9160151539', 'RU') === 'MOBILE'
 getNumberType({ phone: '9160151539', country: 'RU' }) === 'MOBILE'
 ```
-
-<details>
-<summary>The list of possible return values</summary>
-
-* `undefined`
-* `MOBILE`
-* `FIXED_LINE`
-* `FIXED_LINE_OR_MOBILE`
-* `PREMIUM_RATE`
-* `TOLL_FREE`
-* `SHARED_COST`
-* `VOIP`
-* `PERSONAL_NUMBER`
-* `PAGER`
-* `UAN`
-* `VOICEMAIL`
 </details>
 
 ### isValidNumber(number, [defaultCountry])
 
+_(legacy API)_
+
 Checks if a phone number is valid, the validation is more strict than `parseNumber()`.
 
 The `number` argument can be either a result of the `parseNumber()` function call — `{ country, phone }` — or a string (phone number digits only) possibly accompanied with the second `defaultCountry` argument.
+
+<details>
+<summary>Examples</summary>
 
 ```js
 isValidNumber('+12133734253') === true
@@ -492,12 +717,24 @@ isValidNumber('21337', 'US') === false
 
 isValidNumber({ phone: '2133734253', country: 'US' }) === true
 ```
+</details>
 
-The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see [Metadata](#metadata) section of this document) then `isValidNumber()` is gonna use those precise regular expressions for extensive validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
+####
+
+<details>
+<summary>The difference between using <code>parseNumber()</code> and <code>isValidNumber()</code></summary>
+
+The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see [Customizing metadata](#customizing-metadata) section of this document) then `isValidNumber()` is gonna use those precise regular expressions for extensive validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
 
 This is how it is implemented in the original Google's [`libphonenumber`](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-): `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone numbers precisely (provided the precise regular expressions are included in metadata).
 
 The precise regular expressions aren't included in the default metadata because that would cause the default metadata to grow twice in its size: the complete ("full") metadata size is about 145 kilobytes while the reduced ("default") metadata size is about 77 kilobytes. Hence in the default configuration `isValidNumber()` performs absolutely the same "lite" validation as `parseNumber()`. For enabling extensive phone number validation the simplest way is to import functions from `libphonenumber-js/custom` module and supply them with `libphonenumber-js/metadata.full.json`. For generating custom metadata see the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
+</details>
+
+####
+
+<details>
+<summary><code>isValidNumberForRegion()</code></summary>
 
 The optional `defaultCountry` argument is the _default_ country, i.e. it does not restrict to just that country, e.g. in those cases where several countries share the same phone numbering rules (NANPA, Britain, etc). For example, even though the number `07624 369230` belongs to the Isle of Man ("IM" country code) calling `isValidNumber('07624369230', 'GB')` still returns `true` because the country is not restricted to `GB`, it's just that `GB` is the default one for the phone numbering rules. For restricting the country see `isValidNumberForRegion()` though restricting a country [might not be a good idea](https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-use-isvalidnumberforregion).
 
@@ -512,6 +749,7 @@ isValidNumber('07624369230', 'IM') === true
 isValidNumberForRegion('07624369230', 'GB') === false
 isValidNumberForRegion('07624369230', 'IM') === true
 ```
+</details>
 
 #### Using phone number validation feature
 
@@ -531,7 +769,7 @@ Phone number validation rules are [constantly changing](https://github.com/googl
 
 ### getCountryCallingCode(country)
 
-There have been requests for a function returning a [country calling code](https://github.com/catamphetamine/libphonenumber-js#country-calling-code) by [country code](https://github.com/catamphetamine/libphonenumber-js#country-code).
+There have been requests for a function returning a [country calling code](#country-calling-code) by [country code](#country-code).
 
 ```js
 getCountryCallingCode('RU') === '7'
@@ -665,13 +903,16 @@ Alternatively, a developer may wish to update metadata urgently, without waiting
 
 ## Customizing metadata
 
-This library comes prepackaged with three flavours of metadata
+This library comes prepackaged with three flavours of [metadata](#metadata):
 
-* `metadata.full.json` — contains everything, including all regular expressions for precise phone number validation and getting phone number type, but weighs `145 kilobytes`.
-* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type, weighs `80 kilobytes`.
+* `metadata.full.json` — contains everything, including all regular expressions for precise phone number validation and getting phone number type, but weighs `140 kilobytes`.
+* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type, weighs `75 kilobytes`.
 * `metadata.mobile.json` — contains regular expressions for precise **mobile** phone number validation, weighs `105 kilobytes`.
 
 Furthermore, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 kilobytes (even when including all regular expressions for precise phone number validation and getting phone number type), then he can generate such custom metadata and pass it as an extra argument to this library's functions.
+
+<details>
+<summary>See generate custom metadata instructions.</summary>
 
 First, add metadata generation script to **your project's** `package.json`
 
@@ -691,8 +932,12 @@ The arguments are
 * `--countries` argument is a comma-separated list of the countries included (if `--countries` is omitted then all countries are included).
 * `--extended` argument may be passed to include all regular expressions for precise phone number validation and getting phone number type, which increases the precision of phone number validation but at the same time it will enlarge the resulting metadata size approximately twice.
 * `--types ...` argument may be passed instead of `--extended` to only include the precise phone number type regular expressions for a specific set of phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [The complete list of phone number types](https://github.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18).
+</details>
 
-Then use the generated `metadata.min.json` with the exported "custom" functions.
+####
+
+<details>
+<summary>Then use the generated <code>metadata.min.json</code> with the exported "custom" functions.</summary>
 
 In ES6 that would be
 
@@ -774,6 +1019,7 @@ exports.AsYouType = function AsYouType(country) {
 exports.AsYouType.prototype = Object.create(custom.AsYouType.prototype, {})
 exports.AsYouType.prototype.constructor = exports.AsYouType
 ```
+</details>
 
 Metadata should be re-generated each time the project is being deployed because Google constantly updates their metadata.
 

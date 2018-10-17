@@ -1,5 +1,7 @@
 import metadata from './metadata.min.json'
 
+import parsePhoneNumberCustom from './es6/parsePhoneNumber'
+
 import parseNumberCustom from './es6/parse'
 import formatNumberCustom from './es6/format'
 import getNumberTypeCustom from './es6/getNumberType'
@@ -22,6 +24,13 @@ import { getExtPrefix as getExtPrefixCustom } from './es6/metadata'
 import { parseRFC3966 as parseRFC3966Custom, formatRFC3966 as formatRFC3966Custom } from './es6/RFC3966'
 import formatIncompletePhoneNumberCustom from './es6/formatIncompletePhoneNumber'
 export { default as parseIncompletePhoneNumber, parsePhoneNumberCharacter } from './es6/parseIncompletePhoneNumber'
+
+export function parsePhoneNumber()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return parsePhoneNumberCustom.apply(this, parameters)
+}
 
 export function parseNumber()
 {

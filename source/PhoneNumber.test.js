@@ -1,0 +1,18 @@
+import metadata from '../metadata.min'
+import PhoneNumber from './PhoneNumber'
+
+describe('PhoneNumber', () => {
+	it('should validate constructor arguments', () => {
+		expect(() => new PhoneNumber()).to.throw('`countryCallingCode` not passed')
+		expect(() => new PhoneNumber('7')).to.throw('`nationalNumber` not passed')
+	})
+
+	it('should format number with options', () => {
+		const phoneNumber = new PhoneNumber('7', '8005553535', metadata)
+		phoneNumber.ext = '123'
+		phoneNumber.format('NATIONAL', {
+			formatExtension: (number, extension) => `${number} доб. ${extension}`
+		})
+		.should.equal('8 (800) 555-35-35 доб. 123')
+	})
+})

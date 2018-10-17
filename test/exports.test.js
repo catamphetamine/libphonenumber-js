@@ -1,5 +1,7 @@
 import
 {
+	parsePhoneNumber,
+
 	// Deprecated: `format()` was renamed to `formatNumber()`.
 	format,
 	formatNumber,
@@ -57,6 +59,8 @@ describe(`exports`, function()
 {
 	it(`should export ES6`, function()
 	{
+		parsePhoneNumber('+12133734253').nationalNumber.should.equal('2133734253')
+
 		// Deprecated: `parse()` was renamed to `parseNumber()`.
 		parse('+12133734253').should.deep.equal({ country: 'US', phone: '2133734253' })
 		parseNumber('+12133734253').should.deep.equal({ country: 'US', phone: '2133734253' })
@@ -115,6 +119,8 @@ describe(`exports`, function()
 	{
 		const Library = require('../index.common')
 
+		Library.parsePhoneNumber('+12133734253').nationalNumber.should.equal('2133734253')
+
 		// Deprecated: `parse()` was renamed to `parseNumber()`.
 		Library.parse('+12133734253').should.deep.equal({ country: 'US', phone: '2133734253' })
 		Library.parseNumber('+12133734253').should.deep.equal({ country: 'US', phone: '2133734253' })
@@ -157,6 +163,8 @@ describe(`exports`, function()
 	it(`should export CommonJS custom functions`, function()
 	{
 		const Library = require('../custom')
+
+		Library.parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
 		// Deprecated: `parse()` was renamed to `parseNumber()`.
 		Library.parse('+12133734253', metadata).should.deep.equal({ country: 'US', phone: '2133734253' })
