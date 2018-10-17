@@ -1,5 +1,5 @@
 import { stripIDDPrefix } from './IDD'
-import Metadata from './Metadata'
+import Metadata from './metadata'
 
 import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
 
