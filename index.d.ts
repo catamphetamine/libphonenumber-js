@@ -10,11 +10,11 @@ export interface CountryCallingCode extends String { }
 export class PhoneNumber {
   constructor(countryCallingCode: CountryCallingCode | country: CountryCode, nationalNumber: NationalNumber, metadata: object);
   countryCallingCode: CountryCallingCode,
-  country: CountryCode,
+  country?: CountryCode,
   nationalNumber: NationalNumber,
   number: string,
-  carrierCode: string,
-  ext: Extension,
+  carrierCode?: string,
+  ext?: Extension,
   isPossible(): boolean;
   isValid(): boolean;
   getType(): NumberType;
