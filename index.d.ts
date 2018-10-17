@@ -34,9 +34,10 @@ export interface ParsedNumber {
 }
 
 export interface NumberFound {
-  country: CountryCode,
-  phone: NationalNumber,
+  country?: CountryCode,
+  phone?: NationalNumber,
   ext?: Extension,
+  number?: PhoneNumber,
   startsAt: number,
   endsAt: number
 }

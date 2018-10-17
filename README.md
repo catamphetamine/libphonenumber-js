@@ -125,9 +125,9 @@ _(new API)_
 import { findNumbers } from 'libphonenumber-js'
 
 findNumbers(`
-  The number is +7 (800) 555-35-35 and
-  not (213) 373-4253 as written
-  in the document.
+  The number is +7 (800) 555-35-35
+  and not (213) 373-4253 ext. 1234
+  as it's written in the document.
 `, 'US', {
   v2: true
 })
@@ -148,10 +148,11 @@ findNumbers(`
 //     country: 'US',
 //     countryCallingCode: '1',
 //     number: '+12133734253',
-//     nationalNumber: '2133734253'
+//     nationalNumber: '2133734253',
+//     ext: '1234'
 //   },
 //   startsAt : 41,
-//   endsAt   : 55
+//   endsAt   : 65
 // }]
 ```
 
@@ -162,9 +163,9 @@ findNumbers(`
 import { findNumbers } from 'libphonenumber-js'
 
 findNumbers(`
-  The number is +7 (800) 555-35-35 and
-  not (213) 373-4253 as written
-  in the document.
+  The number is +7 (800) 555-35-35
+  and not (213) 373-4253 ext. 1234
+  as it's written in the document.
 `, 'US')
 
 // Outputs:
@@ -177,8 +178,9 @@ findNumbers(`
 // }, {
 //   phone    : '2133734253',
 //   country  : 'US',
+//   ext      : '1234',
 //   startsAt : 41,
-//   endsAt   : 55
+//   endsAt   : 65
 // }]
 ```
 </details>
@@ -569,9 +571,9 @@ New API example:
 import { findNumbers } from 'libphonenumber-js'
 
 findNumbers(`
-  The number is +7 (800) 555-35-35 and
-  not (213) 373-4253 as written
-  in the document.
+  The number is +7 (800) 555-35-35
+  and not (213) 373-4253 ext. 1234
+  as it's written in the document.
 `, 'US', {
   v2: true
 })
@@ -592,10 +594,11 @@ findNumbers(`
 //     country: 'US',
 //     countryCallingCode: '1',
 //     number: '+12133734253',
-//     nationalNumber: '2133734253'
+//     nationalNumber: '2133734253',
+//     ext: '1234'
 //   },
 //   startsAt : 41,
-//   endsAt   : 55
+//   endsAt   : 65
 // }]
 ```
 
@@ -606,9 +609,9 @@ findNumbers(`
 import { findNumbers } from 'libphonenumber-js'
 
 findNumbers(`
-  The number is +7 (800) 555-35-35 and
-  not (213) 373-4253 as written
-  in the document.
+  The number is +7 (800) 555-35-35
+  and not (213) 373-4253 ext. 1234
+  as it's written in the document.
 `, 'US')
 
 // Outputs:
@@ -622,8 +625,9 @@ findNumbers(`
 // {
 //   phone    : '2133734253',
 //   country  : 'US',
+//   ext      : '1234',
 //   startsAt : 41,
-//   endsAt   : 55
+//   endsAt   : 65
 // }]
 ```
 </details>
@@ -642,7 +646,7 @@ import { searchNumbers } from 'libphonenumber-js'
 
 const text = `
   The number is +7 (800) 555-35-35 and
-  not (213) 373-4253 as written
+  not (213) 373-4253 as it's written
   in the document.
 `
 
@@ -662,7 +666,7 @@ import { PhoneNumberMatcher } from 'libphonenumber-js'
 
 const matcher = new PhoneNumberMatcher(`
   The number is +7 (800) 555-35-35 and
-  not (213) 373-4253 as written
+  not (213) 373-4253 as it's written
   in the document.
 `, {
   defaultCountry: 'US'

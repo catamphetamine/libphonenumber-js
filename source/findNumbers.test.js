@@ -98,6 +98,30 @@ describe('findNumbers', () =>
 		}])
 	})
 
+	it('should find numbers (v2)', () =>
+	{
+		const phoneNumbers = findNumbers('The number is +7 (800) 555-35-35 ext. 1234 and not (213) 373-4253 as written in the document.', 'US', { v2: true }, metadata)
+
+		phoneNumbers.length.should.equal(2)
+
+		phoneNumbers[0].startsAt.should.equal(14)
+		phoneNumbers[0].endsAt.should.equal(42)
+
+		phoneNumbers[0].number.number.should.equal('+78005553535')
+		phoneNumbers[0].number.nationalNumber.should.equal('8005553535')
+		phoneNumbers[0].number.country.should.equal('RU')
+		phoneNumbers[0].number.countryCallingCode.should.equal('7')
+		phoneNumbers[0].number.ext.should.equal('1234')
+
+		phoneNumbers[1].startsAt.should.equal(51)
+		phoneNumbers[1].endsAt.should.equal(65)
+
+		phoneNumbers[1].number.number.should.equal('+12133734253')
+		phoneNumbers[1].number.nationalNumber.should.equal('2133734253')
+		phoneNumbers[1].number.country.should.equal('US')
+		phoneNumbers[1].number.countryCallingCode.should.equal('1')
+	})
+
 	it('shouldn\'t find non-valid numbers', function()
 	{
 		// Not a valid phone number for US.

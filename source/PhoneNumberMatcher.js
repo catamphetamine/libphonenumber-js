@@ -4,6 +4,8 @@
  * Date: 08.03.2018.
  */
 
+import PhoneNumber from './PhoneNumber'
+
 import
 {
 	MAX_LENGTH_FOR_NSN,
@@ -228,6 +230,17 @@ export default class PhoneNumberMatcher
 					|| this.extractInnerMatch(candidate, offset, this.text)
 
 				if (match) {
+					if (this.options.v2) {
+						const phoneNumber = new PhoneNumber(match.country, match.phone, this.metadata.metadata)
+						if (match.ext) {
+							phoneNumber.ext = match.ext
+						}
+						return {
+							startsAt: match.startsAt,
+							endsAt: match.endsAt,
+							number: phoneNumber
+						}
+					}
 					return match
 				}
 			}
