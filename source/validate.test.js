@@ -66,6 +66,10 @@ describe('validate', () =>
 		is_valid_number('+499821958a').should.equal(false)
 		is_valid_number('88005553535x', 'RU').should.equal(false)
 
+		// Doesn't have `types` regexps in default metadata.
+		is_valid_number({ country: 'UA', phone: '300000000' }).should.equal(true)
+		is_valid_number({ country: 'UA', phone: '200000000' }).should.equal(false)
+
 		// Numerical `value`
 		thrower = () => is_valid_number(88005553535, 'RU')
 		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')

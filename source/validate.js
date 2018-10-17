@@ -1,5 +1,6 @@
 import parse, { is_viable_phone_number } from './parse'
 import get_number_type, { sort_out_arguments } from './getNumberType'
+import { matches_entirely } from './common'
 
 /**
  * Checks if a given phone number is valid.
@@ -32,7 +33,7 @@ import get_number_type, { sort_out_arguments } from './getNumberType'
  */
 export default function isValidNumber(arg_1, arg_2, arg_3, arg_4)
 {
-	const { input, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
+	const { input, options, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 
 	// This is just to support `isValidNumber({})`
 	// for cases when `parseNumber()` returns `{}`.
@@ -48,10 +49,15 @@ export default function isValidNumber(arg_1, arg_2, arg_3, arg_4)
 
 	metadata.country(input.country)
 
+	// By default, countries only have type regexps when it's required for
+	// distinguishing different countries having the same `countryCallingCode`.
 	if (metadata.hasTypes())
 	{
-		return get_number_type(input, metadata.metadata) !== undefined
+		return get_number_type(input, options, metadata.metadata) !== undefined
 	}
 
-	return true
+	// If there are no type regexps for this country in metadata then use
+	// `nationalNumberPattern` as a "better than nothing" replacement.
+	const national_number = options.v2 ? input.nationalNumber : input.phone
+	return matches_entirely(national_number, metadata.nationalNumberPattern())
 }
