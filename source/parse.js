@@ -545,7 +545,7 @@ function result(country, national_number, ext)
  */
 function parse_phone_number(formatted_phone_number, default_country, metadata)
 {
-	let { countryCallingCode, number } = extractCountryCallingCode(formatted_phone_number, default_country, metadata)
+	let { countryCallingCode, number } = extractCountryCallingCode(formatted_phone_number, default_country, metadata.metadata)
 
 	if (!number) {
 		return { countryCallingCode }

@@ -1,4 +1,5 @@
 import { stripIDDPrefix } from './IDD'
+import Metadata from './Metadata'
 
 import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
 
@@ -108,7 +109,7 @@ export function extractCountryCallingCode(number, country, metadata)
 	{
 		// Convert an "out-of-country" dialing phone number
 		// to a proper international phone number.
-		const numberWithoutIDD = stripIDDPrefix(number, country, metadata.metadata)
+		const numberWithoutIDD = stripIDDPrefix(number, country, metadata)
 
 		// If an IDD prefix was stripped then
 		// convert the number to international one
@@ -125,6 +126,8 @@ export function extractCountryCallingCode(number, country, metadata)
 	{
 		return {}
 	}
+
+	metadata = new Metadata(metadata)
 
 	// The thing with country phone codes
 	// is that they are orthogonal to each other
