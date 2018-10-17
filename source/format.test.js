@@ -70,12 +70,12 @@ describe('format', () =>
 	{
 		let thrower
 
-		// Explicitly specified country and derived country conflict
-		format('+12133734253', 'RU', 'NATIONAL').should.equal('+12133734253')
-
 		// No phone number
-		format('', 'RU', 'INTERNATIONAL').should.equal('+7')
+		format('', 'RU', 'INTERNATIONAL').should.equal('')
 		format('', 'RU', 'NATIONAL').should.equal('')
+
+		format({ country: 'RU', phone: '' }, 'INTERNATIONAL').should.equal('+7')
+		format({ country: 'RU', phone: '' }, 'NATIONAL').should.equal('')
 
 		// No suitable format
 		format('+121337342530', 'US', 'NATIONAL').should.equal('21337342530')
@@ -87,8 +87,8 @@ describe('format', () =>
 		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
 
 		// No metadata for country
-		format('+121337342530', 'USA', 'NATIONAL').should.equal('21337342530')
-		format('21337342530', 'USA', 'NATIONAL').should.equal('21337342530')
+		expect(() => format('+121337342530', 'USA', 'NATIONAL')).to.throw('Unknown country')
+		expect(() => format('21337342530', 'USA', 'NATIONAL')).to.throw('Unknown country')
 
 		// No format type
 		thrower = () => format('+123')
@@ -100,7 +100,7 @@ describe('format', () =>
 
 		// No metadata
 		thrower = () => formatter('123', 'US', 'E.164')
-		thrower.should.throw('`metadata` argument not passed')
+		thrower.should.throw('`metadata`')
 
 		// No formats
 		format('012345', 'AC', 'NATIONAL').should.equal('012345')
@@ -110,6 +110,9 @@ describe('format', () =>
 
 		// `fromCountry` has no default IDD prefix.
 		expect(format('+78005553535', 'IDD', { fromCountry: 'BO' })).to.be.undefined
+
+		// No such country.
+		expect(() => format({ phone: '123', country: 'USA' }, 'NATIONAL')).to.throw('Unknown country')
 	})
 
 	it('should convert local to international style format', function()
@@ -179,6 +182,12 @@ describe('format', () =>
 	{
 		format({ countryCallingCode: '7', phone: '1111111111' }, 'E.164')
 			.should.equal('+71111111111')
+
+		format({ countryCallingCode: '7', phone: '1111111111' }, 'NATIONAL')
+			.should.equal('1111111111')
+
+		format({ countryCallingCode: '7', phone: '1111111111' }, 'INTERNATIONAL')
+			.should.equal('+7 1111111111')
 	})
 
 	it('should format IDD-prefixed number', function()

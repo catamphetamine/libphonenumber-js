@@ -5,11 +5,13 @@
 
 import
 {
-	extractCountryCallingCode,
+	// extractCountryCallingCode,
 	VALID_PUNCTUATION,
 	matches_entirely
 }
 from './common'
+
+import parse from './parse'
 
 import { getIDDPrefix } from './IDD'
 
@@ -46,51 +48,49 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 	}
 	= sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 
-	if (input.country && metadata.hasCountry(input.country))
+	if (input.country)
 	{
+		// Validate `input.country`.
+		if (!metadata.hasCountry(input.country))
+		{
+			throw new Error(`Unknown country: ${input.country}`)
+		}
 		metadata.country(input.country)
 	}
-
-	// `number` is a national (significant) number in this case.
-	let { countryCallingCode, number } = extractCountryCallingCode(input.phone, null, metadata)
-
-	countryCallingCode = countryCallingCode || input.countryCallingCode
-
-	if (countryCallingCode)
+	else if (input.countryCallingCode)
 	{
-		// Check country restriction
-		if (input.country && metadata.selectedCountry() &&
-			countryCallingCode !== metadata.countryCallingCode())
-		{
-			return input.phone
-		}
-
-		metadata.chooseCountryByCountryCallingCode(countryCallingCode)
+		metadata.chooseCountryByCountryCallingCode(input.countryCallingCode)
 	}
+	else return input.phone || ''
 
-	if (!metadata.selectedCountry())
-	{
-		return input.phone
-	}
+	const countryCallingCode = metadata.countryCallingCode()
+
+	const nationalNumber = options.v2 ? input.nationalNumber : input.phone
+
+	// This variable should have been declared inside `case`s
+	// but Babel has a bug and it says "duplicate variable declaration".
+	let number
 
 	switch (format_type)
 	{
 		case 'INTERNATIONAL':
-			if (!number) {
-				return `+${metadata.countryCallingCode()}`
+			// Legacy argument support.
+			// (`{ country: ..., phone: '' }`)
+			if (!nationalNumber) {
+				return `+${countryCallingCode}`
 			}
-			number = format_national_number(number, 'INTERNATIONAL', false, metadata)
-			number = `+${metadata.countryCallingCode()} ${number}`
+			number = format_national_number(nationalNumber, 'INTERNATIONAL', false, metadata)
+			number = `+${countryCallingCode} ${number}`
 			return add_extension(number, input.ext, metadata, options.formatExtension)
 
 		case 'E.164':
 			// `E.164` doesn't define "phone number extensions".
-			return `+${metadata.countryCallingCode()}${input.phone}`
+			return `+${countryCallingCode}${nationalNumber}`
 
 		case 'RFC3966':
 			return formatRFC3966
 			({
-				number : `+${metadata.countryCallingCode()}${input.phone}`,
+				number : `+${countryCallingCode}${nationalNumber}`,
 				ext    : input.ext
 			})
 
@@ -105,21 +105,23 @@ export default function format(arg_1, arg_2, arg_3, arg_4, arg_5)
 			}
 			if (options.humanReadable)
 			{
-				const formattedForSameCountryCallingCode = countryCallingCode && formatIDDSameCountryCallingCodeNumber(number, countryCallingCode, options.fromCountry, metadata)
+				const formattedForSameCountryCallingCode = countryCallingCode && formatIDDSameCountryCallingCodeNumber(nationalNumber, metadata.countryCallingCode(), options.fromCountry, metadata)
 				if (formattedForSameCountryCallingCode) {
 					number = formattedForSameCountryCallingCode
 				} else {
-					number = `${IDDPrefix} ${metadata.countryCallingCode()} ${format_national_number(number, 'INTERNATIONAL', false, metadata)}`
+					number = `${IDDPrefix} ${countryCallingCode} ${format_national_number(nationalNumber, 'INTERNATIONAL', false, metadata)}`
 				}
 				return add_extension(number, input.ext, metadata, options.formatExtension)
 			}
-			return `${IDDPrefix}${metadata.countryCallingCode()}${number}`
+			return `${IDDPrefix}${countryCallingCode}${nationalNumber}`
 
 		case 'NATIONAL':
-			if (!number) {
+			// Legacy argument support.
+			// (`{ country: ..., phone: '' }`)
+			if (!nationalNumber) {
 				return ''
 			}
-			number = format_national_number(number, 'NATIONAL', true, metadata)
+			number = format_national_number(nationalNumber, 'NATIONAL', true, metadata)
 			return add_extension(number, input.ext, metadata, options.formatExtension)
 	}
 }
@@ -232,13 +234,6 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 		// `format('8005553535', 'RU', 'NATIONAL', [options], metadata)`.
 		if (typeof arg_3 === 'string')
 		{
-			// Will be `parse()`d later in code
-			input =
-			{
-				phone   : arg_1,
-				country : arg_2
-			}
-
 			format_type = arg_3
 
 			if (arg_5)
@@ -250,17 +245,13 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 			{
 				metadata = arg_4
 			}
+
+			input = parse(arg_1, { defaultCountry: arg_2, extended: true }, metadata)
 		}
 		// Just an international phone number is supplied
 		// `format('+78005553535', 'NATIONAL', [options], metadata)`.
 		else
 		{
-			// Will be `parse()`d later in code
-			input =
-			{
-				phone : arg_1
-			}
-
 			if (typeof arg_2 !== 'string')
 			{
 				throw new Error('`format` argument not passed to `formatNumber(number, format)`')
@@ -277,11 +268,13 @@ function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 			{
 				metadata = arg_3
 			}
+
+			input = parse(arg_1, { extended: true }, metadata)
 		}
 	}
 	// If the phone number is passed as a parsed number object.
 	// `format({ phone: '8005553535', country: 'RU' }, 'NATIONAL', [options], metadata)`.
-	else if (is_object(arg_1) && typeof arg_1.phone === 'string')
+	else if (is_object(arg_1))
 	{
 		input       = arg_1
 		format_type = arg_2
