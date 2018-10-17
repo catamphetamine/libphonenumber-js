@@ -40,16 +40,24 @@ const {
 
 <!-- (breaking change) parse.js -> parseNumber.js, format.js -> formatNumber.js, validate.js -> isValidNumber.js. -->
 
-<!-- (breaking change metadata format) `country.formats = main_country_for_region.formats` optimized to `country.formats = main_country_for_region_code` (saves 5 kilobytes for default metadata). -->
+<!-- (breaking change) `findNumbers()` now returns an array of `PhoneNumber` objects instead of objects having shape `{ country, phone }`. -->
+
+<!-- Update according to the latest commits to `phonenumberutil.js`. -->
 
 1.6.0 / 16.10.2018
 ==================
 
-  * In `formatNumber()` renamed `National` to `NATIONAL` and `International` to `INTERNATIONAL`. The older variants still work but are considered deprecated.
+  * Added `parsePhoneNumber()` function and `PhoneNumber` class.
+
+  * Added `v2: true` option to `findNumbers()` function.
+
+  * Added `getExampleNumber()` function.
 
   * Added `isPossibleNumber()` function.
 
-  * `examples.mobile.json` is now deprecated, use `examples.json` instead. `examples.json` provides phone numbers in `E.164` format (e.g. `+78005553535`). In `examples.mobile.json` those numbers are in "national (significant) number" form (e.g. `8005553535`).
+  * In `formatNumber()` renamed `National` to `NATIONAL` and `International` to `INTERNATIONAL`. The older variants still work but are considered deprecated.
+
+  * (metadata file internal format breaking change) (doesn't affect users of this library) If anyone was using metadata files from this library bypassing the library functions (i.e. those who parsed `metadata.min.json` file manually) then there's a new internal optimization introduced in this version: previously `formats` were copy-pasted for each country of the same region (e.g. `NANPA`) while now the `formats` are only defined on the "main" country for region and other countries simply read the `formats` from it at runtime. This reduced the default metadata file size by 5 kilobytes.
 
 1.5.0 / 26.09.2018
 ==================
