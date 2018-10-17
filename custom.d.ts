@@ -1,6 +1,9 @@
 // `parse()` and `parseCustom` are deprecated.
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
-import { CountryCallingCode, CountryCode, NumberFormat, NumberFound, NumberType, ParsedNumber, NationalNumber } from 'libphonenumber-js';
+import { CountryCallingCode, CountryCode, NumberFormat, NumberFound, NumberType, ParsedNumber, NationalNumber, PhoneNumber } from 'libphonenumber-js';
+
+export function parsePhoneNumber(text: string, metadata: object): PhoneNumber;
+export function parsePhoneNumber(text: string, defaultCountry: CountryCode, metadata: object): PhoneNumber;
 
 export function parse(text: string, metadata: object): ParsedNumber;
 export function parse(text: string, options: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }, metadata: object): ParsedNumber;

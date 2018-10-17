@@ -7,6 +7,23 @@ export interface NationalNumber extends String { }
 export interface Extension extends String { }
 export interface CountryCallingCode extends String { }
 
+export class PhoneNumber {
+  constructor(countryCallingCode: CountryCallingCode, nationalNumber: NationalNumber, metadata: object);
+  countryCallingCode: CountryCallingCode,
+  country: CountryCode,
+  nationalNumber: NationalNumber,
+  number: string,
+  carrierCode: string,
+  ext: Extension,
+  isPossible(): boolean;
+  isValid(): boolean;
+  getType(): NumberType;
+  format(format: NumberFormat, options?: object): string;
+  formatNational(options?: object): string;
+  formatInternational(options?: object): string;
+  getURI(options?: object): string;
+}
+
 export interface ParsedNumber {
   countryCallingCode?: CountryCallingCode,
   country: CountryCode,
@@ -23,6 +40,8 @@ export interface NumberFound {
   startsAt: number,
   endsAt: number
 }
+
+export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
 
 // `parse()` and `parseCustom` are deprecated.
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
