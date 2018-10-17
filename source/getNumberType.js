@@ -20,7 +20,7 @@ const non_fixed_line_types =
 // Finds out national phone number type (fixed line, mobile, etc)
 export default function get_number_type(arg_1, arg_2, arg_3, arg_4)
 {
-	const { input, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
+	const { input, options, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 
 	// When `parse()` returned `{}`
 	// meaning that the phone number is not a valid one.
@@ -34,20 +34,20 @@ export default function get_number_type(arg_1, arg_2, arg_3, arg_4)
 		throw new Error(`Unknown country: ${input.country}`)
 	}
 
-	const national_number = input.phone
+	const nationalNumber = options.v2 ? input.nationalNumber : input.phone
 	metadata.country(input.country)
 
 	// The following is copy-pasted from the original function:
 	// https://github.com/googlei18n/libphonenumber/blob/3ea547d4fbaa2d0b67588904dfa5d3f2557c27ff/javascript/i18n/phonenumbers/phonenumberutil.js#L2835
 
 	// Is this national number even valid for this country
-	if (!matches_entirely(national_number, metadata.nationalNumberPattern()))
+	if (!matches_entirely(nationalNumber, metadata.nationalNumberPattern()))
 	{
 		return
 	}
 
 	// Is it fixed line number
-	if (is_of_type(national_number, 'FIXED_LINE', metadata))
+	if (is_of_type(nationalNumber, 'FIXED_LINE', metadata))
 	{
 		// Because duplicate regular expressions are removed
 		// to reduce metadata size, if "mobile" pattern is ""
@@ -69,7 +69,7 @@ export default function get_number_type(arg_1, arg_2, arg_3, arg_4)
 		// Check if the number happens to qualify as both fixed line and mobile.
 		// (no such country in the minimal metadata set)
 		/* istanbul ignore if */
-		if (is_of_type(national_number, 'MOBILE', metadata))
+		if (is_of_type(nationalNumber, 'MOBILE', metadata))
 		{
 			return 'FIXED_LINE_OR_MOBILE'
 		}
@@ -79,14 +79,14 @@ export default function get_number_type(arg_1, arg_2, arg_3, arg_4)
 
 	for (const _type of non_fixed_line_types)
 	{
-		if (is_of_type(national_number, _type, metadata))
+		if (is_of_type(nationalNumber, _type, metadata))
 		{
 			return _type
 		}
 	}
 }
 
-export function is_of_type(national_number, type, metadata)
+export function is_of_type(nationalNumber, type, metadata)
 {
 	type = metadata.type(type)
 
@@ -102,12 +102,12 @@ export function is_of_type(national_number, type, metadata)
 	// the general description, which we have
 	// already checked before a specific number type.
 	if (type.possibleLengths() &&
-		type.possibleLengths().indexOf(national_number.length) < 0)
+		type.possibleLengths().indexOf(nationalNumber.length) < 0)
 	{
 		return false
 	}
 
-	return matches_entirely(national_number, type.pattern())
+	return matches_entirely(nationalNumber, type.pattern())
 }
 
 // Sort out arguments
@@ -202,7 +202,7 @@ export function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 }
 
 // Should only be called for the "new" metadata which has "possible lengths".
-export function check_number_length_for_type(national_number, type, metadata)
+export function check_number_length_for_type(nationalNumber, type, metadata)
 {
 	const type_info = metadata.type(type)
 
@@ -224,7 +224,7 @@ export function check_number_length_for_type(national_number, type, metadata)
 		{
 			// The rare case has been encountered where no fixedLine data is available
 			// (true for some non-geographical entities), so we just check mobile.
-			return check_number_length_for_type(national_number, 'MOBILE', metadata)
+			return check_number_length_for_type(nationalNumber, 'MOBILE', metadata)
 		}
 
 		const mobile_type = metadata.type('MOBILE')
@@ -257,12 +257,12 @@ export function check_number_length_for_type(national_number, type, metadata)
 		return 'INVALID_LENGTH'
 	}
 
-	const actual_length = national_number.length
+	const actual_length = nationalNumber.length
 
 	// In `libphonenumber-js` all "local-only" formats are dropped for simplicity.
 	// // This is safe because there is never an overlap beween the possible lengths
 	// // and the local-only lengths; this is checked at build time.
-	// if (local_lengths && local_lengths.indexOf(national_number.length) >= 0)
+	// if (local_lengths && local_lengths.indexOf(nationalNumber.length) >= 0)
 	// {
 	// 	return 'IS_POSSIBLE_LOCAL_ONLY'
 	// }
