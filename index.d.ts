@@ -8,7 +8,7 @@ export interface Extension extends String { }
 export interface CountryCallingCode extends String { }
 
 export class PhoneNumber {
-  constructor(countryCallingCode: CountryCallingCode, nationalNumber: NationalNumber, metadata: object);
+  constructor(countryCallingCode: CountryCallingCode | country: CountryCode, nationalNumber: NationalNumber, metadata: object);
   countryCallingCode: CountryCallingCode,
   country: CountryCode,
   nationalNumber: NationalNumber,

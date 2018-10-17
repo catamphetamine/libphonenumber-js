@@ -217,6 +217,14 @@ Returns an instance of [`PhoneNumber`](#phonenumber) class. Throws in case of an
 
 ### `PhoneNumber`
 
+<!--
+`PhoneNumber` class constructor accepts two arguments: `country`/`countryCallingCode` and `nationalNumber`. Also `metadata`.
+
+```js
+const phoneNumber = new PhoneNumber('RU', '8005553535', metadata)
+```
+-->
+
 `PhoneNumber` class instance has the following properties:
 
 * `number` — The phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format. Example: `"+12133734253"`.

@@ -1,3 +1,4 @@
+import Metadata from './metadata'
 import isPossibleNumber from './isPossibleNumber'
 import isValidNumber from './validate'
 import getNumberType from './getNumberType'
@@ -10,6 +11,14 @@ export default class PhoneNumber {
 		}
 		if (!nationalNumber) {
 			throw new TypeError('`nationalNumber` not passed')
+		}
+		// If country code is passed then derive `countryCallingCode` from it.
+		// Also store the country code as `.country`.
+		if (isCountryCode(countryCallingCode)) {
+			this.country = countryCallingCode
+			const _metadata = new Metadata(metadata)
+			_metadata.country(countryCallingCode)
+			countryCallingCode = _metadata.countryCallingCode()
 		}
 		this.countryCallingCode = countryCallingCode
 		this.nationalNumber = nationalNumber
@@ -45,3 +54,5 @@ export default class PhoneNumber {
 		return this.format('RFC3966', options)
 	}
 }
+
+const isCountryCode = (value) => /^[A-Z]{2}$/.test(value)
