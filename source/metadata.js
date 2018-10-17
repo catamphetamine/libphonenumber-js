@@ -46,6 +46,11 @@ export default class Metadata
 		return this
 	}
 
+	getDefaultCountryMetadataForRegion()
+	{
+		return this.metadata.countries[this.countryCallingCodes()[this.countryCallingCode()][0]]
+	}
+
 	countryCallingCode()
 	{
 		return this.country_metadata[0]
@@ -75,9 +80,17 @@ export default class Metadata
 		return this.country_metadata[this.v2 ? 2 : 3]
 	}
 
+	_getFormats(country_metadata)
+	{
+		return country_metadata[this.v1 ? 2 : this.v2 ? 3 : 4]
+	}
+
+	// For countries of the same region (e.g. NANPA)
+	// formats are all stored in the "main" country for that region.
+	// E.g. "RU" and "KZ", "US" and "CA".
 	formats()
 	{
-		const formats = this.country_metadata[this.v1 ? 2 : this.v2 ? 3 : 4] || []
+		const formats = this._getFormats(this.country_metadata) || this._getFormats(this.getDefaultCountryMetadataForRegion()) || []
 		return formats.map(_ => new Format(_, this))
 	}
 
@@ -86,9 +99,17 @@ export default class Metadata
 		return this.country_metadata[this.v1 ? 3 : this.v2 ? 4 : 5]
 	}
 
+	_getNationalPrefixFormattingRule(country_metadata)
+	{
+		return country_metadata[this.v1 ? 4 : this.v2 ? 5 : 6]
+	}
+
+	// For countries of the same region (e.g. NANPA)
+	// national prefix formatting rule is stored in the "main" country for that region.
+	// E.g. "RU" and "KZ", "US" and "CA".
 	nationalPrefixFormattingRule()
 	{
-		return this.country_metadata[this.v1 ? 4 : this.v2 ? 5 : 6]
+		return this._getNationalPrefixFormattingRule(this.country_metadata) || this._getNationalPrefixFormattingRule(this.getDefaultCountryMetadataForRegion())
 	}
 
 	nationalPrefixForParsing()
@@ -103,9 +124,19 @@ export default class Metadata
 		return this.country_metadata[this.v1 ? 6 : this.v2 ? 7 : 8]
 	}
 
-	nationalPrefixIsOptionalWhenFormatting()
+	_getNationalPrefixIsOptionalWhenFormatting()
 	{
 		return !!this.country_metadata[this.v1 ? 7 : this.v2 ? 8 : 9]
+	}
+
+	// For countries of the same region (e.g. NANPA)
+	// "national prefix is optional when parsing" flag is
+	// stored in the "main" country for that region.
+	// E.g. "RU" and "KZ", "US" and "CA".
+	nationalPrefixIsOptionalWhenFormatting()
+	{
+		return this._getNationalPrefixIsOptionalWhenFormatting(this.country_metadata) ||
+			this._getNationalPrefixIsOptionalWhenFormatting(this.getDefaultCountryMetadataForRegion())
 	}
 
 	leadingDigits()

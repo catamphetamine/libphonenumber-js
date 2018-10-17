@@ -338,7 +338,8 @@ export default function(input, version, included_countries, extended, included_p
 			// }
 
 			// Some countries don't have `availableFormats` specified,
-			// because those formats are inherited from the "main country for region".
+			// because those formats are inherited from the "main country for region":
+			// all non-"main" countries inherit their formats from the "main" country for that region.
 			if (territory.availableFormats)
 			{
 				country.formats = territory.availableFormats[0].numberFormat.map((number_format) =>
@@ -401,23 +402,41 @@ export default function(input, version, included_countries, extended, included_p
 		}
 
 		// Some countries don't have `availableFormats` specified,
-		// because those formats are meant to be copied
-		// from the "main country for region".
+		// because those formats are meant to be copied from the "main country for region":
+		// all non-"main" countries inherit their formats from the "main" country for that region.
+		// If that's the case then `nationalPrefixFormattingRule` and
+		// `nationalPrefixOptionalWhenFormatting` are also copied from the "main" region.
+		// `nationalPrefix` itself though seems to be always present
+		// even if it's the same for the "main" region.
+		// Examples: "RU" and "KZ", "US" and "CA".
 		for (const country_code of Object.keys(countries))
 		{
 			const country = countries[country_code]
 
 			const main_country_for_region_code = country_calling_code_to_countries[country.phone_code][0]
-			const main_country_for_region = countries[main_country_for_region_code]
-			country.formats = main_country_for_region.formats
 
-			// Some countries like Saint Helena and Falkland Islands
-			// ('AC', 'FK', 'KI', 'NU', 'SH', 'TA', ...)
-			// don't have any phone number formats defined
-			// and phone numbers are not formatted in those countries.
-			if (!country.formats)
+			if (main_country_for_region_code === country_code)
 			{
-				country.formats = []
+				// Some countries like Saint Helena and Falkland Islands
+				// ('AC', 'FK', 'KI', 'NU', 'SH', 'TA', ...)
+				// don't have any phone number formats defined
+				// and phone numbers are not formatted in those countries.
+				if (!country.formats)
+				{
+					country.formats = []
+				}
+			}
+			else
+			{
+				if (country.formats) {
+					throw new Error(`Country "${country_code}" is supposed to inherit formats from "${main_country_for_region_code}" but has its own formats defined.`)
+				}
+				if (country.nationalPrefixFormattingRule) {
+					throw new Error(`Country "${country_code}" is supposed to inherit "nationalPrefixFormattingRule" from "${main_country_for_region_code}" but has its own "nationalPrefixFormattingRule" defined.`)
+				}
+				if (country.nationalPrefixIsOptionalWhenFormatting) {
+					throw new Error(`Country "${country_code}" is supposed to inherit "nationalPrefixIsOptionalWhenFormatting" from "${main_country_for_region_code}" but has its own "nationalPrefixIsOptionalWhenFormatting" defined.`)
+				}
 			}
 		}
 

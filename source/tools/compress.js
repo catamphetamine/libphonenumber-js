@@ -18,7 +18,7 @@ export default function compress(input)
 			country.possible_lengths,
 			// country.possible_lengths_local,
 
-			country.formats.map((format) =>
+			country.formats && country.formats.map((format) =>
 			{
 				// When changing this array also change getters in `./metadata.js`
 				const format_array =
