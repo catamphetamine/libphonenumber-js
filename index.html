@@ -181,7 +181,7 @@
 			function PhoneNumber({ children: number }) {
 				const keyValues = [
 					['Number', number.number],
-					['Country', number.country || '-'],
+					['Country', number.country || '—'],
 					['National', number.formatNational()],
 					['International', number.formatInternational()],
 					['URI', number.getURI()],
@@ -218,7 +218,7 @@
 					const parseDigit        = input_format.parseDigit
 
 					let asYouType
-					let parsed_number = '-'
+					let parsed_number
 					let numbers_found = []
 
 					const { country, parse, format, value, findNumbers } = this.state
@@ -318,7 +318,7 @@
 
 								<div className="section"/>
 
-								<KeyValue name="Template" value={asYouType ? asYouType.getTemplate() || '-' : '-'}/>
+								<KeyValue name="Template" value={asYouType ? asYouType.getTemplate() || '—' : '—'}/>
 
 								{asYouType && asYouType.getNumber() &&
 									<PhoneNumber>{asYouType.getNumber()}</PhoneNumber>
