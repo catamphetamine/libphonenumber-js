@@ -203,6 +203,8 @@ export function create_extension_pattern(purpose)
 		CAPTURING_EXTN_DIGITS + '|' +
 		'[ \u00A0\\t,]*' +
 		'(?:e?xt(?:ensi(?:o\u0301?|\u00F3))?n?|\uFF45?\uFF58\uFF54\uFF4E?|' +
+		// "доб."
+		'\u0434\u043E\u0431|' +
 		'[' + single_extension_characters + ']|int|anexo|\uFF49\uFF4E\uFF54)' +
 		'[:\\.\uFF0E]?[ \u00A0\\t,-]*' +
 		CAPTURING_EXTN_DIGITS + '#?|' +

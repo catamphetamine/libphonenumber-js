@@ -277,6 +277,14 @@ describe('parse', () =>
 			ext     : '12345'
 		})
 
+		// "доб."
+		parse('+78005553535 доб. 1234', 'RU').should.deep.equal
+		({
+			country : 'RU',
+			phone   : '8005553535',
+			ext     : '1234'
+		})
+
 		// "#"
 		parse('+12134567890#1234').should.deep.equal
 		({

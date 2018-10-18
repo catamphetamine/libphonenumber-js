@@ -42,7 +42,12 @@ const {
 
 <!-- (breaking change) `findNumbers()` now returns an array of `PhoneNumber` objects instead of objects having shape `{ country, phone }`. -->
 
-<!-- Update according to the latest commits to `phonenumberutil.js`. -->
+<!-- (breaking change) Maybe change metadata from `.json` to `.js` to save size on `,0,` -> `,,`. -->
+
+1.6.2 / 18.10.2018
+==================
+
+  * Support Russian extension character "доб" as a valid one while parsing the numbers.
 
 1.6.1 / 18.10.2018
 ==================
