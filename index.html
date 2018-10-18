@@ -223,17 +223,22 @@
 
 					const { country, parse, format, value, findNumbers } = this.state
 
-					try
-					{
+					try {
 						asYouType = new libphonenumber.AsYouType(country)
 						asYouType.input(value)
-
-						parsed_number = libphonenumber.parsePhoneNumber(parse, country)
-
-						numbers_found = libphonenumber.findNumbers(findNumbers, country, { v2: true })
+					} catch (error) {
+						console.error(error)
 					}
-					catch (error)
-					{
+
+					try {
+						parsed_number = libphonenumber.parsePhoneNumber(parse, country)
+					} catch (error) {
+						console.error(error)
+					}
+
+					try {
+						numbers_found = libphonenumber.findNumbers(findNumbers, country, { v2: true })
+					} catch (error) {
 						console.error(error)
 					}
 
