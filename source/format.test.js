@@ -11,9 +11,11 @@ describe('format', () =>
 {
 	it('should work with the first argument being a E.164 number', function()
 	{
-		format('+11111111111', 'NATIONAL').should.equal('(111) 111-1111')
 		format('+12133734253', 'NATIONAL').should.equal('(213) 373-4253')
 		format('+12133734253', 'INTERNATIONAL').should.equal('+1 213 373 4253')
+
+		// Invalid number.
+		format('+12111111111', 'NATIONAL').should.equal('(211) 111-1111')
 
 		// Formatting invalid E.164 numbers.
 		format('+11111', 'INTERNATIONAL').should.equal('+1 1111')
