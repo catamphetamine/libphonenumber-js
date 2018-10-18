@@ -48,6 +48,7 @@ npm-debug.log
 # # browser builds
 # /bundle/
 /bundle/index.html
+/bundle/legacy.html
 /bundle/input-format.min.js
 /bundle/input-format.min.js.map
 
