@@ -525,7 +525,7 @@ The formatter instance also provides the following getters:
 
 _(new API)_
 
- * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber).
+ * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber) (or `undefined`).
  * `getTemplate()` — Returns the template used to format the output (or `undefined`). Digits (and the `+` sign, if present) are denoted by `x`-es.
 
 ```js

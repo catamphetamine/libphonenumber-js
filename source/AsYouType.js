@@ -934,6 +934,9 @@ export default class AsYouType
 
 	getNumber()
 	{
+		if (!this.countryCallingCode || !this.national_number) {
+			return undefined
+		}
 		const phoneNumber = new PhoneNumber(this.country || this.countryCallingCode, this.national_number, this.metadata.metadata)
 		if (this.carrierCode) {
 			phoneNumber.carrierCode = this.carrierCode
