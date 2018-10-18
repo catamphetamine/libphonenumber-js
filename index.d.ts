@@ -106,6 +106,7 @@ export class AsYouType {
   input(text: string): string;
   reset(): void;
   country: CountryCode;
+  getNumber(): PhoneNumber;
   getNationalNumber(): string;
   template: string;
 }
