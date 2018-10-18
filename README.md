@@ -234,9 +234,9 @@ const phoneNumber = new PhoneNumber('RU', '8005553535', metadata)
 * `number` — The phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format. Example: `"+12133734253"`.
 * `countryCallingCode` — The [country calling code](#country-calling-code). Example: `"1"`.
 * `nationalNumber` — The [national (significant) number](#national-significant-number). Example: `"2133734253"`.
-* `country` — The [country code](#country-code). Will be `undefined` when no `country` could be derived from the phone number. For example, when several countries have the same `countryCallingCode` and the `nationalNumber` doesn't look like it belongs to any of them. Example: `"US"`.
+* `country` — The [country code](#country-code). Example: `"US"`. Will be `undefined` when no `country` could be derived from the phone number. For example, when several countries have the same `countryCallingCode` and the `nationalNumber` doesn't look like it belongs to any of them.
 * `ext` — The [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)), if any. Example: `"1234"`.
-* `carrierCode` — The ["carrier code"](https://www.voip-info.org/carrier-identification-codes/), if any. "Carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number. Example: `"15"`.
+* `carrierCode` — The ["carrier code"](https://www.voip-info.org/carrier-identification-codes/), if any. Example: `"15"`. "Carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
 
 `PhoneNumber` class instance provides the following methods:
 
@@ -523,9 +523,48 @@ new AsYouType('US').input('2133734') === '(213) 373-4'
 
 The formatter instance also provides the following getters:
 
- * `country` — Phone number [country](#country-code).
- * `getNationalNumber()` — Returns the national (significant) number part of the phone number.
+_(new API)_
+
+ * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber).
  * `getTemplate()` — Returns the template used to format the output (or `undefined`). Digits (and the `+` sign, if present) are denoted by `x`-es.
+
+```js
+// National phone number input example.
+
+const asYouType = new AsYouType('US')
+
+asYouType.input('2') === '2'
+asYouType.getNumber().number === '+12'
+asYouType.getTemplate() === 'x'
+
+asYouType.input('1') === '21'
+asYouType.getNumber().number === '+121'
+asYouType.getTemplate() === 'xx'
+
+asYouType.input('3') === '(213)'
+asYouType.getNumber().number === '+1213'
+asYouType.getTemplate() === '(xxx)'
+
+asYouType.input('3734253') === '(213) 373-4253'
+asYouType.getNumber().number === '+12133734253'
+asYouType.getTemplate() === '(xxx) xxx-xxxx'
+
+// International phone number input example.
+
+const asYouType = new AsYouType()
+asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
+asYouType.getNumber().country === 'US'
+asYouType.getNumber().number === '+12133734253'
+asYouType.getTemplate() === 'xx xxx xxx xxxx'
+```
+
+<details>
+<summary>Legacy API</summary>
+
+The formatter instance also provides the following legacy API getters:
+
+ * `country` — Phone number [country](#country-code). Will return `undefined` if the country couldn't be derived from the number.
+ * `getNationalNumber()` — Returns the national (significant) number part of the phone number.
 
 ```js
 // National phone number input example.
@@ -556,6 +595,9 @@ asYouType.country === 'US'
 asYouType.getNationalNumber() === '2133734253'
 asYouType.getTemplate() === 'xx xxx xxx xxxx'
 ```
+</details>
+
+####
 
 "As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits (and a `+` sign in the start of an international number).
 

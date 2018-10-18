@@ -44,7 +44,12 @@ const {
 
 <!-- Update according to the latest commits to `phonenumberutil.js`. -->
 
-1.6.0 / 16.10.2018
+1.6.1 / 18.10.2018
+==================
+
+  * Added `.getNumber()` method to `AsYouType` formatter instance. Returns a `PhoneNumber`.
+
+1.6.0 / 17.10.2018
 ==================
 
   * Added `parsePhoneNumber()` function and `PhoneNumber` class.

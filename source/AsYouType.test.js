@@ -399,6 +399,47 @@ describe('as you type', () =>
 		new as_you_type().input('+١٢١٢٢٣٢٣٢٣٢').should.equal('+1 212 232 3232')
 	})
 
+	it('should return a PhoneNumber instance', () =>
+	{
+		const formatter = new as_you_type('BR')
+		formatter.input('+1-213-373-4253')
+
+		let phoneNumber = formatter.getNumber()
+		phoneNumber.country.should.equal('US')
+		phoneNumber.countryCallingCode.should.equal('1')
+		phoneNumber.number.should.equal('+12133734253')
+		phoneNumber.nationalNumber.should.equal('2133734253')
+
+		formatter.reset()
+		formatter.input('+1-113-373-4253')
+
+		phoneNumber = formatter.getNumber()
+		expect(phoneNumber.country).to.be.undefined
+		phoneNumber.countryCallingCode.should.equal('1')
+
+		formatter.reset()
+		formatter.input('+1-1')
+
+		phoneNumber = formatter.getNumber()
+		expect(phoneNumber.country).to.be.undefined
+		phoneNumber.countryCallingCode.should.equal('1')
+		phoneNumber.number.should.equal('+11')
+	})
+
+	it('should parse carrier codes', () =>
+	{
+		const formatter = new as_you_type('BR')
+
+		formatter.input('0 15 21 5555-5555')
+		let phoneNumber = formatter.getNumber()
+		phoneNumber.carrierCode.should.equal('15')
+
+		formatter.reset()
+		formatter.input('+1-213-373-4253')
+		phoneNumber = formatter.getNumber()
+		expect(phoneNumber.carrierCode).to.be.undefined
+	})
+
 	it('should repeat string N times', function()
 	{
 		repeat('a', 0).should.equal('')

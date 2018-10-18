@@ -5,6 +5,8 @@
 
 import Metadata from './metadata'
 
+import PhoneNumber from './PhoneNumber'
+
 import
 {
 	matches_entirely,
@@ -365,6 +367,7 @@ export default class AsYouType
 		this.national_prefix = ''
 
 		this.national_number = ''
+		this.carrierCode = ''
 
 		this.reset_countriness()
 
@@ -626,7 +629,11 @@ export default class AsYouType
 		// So no forgiveness for grandmas here.
 		// The issue asking for this fix:
 		// https://github.com/catamphetamine/libphonenumber-js/issues/159
-		const { number: potential_national_number } = strip_national_prefix_and_carrier_code(this.national_number, this.metadata)
+		const { number: potential_national_number, carrierCode } = strip_national_prefix_and_carrier_code(this.national_number, this.metadata)
+
+		if (carrierCode) {
+			this.carrierCode = carrierCode
+		}
 
 		// We require that the NSN remaining after stripping the national prefix and
 		// carrier code be long enough to be a possible length for the region.
@@ -923,6 +930,16 @@ export default class AsYouType
 	determine_the_country()
 	{
 		this.country = find_country_code(this.countryCallingCode, this.national_number, this.metadata)
+	}
+
+	getNumber()
+	{
+		const phoneNumber = new PhoneNumber(this.country || this.countryCallingCode, this.national_number, this.metadata.metadata)
+		if (this.carrierCode) {
+			phoneNumber.carrierCode = this.carrierCode
+		}
+		// Phone number extensions are not supported by "As You Type" formatter.
+		return phoneNumber
 	}
 
 	getNationalNumber()
