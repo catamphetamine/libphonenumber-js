@@ -326,26 +326,6 @@ export default class PhoneNumberMatcher
       return
     }
 
-    // Check Israel * numbers: these are a special case in that they are four-digit numbers that
-    // our library supports, but they can only be dialled with a leading *. Since we don't
-    // actually store or detect the * in our phone number library, this means in practice we
-    // detect most four digit numbers as being valid for Israel. We are considering moving these
-    // numbers to ShortNumberInfo instead, in which case this problem would go away, but in the
-    // meantime we want to restrict the false matches so we only allow these numbers if they are
-    // preceded by a star. We enforce this for all leniency levels even though these numbers are
-    // technically accepted by isPossibleNumber and isValidNumber since we consider it to be a
-    // deficiency in those methods that they accept these numbers without the *.
-    // TODO: Remove this or make it significantly less hacky once we've decided how to
-    // handle these short codes going forward in ShortNumberInfo. We could use the formatting
-    // rules for instance, but that would be slower.
-    if (number.country === 'IL'
-        && number.phone.length === 4
-        && (offset === 0 || (offset > 0 && text[offset - 1] !== '*')))
-    {
-      // No match.
-      return
-    }
-
     if (this.leniency(number, candidate, this.metadata.metadata))
     {
       // // We used parseAndKeepRawInput to create this number,
