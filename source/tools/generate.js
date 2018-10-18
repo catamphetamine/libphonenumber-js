@@ -428,13 +428,13 @@ export default function(input, version, included_countries, extended, included_p
 			}
 			else
 			{
-				if (country.formats) {
+				if (country.formats !== undefined) {
 					throw new Error(`Country "${country_code}" is supposed to inherit formats from "${main_country_for_region_code}" but has its own formats defined.`)
 				}
-				if (country.nationalPrefixFormattingRule) {
+				if (country.nationalPrefixFormattingRule !== undefined) {
 					throw new Error(`Country "${country_code}" is supposed to inherit "nationalPrefixFormattingRule" from "${main_country_for_region_code}" but has its own "nationalPrefixFormattingRule" defined.`)
 				}
-				if (country.nationalPrefixIsOptionalWhenFormatting) {
+				if (country.nationalPrefixIsOptionalWhenFormatting !== undefined) {
 					throw new Error(`Country "${country_code}" is supposed to inherit "nationalPrefixIsOptionalWhenFormatting" from "${main_country_for_region_code}" but has its own "nationalPrefixIsOptionalWhenFormatting" defined.`)
 				}
 			}
