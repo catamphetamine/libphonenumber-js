@@ -140,60 +140,16 @@
 			padding-top: 3px;
 			padding-bottom: 3px;
 		}
-
-		.key-value__key
-		{
-			font-weight: bolder;
-			padding-right: 0.5em;
-		}
-
-		.key-value__key:after
-		{
-			display: inline;
-			content: ':';
-			font-weight: normal;
-		}
 	</style>
 
 	<body>
 		<a target="_blank" class="main" href="https://github.com/catamphetamine/libphonenumber-js"><code>libphonenumber-js</code></a>
 
-		<p>A simpler and smaller rewrite of Google Android's <a target="_blank" href="https://github.com/googlei18n/libphonenumber">libphonenumber</a> library.</p>
-
-		<p>This is a demo for the new API. <a href="https://catamphetamine.github.io/libphonenumber-js/legacy.html">See legacy API demo</a>.</p>
-
-		<p>
-		Note: Phone number validation here is loose because it uses the (default) reduced metadata set. For more precise phone number validation use <code>"metadata.full.json"</code>. <a href="https://github.com/catamphetamine/libphonenumber-js#isvalidnumberparsednumber">Read more</a>
-		</p>
+		<p>A simpler and smaller rewrite of Google Android's <a target="_blank" href="https://github.com/googlei18n/libphonenumber">libphonenumber</a> library</p>
 
 		<div id="content"></div>
 
 		<script type="text/babel">
-			function KeyValue({ name, value }) {
-				return (
-					<div className="key-value section__line">
-						<span className="key-value__key">{name}</span>
-						<span className="key-value__value"><code>{value}</code></span>
-					</div>
-				)
-			}
-
-			function PhoneNumber({ children: number }) {
-				const keyValues = [
-					['Number', number.number],
-					['Country', number.country || '-'],
-					['National', number.formatNational()],
-					['International', number.formatInternational()],
-					['URI', number.getURI()],
-					['Valid', number.isValid() ? 'true' : 'false']
-				]
-				return (
-					<div className="phone-number">
-						{keyValues.map(kv => <KeyValue key={kv[0]} name={kv[0]} value={kv[1]}/>)}
-					</div>
-				)
-			}
-
 			var Content = React.createClass
 			({
 				getInitialState: function()
@@ -219,6 +175,11 @@
 
 					let asYouType
 					let parsed_number = '-'
+					let parsed_number_extended = '-'
+					let national_formatted_number = '-'
+					let international_formatted_number = '-'
+					let international_formatted_number_in_E164 = '-'
+					let international_formatted_number_in_RFC3966 = '-'
 					let numbers_found = []
 
 					const { country, parse, format, value, findNumbers } = this.state
@@ -228,36 +189,35 @@
 						asYouType = new libphonenumber.AsYouType(country)
 						asYouType.input(value)
 
-						parsed_number = libphonenumber.parsePhoneNumber(parse, country)
+						parsed_number = JSON.stringify(libphonenumber.parseNumber(parse, country))
+						parsed_number_extended = JSON.stringify(libphonenumber.parseNumber(parse, country, { extended: true }))
 
-						numbers_found = libphonenumber.findNumbers(findNumbers, country, { v2: true })
+						const number_to_format = libphonenumber.parseNumber(format, country, { extended: true })
+
+						if (number_to_format.phone)
+						{
+							national_formatted_number = libphonenumber.formatNumber(number_to_format, 'National')
+							international_formatted_number = libphonenumber.formatNumber(number_to_format, 'International')
+							international_formatted_number_in_E164 = libphonenumber.formatNumber(number_to_format, 'E.164')
+							international_formatted_number_in_RFC3966 = libphonenumber.formatNumber(number_to_format, 'RFC3966')
+						}
+
+						numbers_found = libphonenumber.findNumbers(findNumbers, country)
 					}
 					catch (error)
 					{
-						console.error(error)
+						if (error.message.indexOf('Unknown country') === 0)
+						{
+							//
+						}
+						else
+						{
+							throw error
+						}
 					}
 
 					return (
 						<div>
-							<h2>Parse</h2>
-
-							<input
-								type="text"
-								value={this.state.country}
-								onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
-								style={{ width: '40px', marginRight: '10px' }}/>
-
-							<input
-								type="text"
-								value={this.state.parse}
-								onChange={event => this.setState({ parse: event.target.value })}/>
-
-							<div className="section">
-								{parsed_number &&
-									<PhoneNumber>{parsed_number}</PhoneNumber>
-								}
-							</div>
-
 							<h2>As you type</h2>
 
 							{/* type="tel" introduces bugs on Samsung Android phones */}
@@ -308,6 +268,7 @@
 								}}/>
 
 							<div className="section">
+								<div className="section__line">Value: {this.state.value}</div>
 								<div className="section__line">Default country:
 									<input
 										type="text"
@@ -315,14 +276,68 @@
 										onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
 										style={{ width: '40px', marginLeft: '6px' }}/>
 								</div>
+								<div className="section__line">Actual country: {asYouType ? asYouType.country : '-'}</div>
+								<div className="section__line">National: {asYouType ? asYouType.country && libphonenumber.formatNumber(asYouType.national_number, asYouType.country, 'National') : '-'}</div>
+								<div className="section__line">Valid: {asYouType ? String(libphonenumber.isValidNumber(this.state.value, asYouType.country)) : '-'}</div>
+								<div className="section__line">Template: {asYouType ? asYouType.getTemplate() : '-'}</div>
 
-								<div className="section"/>
+								<br/>
 
-								<KeyValue name="Template" value={asYouType ? asYouType.getTemplate() || '-' : '-'}/>
+								Note: Phone number validation here is loose because it uses the (default) reduced metadata set. For more precise phone number validation use <code>metadata.full.json</code>. <a href="https://github.com/catamphetamine/libphonenumber-js#isvalidnumberparsednumber">Read more</a>
+							</div>
 
-								{asYouType && asYouType.getNumber() &&
-									<PhoneNumber>{asYouType.getNumber()}</PhoneNumber>
-								}
+							<h2>Parse</h2>
+
+							<input
+								type="text"
+								value={this.state.country}
+								onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
+								style={{ width: '40px', marginRight: '10px' }}/>
+
+							<input
+								type="text"
+								value={this.state.parse}
+								onChange={event => this.setState({ parse: event.target.value })}/>
+
+							<div className="section">
+								<code>{parsed_number}</code>
+							</div>
+
+							<h2>Parse (extended)</h2>
+
+							<input
+								type="text"
+								value={this.state.country}
+								onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
+								style={{ width: '40px', marginRight: '10px' }}/>
+
+							<input
+								type="text"
+								value={this.state.parse}
+								onChange={event => this.setState({ parse: event.target.value })}/>
+
+							<div className="section">
+								<code>{parsed_number_extended}</code>
+							</div>
+
+							<h2>Format</h2>
+
+							<input
+								type="text"
+								value={this.state.country}
+								onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
+								style={{ width: '40px', marginRight: '10px' }}/>
+
+							<input
+								type="text"
+								value={this.state.format}
+								onChange={event => this.setState({ format: event.target.value })}/>
+
+							<div className="section">
+								<div className="section__line"><code>National: {national_formatted_number}</code></div>
+								<div className="section__line"><code>International: {international_formatted_number}</code></div>
+								<div className="section__line"><code>E.164: {international_formatted_number_in_E164}</code></div>
+								<div className="section__line"><code>RFC3966: {international_formatted_number_in_RFC3966}</code></div>
 							</div>
 
 							<h2>Find phone numbers</h2>
@@ -347,10 +362,10 @@
 								<ul className="numbers-found">
 									{numbers_found.map((number, i) => (
 										<li key={i}>
-											<strong>Number</strong>: <code>{number.number.number}</code>,{' '}
-											<strong>Country</strong>: <code>{number.number.country}</code>,{' '}
-											<strong>Starts at</strong>: <code>{number.startsAt}</code>,{' '}
-											<strong>Ends at</strong>: <code>{number.endsAt}</code>
+											Country: {number.country},
+											Phone: {number.phone},
+											Starts at: {number.startsAt},
+											Ends at: {number.endsAt}
 										</li>
 									))}
 								</ul>
