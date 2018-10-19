@@ -44,6 +44,13 @@ const {
 
 <!-- (breaking change) Maybe change metadata from `.json` to `.js` to save size on `,0,` -> `,,`. -->
 
+<!-- (breaking change) Prepend `+` in AsYouType if no `defaultCountry` has been set.
+
+And edit the README:
+
+ * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) has been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
+-->
+
 1.6.2 / 18.10.2018
 ==================
 

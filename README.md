@@ -525,8 +525,9 @@ The formatter instance also provides the following getters:
 
 _(new API)_
 
- * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber) (or `undefined`).
- * `getTemplate()` — Returns the template used to format the output (or `undefined`). Digits (and the `+` sign, if present) are denoted by `x`-es.
+ * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) has been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
+
+ * `getTemplate()` — Returns the template used to format the output. Digits (and the `+` sign, if present) are denoted by `x`-es. Will return `undefined` if no suitable format was found for the number being entered (or if no [national (significant) number](#national-significant-number) has been entered so far).
 
 ```js
 // National phone number input example.
