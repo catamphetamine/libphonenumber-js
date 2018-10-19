@@ -546,10 +546,73 @@ iteration()
 
 Although Google's javascript port doesn't have the `findNumbers()` functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness. The `findNumbers()` function provided is a port of Google's `PhoneNumberMatcher.java` into javascript.
 
+### getExampleNumber(country, examples)
+
+Returns an instance of [`PhoneNumber`](#phonenumber) class.
+
+```js
+import examples from 'libphonenumber-js/examples.mobile.json'
+import { getExampleNumber } from 'libphonenumber-js'
+
+const phoneNumber = getExampleNumber('RU', examples)
+
+phoneNumber.formatNational() === '8 (912) 345-67-89'
+```
+
+### getCountryCallingCode(country)
+
+There have been requests for a function returning a [country calling code](#country-calling-code) by [country code](#country-code).
+
+```js
+getCountryCallingCode('RU') === '7'
+getCountryCallingCode('IL') === '972'
+```
+
+### getExtPrefix(country)
+
+Returns phone number extension prefix for a given `country`. If no custom ext prefix is defined for a `country` then the default `" ext. "` prefix is returned.
+
+```js
+getExtPrefix('US') === ' ext. '
+getExtPrefix('GB') === ' x'
+```
+
+<!--
+### parsePhoneNumberCharacter(nextCharacter, value)
+
+Parses next character while parsing `value` from text: discards everything except `+` and digits, and `+` is only allowed at the start of a phone number. Can be used for [`input-format`](https://github.com/catamphetamine/input-format).
+
+```js
+parsePhoneNumberCharacter('5', '880055') === '5'
+parsePhoneNumberCharacter('+', '') === '+'
+parsePhoneNumberCharacter('+', '+7800') === ''
+parsePhoneNumberCharacter('a', '') === ''
+```
+-->
+
+### parseIncompletePhoneNumber(text)
+
+Parses phone number characters (`+` and digits). Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
+
+```js
+parseIncompletePhoneNumber('8 (800) 555') === '8800555'
+parseIncompletePhoneNumber('+7 800 555') === '+7800555'
+parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤') === '+442323234'
+```
+
+### formatIncompletePhoneNumber(value, country)
+
+Formats incomplete phone number as a national one for a given `country`. If `country` is not specified then outputs the phone number in international format. This is just an alias for `new AsYouType(country, metadata).input(value)`. Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
+
+```js
+formatIncompletePhoneNumber('8800555', 'RU') === '8 (800) 555'
+formatIncompletePhoneNumber('+7800555') === '+7 800 555'
+```
+
 ## Legacy API
 
 <details>
-<summary>Legacy API (before version <code>1.6.0</code>)</summary>
+<summary>Legacy API (before version <code>1.6.0</code>): <code>parse()</code>, <code>parseNumber()</code>, <code>format()</code>, <code>formatNumber()</code>, <code>isValidNumber()</code>, <code>getNumberType()</code>.</summary>
 
 ### parseNumber(text, [defaultCountry], [options])
 
@@ -826,69 +889,6 @@ isValidNumberForRegion('07624369230', 'IM') === true
 ```
 </details>
 </details>
-
-### getExampleNumber(country, examples)
-
-Returns an instance of [`PhoneNumber`](#phonenumber) class.
-
-```js
-import examples from 'libphonenumber-js/examples.mobile.json'
-import { getExampleNumber } from 'libphonenumber-js'
-
-const phoneNumber = getExampleNumber('RU', examples)
-
-phoneNumber.formatNational() === '8 (912) 345-67-89'
-```
-
-### getCountryCallingCode(country)
-
-There have been requests for a function returning a [country calling code](#country-calling-code) by [country code](#country-code).
-
-```js
-getCountryCallingCode('RU') === '7'
-getCountryCallingCode('IL') === '972'
-```
-
-### getExtPrefix(country)
-
-Returns phone number extension prefix for a given `country`. If no custom ext prefix is defined for a `country` then the default `" ext. "` prefix is returned.
-
-```js
-getExtPrefix('US') === ' ext. '
-getExtPrefix('GB') === ' x'
-```
-
-<!--
-### parsePhoneNumberCharacter(nextCharacter, value)
-
-Parses next character while parsing `value` from text: discards everything except `+` and digits, and `+` is only allowed at the start of a phone number. Can be used for [`input-format`](https://github.com/catamphetamine/input-format).
-
-```js
-parsePhoneNumberCharacter('5', '880055') === '5'
-parsePhoneNumberCharacter('+', '') === '+'
-parsePhoneNumberCharacter('+', '+7800') === ''
-parsePhoneNumberCharacter('a', '') === ''
-```
--->
-
-### parseIncompletePhoneNumber(text)
-
-Parses phone number characters (`+` and digits). Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
-
-```js
-parseIncompletePhoneNumber('8 (800) 555') === '8800555'
-parseIncompletePhoneNumber('+7 800 555') === '+7800555'
-parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤') === '+442323234'
-```
-
-### formatIncompletePhoneNumber(value, country)
-
-Formats incomplete phone number as a national one for a given `country`. If `country` is not specified then outputs the phone number in international format. This is just an alias for `new AsYouType(country, metadata).input(value)`. Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
-
-```js
-formatIncompletePhoneNumber('8800555', 'RU') === '8 (800) 555'
-formatIncompletePhoneNumber('+7800555') === '+7 800 555'
-```
 
 ## Using phone number validation feature
 
