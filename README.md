@@ -46,7 +46,9 @@ If you're not using a bundler then use a [standalone version from a CDN](https:/
 
 ### Parse phone number
 
+<!--
 _(new API)_
+-->
 
 ```js
 import { parsePhoneNumber } from 'libphonenumber-js'
@@ -62,6 +64,7 @@ try {
 }
 ```
 
+<!--
 <details>
 <summary>Legacy API</summary>
 
@@ -72,10 +75,13 @@ parseNumber('Phone: 8 (800) 555 35 35.', 'RU')
 // Outputs: { country: 'RU', phone: '8005553535' }
 ```
 </details>
+-->
 
 ### Format phone number
 
+<!--
 _(new API)_
+-->
 
 ```js
 import { parsePhoneNumber } from 'libphonenumber-js'
@@ -87,6 +93,7 @@ phoneNumber.formatNational() === '(213) 373-4253'
 phoneNumber.getURI() === 'tel:+12133734253'
 ```
 
+<!--
 <details>
 <summary>Legacy API</summary>
 
@@ -106,6 +113,7 @@ formatNumber({ country: 'US', phone: '2133734253' }, 'NATIONAL')
 // Outputs: '(213) 373-4253'
 ```
 </details>
+-->
 
 ### "As You Type" formatter
 
@@ -121,15 +129,16 @@ new AsYouType('US').input('2133734')
 
 ### Full-text search
 
+<!--
 _(new API)_
+-->
 
 ```js
 import { findNumbers } from 'libphonenumber-js'
 
 findNumbers(`
-  The number is +7 (800) 555-35-35
-  and not (213) 373-4253 ext. 1234
-  as it's written in the document.
+  For tech support call +7 (800) 555-35-35 internationally
+  or reach a local US branch at (213) 373-4253 ext. 1234.
 `, 'US', {
   v2: true
 })
@@ -143,8 +152,8 @@ findNumbers(`
 //     number: '+78005553535',
 //     nationalNumber: '8005553535'
 //   },
-//   startsAt : 14,
-//   endsAt   : 32
+//   startsAt : 22,
+//   endsAt   : 40
 // }, {
 //   number: PhoneNumber {
 //     country: 'US',
@@ -153,11 +162,12 @@ findNumbers(`
 //     nationalNumber: '2133734253',
 //     ext: '1234'
 //   },
-//   startsAt : 41,
-//   endsAt   : 65
+//   startsAt : 86,
+//   endsAt   : 110
 // }]
 ```
 
+<!--
 <details>
 <summary>Legacy API</summary>
 
@@ -165,9 +175,8 @@ findNumbers(`
 import { findNumbers } from 'libphonenumber-js'
 
 findNumbers(`
-  The number is +7 (800) 555-35-35
-  and not (213) 373-4253 ext. 1234
-  as it's written in the document.
+  For tech support call +7 (800) 555-35-35 internationally
+  or reach a local US branch at (213) 373-4253 ext. 1234.
 `, 'US')
 
 // Outputs:
@@ -175,17 +184,18 @@ findNumbers(`
 // [{
 //   phone    : '8005553535',
 //   country  : 'RU',
-//   startsAt : 14,
-//   endsAt   : 32
+//   startsAt : 22,
+//   endsAt   : 40
 // }, {
 //   phone    : '2133734253',
 //   country  : 'US',
 //   ext      : '1234',
-//   startsAt : 41,
-//   endsAt   : 65
+//   startsAt : 86,
+//   endsAt   : 110
 // }]
 ```
 </details>
+-->
 
 ## Definitions
 
@@ -205,7 +215,7 @@ findNumbers(`
 
 ### parsePhoneNumber(string, [defaultCountry])
 
-Parses `string` extracting a phone number from it.
+Parses a `string` and returns the phone number.
 
 ```js
 import { parsePhoneNumber } from 'libphonenumber-js'
@@ -292,6 +302,8 @@ Determines phone number type (fixed line, mobile, toll free, etc). This function
 <details>
 <summary>The list of possible return values</summary>
 
+####
+
 * `undefined`
 * `MOBILE`
 * `FIXED_LINE`
@@ -305,6 +317,239 @@ Determines phone number type (fixed line, mobile, toll free, etc). This function
 * `UAN`
 * `VOICEMAIL`
 </details>
+
+### `class` AsYouType(defaultCountry)
+
+Creates a formatter for a partially entered phone number. The [`defaultCountry`](#country-code) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance provides two methods:
+
+ * `input(text)` — Takes any text, parses it and appends the digits to the input. Returns the formatted phone number.
+ * `reset()` — Resets the input.
+
+```js
+new AsYouType().input('+12133734') === '+1 213 373 4'
+new AsYouType('US').input('2133734') === '(213) 373-4'
+```
+
+The formatter instance also provides the following getters:
+
+ * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) has been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
+
+ * `getTemplate()` — Returns the template used to format the output. Digits (and the `+` sign, if present) are denoted by `x`-es. Will return `undefined` if no suitable format was found for the number being entered (or if no [national (significant) number](#national-significant-number) has been entered so far).
+
+```js
+// National phone number input example.
+
+const asYouType = new AsYouType('US')
+
+asYouType.input('2') === '2'
+asYouType.getNumber().number === '+12'
+asYouType.getTemplate() === 'x'
+
+asYouType.input('1') === '21'
+asYouType.getNumber().number === '+121'
+asYouType.getTemplate() === 'xx'
+
+asYouType.input('3') === '(213)'
+asYouType.getNumber().number === '+1213'
+asYouType.getTemplate() === '(xxx)'
+
+asYouType.input('3734253') === '(213) 373-4253'
+asYouType.getNumber().number === '+12133734253'
+asYouType.getTemplate() === '(xxx) xxx-xxxx'
+
+// International phone number input example.
+
+const asYouType = new AsYouType()
+asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
+asYouType.getNumber().country === 'US'
+asYouType.getNumber().number === '+12133734253'
+asYouType.getTemplate() === 'xx xxx xxx xxxx'
+```
+
+<details>
+<summary>Legacy API (before version <code>1.6.0</code>)</summary>
+
+####
+
+For legacy API (before version `1.6.0`) the formatter instance provides the following getters:
+
+ * `country` — Phone number [country](#country-code). Will return `undefined` if the country couldn't be derived from the number.
+
+ * `getNationalNumber()` — Returns the national (significant) number part of the phone number.
+
+ * `getTemplate()` — Returns the template used to format the output. Digits (and the `+` sign, if present) are denoted by `x`-es. Will return `undefined` if no suitable format was found for the number being entered (or if no [national (significant) number](#national-significant-number) has been entered so far).
+
+```js
+// National phone number input example.
+
+const asYouType = new AsYouType('US')
+
+asYouType.input('2') === '2'
+asYouType.getNationalNumber() === '2'
+asYouType.getTemplate() === 'x'
+
+asYouType.input('1') === '21'
+asYouType.getNationalNumber() === '21'
+asYouType.getTemplate() === 'xx'
+
+asYouType.input('3') === '(213)'
+asYouType.getNationalNumber() === '213'
+asYouType.getTemplate() === '(xxx)'
+
+asYouType.input('3734253') === '(213) 373-4253'
+asYouType.getNationalNumber() === '2133734253'
+asYouType.getTemplate() === '(xxx) xxx-xxxx'
+
+// International phone number input example.
+
+const asYouType = new AsYouType()
+asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
+asYouType.country === 'US'
+asYouType.getNationalNumber() === '2133734253'
+asYouType.getTemplate() === 'xx xxx xxx xxxx'
+```
+</details>
+
+####
+
+"As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits (and a `+` sign in the start of an international number).
+
+Google's "As You Type" formatter does not support entering phone number extensions. If your project requires phone number extensions input then use a separate input field for that.
+
+### findNumbers(text, [defaultCountry], [options])
+
+Searches for phone numbers in `text`.
+
+New API (starting from version `1.6.0`) returns phone numbers as instances of [`PhoneNumber`](#phonenumber) class when passed `v2: true` option. Legacy API (before version `1.6.0`) only returns phone numbers as `country`, `phone`, `ext`.
+
+```js
+import { findNumbers } from 'libphonenumber-js'
+
+findNumbers(`
+  For tech support call +7 (800) 555-35-35 internationally
+  or reach a local US branch at (213) 373-4253 ext. 1234.
+`, 'US', {
+  v2: true
+})
+
+// Outputs:
+//
+// [{
+//   number: PhoneNumber {
+//     country: 'RU',
+//     countryCallingCode: '7',
+//     number: '+78005553535',
+//     nationalNumber: '8005553535'
+//   },
+//   startsAt : 22,
+//   endsAt   : 40
+// }, {
+//   number: PhoneNumber {
+//     country: 'US',
+//     countryCallingCode: '1',
+//     number: '+12133734253',
+//     nationalNumber: '2133734253',
+//     ext: '1234'
+//   },
+//   startsAt : 86,
+//   endsAt   : 110
+// }]
+```
+
+<details>
+<summary>Legacy API (before version <code>1.6.0</code>) example</summary>
+
+####
+
+```js
+import { findNumbers } from 'libphonenumber-js'
+
+findNumbers(`
+  For tech support call +7 (800) 555-35-35 internationally
+  or reach a local US branch at (213) 373-4253 ext. 1234.
+`, 'US')
+
+// Outputs:
+//
+// [{
+//   phone    : '8005553535',
+//   country  : 'RU',
+//   startsAt : 22,
+//   endsAt   : 40
+// },
+// {
+//   phone    : '2133734253',
+//   country  : 'US',
+//   ext      : '1234',
+//   startsAt : 86,
+//   endsAt   : 110
+// }]
+```
+</details>
+
+####
+
+By default it processes the whole text and then outputs the phone numbers found. If the text is very big (say, a hundred thousand characters) then it might freeze the user interface for a couple of seconds. To avoid such lags one can employ iterators to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame`).
+
+<details>
+<summary>Asynchronous search example</summary>
+
+####
+
+ES6 iterator:
+
+```js
+import { searchNumbers } from 'libphonenumber-js'
+
+const text = `
+  For tech support call +7 (800) 555-35-35 internationally
+  or reach a local US branch at (213) 373-4253 ext. 1234.
+`
+
+async function() {
+  for (const number of searchNumbers(text, 'US', { v2: true })) {
+    console.log(number)
+    await new Promise(resolve => setTimeout(resolve, 0))
+  }
+  console.log('Finished')
+}
+```
+
+Java-style iterator (for those still not using ES6):
+
+```js
+import { PhoneNumberMatcher } from 'libphonenumber-js'
+
+const matcher = new PhoneNumberMatcher(`
+  For tech support call +7 (800) 555-35-35 internationally
+  or reach a local US branch at (213) 373-4253 ext. 1234.
+`, 'US', {
+  v2: true
+})
+
+// Search cycle iteration.
+const iteration = () => {
+  if (matcher.hasNext()) {
+    console.log(matcher.next())
+    setTimeout(iteration, 0)
+  } else {
+    console.log('Finished')
+  }
+}
+
+// Run the search.
+iteration()
+```
+</details>
+
+####
+
+Although Google's javascript port doesn't have the `findNumbers()` functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness. The `findNumbers()` function provided is a port of Google's `PhoneNumberMatcher.java` into javascript.
+
+## Legacy API
+
+<details>
+<summary>Legacy API (before version <code>1.6.0</code>)</summary>
 
 ### parseNumber(text, [defaultCountry], [options])
 
@@ -509,233 +754,6 @@ formatNumber({}) throws Error
 ```
 </details>
 
-### `class` AsYouType(defaultCountry)
-
-Creates a formatter for a partially entered phone number. The [`defaultCountry`](#country-code) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance provides two methods:
-
- * `input(text)` — Takes any text, parses it and appends the digits to the input. Returns the formatted phone number.
- * `reset()` — Resets the input.
-
-```js
-new AsYouType().input('+12133734') === '+1 213 373 4'
-new AsYouType('US').input('2133734') === '(213) 373-4'
-```
-
-The formatter instance also provides the following getters:
-
-_(new API)_
-
- * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) has been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
-
- * `getTemplate()` — Returns the template used to format the output. Digits (and the `+` sign, if present) are denoted by `x`-es. Will return `undefined` if no suitable format was found for the number being entered (or if no [national (significant) number](#national-significant-number) has been entered so far).
-
-```js
-// National phone number input example.
-
-const asYouType = new AsYouType('US')
-
-asYouType.input('2') === '2'
-asYouType.getNumber().number === '+12'
-asYouType.getTemplate() === 'x'
-
-asYouType.input('1') === '21'
-asYouType.getNumber().number === '+121'
-asYouType.getTemplate() === 'xx'
-
-asYouType.input('3') === '(213)'
-asYouType.getNumber().number === '+1213'
-asYouType.getTemplate() === '(xxx)'
-
-asYouType.input('3734253') === '(213) 373-4253'
-asYouType.getNumber().number === '+12133734253'
-asYouType.getTemplate() === '(xxx) xxx-xxxx'
-
-// International phone number input example.
-
-const asYouType = new AsYouType()
-asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
-asYouType.getNumber().country === 'US'
-asYouType.getNumber().number === '+12133734253'
-asYouType.getTemplate() === 'xx xxx xxx xxxx'
-```
-
-<details>
-<summary>Legacy API</summary>
-
-The formatter instance also provides the following legacy API getters:
-
- * `country` — Phone number [country](#country-code). Will return `undefined` if the country couldn't be derived from the number.
- * `getNationalNumber()` — Returns the national (significant) number part of the phone number.
-
-```js
-// National phone number input example.
-
-const asYouType = new AsYouType('US')
-
-asYouType.input('2') === '2'
-asYouType.getNationalNumber() === '2'
-asYouType.getTemplate() === 'x'
-
-asYouType.input('1') === '21'
-asYouType.getNationalNumber() === '21'
-asYouType.getTemplate() === 'xx'
-
-asYouType.input('3') === '(213)'
-asYouType.getNationalNumber() === '213'
-asYouType.getTemplate() === '(xxx)'
-
-asYouType.input('3734253') === '(213) 373-4253'
-asYouType.getNationalNumber() === '2133734253'
-asYouType.getTemplate() === '(xxx) xxx-xxxx'
-
-// International phone number input example.
-
-const asYouType = new AsYouType()
-asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
-asYouType.country === 'US'
-asYouType.getNationalNumber() === '2133734253'
-asYouType.getTemplate() === 'xx xxx xxx xxxx'
-```
-</details>
-
-####
-
-"As You Type" formatter was created by Google as part of their Android OS and therefore only works for numerical keyboard input, i.e. it can only accept digits (and a `+` sign in the start of an international number). When used on desktops where a user can input all kinds of punctuation (spaces, dashes, parens, etc) it simply ignores everything except digits (and a `+` sign in the start of an international number).
-
-Google's "As You Type" formatter does not support entering phone number extensions. If your project requires phone number extensions input then use a separate input field for that.
-
-### findNumbers(text, [defaultCountry], [options])
-
-Searches for phone numbers in a given text.
-
-New API returns phone numbers as instances of [`PhoneNumber`](#phonenumber) class. Legacy API returns phone numbers as objects having shape `{ country, phone }`.
-
-New API example:
-
-```js
-import { findNumbers } from 'libphonenumber-js'
-
-findNumbers(`
-  The number is +7 (800) 555-35-35
-  and not (213) 373-4253 ext. 1234
-  as it's written in the document.
-`, 'US', {
-  v2: true
-})
-
-// Outputs:
-//
-// [{
-//   number: PhoneNumber {
-//     country: 'RU',
-//     countryCallingCode: '7',
-//     number: '+78005553535',
-//     nationalNumber: '8005553535'
-//   },
-//   startsAt : 14,
-//   endsAt   : 32
-// }, {
-//   number: PhoneNumber {
-//     country: 'US',
-//     countryCallingCode: '1',
-//     number: '+12133734253',
-//     nationalNumber: '2133734253',
-//     ext: '1234'
-//   },
-//   startsAt : 41,
-//   endsAt   : 65
-// }]
-```
-
-<details>
-<summary>Legacy API example</summary>
-
-```js
-import { findNumbers } from 'libphonenumber-js'
-
-findNumbers(`
-  The number is +7 (800) 555-35-35
-  and not (213) 373-4253 ext. 1234
-  as it's written in the document.
-`, 'US')
-
-// Outputs:
-//
-// [{
-//   phone    : '8005553535',
-//   country  : 'RU',
-//   startsAt : 14,
-//   endsAt   : 32
-// },
-// {
-//   phone    : '2133734253',
-//   country  : 'US',
-//   ext      : '1234',
-//   startsAt : 41,
-//   endsAt   : 65
-// }]
-```
-</details>
-
-####
-
-By default it processes the whole text and then outputs the phone numbers found. If the text is very big (say, a hundred thousand characters) then it might freeze the user interface for a couple of seconds. To avoid such lags one can employ iterators to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame`).
-
-<details>
-<summary>Asynchronous search example</summary>
-
-ES6 iterator:
-
-```js
-import { searchNumbers } from 'libphonenumber-js'
-
-const text = `
-  The number is +7 (800) 555-35-35 and
-  not (213) 373-4253 as it's written
-  in the document.
-`
-
-async function() {
-  for (const number of searchNumbers(text, 'US')) {
-    console.log(number)
-    await new Promise(resolve => setTimeout(resolve, 0))
-  }
-  console.log('Finished')
-}
-```
-
-Java-style iterator (for those still not using ES6):
-
-```js
-import { PhoneNumberMatcher } from 'libphonenumber-js'
-
-const matcher = new PhoneNumberMatcher(`
-  The number is +7 (800) 555-35-35 and
-  not (213) 373-4253 as it's written
-  in the document.
-`, {
-  defaultCountry: 'US'
-})
-
-// Search cycle iteration.
-const iteration = () => {
-  if (matcher.hasNext()) {
-    console.log(matcher.next())
-    setTimeout(iteration, 0)
-  } else {
-    console.log('Finished')
-  }
-}
-
-// Run the search.
-iteration()
-```
-</details>
-
-####
-
-Although Google's javascript port doesn't have the `findNumbers()` functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness. The `findNumbers()` function provided is a port of Google's `PhoneNumberMatcher.java` into javascript.
-
 ### getNumberType(number, [defaultCountry])
 
 _(legacy API)_
@@ -807,22 +825,7 @@ isValidNumberForRegion('07624369230', 'GB') === false
 isValidNumberForRegion('07624369230', 'IM') === true
 ```
 </details>
-
-#### Using phone number validation feature
-
-I personally wouldn't rely on strict phone number validation too much because it might get outdated:
-
-* First, new phone number rules are added to Google's `libphonenumber` library after they have already been implemented in real life (which introduces a delay).
-
-<!--
-* Then those new rules from Google's `libphonenumber` are updated automatically in this library (the scheduled update script introduces a small delay of 1 day, unless it malfunctions).
--->
-
-* From time to time those new rules from Google's `libphonenumber` are updated in this library.
-
-* And then there's still the web application itself using this library and until a developer installs `libphonenumber-js@latest` manually and redeploys the web application it's gonna use the old (potentially outdated) phone number validation rules which could result in losing customers with perfectly valid (but not yet supported) phone numbers if a website form is too strict about validating user's input.
-
-Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
+</details>
 
 ### getExampleNumber(country, examples)
 
@@ -886,6 +889,22 @@ Formats incomplete phone number as a national one for a given `country`. If `cou
 formatIncompletePhoneNumber('8800555', 'RU') === '8 (800) 555'
 formatIncompletePhoneNumber('+7800555') === '+7 800 555'
 ```
+
+## Using phone number validation feature
+
+I personally wouldn't rely on strict phone number validation too much because it might get outdated:
+
+* First, new phone number rules are added to Google's `libphonenumber` library after they have already been implemented in real life (which introduces a delay).
+
+<!--
+* Then those new rules from Google's `libphonenumber` are updated automatically in this library (the scheduled update script introduces a small delay of 1 day, unless it malfunctions).
+-->
+
+* From time to time those new rules from Google's `libphonenumber` are updated in this library.
+
+* And then there's still the web application itself using this library and until a developer installs `libphonenumber-js@latest` manually and redeploys the web application it's gonna use the old (potentially outdated) phone number validation rules which could result in losing customers with perfectly valid (but not yet supported) phone numbers if a website form is too strict about validating user's input.
+
+Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
 
 ## React
 
@@ -971,6 +990,8 @@ Furthermore, if only a specific set of countries is needed in a project, and a d
 <details>
 <summary>See generate custom metadata instructions.</summary>
 
+####
+
 First, add metadata generation script to **your project's** `package.json`
 
 ```js
@@ -995,6 +1016,8 @@ The arguments are
 
 <details>
 <summary>Then use the generated <code>metadata.min.json</code> with the exported "custom" functions.</summary>
+
+####
 
 In ES6 that would be
 
@@ -1163,6 +1186,12 @@ After developing, the full test suite can be evaluated by running:
 
 ```sh
 npm test
+```
+
+Test coverage must remain at 100%:
+
+```sh
+npm run test-coverage
 ```
 
 When you're ready to test your new functionality on a real project, you can run
