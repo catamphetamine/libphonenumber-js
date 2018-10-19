@@ -199,45 +199,53 @@
 				getInitialState: function()
 				{
 					return {
-						value   : '+12133734253',
-						parse   : '213-373-4253',
-						format  : '2133734253',
-						country : 'US',
-						findNumbers : 'The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.'
+						parseCountry : 'US',
+						parseValue   : '213-373-4253',
+						asYouTypeCountry : 'US',
+						asYouTypeValue   : '', // '+12133734253',
+						findNumbersCountry : 'US',
+						findNumbersText : 'For more details call +7 (800) 555-35-35 internationally or reach the local US branch at (213) 373-4253 ext. 1234 for paid customer support.'
 					}
 				},
 
 				render: function()
 				{
 					// const libphonenumber = window.libphonenumber
-					const input_format   = window['input-format']
+					const inputFormat = window['input-format']
 
-					const ReactInput        = input_format.ReactInput
-					const templateParser    = input_format.templateParser
-					const templateFormatter = input_format.templateFormatter
-					const parseDigit        = input_format.parseDigit
+					const ReactInput        = inputFormat.ReactInput
+					const templateParser    = inputFormat.templateParser
+					const templateFormatter = inputFormat.templateFormatter
+					const parseDigit        = inputFormat.parseDigit
 
 					let asYouType
-					let parsed_number
-					let numbers_found = []
+					let parsedNumber
+					let numbersFound = []
 
-					const { country, parse, format, value, findNumbers } = this.state
+					const {
+						parseCountry,
+						parseValue,
+						asYouTypeCountry,
+						asYouTypeValue,
+						findNumbersCountry,
+						findNumbersText
+					} = this.state
 
 					try {
-						asYouType = new libphonenumber.AsYouType(country)
-						asYouType.input(value)
+						parsedNumber = libphonenumber.parsePhoneNumber(parseValue, parseCountry)
 					} catch (error) {
 						console.error(error)
 					}
 
 					try {
-						parsed_number = libphonenumber.parsePhoneNumber(parse, country)
+						asYouType = new libphonenumber.AsYouType(asYouTypeCountry)
+						asYouType.input(asYouTypeValue)
 					} catch (error) {
 						console.error(error)
 					}
 
 					try {
-						numbers_found = libphonenumber.findNumbers(findNumbers, country, { v2: true })
+						numbersFound = libphonenumber.findNumbers(findNumbersText, findNumbersCountry, { v2: true })
 					} catch (error) {
 						console.error(error)
 					}
@@ -248,18 +256,18 @@
 
 							<input
 								type="text"
-								value={this.state.country}
-								onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
+								value={this.state.parseCountry}
+								onChange={event => this.setState({ parseCountry: event.target.value.toUpperCase() })}
 								style={{ width: '40px', marginRight: '10px' }}/>
 
 							<input
 								type="text"
-								value={this.state.parse}
-								onChange={event => this.setState({ parse: event.target.value })}/>
+								value={this.state.parseValue}
+								onChange={event => this.setState({ parseValue: event.target.value })}/>
 
 							<div className="section">
-								{parsed_number &&
-									<PhoneNumber>{parsed_number}</PhoneNumber>
+								{parsedNumber &&
+									<PhoneNumber>{parsedNumber}</PhoneNumber>
 								}
 							</div>
 
@@ -268,9 +276,9 @@
 							{/* type="tel" introduces bugs on Samsung Android phones */}
 							{/* https://github.com/catamphetamine/react-phone-number-input/issues/59 */}
 							<ReactInput
-								autoFocus
-								value={this.state.value}
-								onChange={value => this.setState({ value })}
+								placeholder="Enter a phone number"
+								value={this.state.asYouTypeValue}
+								onChange={value => this.setState({ asYouTypeValue: value })}
 								parse={(character, value) =>
 								{
 									// Leading plus is allowed
@@ -292,7 +300,7 @@
 
 									try
 									{
-										const asYouType = new libphonenumber.AsYouType(this.state.country)
+										const asYouType = new libphonenumber.AsYouType(this.state.asYouTypeCountry)
 										text = asYouType.input(value)
 										template = asYouType.template
 									}
@@ -313,17 +321,20 @@
 								}}/>
 
 							<div className="section">
-								<div className="section__line">Default country:
+								<div className="section__line">
+									Default country:
 									<input
 										type="text"
-										value={this.state.country}
-										onChange={event => this.setState({ country: event.target.value.toUpperCase() })}
-										style={{ width: '40px', marginLeft: '6px' }}/>
+										value={this.state.asYouTypeCountry}
+										onChange={event => this.setState({ asYouTypeCountry: event.target.value.toUpperCase() })}
+										style={{ width: '40px', marginLeft: '8px' }}/>
 								</div>
 
 								<div className="section"/>
 
-								<KeyValue name="Template" value={asYouType ? asYouType.getTemplate() || '—' : '—'}/>
+								{asYouType && asYouType.getTemplate() &&
+									<KeyValue name="Template" value={asYouType.getTemplate()}/>
+								}
 
 								{asYouType && asYouType.getNumber() &&
 									<PhoneNumber>{asYouType.getNumber()}</PhoneNumber>
@@ -332,25 +343,38 @@
 
 							<h2>Find phone numbers</h2>
 
+							<div className="section">
+								<div className="section__line">
+									Default country:
+									<input
+										type="text"
+										value={this.state.findNumbersCountry}
+										onChange={event => this.setState({ findNumbersCountry: event.target.value.toUpperCase() })}
+										style={{ width: '40px', marginLeft: '8px' }}/>
+								</div>
+							</div>
+
+							<div className="section"/>
+
 							<textarea
-								value={this.state.findNumbers}
-								onChange={event => this.setState({ findNumbers: event.target.value })}
+								value={this.state.findNumbersText}
+								onChange={event => this.setState({ findNumbersText: event.target.value })}
 								className="find-numbers-text"/>
 
-							{ numbers_found.length === 0 && 'No phone numbers found' }
-							{ numbers_found.length > 0 && 'Phone numbers found: ' + numbers_found.length }
+							{ numbersFound.length === 0 && 'No phone numbers found' }
+							{ numbersFound.length > 0 && 'Phone numbers found: ' + numbersFound.length }
 
-							{ numbers_found.length > 0 &&
+							{ numbersFound.length > 0 &&
 								<ContentEditable
-									html={highlight_phones(this.state.findNumbers, numbers_found)}
-									onChange={event => this.setState({ findNumbers: strip_marks(event.target.value) })}
+									html={highlight_phones(this.state.findNumbersText, numbersFound)}
+									onChange={event => this.setState({ findNumbersText: strip_marks(event.target.value) })}
 									readOnly
 									className="find-numbers-highlighted" />
 							}
 
-							{ numbers_found.length > 0 &&
+							{ numbersFound.length > 0 &&
 								<ul className="numbers-found">
-									{numbers_found.map((number, i) => (
+									{numbersFound.map((number, i) => (
 										<li key={i}>
 											<strong>Number</strong>: <code>{number.number.number}</code>,{' '}
 											<strong>Country</strong>: <code>{number.number.country}</code>,{' '}
