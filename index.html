@@ -187,6 +187,8 @@
 					['National', number.formatNational()],
 					['International', number.formatInternational()],
 					['URI', number.getURI()],
+					['Type', number.getType() || '—'],
+					['Possible', number.isPossible() ? 'true' : 'false'],
 					['Valid', number.isValid() ? 'true' : 'false']
 				]
 				return (
