@@ -297,7 +297,7 @@ See also ["Using phone number validation feature"](#using-phone-number-validatio
 
 #### `getType()`
 
-Returns phone number type (fixed line, mobile, toll free, etc) or `undefined` (if the number is invalid or if there are no phone number type regular expressions in metadata). This function will only work as expected if `--extended` ("full") metadata is used (or if metadata was generated with the relevant `--types`) (see [Customizing metadata](#customizing-metadata) section of this document). The default metadata doesn't include the regular expressions required for getting phone number type for most countries because those regular expressions consume a lot of space (two thirds of the total size of the 140 kilobyte `--extended` ("full") metadata).
+Returns phone number type (fixed line, mobile, toll free, etc) or `undefined` (if the number is invalid or if there are no phone number type regular expressions in metadata). This function will only work as expected if "full" metadata is used (or if metadata was generated with the relevant `--types`) (see [Customizing metadata](#customizing-metadata) section of this document). The default metadata doesn't include the regular expressions required for getting phone number type for most countries because those regular expressions consume a lot of space (two thirds of the total size of the 140 kilobyte "full" metadata).
 
 <details>
 <summary>The list of possible return values</summary>
