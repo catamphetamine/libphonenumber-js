@@ -297,14 +297,13 @@ See also ["Using phone number validation feature"](#using-phone-number-validatio
 
 #### `getType()`
 
-Determines phone number type (fixed line, mobile, toll free, etc). This function will work if `--extended` (or relevant `--types`) metadata is available (see [Customizing metadata](#customizing-metadata) section of this document). The regular expressions used to differentiate between various phone number types consume a lot of space (two thirds of the total size of the 140 kilobyte `--extended` library build) therefore they're not included in the bundle by default.
+Returns phone number type (fixed line, mobile, toll free, etc) or `undefined` (if the number is invalid or if there are no phone number type regular expressions in metadata). This function will only work as expected if `--extended` ("full") metadata is used (or if metadata was generated with the relevant `--types`) (see [Customizing metadata](#customizing-metadata) section of this document). The default metadata doesn't include the regular expressions required for getting phone number type for most countries because those regular expressions consume a lot of space (two thirds of the total size of the 140 kilobyte `--extended` ("full") metadata).
 
 <details>
 <summary>The list of possible return values</summary>
 
 ####
 
-* `undefined`
 * `MOBILE`
 * `FIXED_LINE`
 * `FIXED_LINE_OR_MOBILE`
@@ -1009,7 +1008,7 @@ The arguments are
 * The first argument is the output metadata file path.
 * `--countries` argument is a comma-separated list of the countries included (if `--countries` is omitted then all countries are included).
 * `--extended` argument may be passed to include all regular expressions for precise phone number validation and getting phone number type, which increases the precision of phone number validation but at the same time it will enlarge the resulting metadata size approximately twice.
-* `--types ...` argument may be passed instead of `--extended` to only include the precise phone number type regular expressions for a specific set of phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [The complete list of phone number types](https://github.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18).
+* `--types ...` argument may be passed instead of `--extended` to only include the precise phone number type regular expressions for a specific set of phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [The complete list of phone number types](https://github.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18). Caution: phone number validation function is basically an alias for `metadata.phoneTypeRegExps ? number.getType() !== undefined : metadata.looseValidationRegExp.test(number)`, so, for example, a `--types mobile` metadata will only return `.isValid() === true` for mobile numbers because `metadata.phoneTypeRegExps` is not empty but at the same time it only contains the regular expression for mobile numbers.
 </details>
 
 ####
