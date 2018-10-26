@@ -1,7 +1,10 @@
 // This is an enhanced port of Google Android `libphonenumber`'s
-// `asyoutypeformatter.js` of 17th November, 2016.
+// `asyoutypeformatter.js` of October 26th, 2018.
 //
 // https://github.com/googlei18n/libphonenumber/blob/8d21a365061de2ba0675c878a710a7b24f74d2ae/javascript/i18n/phonenumbers/asyoutypeformatter.js
+//
+// Simplified: does not differentiate between "local-only" numbers
+// and "internationally dialable" numbers.
 
 import Metadata from './metadata'
 
@@ -406,6 +409,8 @@ export default class AsYouType
 			this.metadata.country(undefined)
 			this.countryCallingCode = undefined
 
+			// "Available formats" are all formats available for the country.
+			// "Matching formats" are only formats eligible for the national number being entered.
 			this.available_formats = []
 			this.matching_formats = undefined
 		}
@@ -459,6 +464,9 @@ export default class AsYouType
 		if (index_of_leading_digits_pattern < 0) {
 			index_of_leading_digits_pattern = 0
 		}
+
+		// "Available formats" are all formats available for the country.
+		// "Matching formats" are only formats eligible for the national number being entered.
 
 		// If at least `MIN_LEADING_DIGITS_LENGTH` digits of a national number are available
 		// then format matching starts narrowing down the list of possible formats
