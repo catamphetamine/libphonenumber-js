@@ -917,7 +917,7 @@ Phone number validation bugs should **only** be reported if they appear when usi
 
 There is also a possibility of this library's demo metadata being outdated, or this library's metadata lagging behind Google's (I have to update it manually from time to time due to `ssh-agent` not working properly on Windows).
 
-There also have been cases when Google's demo wasn't updated to the latest metadata and showed incorrect results. So Google's demo is not a reliable source of truth.
+When reporting `findNumbers()` bugs one should know that `findNumbers()` code was ported from [Google's Java code](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java). I didn't write it myself, I just ported it. Therefore, it is unlikely that anyone other than Google will be fixing such bugs.
 
 ## TypeScript
 
