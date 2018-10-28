@@ -5,6 +5,8 @@
 //
 // Simplified: does not differentiate between "local-only" numbers
 // and "internationally dialable" numbers.
+// For example, doesn't include changes like this:
+// https://github.com/googlei18n/libphonenumber/commit/865da605da12b01053c4f053310bac7c5fbb7935
 
 import Metadata from './metadata'
 
