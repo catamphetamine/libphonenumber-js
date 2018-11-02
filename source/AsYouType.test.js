@@ -402,7 +402,15 @@ describe('as you type', () =>
 	it('should return a PhoneNumber instance', () =>
 	{
 		const formatter = new as_you_type('BR')
-		formatter.input('+1-213-373-4253')
+
+		// No country calling code.
+		expect(formatter.getNumber()).to.be.undefined
+
+		formatter.input('+1')
+		// No national number digits.
+		expect(formatter.getNumber()).to.be.undefined
+
+		formatter.input('213-373-4253')
 
 		let phoneNumber = formatter.getNumber()
 		phoneNumber.country.should.equal('US')
