@@ -1,9 +1,16 @@
 import _parsePhoneNumber from './parsePhoneNumber'
 import metadata from '../metadata.min.json'
+import metadataFull from '../metadata.full.json'
 
 function parsePhoneNumber(...parameters)
 {
 	parameters.push(metadata)
+	return _parsePhoneNumber.apply(this, parameters)
+}
+
+function parsePhoneNumberFull(...parameters)
+{
+	parameters.push(metadataFull)
 	return _parsePhoneNumber.apply(this, parameters)
 }
 
@@ -16,7 +23,8 @@ describe('parsePhoneNumber', () => {
 		phoneNumber.number.should.equal('+78005553535')
 		phoneNumber.isPossible().should.equal(true)
 		phoneNumber.isValid().should.equal(true)
-		phoneNumber.getType().should.equal('TOLL_FREE')
+		// Russian phone type regexps aren't included in default metadata.
+		parsePhoneNumberFull('Phone: 8 (800) 555 35 35.', 'RU').getType().should.equal('TOLL_FREE')
 	})
 
 	it('shouldn\'t set country when it\'s non-derivable', () => {

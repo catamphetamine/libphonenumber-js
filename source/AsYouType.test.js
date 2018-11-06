@@ -382,11 +382,13 @@ describe('as you type', () =>
 		formatter.input('01010000').should.equal('010 10000')
 		formatter.reset().input('1010000').should.equal('10 1000 0')
 
-		// Reset a chosen format when it no longer holds given the new leading digits.
-		// If Google changes metadata for Australia then this test might not cover the case.
-		formatter = new as_you_type('AU')
-		formatter.input('180').should.equal('180')
-		formatter.input('2').should.equal('180 2')
+		// Reset a chosen format when it no longer applies given the new leading digits.
+		// If Google changes metadata for England then this test might not cover the case.
+		formatter = new as_you_type('GB')
+		formatter.input('0845').should.equal('0845')
+		// New leading digits don't match the format previously chosen.
+		// Reset the format.
+		formatter.input('0').should.equal('0845 0')
 	})
 
 	it('should not accept phone number extensions', function()

@@ -125,7 +125,7 @@ describe('parse', () =>
 		// Too short.
 		parse('+7 (800) 55-35-35', { extended: true }).should.deep.equal
 		({
-			country            : undefined,
+			country            : 'RU',
 			countryCallingCode : '7',
 			phone              : '800553535',
 			carrierCode        : undefined,
