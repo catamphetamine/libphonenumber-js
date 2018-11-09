@@ -229,6 +229,16 @@ try {
 
 Returns an instance of [`PhoneNumber`](#phonenumber) class. Throws in case of an error: no phone number found, non-existent [country calling code](#country-calling-code), invalid default country, etc.
 
+<details>
+<summary>Possible errors</summary>
+
+* `INVALID_COUNTRY` — When `defaultCountry` doesn't exist (`parsePhoneNumber('(111) 222-3333', 'XX')`), or when parsing non-international number without a `defaultCountry` (`parsePhoneNumber('(111) 222-3333')`), or when international number country calling code doesn't exist (`parsePhoneNumber('+9991112223333')`).
+
+* `NOT_A_NUMBER` — When no phone number was found. For example, when there are no digits (`"abcde"`) or when there's not enough digits (`parsePhoneNumber('2', 'US')`, `parsePhoneNumber('+1')`).
+
+* `TOO_LONG` — When national (significant) number is too long (17 digits max) or when the string being parsed is too long (250 characters max).
+</details>
+
 ### `PhoneNumber`
 
 <!--
