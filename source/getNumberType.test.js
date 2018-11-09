@@ -8,7 +8,7 @@ function get_number_type(...parameters)
 	return get_number_type_custom.apply(this, parameters)
 }
 
-describe('get_number_type', () =>
+describe('getNumberType', () =>
 {
 	it('should infer phone number type MOBILE', function()
 	{
