@@ -97,10 +97,9 @@ export function getCountryCallingCode(countryCode: CountryCode): CountryCallingC
 
 export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;
 
-export function formatIncompleteParsedNumber(number: string, countryCode?: CountryCode): string;
-export function parseIncompleteParsedNumber(text: string): string;
+export function formatIncompletePhoneNumber(number: string, countryCode?: CountryCode): string;
+export function parseIncompletePhoneNumber(text: string): string;
 export function parseParsedNumberCharacter(character: string): string;
-export function parseIncompletePhoneNumber(character: string): string;
 
 export class AsYouType {
   constructor(defaultCountryCode?: CountryCode);

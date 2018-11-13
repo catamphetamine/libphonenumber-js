@@ -70,7 +70,7 @@ export function getCountryCallingCode(countryCode: CountryCode, metadata: object
 
 export function getPhoneCode(countryCode: CountryCode, metadata: object): CountryCallingCode;
 
-export function formatIncompleteParsedNumber(number: string, metadata: object): string;
-export function formatIncompleteParsedNumber(number: string, countryCode: CountryCode, metadata: object): string;
-export function parseIncompleteParsedNumber(text: string): string;
+export function formatIncompletePhoneNumber(number: string, metadata: object): string;
+export function formatIncompletePhoneNumber(number: string, countryCode: CountryCode, metadata: object): string;
+export function parseIncompletePhoneNumber(text: string): string;
 export function parseParsedNumberCharacter(character: string): string;
