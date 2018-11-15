@@ -248,7 +248,7 @@ export default function parse(arg_1, arg_2, arg_3, arg_4)
 		return phoneNumber
 	}
 
-	// Check if national phone number pattern matches the number
+	// Check if national phone number pattern matches the number.
 	// National number pattern is different for each country,
 	// even for those ones which are part of the "NANPA" group.
 	const valid = country && matches_entirely(nationalNumber, metadata.nationalNumberPattern()) ? true : false
