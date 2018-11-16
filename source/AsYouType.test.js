@@ -19,6 +19,15 @@ describe('as you type', () =>
 		new as_you_type('US').input('2133734').should.equal('(213) 373-4')
 
 		// With national prefix test
+		new as_you_type('RU').input('880055535').should.equal('8 (800) 555-35')
+
+		// US national number retains national prefix.
+		new as_you_type('US').input('12133734').should.equal('1 (213) 373-4')
+
+		// US national number retains national prefix (full number).
+		new as_you_type('US').input('12133734253').should.equal('1 (213) 373-4253')
+
+		// With national prefix test
 		new as_you_type('RU').input('88005553535').should.equal('8 (800) 555-35-35')
 
 		// Should discard the national prefix
@@ -205,8 +214,8 @@ describe('as you type', () =>
 		// National prefix should not be prepended
 		// when formatting local NANPA phone numbers.
 		new as_you_type('US').input('1').should.equal('1')
-		new as_you_type('US').input('12').should.equal('2')
-		new as_you_type('US').input('123').should.equal('23')
+		new as_you_type('US').input('12').should.equal('1 2')
+		new as_you_type('US').input('123').should.equal('1 23')
 
 		// Bulgaria
 		// (should not prepend national prefix `0`)

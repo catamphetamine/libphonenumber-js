@@ -274,6 +274,8 @@ export default function(input, version, included_countries, extended, included_p
 				// matching phone number pattern `(\d{2})(\d{6})` with format `$1 $2`
 				// is written as a local phone number `(0xx) xxxxxx`.
 				//
+				// Can be `undefined`.
+				//
 				national_prefix_formatting_rule: national_prefix_formatting_rule(territory.$.nationalPrefixFormattingRule, territory.$.nationalPrefix),
 
 				// Is it possible that a national (significant)
@@ -282,6 +284,9 @@ export default function(input, version, included_countries, extended, included_p
 				// E.g. in Gabon some numbers start with a `0`
 				// while the national prefix is also `0`
 				// which is optional for mobile numbers.
+				//
+				// This seems to only be used for validating
+				// possible formats in AsYouType formatter.
 				//
 				national_prefix_is_optional_when_formatting: territory.$.nationalPrefixOptionalWhenFormatting ? Boolean(territory.$.nationalPrefixOptionalWhenFormatting) : undefined,
 

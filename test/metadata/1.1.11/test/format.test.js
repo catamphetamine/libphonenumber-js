@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import formatter, { local_to_international_style } from '../../../../source/format'
+import formatter from '../../../../source/format'
 
 function format(...parameters)
 {
@@ -87,12 +87,6 @@ describe('format', () =>
 
 		// No formats
 		format('012345', 'AC', 'National').should.equal('012345')
-	})
-
-	it('should convert local to international style format', function()
-	{
-		local_to_international_style('(xxx) xxx-xx-xx').should.equal('xxx xxx xx xx')
-		local_to_international_style('(xxx)xxx').should.equal('xxx xxx')
 	})
 
 	it('should format phone number extensions', function()

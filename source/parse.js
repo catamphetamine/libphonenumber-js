@@ -359,9 +359,10 @@ export function strip_national_prefix_and_carrier_code(number, metadata)
 
 	// If the national number tranformation is needed then do it.
 	//
-	// I don't know what did they mean by `&& national_prefix_matcher[captured_groups_count]`.
-	// https://github.com/googlei18n/libphonenumber/blob/d978e59c2e6b1ddfb6816cd190e1b62d9a96bc3b/javascript/i18n/phonenumbers/phonenumberutil.js#L3885
-	// https://github.com/googlei18n/libphonenumber/blob/d978e59c2e6b1ddfb6816cd190e1b62d9a96bc3b/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberUtil.java#L2906
+	// `national_prefix_matcher[captured_groups_count]` means that
+	// the corresponding captured group is not empty.
+	// It can be empty if it's optional.
+	// Example: "0?(?:...)?" for Argentina.
 	//
 	if (metadata.nationalPrefixTransformRule() && national_prefix_matcher[captured_groups_count])
 	{

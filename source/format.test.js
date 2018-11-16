@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import formatter, { local_to_international_style } from './format'
+import formatter, { changeInternationalFormatStyle } from './format'
 
 function format(...parameters)
 {
@@ -117,10 +117,10 @@ describe('format', () =>
 		expect(() => format({ phone: '123', country: 'USA' }, 'NATIONAL')).to.throw('Unknown country')
 	})
 
-	it('should convert local to international style format', function()
+	it('should change Google\'s international format style', function()
 	{
-		local_to_international_style('(xxx) xxx-xx-xx').should.equal('xxx xxx xx xx')
-		local_to_international_style('(xxx)xxx').should.equal('xxx xxx')
+		changeInternationalFormatStyle('(xxx) xxx-xx-xx').should.equal('xxx xxx xx xx')
+		changeInternationalFormatStyle('(xxx)xxx').should.equal('xxx xxx')
 	})
 
 	it('should format phone number extensions', function()
@@ -202,7 +202,7 @@ describe('format', () =>
 
 		// Same country calling code.
 		format('+12133734253', 'IDD', { fromCountry: 'CA', humanReadable: true }).should.equal('1 (213) 373-4253')
-		format('+78005553535', 'IDD', { fromCountry: 'KZ', humanReadable: true }).should.equal('800 555-35-35')
+		format('+78005553535', 'IDD', { fromCountry: 'KZ', humanReadable: true }).should.equal('8 (800) 555-35-35')
 
 		format('+78005553535', 'IDD', { fromCountry: 'US' }).should.equal('01178005553535')
 		format('+78005553535', 'IDD', { fromCountry: 'US', humanReadable: true }).should.equal('011 7 800 555 35 35')

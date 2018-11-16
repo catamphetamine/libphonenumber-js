@@ -199,8 +199,8 @@ describe('as you type', () =>
 		// National prefix should not be prepended
 		// when formatting local NANPA phone numbers.
 		new as_you_type('US').input('1').should.equal('1')
-		new as_you_type('US').input('12').should.equal('2')
-		new as_you_type('US').input('123').should.equal('23')
+		new as_you_type('US').input('12').should.equal('1 2')
+		new as_you_type('US').input('123').should.equal('1 23')
 
 		// Bulgaria
 		// (should not prepend national prefix `0`)

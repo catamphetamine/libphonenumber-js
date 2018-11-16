@@ -250,20 +250,16 @@ class Format
 		// contains no national prefix itself, or when this rule is set but
 		// national prefix is optional for this phone number format
 		// (and it is not enforced explicitly)
-		return this.nationalPrefixFormattingRule() &&
-			// Check that national prefix formatting rule is not a dummy one.
-			// Check that national prefix formatting rule actually has national prefix digit(s).
-			this.usesNationalPrefix() &&
-			// Or maybe national prefix is optional for this format
-			!this.nationalPrefixIsOptionalWhenFormatting()
+		return this.usesNationalPrefix() && !this.nationalPrefixIsOptionalWhenFormatting()
 	}
 
-	// Checks whether national prefix formatting rule contains national prefix
+	// Checks whether national prefix formatting rule contains national prefix.
 	usesNationalPrefix()
 	{
-		// Check that national prefix formatting rule is not a dummy one
-		return this.nationalPrefixFormattingRule() !== '$1' &&
-			// Check that national prefix formatting rule actually has national prefix digit(s)
+		return this.nationalPrefixFormattingRule() &&
+			// Check that national prefix formatting rule is not a dummy one.
+			this.nationalPrefixFormattingRule() !== '$1' &&
+			// Check that national prefix formatting rule actually has national prefix digit(s).
 			/\d/.test(this.nationalPrefixFormattingRule().replace('$1', ''))
 	}
 

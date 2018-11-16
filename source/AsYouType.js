@@ -34,7 +34,7 @@ import
 {
 	FIRST_GROUP_PATTERN,
 	format_national_number_using_format,
-	local_to_international_style
+	changeInternationalFormatStyle
 }
 from './format'
 
@@ -550,14 +550,21 @@ export default class AsYouType
 			this.reset_format()
 			this.chosen_format = format
 
-			const formatted_number = format_national_number_using_format
+			let formatted_number = format_national_number_using_format
 			(
 				this.national_number,
 				format,
 				this.is_international(),
-				this.national_prefix.length > 0,
+				this.national_prefix !== '',
 				this.metadata
 			)
+
+			// Special handling for NANPA countries for AsYouType formatter.
+			// Copied from Google's `libphonenumber`:
+			// https://github.com/googlei18n/libphonenumber/blob/66986dbbe443ee8450e2b54dcd44ac384b3bbee8/java/libphonenumber/src/com/google/i18n/phonenumbers/AsYouTypeFormatter.java#L535-L573
+			if (this.national_prefix && this.countryCallingCode === '1') {
+				formatted_number = '1 ' + formatted_number
+			}
 
 			// Set `this.template` and `this.partially_populated_template`.
 			//
@@ -736,13 +743,17 @@ export default class AsYouType
 	is_format_applicable(format)
 	{
 		// If national prefix is mandatory for this phone number format
-		// and the user didn't input the national prefix,
+		// and the user didn't input the national prefix
 		// then this phone number format isn't suitable.
-		if (!this.is_international() && !this.national_prefix && format.nationalPrefixIsMandatoryWhenFormatting())
-		{
+		if (!this.is_international() && !this.national_prefix && format.nationalPrefixIsMandatoryWhenFormatting()) {
 			return false
 		}
-
+		// If this format doesn't use national prefix
+		// but the user did input national prefix
+		// then this phone number format isn't suitable.
+		if (this.national_prefix && !format.usesNationalPrefix() && !format.nationalPrefixIsOptionalWhenFormatting()) {
+			return false
+		}
 		return true
 	}
 
@@ -914,7 +925,7 @@ export default class AsYouType
 	{
 		if (this.is_international())
 		{
-			return local_to_international_style(format.internationalFormat())
+			return changeInternationalFormatStyle(format.internationalFormat())
 		}
 
 		// If national prefix formatting rule is set
@@ -929,6 +940,13 @@ export default class AsYouType
 				// Make the national prefix part of the phone number template
 				return format.format().replace(FIRST_GROUP_PATTERN, format.nationalPrefixFormattingRule())
 			}
+		}
+		// Special handling for NANPA countries for AsYouType formatter.
+		// Copied from Google's `libphonenumber`:
+		// https://github.com/googlei18n/libphonenumber/blob/66986dbbe443ee8450e2b54dcd44ac384b3bbee8/java/libphonenumber/src/com/google/i18n/phonenumbers/AsYouTypeFormatter.java#L535-L573
+		else if (this.countryCallingCode === '1' && this.national_prefix === '1')
+		{
+			return `1 ${format.format()}`
 		}
 
 		return format.format()
