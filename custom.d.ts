@@ -74,3 +74,13 @@ export function formatIncompletePhoneNumber(number: string, metadata: object): s
 export function formatIncompletePhoneNumber(number: string, countryCode: CountryCode, metadata: object): string;
 export function parseIncompletePhoneNumber(text: string): string;
 export function parseParsedNumberCharacter(character: string): string;
+
+export class AsYouType {
+  constructor(defaultCountryCode: CountryCode, metadata: object);
+  input(text: string): string;
+  reset(): void;
+  country: CountryCode;
+  getNumber(): PhoneNumber;
+  getNationalNumber(): string;
+  template: string;
+}
