@@ -99,7 +99,8 @@ export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;
 
 export function formatIncompletePhoneNumber(number: string, countryCode?: CountryCode): string;
 export function parseIncompletePhoneNumber(text: string): string;
-export function parseParsedNumberCharacter(character: string): string;
+export function parsePhoneNumberCharacter(character: string): string;
+export function parseDigits(character: string): string;
 
 export class AsYouType {
   constructor(defaultCountryCode?: CountryCode);

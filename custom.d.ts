@@ -73,7 +73,8 @@ export function getPhoneCode(countryCode: CountryCode, metadata: object): Countr
 export function formatIncompletePhoneNumber(number: string, metadata: object): string;
 export function formatIncompletePhoneNumber(number: string, countryCode: CountryCode, metadata: object): string;
 export function parseIncompletePhoneNumber(text: string): string;
-export function parseParsedNumberCharacter(character: string): string;
+export function parsePhoneNumberCharacter(character: string): string;
+export function parseDigits(character: string): string;
 
 export class AsYouType {
   constructor(defaultCountryCode: CountryCode, metadata: object);

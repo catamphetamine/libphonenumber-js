@@ -43,6 +43,7 @@ import
 	formatIncompletePhoneNumber,
 	parseIncompletePhoneNumber,
 	parsePhoneNumberCharacter,
+	parseDigits,
 
 	Metadata,
 	getExtPrefix,
@@ -101,6 +102,7 @@ describe(`exports`, function()
 		formatIncompletePhoneNumber('+121337342').should.deep.equal('+1 213 373 42')
 		parseIncompletePhoneNumber('+1 213 373 42').should.equal('+121337342')
 		parsePhoneNumberCharacter('+').should.equal('+')
+		parseDigits('+123').should.equal('123')
 	})
 
 	// Deprecated exports: remove in `2.0.0`.
@@ -162,6 +164,7 @@ describe(`exports`, function()
 		Library.formatIncompletePhoneNumber('+121337342').should.deep.equal('+1 213 373 42')
 		Library.parseIncompletePhoneNumber('+1 213 373 42').should.equal('+121337342')
 		Library.parsePhoneNumberCharacter('+').should.equal('+')
+		Library.parseDigits('+123').should.equal('123')
 	})
 
 	it(`should export CommonJS custom functions`, function()
@@ -203,5 +206,6 @@ describe(`exports`, function()
 		Library.formatIncompletePhoneNumber('+121337342', null, metadata).should.deep.equal('+1 213 373 42')
 		Library.parseIncompletePhoneNumber('+1 213 373 42').should.equal('+121337342')
 		Library.parsePhoneNumberCharacter('+').should.equal('+')
+		Library.parseDigits('+123').should.equal('123')
 	})
 })

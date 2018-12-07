@@ -32,6 +32,7 @@ exports.AsYouType          = require('./build/AsYouType').default
 exports.formatIncompletePhoneNumber = require('./build/formatIncompletePhoneNumber').default
 exports.parseIncompletePhoneNumber  = require('./build/parseIncompletePhoneNumber').default
 exports.parsePhoneNumberCharacter   = require('./build/parseIncompletePhoneNumber').parsePhoneNumberCharacter
+exports.parseDigits   = require('./build/parseIncompletePhoneNumber').parseDigits
 
 // `DIGITS` are used by `react-phone-number-input`.
 // `DIGIT_PLACEHOLDER` is used by `react-phone-number-input`.

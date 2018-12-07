@@ -604,6 +604,15 @@ parsePhoneNumberCharacter('a', '') === ''
 ```
 -->
 
+### parseDigits(text)
+
+Parses digits from string. Can be used for building a phone number extension input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
+
+```js
+parseDigits('x123') === '123'
+parseDigits('٤٤٢٣') === '4423'
+```
+
 ### parseIncompletePhoneNumber(text)
 
 Parses phone number characters (`+` and digits). Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).

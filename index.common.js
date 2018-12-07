@@ -178,3 +178,4 @@ exports.formatIncompletePhoneNumber = function()
 
 exports.parseIncompletePhoneNumber = custom.parseIncompletePhoneNumber
 exports.parsePhoneNumberCharacter = custom.parsePhoneNumberCharacter
+exports.parseDigits = custom.parseDigits

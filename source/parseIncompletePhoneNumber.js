@@ -58,3 +58,34 @@ export function parsePhoneNumberCharacter(character, value)
 	// Allow digits.
 	return parseDigit(character)
 }
+
+/**
+ * Parses phone number digits from a string.
+ * Drops all punctuation leaving only digits.
+ * Also converts wide-ascii and arabic-indic numerals to conventional numerals.
+ * E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
+ * @param  {string} string
+ * @return {string}
+ * @example
+ * ```js
+ * parseDigits('8 (800) 555')
+ * // Outputs '8800555'.
+ * ```
+ */
+export function parseDigits(string)
+{
+	let result = ''
+
+	// Using `.split('')` here instead of normal `for ... of`
+	// because the importing application doesn't neccessarily include an ES6 polyfill.
+	// The `.split('')` approach discards "exotic" UTF-8 characters
+	// (the ones consisting of four bytes) but digits
+	// (including non-European ones) don't fall into that range
+	// so such "exotic" characters would be discarded anyway.
+	for (const character of string.split(''))
+	{
+		result += parseDigit(character, result) || ''
+	}
+
+	return result
+}

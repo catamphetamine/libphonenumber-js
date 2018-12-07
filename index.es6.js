@@ -24,7 +24,7 @@ export { default as Metadata } from './es6/metadata'
 import { getExtPrefix as getExtPrefixCustom } from './es6/metadata'
 import { parseRFC3966 as parseRFC3966Custom, formatRFC3966 as formatRFC3966Custom } from './es6/RFC3966'
 import formatIncompletePhoneNumberCustom from './es6/formatIncompletePhoneNumber'
-export { default as parseIncompletePhoneNumber, parsePhoneNumberCharacter } from './es6/parseIncompletePhoneNumber'
+export { default as parseIncompletePhoneNumber, parsePhoneNumberCharacter, parseDigits } from './es6/parseIncompletePhoneNumber'
 
 export function parsePhoneNumber()
 {

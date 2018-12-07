@@ -1,4 +1,4 @@
-import parseIncompletePhoneNumber, { parsePhoneNumberCharacter } from './parseIncompletePhoneNumber'
+import parseIncompletePhoneNumber, { parsePhoneNumberCharacter, parseDigits } from './parseIncompletePhoneNumber'
 
 describe('parseIncompletePhoneNumber', () =>
 {
@@ -35,5 +35,9 @@ describe('parseIncompletePhoneNumber', () =>
 
 		// Parses non-European digits.
 		parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤').should.equal('+442323234')
+	})
+
+	it('should parse digits', () => {
+		parseDigits('+٤٤٢٣٢٣٢٣٤').should.equal('442323234')
 	})
 })
