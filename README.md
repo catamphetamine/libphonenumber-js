@@ -242,6 +242,8 @@ Returns an instance of [`PhoneNumber`](#phonenumber) class. Throws in case of an
 * `NOT_A_NUMBER` — When no phone number was found. For example, when there are no digits (`"abcde"`) or when there's not enough digits (`parsePhoneNumber('2', 'US')`, `parsePhoneNumber('+1')`).
 
 * `TOO_LONG` — When national (significant) number is too long (17 digits max) or when the string being parsed is too long (250 characters max).
+
+* `TOO_SHORT` — When national (significant) number is too short (for ex. 1 digit).
 </details>
 
 ### `PhoneNumber`
