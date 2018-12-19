@@ -308,13 +308,17 @@ Checks if the phone number is "possible". Only checks the phone number length, d
 
 #### `isValid()`
 
-Checks if the phone number is "valid". First checks the phone number length and then checks the phone number digits against all available regular expressions. By default the library uses the "minimal" metadata which is only 75 kilobytes in size but also doesn't include most of the validation regular expressions. Some very basic validation is still included for each country though. "Full" metadata (140 kilobytes) can be used (see [Customizing metadata](#customizing-metadata) section of this document).
+Checks if the phone number is "valid". First checks the phone number length and then checks the phone number digits against all available regular expressions.
+
+By default the library uses "minimal" metadata which is only 75 kilobytes in size but also doesn't include most of the validation regular expressions resulting in less strict validation rules (some very basic validation is still included for each country). If you don't mind the extra 65 kilobytes of metadata then use "full" metadata instead (140 kilobytes) (see [Customizing metadata](#customizing-metadata) section of this document) for validating phone numbers. Google's library always uses "full" metadata so it will yield different `isValidNumber()` results compared to the "minimal" metadata used by default in this library.
 
 See also ["Using phone number validation feature"](#using-phone-number-validation-feature) considerations.
 
 #### `getType()`
 
-Returns phone number type (fixed line, mobile, toll free, etc) or `undefined` (if the number is invalid or if there are no phone number type regular expressions in metadata). This function will only work as expected if "full" metadata is used (or if metadata was generated with the relevant `--types`) (see [Customizing metadata](#customizing-metadata) section of this document). The default metadata doesn't include the regular expressions required for getting phone number type for most countries because those regular expressions consume a lot of space (two thirds of the total size of the 140 kilobyte "full" metadata).
+Returns phone number type (fixed line, mobile, toll free, etc) or `undefined` (if the number is invalid or if there are no phone number type regular expressions for this country in metadata).
+
+By default the library uses "minimal" metadata which is only 75 kilobytes in size but also doesn't include most of the regular expressions corresponding to each specific phone number type (fixed line, mobile, toll free, etc) resulting in `getType()` returning `undefined` in most cases. If you don't mind the extra 65 kilobytes of metadata then use "full" metadata instead (140 kilobytes) (see [Customizing metadata](#customizing-metadata) section of this document) for getting phone number type. Google's library always uses "full" metadata so it will yield different `getNumberType()` results compared to the "minimal" metadata used by default in this library.
 
 <details>
 <summary>The list of possible return values</summary>
