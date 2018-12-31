@@ -51,6 +51,11 @@ And edit the README:
  * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) has been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
 -->
 
+1.7.0 / 31.12.2018
+==================
+
+  * Refactored the code to remove cyclic dependencies which caused warnings on React Native. It's not a breaking change but it's still a big code diff overall so incremented the "minor" version number.
+
 1.6.2 / 18.10.2018
 ==================
 
