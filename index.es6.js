@@ -11,7 +11,8 @@ import isValidNumberCustom from './es6/validate'
 import isValidNumberForRegionCustom from './es6/isValidNumberForRegion'
 
 // Deprecated
-import findPhoneNumbersCustom, { searchPhoneNumbers as searchPhoneNumbersCustom, PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
+import findPhoneNumbersCustom, { searchPhoneNumbers as searchPhoneNumbersCustom } from './es6/findPhoneNumbers'
+import { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers_'
 
 import findNumbersCustom from './es6/findNumbers'
 import searchNumbersCustom from './es6/searchNumbers'
@@ -24,7 +25,10 @@ export { default as Metadata } from './es6/metadata'
 import { getExtPrefix as getExtPrefixCustom } from './es6/metadata'
 import { parseRFC3966 as parseRFC3966Custom, formatRFC3966 as formatRFC3966Custom } from './es6/RFC3966'
 import formatIncompletePhoneNumberCustom from './es6/formatIncompletePhoneNumber'
-export { default as parseIncompletePhoneNumber, parsePhoneNumberCharacter, parseDigits } from './es6/parseIncompletePhoneNumber'
+export { default as parseIncompletePhoneNumber, parsePhoneNumberCharacter } from './es6/parseIncompletePhoneNumber'
+// Deprecated: maybe remove DIGITS export in 2.0.0.
+// (it was used in `react-phone-number-input`)
+export { DIGITS, parseDigits } from './es6/parseDigits'
 
 export function parsePhoneNumber()
 {
@@ -184,9 +188,6 @@ export function formatIncompletePhoneNumber()
 	return formatIncompletePhoneNumberCustom.apply(this, parameters)
 }
 
-// Deprecated: remove DIGITS export in 2.0.0 (unused).
-export { DIGITS } from './es6/common'
-
 // Deprecated: remove this in 2.0.0 and make `custom.js` in ES6
 // (the old `custom.js` becomes `custom.commonjs.js`).
 export { default as parseCustom } from './es6/parse'
@@ -194,7 +195,7 @@ export { default as formatCustom } from './es6/format'
 export { default as isValidNumberCustom } from './es6/validate'
 export { default as findPhoneNumbersCustom } from './es6/findPhoneNumbers'
 export { searchPhoneNumbers as searchPhoneNumbersCustom } from './es6/findPhoneNumbers'
-export { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers'
+export { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers_'
 export { default as getNumberTypeCustom } from './es6/getNumberType'
 export { default as getCountryCallingCodeCustom } from './es6/getCountryCallingCode'
 

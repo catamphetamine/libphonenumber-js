@@ -1,8 +1,8 @@
 import Metadata from './metadata'
-import isPossibleNumber from './isPossibleNumber'
-import isValidNumber from './validate'
-import getNumberType from './getNumberType'
-import formatNumber from './format'
+import isPossibleNumber from './isPossibleNumber_'
+import isValidNumber from './validate_'
+import getNumberType from './getNumberType_'
+import formatNumber from './format_'
 
 export default class PhoneNumber {
 	constructor(countryCallingCode, nationalNumber, metadata) {

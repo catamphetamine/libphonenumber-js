@@ -79,7 +79,7 @@ describe('format', () =>
 
 		// Unknown format type
 		thrower = () => format('123', 'US', 'Gay')
-		thrower.should.throw('Unknown format type')
+		thrower.should.throw('Unknown "format" argument')
 
 		// // No metadata
 		// thrower = () => formatter('123', 'US', 'E.164')

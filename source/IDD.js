@@ -1,5 +1,5 @@
 import Metadata from './metadata'
-import { matches_entirely, VALID_DIGITS } from './common'
+import { VALID_DIGITS } from './common.constants'
 
 const CAPTURING_DIGIT_PATTERN = new RegExp('([' + VALID_DIGITS + '])')
 

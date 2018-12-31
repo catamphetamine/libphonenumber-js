@@ -1,13 +1,10 @@
-import parseNumber from '../parse'
-import isValidNumber from '../validate'
-import { parseDigit } from '../common'
+import isValidNumber from '../validate_'
+import { parseDigits } from '../parseDigits'
 
-import
-{
+import {
 	startsWith,
 	endsWith
-}
-from './util'
+} from './util'
 
 /**
  * Leniency when finding potential phone numbers in text segments
@@ -30,7 +27,7 @@ export default
 	 */
 	VALID(number, candidate, metadata)
 	{
-		if (!isValidNumber(number, metadata) ||
+		if (!isValidNumber(number, undefined, metadata) ||
 			!containsOnlyValidXChars(number, candidate.toString(), metadata))
 		{
 			return false
@@ -57,7 +54,7 @@ export default
 	{
 		const candidateString = candidate.toString()
 
-		if (!isValidNumber(number, metadata)
+		if (!isValidNumber(number, undefined, metadata)
 			|| !containsOnlyValidXChars(number, candidateString, metadata)
 			|| containsMoreThanOneSlashInNationalNumber(number, candidateString)
 			|| !isNationalPrefixPresentIfRequired(number, metadata))
@@ -89,7 +86,7 @@ export default
 	{
 		const candidateString = candidate.toString()
 
-		if (!isValidNumber(number, metadata)
+		if (!isValidNumber(number, undefined, metadata)
 			|| !containsOnlyValidXChars(number, candidateString, metadata)
 			|| containsMoreThanOneSlashInNationalNumber(number, candidateString)
 			|| !isNationalPrefixPresentIfRequired(number, metadata))
@@ -394,25 +391,4 @@ function allNumberGroupsRemainGrouped
   // match the last group of the subscriber number. Note the extension cannot have
   // formatting in-between digits.
   return normalizedCandidate.slice(fromIndex).contains(number.getExtension())
-}
-
-function parseDigits(string)
-{
-  let result = ''
-
-  // Using `.split('')` here instead of normal `for ... of`
-  // because the importing application doesn't neccessarily include an ES6 polyfill.
-  // The `.split('')` approach discards "exotic" UTF-8 characters
-  // (the ones consisting of four bytes) but digits
-  // (including non-European ones) don't fall into that range
-  // so such "exotic" characters would be discarded anyway.
-  for (const character of string.split(''))
-  {
-    const digit = parseDigit(character)
-    if (digit) {
-      result += digit
-    }
-  }
-
-  return result
 }

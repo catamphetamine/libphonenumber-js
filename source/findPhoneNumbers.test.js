@@ -1,4 +1,5 @@
-import findNumbers, { searchPhoneNumbers, PhoneNumberSearch } from './findPhoneNumbers'
+import findNumbers, { searchPhoneNumbers } from './findPhoneNumbers'
+import { PhoneNumberSearch } from './findPhoneNumbers_'
 import metadata from '../metadata.min.json'
 
 describe('findPhoneNumbers', () =>
@@ -157,9 +158,9 @@ describe('findPhoneNumbers', () =>
 		thrower = () => findNumbers(2141111111, 'US')
 		thrower.should.throw('A text for parsing must be a string.')
 
-		// No metadata
-		thrower = () => findNumbers('')
-		thrower.should.throw('`metadata` argument not passed')
+		// // No metadata
+		// thrower = () => findNumbers('')
+		// thrower.should.throw('`metadata` argument not passed')
 	})
 
 	it('shouldn\'t find phone numbers which are not phone numbers', function()

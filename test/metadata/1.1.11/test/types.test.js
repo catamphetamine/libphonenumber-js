@@ -1,6 +1,7 @@
 import metadata from '../metadata.full'
 import Metadata from '../../../../source/metadata'
-import get_number_type_custom, { check_number_length_for_type, merge_arrays } from '../../../../source/getNumberType'
+import get_number_type_custom from '../../../../source/getNumberType'
+import { check_number_length_for_type, merge_arrays } from '../../../../source/getNumberType_'
 
 function get_number_type(...parameters)
 {
@@ -59,9 +60,11 @@ describe('get_number_type', () =>
 
 	it('should work in edge cases', function()
 	{
-		// No metadata
-		let thrower = () => get_number_type_custom({ phone: '+78005553535' })
-		thrower.should.throw('`metadata` argument not passed')
+		let thrower
+
+		// // No metadata
+		// thrower = () => get_number_type_custom({ phone: '+78005553535' })
+		// thrower.should.throw('`metadata` argument not passed')
 
 		// Parsed phone number
 		get_number_type({ phone: '8005553535', country: 'RU' }).should.equal('TOLL_FREE')

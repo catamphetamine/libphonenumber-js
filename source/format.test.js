@@ -1,10 +1,11 @@
 import metadata from '../metadata.min.json'
-import formatter, { changeInternationalFormatStyle } from './format'
+import { changeInternationalFormatStyle } from './format_'
+import _formatNumber from './format'
 
 function format(...parameters)
 {
 	parameters.push(metadata)
-	return formatter.apply(this, parameters)
+	return _formatNumber.apply(this, parameters)
 }
 
 describe('format', () =>
@@ -98,10 +99,10 @@ describe('format', () =>
 
 		// Unknown format type
 		thrower = () => format('123', 'US', 'Gay')
-		thrower.should.throw('Unknown format type')
+		thrower.should.throw('Unknown "format" argument')
 
 		// No metadata
-		thrower = () => formatter('123', 'US', 'E.164')
+		thrower = () => _formatNumber('123', 'US', 'E.164')
 		thrower.should.throw('`metadata`')
 
 		// No formats

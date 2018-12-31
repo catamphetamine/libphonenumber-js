@@ -1,5 +1,5 @@
 import { sort_out_arguments } from './getNumberType'
-import isValidNumber from './validate'
+import isValidNumber from './validate_'
 
 /**
  * Checks if a given phone number is valid.
@@ -29,5 +29,5 @@ export default function isValidNumberForRegion(number, country, _metadata)
 
 	const { input, metadata } = sort_out_arguments(number, country, _metadata)
 
-	return input.country === country && isValidNumber(input, metadata.metadata)
+	return input.country === country && isValidNumber(input, undefined, metadata)
 }

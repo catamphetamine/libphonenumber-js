@@ -6,40 +6,33 @@
 
 import PhoneNumber from './PhoneNumber'
 
-import
-{
-	MAX_LENGTH_FOR_NSN,
-	MAX_LENGTH_COUNTRY_CODE,
-	VALID_PUNCTUATION,
-	create_extension_pattern
-}
-from './common'
+import {
+  MAX_LENGTH_FOR_NSN,
+  MAX_LENGTH_COUNTRY_CODE,
+  VALID_PUNCTUATION
+} from './common.constants'
 
-import
-{
+import { EXTN_PATTERNS_FOR_MATCHING } from './extension'
+
+import {
 	limit,
 	trimAfterFirstMatch
-}
-from './findNumbers/util'
+} from './findNumbers/util'
 
-import
-{
+import {
 	_pL,
 	_pN,
 	pZ,
 	PZ,
 	pNd
-}
-from './findNumbers/utf-8'
+} from './findNumbers/utf-8'
 
 import Leniency from './findNumbers/Leniency'
 import parsePreCandidate from './findNumbers/parsePreCandidate'
 import isValidPreCandidate from './findNumbers/isValidPreCandidate'
 import isValidCandidate, { LEAD_CLASS } from './findNumbers/isValidCandidate'
 
-import formatNumber from './format'
-import parseNumber from './parse'
-import isValidNumber from './validate'
+import parseNumber from './parse_'
 
 /**
  * Patterns used to extract phone numbers from a larger phone-number-like pattern. These are
@@ -115,7 +108,7 @@ const digitSequence = pNd + limit(1, digitBlockLimit)
  */
 const PATTERN = '(?:' + LEAD_CLASS + punctuation + ')' + leadLimit
 	+ digitSequence + '(?:' + punctuation + digitSequence + ')' + blockLimit
-	+ '(?:' + create_extension_pattern('matching') + ')?'
+	+ '(?:' + EXTN_PATTERNS_FOR_MATCHING + ')?'
 
 // Regular expression of trailing characters that we want to remove.
 // We remove all characters that are not alpha or numerical characters.
@@ -231,7 +224,7 @@ export default class PhoneNumberMatcher
 
 				if (match) {
 					if (this.options.v2) {
-						const phoneNumber = new PhoneNumber(match.country, match.phone, this.metadata.metadata)
+						const phoneNumber = new PhoneNumber(match.country, match.phone, this.metadata)
 						if (match.ext) {
 							phoneNumber.ext = match.ext
 						}
@@ -319,14 +312,14 @@ export default class PhoneNumberMatcher
         extended: true,
         defaultCountry: this.options.defaultCountry
       },
-      this.metadata.metadata
+      this.metadata
     )
 
     if (!number.possible) {
       return
     }
 
-    if (this.leniency(number, candidate, this.metadata.metadata))
+    if (this.leniency(number, candidate, this.metadata))
     {
       // // We used parseAndKeepRawInput to create this number,
       // // but for now we don't return the extra values parsed.

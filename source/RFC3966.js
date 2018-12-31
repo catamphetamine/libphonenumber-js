@@ -1,4 +1,4 @@
-import { is_viable_phone_number } from './parse'
+import isViablePhoneNumber from './isViablePhoneNumber'
 
 // https://www.ietf.org/rfc/rfc3966.txt
 
@@ -36,7 +36,7 @@ export function parseRFC3966(text)
 	}
 
 	// If the phone number is not viable, then abort.
-	if (!is_viable_phone_number(number))
+	if (!isViablePhoneNumber(number))
 	{
 		return {}
 	}

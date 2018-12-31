@@ -1,10 +1,10 @@
 import metadata from '../metadata.min.json'
-import validate from './validate'
+import _isValidNumber from './validate'
 
 function is_valid_number(...parameters)
 {
 	parameters.push(metadata)
-	return validate.apply(this, parameters)
+	return _isValidNumber.apply(this, parameters)
 }
 
 describe('validate', () =>
@@ -59,7 +59,7 @@ describe('validate', () =>
 	it('should work in edge cases', function()
 	{
 		// No metadata
-		let thrower = () => validate('+78005553535')
+		let thrower = () => _isValidNumber('+78005553535')
 		thrower.should.throw('`metadata` argument not passed')
 
 		// Non-phone-number characters in a phone number

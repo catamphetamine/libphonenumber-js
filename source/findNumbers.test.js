@@ -155,9 +155,12 @@ describe('findNumbers', () =>
 		thrower = () => findNumbers(2141111111, 'US')
 		thrower.should.throw('A text for parsing must be a string.')
 
-		// No metadata
-		thrower = () => findNumbers('')
-		thrower.should.throw('`metadata` argument not passed')
+		// // No metadata
+		// thrower = () => findNumbers('')
+		// thrower.should.throw('`metadata` argument not passed')
+
+		// No metadata, no default country, no phone numbers.
+		findNumbers('').should.deep.equal([])
 	})
 
 	it('shouldn\'t find phone numbers which are not phone numbers', function()

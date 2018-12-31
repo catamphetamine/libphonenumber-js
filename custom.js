@@ -25,18 +25,18 @@ exports.PhoneNumberMatcher = require('./build/PhoneNumberMatcher').default
 // Deprecated.
 exports.findPhoneNumbers   = require('./build/findPhoneNumbers').default
 exports.searchPhoneNumbers = require('./build/findPhoneNumbers').searchPhoneNumbers
-exports.PhoneNumberSearch  = require('./build/findPhoneNumbers').PhoneNumberSearch
+exports.PhoneNumberSearch  = require('./build/findPhoneNumbers_').PhoneNumberSearch
 
-exports.AsYouType          = require('./build/AsYouType').default
+exports.AsYouType = require('./build/AsYouType').default
 
 exports.formatIncompletePhoneNumber = require('./build/formatIncompletePhoneNumber').default
 exports.parseIncompletePhoneNumber  = require('./build/parseIncompletePhoneNumber').default
 exports.parsePhoneNumberCharacter   = require('./build/parseIncompletePhoneNumber').parsePhoneNumberCharacter
-exports.parseDigits   = require('./build/parseIncompletePhoneNumber').parseDigits
+exports.parseDigits   = require('./build/parseDigits').parseDigits
 
 // `DIGITS` are used by `react-phone-number-input`.
 // `DIGIT_PLACEHOLDER` is used by `react-phone-number-input`.
-exports.DIGITS            = require('./build/common').DIGITS
+exports.DIGITS            = require('./build/parseDigits').DIGITS
 exports.DIGIT_PLACEHOLDER = require('./build/AsYouType').DIGIT_PLACEHOLDER
 
 exports.getCountryCallingCode = require('./build/getCountryCallingCode').default

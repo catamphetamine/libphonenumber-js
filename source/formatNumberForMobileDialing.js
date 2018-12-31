@@ -5,9 +5,8 @@
 // Send a PR if you want to add them.
 
 import Metadata from './metadata'
-
-import format from './format'
-import get_number_type, { check_number_length_for_type } from './getNumberType'
+import format from './format_'
+import get_number_type, { check_number_length_for_type } from './getNumberType_'
 import getCountryCallingCode from './getCountryCallingCode'
 import { REGION_CODE_FOR_NON_GEO_ENTITY } from './common'
 
@@ -47,7 +46,7 @@ export default function(number, from_country, with_formatting, metadata)
 		country : number.country
 	}
 
-	const number_type = get_number_type(number, metadata.metadata)
+	const number_type = get_number_type(number, undefined, metadata.metadata)
 	const is_valid_number = number_type === number
 
 	let formatted_number

@@ -1,113 +1,12 @@
-import parse, { is_viable_phone_number } from './parse'
-
-import { matches_entirely } from './common'
-
-import Metadata from './metadata'
-
-const non_fixed_line_types =
-[
-	'MOBILE',
-	'PREMIUM_RATE',
-	'TOLL_FREE',
-	'SHARED_COST',
-	'VOIP',
-	'PERSONAL_NUMBER',
-	'PAGER',
-	'UAN',
-	'VOICEMAIL'
-]
+import isViablePhoneNumber from './isViablePhoneNumber'
+import _getNumberType from './getNumberType_'
+import parse from './parse_'
 
 // Finds out national phone number type (fixed line, mobile, etc)
-export default function get_number_type(arg_1, arg_2, arg_3, arg_4)
+export default function getNumberType(arg_1, arg_2, arg_3, arg_4)
 {
 	const { input, options, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
-
-	// When `parse()` returned `{}`
-	// meaning that the phone number is not a valid one.
-	if (!input.country)
-	{
-		return
-	}
-
-	if (!metadata.hasCountry(input.country))
-	{
-		throw new Error(`Unknown country: ${input.country}`)
-	}
-
-	const nationalNumber = options.v2 ? input.nationalNumber : input.phone
-	metadata.country(input.country)
-
-	// The following is copy-pasted from the original function:
-	// https://github.com/googlei18n/libphonenumber/blob/3ea547d4fbaa2d0b67588904dfa5d3f2557c27ff/javascript/i18n/phonenumbers/phonenumberutil.js#L2835
-
-	// Is this national number even valid for this country
-	if (!matches_entirely(nationalNumber, metadata.nationalNumberPattern()))
-	{
-		return
-	}
-
-	// Is it fixed line number
-	if (is_of_type(nationalNumber, 'FIXED_LINE', metadata))
-	{
-		// Because duplicate regular expressions are removed
-		// to reduce metadata size, if "mobile" pattern is ""
-		// then it means it was removed due to being a duplicate of the fixed-line pattern.
-		//
-		if (metadata.type('MOBILE') && metadata.type('MOBILE').pattern() === '')
-		{
-			return 'FIXED_LINE_OR_MOBILE'
-		}
-
-		// v1 metadata.
-		// Legacy.
-		// Deprecated.
-		if (!metadata.type('MOBILE'))
-		{
-			return 'FIXED_LINE_OR_MOBILE'
-		}
-
-		// Check if the number happens to qualify as both fixed line and mobile.
-		// (no such country in the minimal metadata set)
-		/* istanbul ignore if */
-		if (is_of_type(nationalNumber, 'MOBILE', metadata))
-		{
-			return 'FIXED_LINE_OR_MOBILE'
-		}
-
-		return 'FIXED_LINE'
-	}
-
-	for (const _type of non_fixed_line_types)
-	{
-		if (is_of_type(nationalNumber, _type, metadata))
-		{
-			return _type
-		}
-	}
-}
-
-export function is_of_type(nationalNumber, type, metadata)
-{
-	type = metadata.type(type)
-
-	if (!type || !type.pattern())
-	{
-		return false
-	}
-
-	// Check if any possible number lengths are present;
-	// if so, we use them to avoid checking
-	// the validation pattern if they don't match.
-	// If they are absent, this means they match
-	// the general description, which we have
-	// already checked before a specific number type.
-	if (type.possibleLengths() &&
-		type.possibleLengths().indexOf(nationalNumber.length) < 0)
-	{
-		return false
-	}
-
-	return matches_entirely(nationalNumber, type.pattern())
+	return _getNumberType(input, options, metadata)
 }
 
 // Sort out arguments
@@ -140,10 +39,10 @@ export function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 			// therefore it will cut off all "garbage" characters,
 			// while this `validate` function needs to verify
 			// that the phone number contains no "garbage"
-			// therefore the explicit `is_viable_phone_number` check.
-			if (is_viable_phone_number(arg_1))
+			// therefore the explicit `isViablePhoneNumber` check.
+			if (isViablePhoneNumber(arg_1))
 			{
-				input = parse(arg_1, arg_2, metadata)
+				input = parse(arg_1, { defaultCountry: arg_2 }, metadata)
 			}
 			else
 			{
@@ -169,10 +68,10 @@ export function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 			// therefore it will cut off all "garbage" characters,
 			// while this `validate` function needs to verify
 			// that the phone number contains no "garbage"
-			// therefore the explicit `is_viable_phone_number` check.
-			if (is_viable_phone_number(arg_1))
+			// therefore the explicit `isViablePhoneNumber` check.
+			if (isViablePhoneNumber(arg_1))
 			{
-				input = parse(arg_1, metadata)
+				input = parse(arg_1, undefined, metadata)
 			}
 			else
 			{
@@ -198,120 +97,14 @@ export function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
 	}
 	else throw new TypeError('A phone number must either be a string or an object of shape { phone, [country] }.')
 
-	return { input, options, metadata: new Metadata(metadata) }
-}
-
-// Should only be called for the "new" metadata which has "possible lengths".
-export function check_number_length_for_type(nationalNumber, type, metadata)
-{
-	const type_info = metadata.type(type)
-
-	// There should always be "<possiblePengths/>" set for every type element.
-	// This is declared in the XML schema.
-	// For size efficiency, where a sub-description (e.g. fixed-line)
-	// has the same "<possiblePengths/>" as the "general description", this is missing,
-	// so we fall back to the "general description". Where no numbers of the type
-	// exist at all, there is one possible length (-1) which is guaranteed
-	// not to match the length of any real phone number.
-	let possible_lengths = type_info && type_info.possibleLengths() || metadata.possibleLengths()
-	// let local_lengths    = type_info && type.possibleLengthsLocal() || metadata.possibleLengthsLocal()
-
-	if (type === 'FIXED_LINE_OR_MOBILE')
-	{
-		// No such country in metadata.
-		/* istanbul ignore next */
-		if (!metadata.type('FIXED_LINE'))
-		{
-			// The rare case has been encountered where no fixedLine data is available
-			// (true for some non-geographical entities), so we just check mobile.
-			return check_number_length_for_type(nationalNumber, 'MOBILE', metadata)
-		}
-
-		const mobile_type = metadata.type('MOBILE')
-
-		if (mobile_type)
-		{
-			// Merge the mobile data in if there was any. "Concat" creates a new
-			// array, it doesn't edit possible_lengths in place, so we don't need a copy.
-			// Note that when adding the possible lengths from mobile, we have
-			// to again check they aren't empty since if they are this indicates
-			// they are the same as the general desc and should be obtained from there.
-			possible_lengths = merge_arrays(possible_lengths, mobile_type.possibleLengths())
-			// The current list is sorted; we need to merge in the new list and
-			// re-sort (duplicates are okay). Sorting isn't so expensive because
-			// the lists are very small.
-
-			// if (local_lengths)
-			// {
-			// 	local_lengths = merge_arrays(local_lengths, mobile_type.possibleLengthsLocal())
-			// }
-			// else
-			// {
-			// 	local_lengths = mobile_type.possibleLengthsLocal()
-			// }
-		}
+	return {
+		input,
+		options,
+		metadata
 	}
-	// If the type doesn't exist then return 'INVALID_LENGTH'.
-	else if (type && !type_info)
-	{
-		return 'INVALID_LENGTH'
-	}
-
-	const actual_length = nationalNumber.length
-
-	// In `libphonenumber-js` all "local-only" formats are dropped for simplicity.
-	// // This is safe because there is never an overlap beween the possible lengths
-	// // and the local-only lengths; this is checked at build time.
-	// if (local_lengths && local_lengths.indexOf(nationalNumber.length) >= 0)
-	// {
-	// 	return 'IS_POSSIBLE_LOCAL_ONLY'
-	// }
-
-	const minimum_length = possible_lengths[0]
-
-	if (minimum_length === actual_length)
-	{
-		return 'IS_POSSIBLE'
-	}
-
-	if (minimum_length > actual_length)
-	{
-		return 'TOO_SHORT'
-	}
-
-	if (possible_lengths[possible_lengths.length - 1] < actual_length)
-	{
-		return 'TOO_LONG'
-	}
-
-	// We skip the first element since we've already checked it.
-	return possible_lengths.indexOf(actual_length, 1) >= 0 ? 'IS_POSSIBLE' : 'INVALID_LENGTH'
 }
 
 // Babel transforms `typeof` into some "branches"
 // so istanbul will show this as "branch not covered".
 /* istanbul ignore next */
 const is_object = _ => typeof _ === 'object'
-
-export function merge_arrays(a, b)
-{
-	const merged = a.slice()
-
-	for (const element of b)
-	{
-		if (a.indexOf(element) < 0)
-		{
-			merged.push(element)
-		}
-	}
-
-	return merged.sort((a, b) => a - b)
-
-	// ES6 version, requires Set polyfill.
-	// let merged = new Set(a)
-	// for (const element of b)
-	// {
-	// 	merged.add(i)
-	// }
-	// return Array.from(merged).sort((a, b) => a - b)
-}

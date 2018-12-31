@@ -12,37 +12,30 @@ import Metadata from './metadata'
 
 import PhoneNumber from './PhoneNumber'
 
-import
-{
-	matches_entirely,
+import {
 	VALID_DIGITS,
 	VALID_PUNCTUATION,
-	PLUS_CHARS,
-	extractCountryCallingCode
-}
-from './common'
+	PLUS_CHARS
+} from './common.constants'
 
-import
-{
+import {
+	matches_entirely,
+	extractCountryCallingCode
+} from './common'
+
+import {
 	extract_formatted_phone_number,
 	find_country_code,
 	strip_national_prefix_and_carrier_code
-}
-from './parse'
+} from './parse_'
 
-import
-{
+import {
 	FIRST_GROUP_PATTERN,
 	format_national_number_using_format,
 	changeInternationalFormatStyle
-}
-from './format'
+} from './format_'
 
-import
-{
-	check_number_length_for_type
-}
-from './getNumberType'
+import { check_number_length_for_type } from './getNumberType_'
 
 import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
 
