@@ -23,6 +23,7 @@ describe('parsePhoneNumber', () => {
 		phoneNumber.number.should.equal('+78005553535')
 		phoneNumber.isPossible().should.equal(true)
 		phoneNumber.isValid().should.equal(true)
+		phoneNumber.isValidForRegion('RU').should.equal(true)
 		// Russian phone type regexps aren't included in default metadata.
 		parsePhoneNumberFull('Phone: 8 (800) 555 35 35.', 'RU').getType().should.equal('TOLL_FREE')
 	})

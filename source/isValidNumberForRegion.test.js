@@ -20,4 +20,10 @@ describe('isValidNumberForRegion', () =>
 		expect(() => isValidNumberForRegion({ phone: '7624369230', country: 'GB' })).to.throw('number must be a string')
 		expect(() => isValidNumberForRegion('7624369230')).to.throw('country must be a string')
 	})
+
+	it('should work in edge cases', function()
+	{
+		// Not a "viable" phone number.
+		isValidNumberForRegion('7', 'GB').should.equal(false)
+	})
 })

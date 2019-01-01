@@ -1,6 +1,6 @@
 import Metadata from './metadata'
-import getNumberType from './getNumberType_'
 import { matchesEntirely } from './util'
+import getNumberType from './getNumberType_'
 
 /**
  * Checks if a given phone number is valid.

@@ -1,21 +1,8 @@
-import { sort_out_arguments } from './getNumberType'
-import isValidNumber from './validate_'
+import isViablePhoneNumber from './isViablePhoneNumber'
+import parseNumber from './parse_'
+import _isValidNumberForRegion from './isValidNumberForRegion_'
 
-/**
- * Checks if a given phone number is valid.
- *
- * If the `number` is a string, it will be parsed to an object,
- * but only if it contains only valid phone number characters.
- * If the `number` is an object, it is used as is.
- *
- * The `country` argument is the country the number must belong to.
- * This is a stricter version of `isValidNumber(number, defaultCountry)`.
- * Though restricting a country might not be a good idea.
- * https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-use-isvalidnumberforregion
- *
- * Doesn't accept `number` object, only `number` string with a `country` string.
- */
-export default function isValidNumberForRegion(number, country, _metadata)
+export default function isValidNumberForRegion(number, country, metadata)
 {
 	if (typeof number !== 'string')
 	{
@@ -27,7 +14,17 @@ export default function isValidNumberForRegion(number, country, _metadata)
 		throw new TypeError('country must be a string')
 	}
 
-	const { input, metadata } = sort_out_arguments(number, country, _metadata)
+	// `parse` extracts phone numbers from raw text,
+	// therefore it will cut off all "garbage" characters,
+	// while this `validate` function needs to verify
+	// that the phone number contains no "garbage"
+	// therefore the explicit `isViablePhoneNumber` check.
+	let input
+	if (isViablePhoneNumber(number)) {
+		input = parseNumber(number, { defaultCountry: country }, metadata)
+	} else {
+		input = {}
+	}
 
-	return input.country === country && isValidNumber(input, undefined, metadata)
+	return _isValidNumberForRegion(input, country, undefined, metadata)
 }

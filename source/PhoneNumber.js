@@ -1,6 +1,7 @@
 import Metadata from './metadata'
 import isPossibleNumber from './isPossibleNumber_'
 import isValidNumber from './validate_'
+import isValidNumberForRegion from './isValidNumberForRegion_'
 import getNumberType from './getNumberType_'
 import formatNumber from './format_'
 
@@ -32,6 +33,10 @@ export default class PhoneNumber {
 
 	isValid() {
 		return isValidNumber(this, { v2: true }, this.metadata)
+	}
+
+	isValidForRegion(country) {
+		return isValidNumberForRegion(this, country, { v2: true }, this.metadata)
 	}
 
 	getType() {
