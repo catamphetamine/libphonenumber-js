@@ -2,6 +2,7 @@ import metadata from '../metadata.min.json'
 
 import {
 	parsePhoneNumber as _parsePhoneNumber,
+	parsePhoneNumberFromString as _parsePhoneNumberFromString,
 
 	findNumbers as _findNumbers,
 	searchNumbers as _searchNumbers,
@@ -42,6 +43,10 @@ function call(func, _arguments) {
 
 export function parsePhoneNumber() {
 	return call(_parsePhoneNumber, arguments)
+}
+
+export function parsePhoneNumberFromString() {
+	return call(_parsePhoneNumberFromString, arguments)
 }
 
 export function findNumbers() {

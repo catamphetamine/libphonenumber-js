@@ -4,6 +4,7 @@
 import metadata from './metadata.min.json'
 
 import parsePhoneNumberCustom from './es6/parsePhoneNumber'
+import parsePhoneNumberFromStringCustom from './es6/parsePhoneNumberFromString'
 
 import parseNumberCustom from './es6/parse'
 import formatNumberCustom from './es6/format'
@@ -39,6 +40,13 @@ export function parsePhoneNumber()
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return parsePhoneNumberCustom.apply(this, parameters)
+}
+
+export function parsePhoneNumberFromString()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return parsePhoneNumberFromStringCustom.apply(this, parameters)
 }
 
 export function parseNumber()

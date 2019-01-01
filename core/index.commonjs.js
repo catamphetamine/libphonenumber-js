@@ -2,8 +2,9 @@
 
 exports = module.exports = {}
 
-exports.parsePhoneNumber = require('../build/parsePhoneNumber').default
 exports.ParseError = require('../build/ParseError').default
+exports.parsePhoneNumber = require('../build/parsePhoneNumber').default
+exports.parsePhoneNumberFromString = require('../build/parsePhoneNumberFromString').default
 
 exports.findNumbers = require('../build/findNumbers').default
 exports.searchNumbers = require('../build/searchNumbers').default

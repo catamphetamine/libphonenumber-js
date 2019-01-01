@@ -8,6 +8,8 @@ var metadata = require('./metadata.min.json')
 
 exports = module.exports = {}
 
+exports.ParseError = custom.ParseError
+
 exports.parsePhoneNumber = function parsePhoneNumber()
 {
 	var parameters = Array.prototype.slice.call(arguments)
@@ -15,8 +17,12 @@ exports.parsePhoneNumber = function parsePhoneNumber()
 	return custom.parsePhoneNumber.apply(this, parameters)
 }
 
-exports.ParseError = custom.ParseError
-
+exports.parsePhoneNumberFromString = function parsePhoneNumberFromString()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.parsePhoneNumberFromString.apply(this, parameters)
+}
 // Deprecated: remove `parse()` export in 2.0.0.
 // (renamed to `parseNumber()`)
 exports.parse = function parse()

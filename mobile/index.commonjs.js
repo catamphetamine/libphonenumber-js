@@ -11,11 +11,15 @@ function call(func, _arguments) {
 
 exports = module.exports = {}
 
+exports.ParseError = core.ParseError
+
 exports.parsePhoneNumber = function parsePhoneNumber() {
 	return call(core.parsePhoneNumber, arguments)
 }
 
-exports.ParseError = core.ParseError
+exports.parsePhoneNumberFromString = function parsePhoneNumberFromString() {
+	return call(core.parsePhoneNumberFromString, arguments)
+}
 
 exports.findNumbers = function findNumbers() {
 	return call(core.findNumbers, arguments)

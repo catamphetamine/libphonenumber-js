@@ -1,6 +1,7 @@
 import {
 	ParseError,
 	parsePhoneNumber,
+	parsePhoneNumberFromString,
 
 	findNumbers,
 	searchNumbers,
@@ -32,6 +33,9 @@ describe('exports/core', () => {
 
 		parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
+		parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		expect(parsePhoneNumberFromString('2133734253', metadata)).to.be.undefined
+
 		findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')
 		new PhoneNumberMatcher('+12133734253', undefined, metadata).find.should.be.a('function')
@@ -59,6 +63,9 @@ describe('exports/core', () => {
 		expect(Library.ParseError).to.be.a('function')
 
 		Library.parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+
+		Library.parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		expect(Library.parsePhoneNumberFromString('2133734253', metadata)).to.be.undefined
 
 		Library.findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')

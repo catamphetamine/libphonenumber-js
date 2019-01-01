@@ -1,6 +1,7 @@
 import {
 	ParseError,
 	parsePhoneNumber,
+	parsePhoneNumberFromString,
 
 	findNumbers,
 	searchNumbers,
@@ -33,6 +34,9 @@ describe('exports/min', () => {
 		parsePhoneNumber('2133734253', 'US').nationalNumber.should.equal('2133734253')
 		parsePhoneNumber('2133734253', { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
 		parsePhoneNumber('2133734253', undefined, { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
+
+		parsePhoneNumberFromString('+12133734253').nationalNumber.should.equal('2133734253')
+		expect(parsePhoneNumberFromString('2133734253')).to.be.undefined
 
 		// Test "min" metadata.
 		expect(parsePhoneNumber('9150000000', 'RU').getType()).to.be.undefined
@@ -79,6 +83,9 @@ describe('exports/min', () => {
 		Library.parsePhoneNumber('2133734253', 'US').nationalNumber.should.equal('2133734253')
 		Library.parsePhoneNumber('2133734253', { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
 		Library.parsePhoneNumber('2133734253', undefined, { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
+
+		Library.parsePhoneNumberFromString('+12133734253').nationalNumber.should.equal('2133734253')
+		expect(Library.parsePhoneNumberFromString('2133734253')).to.be.undefined
 
 		Library.findNumbers('+12133734253').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.findNumbers('2133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 10 }])
