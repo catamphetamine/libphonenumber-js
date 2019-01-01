@@ -15,6 +15,8 @@ exports.parsePhoneNumber = function parsePhoneNumber() {
 	return call(core.parsePhoneNumber, arguments)
 }
 
+exports.ParseError = core.ParseError
+
 exports.findNumbers = function findNumbers() {
 	return call(core.findNumbers, arguments)
 }

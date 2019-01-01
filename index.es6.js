@@ -32,6 +32,7 @@ export { default as parseIncompletePhoneNumber, parsePhoneNumberCharacter } from
 // Deprecated: remove DIGITS export in 2.0.0.
 // (it was used in `react-phone-number-input`)
 export { DIGITS, default as parseDigits } from './es6/parseDigits'
+export { default as ParseError } from './es6/ParseError'
 
 export function parsePhoneNumber()
 {

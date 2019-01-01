@@ -24,6 +24,8 @@ import {
 } from '../core/index'
 
 export {
+	ParseError,
+
 	parseIncompletePhoneNumber,
 	parsePhoneNumberCharacter,
 	parseDigits,

@@ -1,4 +1,5 @@
 export { default as parsePhoneNumber } from '../es6/parsePhoneNumber'
+export { default as ParseError } from '../es6/ParseError'
 
 export { default as findNumbers } from '../es6/findNumbers'
 export { default as searchNumbers } from '../es6/searchNumbers'

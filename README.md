@@ -70,16 +70,14 @@ _(new API)_
 -->
 
 ```js
-import { parsePhoneNumber } from 'libphonenumber-js'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
-try {
-  const phoneNumber = parsePhoneNumber('Phone: 8 (800) 555 35 35.', 'RU')
+const phoneNumber = parsePhoneNumberFromString('Phone: 8 (800) 555 35 35.', 'RU')
+if (phoneNumber) {
   phoneNumber.country === 'RU'
   phoneNumber.number === '+78005553535'
   phoneNumber.isValid() === true
   phoneNumber.getType() === 'TOLL_FREE'
-} catch (error) {
-  // Not a phone number, non-existent country, etc.
 }
 ```
 
@@ -103,9 +101,9 @@ _(new API)_
 -->
 
 ```js
-import { parsePhoneNumber } from 'libphonenumber-js'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
-const phoneNumber = parsePhoneNumber('+12133734253')
+const phoneNumber = parsePhoneNumberFromString('+12133734253')
 
 phoneNumber.formatInternational() === '+1 213 373 4253'
 phoneNumber.formatNational() === '(213) 373-4253'
@@ -232,21 +230,35 @@ findNumbers(`
 
 ## API
 
-### parsePhoneNumber(string, [defaultCountry])
-
-Parses a `string` and returns the phone number.
+### parsePhoneNumberFromString(string, [defaultCountry])
 
 ```js
-import { parsePhoneNumber } from 'libphonenumber-js'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
+
+const phoneNumber = parsePhoneNumberFromString('Call: (213) 373-42-53 ext. 1234.', 'US')
+if (phoneNumber) {
+  // ...
+}
+```
+
+Returns an instance of [`PhoneNumber`](#phonenumber) class, or `undefined` if no phone number could be parsed: for example, when the string contains no phone number, or the phone number starts with a non-existent [country calling code](#country-calling-code), or invalid `defaultCountry` was passed, etc.
+
+If a developer wants to know the exact reason why the phone number couldn't be parsed then they can use `parsePhoneNumber()` function which throws the exact error:
+
+```js
+import { parsePhoneNumber, ParseError } from 'libphonenumber-js'
 
 try {
   const phoneNumber = parsePhoneNumber('Call: (213) 373-42-53 ext. 1234.', 'US')
 } catch (error) {
-  // Not a phone number, non-existent country, etc.
+  if (error instanceof ParseError) {
+    // Not a phone number, non-existent country, etc.
+    console.log(error.message)
+  } else {
+    throw error
+  }
 }
 ```
-
-Returns an instance of [`PhoneNumber`](#phonenumber) class. Throws in case of an error: no phone number found, non-existent [country calling code](#country-calling-code), invalid default country, etc.
 
 <details>
 <summary>Possible errors</summary>
@@ -302,9 +314,9 @@ Available `options`:
 Examples:
 
 ```js
-import { parsePhoneNumber } from 'libphonenumber-js'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
-const phoneNumber = parsePhoneNumber('+12133734253')
+const phoneNumber = parsePhoneNumberFromString('+12133734253')
 
 phoneNumber.format("NATIONAL") === '(213) 373-4253'
 phoneNumber.format("INTERNATIONAL") === '+1 213 373 4253'
@@ -1075,7 +1087,7 @@ In ES6 that would be:
 
 ```js
 import {
-  parsePhoneNumber as _parsePhoneNumber,
+  parsePhoneNumberFromString as _parsePhoneNumberFromString,
   findNumbers as _findNumbers,
   AsYouType as _AsYouType
 } from 'libphonenumber-js/core'
@@ -1088,8 +1100,8 @@ function call(func, _arguments) {
   return func.apply(this, args)
 }
 
-export function parsePhoneNumber() {
-  return call(_parsePhoneNumber, arguments)
+export function parsePhoneNumberFromString() {
+  return call(_parsePhoneNumberFromString, arguments)
 }
 
 export function findNumbers() {
@@ -1115,8 +1127,8 @@ function call(func, _arguments) {
   return func.apply(this, args)
 }
 
-exports.parsePhoneNumber = function parsePhoneNumber() {
-  return call(core.parsePhoneNumber, arguments)
+exports.parsePhoneNumberFromString = function parsePhoneNumberFromString() {
+  return call(core.parsePhoneNumberFromString, arguments)
 }
 
 exports.findNumbers = function findNumbers() {

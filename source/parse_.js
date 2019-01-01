@@ -13,7 +13,7 @@ import {
 } from './constants'
 
 import { matchesEntirely } from './util'
-
+import ParseError from './ParseError'
 import Metadata from './metadata'
 import isViablePhoneNumber from './isViablePhoneNumber'
 import { extractExtension } from './extension'
@@ -69,7 +69,7 @@ export default function parse(text, options = {}, metadata)
 	if (options.defaultCountry && !metadata.hasCountry(options.defaultCountry))
 	{
 		if (options.v2) {
-			throw new Error('INVALID_COUNTRY')
+			throw new ParseError('INVALID_COUNTRY')
 		}
 		throw new Error(`Unknown country: ${options.defaultCountry}`)
 	}
@@ -81,7 +81,7 @@ export default function parse(text, options = {}, metadata)
 	if (!formatted_phone_number)
 	{
 		if (options.v2) {
-			throw new Error('NOT_A_NUMBER')
+			throw new ParseError('NOT_A_NUMBER')
 		}
 		return {}
 	}
@@ -103,7 +103,7 @@ export default function parse(text, options = {}, metadata)
 	if (!metadata.selectedCountry())
 	{
 		if (options.v2) {
-			throw new Error('INVALID_COUNTRY')
+			throw new ParseError('INVALID_COUNTRY')
 		}
 		return {}
 	}
@@ -113,7 +113,7 @@ export default function parse(text, options = {}, metadata)
 		// Won't throw here because the regexp already demands length > 1.
 		/* istanbul ignore if */
 		if (options.v2) {
-			throw new Error('TOO_SHORT')
+			throw new ParseError('TOO_SHORT')
 		}
 		// Google's demo just throws an error in this case.
 		return {}
@@ -130,7 +130,7 @@ export default function parse(text, options = {}, metadata)
 	//
 	if (nationalNumber.length > MAX_LENGTH_FOR_NSN) {
 		if (options.v2) {
-			throw new Error('TOO_LONG')
+			throw new ParseError('TOO_LONG')
 		}
 		// Google's demo just throws an error in this case.
 		return {}
@@ -193,7 +193,7 @@ export function extract_formatted_phone_number(text, v2)
 	if (text.length > MAX_INPUT_STRING_LENGTH)
 	{
 		if (v2) {
-			throw new Error('TOO_LONG')
+			throw new ParseError('TOO_LONG')
 		}
 		return
 	}

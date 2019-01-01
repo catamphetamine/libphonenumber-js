@@ -6,6 +6,7 @@
 exports = module.exports = {}
 
 exports.parsePhoneNumber = require('./build/parsePhoneNumber').default
+exports.ParseError = require('./build/ParseError').default
 
 // Deprecated: remove `parse()` export in 2.0.0.
 // (renamed to `parseNumber()`)

@@ -15,6 +15,8 @@ exports.parsePhoneNumber = function parsePhoneNumber()
 	return custom.parsePhoneNumber.apply(this, parameters)
 }
 
+exports.ParseError = custom.ParseError
+
 // Deprecated: remove `parse()` export in 2.0.0.
 // (renamed to `parseNumber()`)
 exports.parse = function parse()

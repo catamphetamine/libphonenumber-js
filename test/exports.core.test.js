@@ -1,4 +1,5 @@
 import {
+	ParseError,
 	parsePhoneNumber,
 
 	findNumbers,
@@ -27,6 +28,8 @@ import examples from '../examples.mobile.json'
 
 describe('exports/core', () => {
 	it('should export ES6', () => {
+		expect(ParseError).to.be.a('function')
+
 		parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
 		findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
@@ -52,6 +55,8 @@ describe('exports/core', () => {
 
 	it('should export CommonJS', () => {
 		const Library = require('../core/index.commonjs')
+
+		expect(Library.ParseError).to.be.a('function')
 
 		Library.parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
