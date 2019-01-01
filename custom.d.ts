@@ -5,6 +5,13 @@ import { CountryCallingCode, CountryCode, NumberFormat, NumberFound, NumberType,
 export function parsePhoneNumber(text: string, metadata: object): PhoneNumber;
 export function parsePhoneNumber(text: string, defaultCountry: CountryCode, metadata: object): PhoneNumber;
 
+export function parsePhoneNumberFromString(text: string, metadata: object): PhoneNumber;
+export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode, metadata: object): PhoneNumber;
+
+export class ParseError {
+  message: string;
+}
+
 export function parse(text: string, metadata: object): ParsedNumber;
 export function parse(text: string, options: CountryCode | { defaultCountry?: CountryCode, extended?: boolean }, metadata: object): ParsedNumber;
 

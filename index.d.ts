@@ -43,6 +43,11 @@ export interface NumberFound {
 }
 
 export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
+export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode): PhoneNumber;
+
+export class ParseError {
+  message: string;
+}
 
 // `parse()` and `parseCustom` are deprecated.
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
