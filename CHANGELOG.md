@@ -56,6 +56,8 @@ And edit the README:
 
   * Added `/min`, `/max`, `/mobile` and `/custom` subpackages pre-wired with different flavors of metadata. See the relevant readme section for more info.
 
+  * Added `parsePhoneNumberFromString()` function (which doesn't throw but instead returns `undefined`).
+
 1.7.0 / 31.12.2018
 ==================
 
