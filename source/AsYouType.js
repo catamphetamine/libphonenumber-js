@@ -16,14 +16,12 @@ import {
 	VALID_DIGITS,
 	VALID_PUNCTUATION,
 	PLUS_CHARS
-} from './common.constants'
+} from './constants'
+
+import { matchesEntirely } from './util'
 
 import {
-	matches_entirely,
-	extractCountryCallingCode
-} from './common'
-
-import {
+	extractCountryCallingCode,
 	extract_formatted_phone_number,
 	find_country_code,
 	strip_national_prefix_and_carrier_code
@@ -661,8 +659,8 @@ export default class AsYouType
 			// a national prefix and a leading digit of a valid national phone number,
 			// like `8` is the national prefix for Russia and both
 			// `8 800 555 35 35` and `800 555 35 35` are valid numbers.
-			if (matches_entirely(this.national_number, this.metadata.nationalNumberPattern()) &&
-				!matches_entirely(potential_national_number, this.metadata.nationalNumberPattern()))
+			if (matchesEntirely(this.national_number, this.metadata.nationalNumberPattern()) &&
+				!matchesEntirely(potential_national_number, this.metadata.nationalNumberPattern()))
 			{
 				return
 			}

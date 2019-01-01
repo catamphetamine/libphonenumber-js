@@ -10,7 +10,7 @@ import {
   MAX_LENGTH_FOR_NSN,
   MAX_LENGTH_COUNTRY_CODE,
   VALID_PUNCTUATION
-} from './common.constants'
+} from './constants'
 
 import { EXTN_PATTERNS_FOR_MATCHING } from './extension'
 

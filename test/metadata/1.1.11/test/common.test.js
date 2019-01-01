@@ -1,10 +1,10 @@
-import { matches_entirely } from '../../../../source/common'
+import { matchesEntirely } from '../../../../source/util'
 
 describe('common', () =>
 {
-	it('`matches_entirely` should work in edge cases', function()
+	it('`matchesEntirely()` should work in edge cases', function()
 	{
 		// No text
-		matches_entirely(undefined, '').should.equal(true)
+		matchesEntirely(undefined, '').should.equal(true)
 	})
 })

@@ -1,6 +1,6 @@
 import Metadata from './metadata'
 import getNumberType from './getNumberType_'
-import { matches_entirely } from './common'
+import { matchesEntirely } from './util'
 
 /**
  * Checks if a given phone number is valid.
@@ -59,5 +59,5 @@ export default function isValidNumber(input, options = {}, metadata)
 	// If there are no type regexps for this country in metadata then use
 	// `nationalNumberPattern` as a "better than nothing" replacement.
 	const national_number = options.v2 ? input.nationalNumber : input.phone
-	return matches_entirely(national_number, metadata.nationalNumberPattern())
+	return matchesEntirely(national_number, metadata.nationalNumberPattern())
 }

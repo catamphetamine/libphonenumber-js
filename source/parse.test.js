@@ -1,10 +1,11 @@
 import metadata from '../metadata.min.json'
-import _parse from './parse'
+import _parseNumber from './parse'
+import { extractCountryCallingCode } from './parse_'
 
 function parse(...parameters)
 {
 	parameters.push(metadata)
-	return _parse.apply(this, parameters)
+	return _parseNumber.apply(this, parameters)
 }
 
 describe('parse', () =>
@@ -240,7 +241,7 @@ describe('parse', () =>
 		parse('41111', 'AC').should.deep.equal({ country: 'AC', phone: '41111'})
 
 		// https://github.com/catamphetamine/libphonenumber-js/issues/235
-		// `matches_entirely()` bug fix.
+		// `matchesEntirely()` bug fix.
 		parse('+4915784846111‬').should.deep.equal({ country: 'DE', phone: '15784846111' })
 
 		// National prefix transform rule (Mexico).
@@ -248,7 +249,7 @@ describe('parse', () =>
 		parse('0445511111111', 'MX').should.deep.equal({ country: 'MX', phone: '15511111111' })
 
 		// No metadata
-		thrower = () => _parse('')
+		thrower = () => _parseNumber('')
 		thrower.should.throw('`metadata` argument not passed')
 
 		// Numerical `value`
@@ -371,5 +372,20 @@ describe('parse', () =>
 	it('should work with v2 API', () =>
 	{
 		parse('+99989160151539')
+	})
+
+	it('should extract country calling code from a number', () =>
+	{
+		extractCountryCallingCode('+78005553535', null, metadata).should.deep.equal({
+			countryCallingCode: '7',
+			number: '8005553535'
+		})
+
+		extractCountryCallingCode('+7800', null, metadata).should.deep.equal({
+			countryCallingCode: '7',
+			number: '800'
+		})
+
+		extractCountryCallingCode('', null, metadata).should.deep.equal({})
 	})
 })

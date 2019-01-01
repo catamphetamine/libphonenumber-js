@@ -8,21 +8,20 @@ import {
 	VALID_PUNCTUATION,
 	PLUS_CHARS,
 	MIN_LENGTH_FOR_NSN,
-	MAX_LENGTH_FOR_NSN
-} from './common.constants'
+	MAX_LENGTH_FOR_NSN,
+	MAX_LENGTH_COUNTRY_CODE
+} from './constants'
 
-import {
-	extractCountryCallingCode,
-	matches_entirely
-} from './common'
+import { matchesEntirely } from './util'
 
+import Metadata from './metadata'
 import isViablePhoneNumber from './isViablePhoneNumber'
 import { extractExtension } from './extension'
 import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
-import Metadata from './metadata'
 import getCountryCallingCode from './getCountryCallingCode'
 import getNumberType, { check_number_length_for_type } from './getNumberType_'
 import { is_possible_number } from './isPossibleNumber_'
+import { stripIDDPrefix } from './IDD'
 import { parseRFC3966 } from './RFC3966'
 import PhoneNumber from './PhoneNumber'
 
@@ -161,7 +160,7 @@ export default function parse(text, options = {}, metadata)
 	// Check if national phone number pattern matches the number.
 	// National number pattern is different for each country,
 	// even for those ones which are part of the "NANPA" group.
-	const valid = country && matches_entirely(nationalNumber, metadata.nationalNumberPattern()) ? true : false
+	const valid = country && matchesEntirely(nationalNumber, metadata.nationalNumberPattern()) ? true : false
 
 	if (!options.extended)
 	{
@@ -289,8 +288,8 @@ export function strip_national_prefix_and_carrier_code(number, metadata)
 	// // a national prefix and a leading digit of a valid national phone number,
 	// // like `8` is the national prefix for Russia and both
 	// // `8 800 555 35 35` and `800 555 35 35` are valid numbers.
-	// if (matches_entirely(number, national_number_rule) &&
-	// 		!matches_entirely(national_significant_number, national_number_rule))
+	// if (matchesEntirely(number, national_number_rule) &&
+	// 		!matchesEntirely(national_significant_number, national_number_rule))
 	// {
 	// 	return number
 	// }
@@ -488,8 +487,8 @@ function parse_national_number(number, metadata)
 		// a national prefix and a leading digit of a valid national phone number,
 		// like `8` is the national prefix for Russia and both
 		// `8 800 555 35 35` and `800 555 35 35` are valid numbers.
-		if (matches_entirely(national_number, metadata.nationalNumberPattern()) &&
-				!matches_entirely(potential_national_number, metadata.nationalNumberPattern()))
+		if (matchesEntirely(national_number, metadata.nationalNumberPattern()) &&
+				!matchesEntirely(potential_national_number, metadata.nationalNumberPattern()))
 		{
 			// Keep the number without stripping national prefix.
 		}
@@ -511,3 +510,73 @@ function parse_national_number(number, metadata)
 // {
 // 	return parse_phone_number(number, null, metadata).country
 // }
+
+// Parses a formatted phone number
+// and returns `{ countryCallingCode, number }`
+// where `number` is just the "number" part
+// which is left after extracting `countryCallingCode`
+// and is not necessarily a "national (significant) number"
+// and might as well contain national prefix.
+//
+export function extractCountryCallingCode(number, country, metadata)
+{
+	number = parseIncompletePhoneNumber(number)
+
+	if (!number)
+	{
+		return {}
+	}
+
+	// If this is not an international phone number,
+	// then don't extract country phone code.
+	if (number[0] !== '+')
+	{
+		// Convert an "out-of-country" dialing phone number
+		// to a proper international phone number.
+		const numberWithoutIDD = stripIDDPrefix(number, country, metadata)
+
+		// If an IDD prefix was stripped then
+		// convert the number to international one
+		// for subsequent parsing.
+		if (numberWithoutIDD && numberWithoutIDD !== number) {
+			number = '+' + numberWithoutIDD
+		} else {
+			return { number }
+		}
+	}
+
+	// Fast abortion: country codes do not begin with a '0'
+	if (number[1] === '0')
+	{
+		return {}
+	}
+
+	metadata = new Metadata(metadata)
+
+	// The thing with country phone codes
+	// is that they are orthogonal to each other
+	// i.e. there's no such country phone code A
+	// for which country phone code B exists
+	// where B starts with A.
+	// Therefore, while scanning digits,
+	// if a valid country code is found,
+	// that means that it is the country code.
+	//
+	let i = 2
+	while (i - 1 <= MAX_LENGTH_COUNTRY_CODE && i <= number.length)
+	{
+		const countryCallingCode = number.slice(1, i)
+
+		if (metadata.countryCallingCodes()[countryCallingCode])
+		{
+			return {
+				countryCallingCode,
+				number: number.slice(i)
+			}
+		}
+
+		i++
+	}
+
+	return {}
+}

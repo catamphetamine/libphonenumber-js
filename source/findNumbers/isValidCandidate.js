@@ -1,7 +1,6 @@
 // Copy-pasted from `PhoneNumberMatcher.js`.
 
-import { PLUS_CHARS } from '../common.constants'
-
+import { PLUS_CHARS } from '../constants'
 import { limit } from './util'
 
 import {

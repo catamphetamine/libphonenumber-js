@@ -3,7 +3,7 @@ import {
 	VALID_DIGITS,
 	VALID_PUNCTUATION,
 	PLUS_CHARS
-} from './common.constants'
+} from './constants'
 
 import { EXTN_PATTERNS_FOR_PARSING } from './extension'
 

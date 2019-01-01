@@ -6,7 +6,7 @@ import {
 	VALID_PUNCTUATION,
 	VALID_DIGITS,
 	WHITESPACE
-} from './common.constants'
+} from './constants'
 
 import { EXTN_PATTERNS_FOR_PARSING } from './extension'
 

@@ -3,8 +3,8 @@
 //
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
-import { VALID_PUNCTUATION } from './common.constants'
-import { matches_entirely } from './common'
+import { VALID_PUNCTUATION } from './constants'
+import { matchesEntirely } from './util'
 import Metadata from './metadata'
 import { getIDDPrefix } from './IDD'
 import { formatRFC3966 } from './RFC3966'
@@ -169,7 +169,7 @@ export function choose_format_for_number(available_formats, national_number)
 		}
 
 		// Check that the national number matches the phone number format regular expression
-		if (matches_entirely(national_number, format.pattern()))
+		if (matchesEntirely(national_number, format.pattern()))
 		{
 			return format
 		}

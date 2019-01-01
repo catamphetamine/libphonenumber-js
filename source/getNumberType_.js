@@ -1,7 +1,7 @@
 import Metadata from './metadata'
-import { matches_entirely } from './common'
+import { matchesEntirely } from './util'
 
-const non_fixed_line_types =
+const NON_FIXED_LINE_PHONE_TYPES =
 [
 	'MOBILE',
 	'PREMIUM_RATE',
@@ -38,7 +38,7 @@ export default function getNumberType(input, options = {}, metadata)
 	// https://github.com/googlei18n/libphonenumber/blob/3ea547d4fbaa2d0b67588904dfa5d3f2557c27ff/javascript/i18n/phonenumbers/phonenumberutil.js#L2835
 
 	// Is this national number even valid for this country
-	if (!matches_entirely(nationalNumber, metadata.nationalNumberPattern()))
+	if (!matchesEntirely(nationalNumber, metadata.nationalNumberPattern()))
 	{
 		return
 	}
@@ -74,7 +74,7 @@ export default function getNumberType(input, options = {}, metadata)
 		return 'FIXED_LINE'
 	}
 
-	for (const _type of non_fixed_line_types)
+	for (const _type of NON_FIXED_LINE_PHONE_TYPES)
 	{
 		if (is_of_type(nationalNumber, _type, metadata))
 		{
@@ -104,7 +104,7 @@ export function is_of_type(nationalNumber, type, metadata)
 		return false
 	}
 
-	return matches_entirely(nationalNumber, type.pattern())
+	return matchesEntirely(nationalNumber, type.pattern())
 }
 
 // Should only be called for the "new" metadata which has "possible lengths".
