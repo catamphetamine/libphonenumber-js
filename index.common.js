@@ -156,10 +156,14 @@ exports.formatRFC3966 = function()
 	return custom.formatRFC3966.apply(this, parameters)
 }
 
-// `DIGIT_PLACEHOLDER` is used by `react-phone-number-input`.
-exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
-// `DIGITS` are used by `react-phone-number-input`.
+// Deprecated: `DIGITS` were used by `react-phone-number-input`.
+// Replaced by `parseDigits()`.
+//
+// Deprecated: `DIGIT_PLACEHOLDER` was used by `react-phone-number-input`.
+// Not used anymore.
+//
 exports.DIGITS = custom.DIGITS
+exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
 
 exports.getCountryCallingCode = function(country)
 {

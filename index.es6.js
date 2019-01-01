@@ -26,9 +26,9 @@ import { getExtPrefix as getExtPrefixCustom } from './es6/metadata'
 import { parseRFC3966 as parseRFC3966Custom, formatRFC3966 as formatRFC3966Custom } from './es6/RFC3966'
 import formatIncompletePhoneNumberCustom from './es6/formatIncompletePhoneNumber'
 export { default as parseIncompletePhoneNumber, parsePhoneNumberCharacter } from './es6/parseIncompletePhoneNumber'
-// Deprecated: maybe remove DIGITS export in 2.0.0.
+// Deprecated: remove DIGITS export in 2.0.0.
 // (it was used in `react-phone-number-input`)
-export { DIGITS, parseDigits } from './es6/parseDigits'
+export { DIGITS, default as parseDigits } from './es6/parseDigits'
 
 export function parsePhoneNumber()
 {
@@ -202,7 +202,8 @@ export { default as getCountryCallingCodeCustom } from './es6/getCountryCallingC
 export
 {
 	default as AsYouTypeCustom,
-	// `DIGIT_PLACEHOLDER` is used by `react-phone-number-input`.
+	// Deprecated: `DIGIT_PLACEHOLDER` was used by `react-phone-number-input`.
+	// Seems to be not used anymore.
 	DIGIT_PLACEHOLDER
 }
 from './es6/AsYouType'

@@ -66,7 +66,7 @@ export function parseDigit(character)
  * // Outputs '8800555'.
  * ```
  */
-export function parseDigits(string)
+export default function parseDigits(string)
 {
 	let result = ''
 
