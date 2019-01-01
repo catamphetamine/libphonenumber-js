@@ -1,3 +1,6 @@
+// Deprecated.
+// Use `libphonenumber-js/min` or `libphonenumber-js/max` or `libphonenumber-js/core` instead.
+
 import metadata from './metadata.min.json'
 
 import parsePhoneNumberCustom from './es6/parsePhoneNumber'

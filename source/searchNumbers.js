@@ -1,4 +1,4 @@
-import { sort_out_arguments } from './findNumbers'
+import { sort_out_arguments } from './parsePhoneNumber'
 import PhoneNumberMatcher from './PhoneNumberMatcher'
 
 /**

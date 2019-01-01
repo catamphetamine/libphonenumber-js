@@ -1,3 +1,6 @@
+// Deprecated.
+// Use `libphonenumber-js/min` or `libphonenumber-js/max` or `libphonenumber-js/core` instead.
+
 'use strict'
 
 var custom   = require('./custom')

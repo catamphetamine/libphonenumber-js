@@ -51,6 +51,11 @@ And edit the README:
  * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) has been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
 -->
 
+1.7.1 / 01.12.2018
+==================
+
+  * Added `/min`, `/max`, `/mobile` and `/custom` subpackages pre-wired with different flavors of metadata. See the relevant readme section for more info.
+
 1.7.0 / 31.12.2018
 ==================
 

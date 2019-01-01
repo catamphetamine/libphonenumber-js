@@ -351,3 +351,12 @@ export function getExtPrefix(country, metadata)
 {
 	return new Metadata(metadata).country(country).ext()
 }
+
+export function getCountryCallingCode(country, metadata)
+{
+	metadata = new Metadata(metadata)
+	if (!metadata.hasCountry(country)) {
+		throw new Error(`Unknown country: ${country}`)
+	}
+	return metadata.country(country).countryCallingCode()
+}

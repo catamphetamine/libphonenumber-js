@@ -2,7 +2,7 @@
 // Use `findNumbers()` instead.
 
 import _findPhoneNumbers, { searchPhoneNumbers as _searchPhoneNumbers } from './findPhoneNumbers_'
-import { sort_out_arguments } from './findNumbers'
+import { sort_out_arguments } from './parsePhoneNumber'
 
 export default function findPhoneNumbers(arg_1, arg_2, arg_3, arg_4)
 {

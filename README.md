@@ -47,6 +47,20 @@ $ yarn add libphonenumber-js
 
 If you're not using a bundler then use a [standalone version from a CDN](https://github.com/catamphetamine/libphonenumber-js/#cdn).
 
+## "min" vs "max" vs "mobile" vs "core"
+
+This library comes pre-packaged with three flavors of metadata:
+
+* `max` — The complete metadata set, is about `140 kilobytes` in size (`libphonenumber-js/metadata.full.json`).
+
+* `min` — The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://github.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://github.com/catamphetamine/libphonenumber-js#gettype)).
+
+* `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`).
+
+To use a particular metadata set import functions from the relevant sub-package: `libphonenumber-js/max`, `libphonenumber-js/min` or `libphonenumber-js/mobile`. Importing functions directly from `libhponenumber-js` results in using the `min` metadata.
+
+Sometimes (rarely) not all countries are needed and in those cases the developers may want to [generate](https://github.com/catamphetamine/libphonenumber-js#customizing-metadata) their own "custom" metadata set. For those cases there's `libphonenumber-js/core` sub-package which doesn't come pre-wired with any default metadata and instead accepts the metadata as the last argument of each exported function.
+
 ## Use
 
 ### Parse phone number
@@ -310,15 +324,22 @@ Checks if the phone number is "possible". Only checks the phone number length, d
 
 Checks if the phone number is "valid". First checks the phone number length and then checks the phone number digits against all available regular expressions.
 
-By default the library uses "minimal" metadata which is only 75 kilobytes in size but also doesn't include most of the validation regular expressions resulting in less strict validation rules (some very basic validation is still included for each country). If you don't mind the extra 65 kilobytes of metadata then use "full" metadata instead (140 kilobytes) for validating phone numbers (see [Customizing metadata](#customizing-metadata) section of this document). Google's library always uses "full" metadata so it will yield different `isValidNumber()` results compared to the "minimal" metadata used by default in this library.
+By default the library uses "minimal" metadata which is only 75 kilobytes in size but also doesn't include the precise validation regular expressions resulting in less strict validation rules (some very basic validation like length check is still included for each country). If you don't mind the extra 65 kilobytes of metadata then use ["full" metadata](#min-vs-max-vs-mobile-vs-core) instead (140 kilobytes). Google's library always uses "full" metadata so it will yield different `isValidNumber()` results compared to the "minimal" metadata used by default in this library.
 
 See also ["Using phone number validation feature"](#using-phone-number-validation-feature) considerations.
+
+<!--
+#### `isValidForRegion(country)`
+
+Is just an alias for `this.isValid() && this.country === country`.
+https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-use-isvalidnumberforregion
+-->
 
 #### `getType()`
 
 Returns phone number type (fixed line, mobile, toll free, etc) or `undefined` (if the number is invalid or if there are no phone number type regular expressions for this country in metadata).
 
-By default the library uses "minimal" metadata which is only 75 kilobytes in size but also doesn't include most of the regular expressions corresponding to each specific phone number type (fixed line, mobile, toll free, etc) resulting in `getType()` returning `undefined` in most cases. If you don't mind the extra 65 kilobytes of metadata then use "full" metadata instead (140 kilobytes) for getting phone number type (see [Customizing metadata](#customizing-metadata) section of this document). Google's library always uses "full" metadata so it will yield different `getNumberType()` results compared to the "minimal" metadata used by default in this library.
+By default the library uses "minimal" metadata which is only 75 kilobytes in size but also doesn't include the regular expressions for determining a specific phone number type (fixed line, mobile, toll free, etc) resulting in `getType()` returning `undefined` in most cases. If you don't mind the extra 65 kilobytes of metadata then use ["full" metadata](#min-vs-max-vs-mobile-vs-core) instead (140 kilobytes). Google's library always uses "full" metadata so it will yield different `getNumberType()` results compared to the "minimal" metadata used by default in this library.
 
 <details>
 <summary>The list of possible return values</summary>
@@ -891,7 +912,7 @@ isValidNumber({ phone: '2133734253', country: 'US' }) === true
 <details>
 <summary>The difference between using <code>parseNumber()</code> and <code>isValidNumber()</code></summary>
 
-The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany. But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see [Customizing metadata](#customizing-metadata) section of this document) then `isValidNumber()` is gonna use those precise regular expressions for extensive validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
+The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany (basic length check, etc). But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see [Customizing metadata](#customizing-metadata) section of this document) then `isValidNumber()` is gonna use those precise regular expressions for extensive validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
 
 This is how it is implemented in the original Google's [`libphonenumber`](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-): `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone numbers precisely (provided the precise regular expressions are included in metadata).
 
@@ -1008,13 +1029,13 @@ Alternatively, a developer may wish to update metadata urgently, without waiting
 
 ## Customizing metadata
 
-This library comes prepackaged with three flavours of [metadata](#metadata):
+This library comes prepackaged with three flavors of [metadata](#metadata):
 
-* `metadata.full.json` — contains everything, including all regular expressions for precise phone number validation and getting phone number type, but weighs `140 kilobytes`.
-* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type, weighs `75 kilobytes`.
-* `metadata.mobile.json` — contains regular expressions for precise **mobile** phone number validation, weighs `105 kilobytes`.
+* `metadata.full.json` — contains everything, including all regular expressions for precise phone number validation and getting phone number type, but is about `140 kilobytes` in size.
+* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type, is about `75 kilobytes` in size.
+* `metadata.mobile.json` — is the "full" metadata which _only_ supports mobile numbers, is about `105 kilobytes` in size.
 
-Furthermore, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 kilobytes (even when including all regular expressions for precise phone number validation and getting phone number type), then he can generate such custom metadata and pass it as an extra argument to this library's functions.
+Sometimes, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 kilobytes (even when including all regular expressions for precise phone number validation and getting phone number type), then they can generate such custom metadata and pass it as the last argument to this library's "core" (used to be called "custom") functions.
 
 <details>
 <summary>See generate custom metadata instructions.</summary>
@@ -1026,29 +1047,100 @@ First, add metadata generation script to **your project's** `package.json`
 ```js
 {
   "scripts": {
-    "libphonenumber-metadata": "libphonenumber-generate-metadata metadata.min.json --countries RU,DE --extended",
+    "libphonenumber-metadata": "libphonenumber-generate-metadata metadata.custom.json --countries RU,DE --extended",
   }
 }
 ```
 
 And then run it like `npm run libphonenumber-metadata`.
 
-The arguments are
+The arguments are:
 
 * The first argument is the output metadata file path.
 * `--countries` argument is a comma-separated list of the countries included (if `--countries` is omitted then all countries are included).
-* `--extended` argument may be passed to include all regular expressions for precise phone number validation and getting phone number type, which increases the precision of phone number validation but at the same time it will enlarge the resulting metadata size approximately twice.
-* `--types ...` argument may be passed instead of `--extended` to only include the precise phone number type regular expressions for a specific set of phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [The complete list of phone number types](https://github.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18). Caution: phone number validation function is basically an alias for `metadata.phoneTypeRegExps ? number.getType() !== undefined : metadata.looseValidationRegExp.test(number)`, so, for example, a `--types mobile` metadata will only return `.isValid() === true` for mobile numbers because `metadata.phoneTypeRegExps` is not empty but at the same time it only contains the regular expression for mobile numbers.
+* `--extended` argument may be passed to include all regular expressions for precise phone number validation and getting phone number type, which will enlarge the resulting metadata size approximately twice.
+* `--types ...` argument may be passed instead of `--extended` to generate metadata that _only_ supports the selected phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [See the list of all possible phone number types](https://github.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18).
 </details>
 
 ####
 
 <details>
-<summary>Then use the generated <code>metadata.min.json</code> with the exported "custom" functions.</summary>
+<summary>Then use the generated <code>metadata.custom.json</code> file with the "core" functions.</summary>
 
 ####
 
-In ES6 that would be
+Pass the `metadata` argument as the last one to the "core" functions.
+
+In ES6 that would be:
+
+```js
+import {
+  parsePhoneNumber as _parsePhoneNumber,
+  findNumbers as _findNumbers,
+  AsYouType as _AsYouType
+} from 'libphonenumber-js/core'
+
+import metadata from 'libphonenumber-js/metadata.full.json'
+
+function call(func, _arguments) {
+  var args = Array.prototype.slice.call(_arguments)
+  args.push(metadata)
+  return func.apply(this, args)
+}
+
+export function parsePhoneNumber() {
+  return call(_parsePhoneNumber, arguments)
+}
+
+export function findNumbers() {
+  return call(_findNumbers, arguments)
+}
+
+export function AsYouType(country) {
+  return _AsYouType.call(this, country, metadata)
+}
+AsYouType.prototype = Object.create(_AsYouType.prototype, {})
+AsYouType.prototype.constructor = AsYouType
+```
+
+And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) environment that would be:
+
+```js
+var core = require('libphonenumber-js/core')
+var metadata = require(libphonenumber-js/metadata.full.json)
+
+function call(func, _arguments) {
+  var args = Array.prototype.slice.call(_arguments)
+  args.push(metadata)
+  return func.apply(this, args)
+}
+
+exports.parsePhoneNumber = function parsePhoneNumber() {
+  return call(core.parsePhoneNumber, arguments)
+}
+
+exports.findNumbers = function findNumbers() {
+  return call(core.findNumbers, arguments)
+}
+
+exports.AsYouType = function AsYouType(country) {
+  return core.AsYouType.call(this, country, metadata)
+}
+exports.AsYouType.prototype = Object.create(core.AsYouType.prototype, {})
+exports.AsYouType.prototype.constructor = exports.AsYouType
+```
+</details>
+
+####
+
+<details>
+<summary>Legacy: How to use the generated <code>metadata.custom.json</code> file with the legacy "custom" functions.</summary>
+
+####
+
+Pass the `metadata` argument as the last one to the "custom" functions.
+
+In ES6 that would be:
 
 ```js
 import {
@@ -1068,30 +1160,7 @@ getNumberType('+78005553535', metadata)
 new AsYouType('RU', metadata).input('+78005553535')
 ```
 
-or
-
-```js
-import {
-  parseNumber as parseNumberCustom,
-  formatNumber as formatNumberCustom,
-  isValidNumber as isValidNumberCustom,
-  getNumberType as getNumberTypeCustom,
-  AsYouType as AsYouTypeCustom
-} from 'libphonenumber-js/custom'
-
-export const parseNumber = (...args) => parseNumberCustom(...args, metadata)
-export const formatNumber = (...args) => formatNumberCustom(...args, metadata)
-export const isValidNumber = (...args) => isValidNumberCustom(...args, metadata)
-export const getNumberType = (...args) => getNumberTypeCustom(...args, metadata)
-
-export class AsYouType extends AsYouTypeCustom {
-  constructor(country) {
-    super(country, metadata)
-  }
-}
-```
-
-And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) environment that would be
+And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) environment that would be:
 
 ```js
 var custom = require('libphonenumber-js/custom')

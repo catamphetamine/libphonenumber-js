@@ -1,5 +1,6 @@
 import metadata from '../metadata.min.json'
 import isValidNumberForRegionCustom from './isValidNumberForRegion'
+import _isValidNumberForRegion from './isValidNumberForRegion_'
 
 function isValidNumberForRegion(...parameters)
 {
@@ -25,5 +26,8 @@ describe('isValidNumberForRegion', () =>
 	{
 		// Not a "viable" phone number.
 		isValidNumberForRegion('7', 'GB').should.equal(false)
+
+		// `options` argument `if/else` coverage.
+		_isValidNumberForRegion('07624369230', 'GB', {}, metadata).should.equal(false)
 	})
 })

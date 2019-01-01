@@ -35,9 +35,11 @@ export default class PhoneNumber {
 		return isValidNumber(this, { v2: true }, this.metadata)
 	}
 
-	isValidForRegion(country) {
-		return isValidNumberForRegion(this, country, { v2: true }, this.metadata)
-	}
+	// // Is just an alias for `this.isValid() && this.country === country`.
+	// // https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-use-isvalidnumberforregion
+	// isValidForRegion(country) {
+	// 	return isValidNumberForRegion(this, country, { v2: true }, this.metadata)
+	// }
 
 	getType() {
 		return getNumberType(this, { v2: true }, this.metadata)
