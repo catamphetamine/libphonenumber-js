@@ -7,7 +7,7 @@ export { default as PhoneNumberMatcher } from '../es6/PhoneNumberMatcher'
 
 export { default as AsYouType } from '../es6/AsYouType'
 
-export { default as Metadata, getCountryCallingCode, getExtPrefix } from '../es6/Metadata'
+export { default as Metadata, getCountryCallingCode, getExtPrefix } from '../es6/metadata'
 
 export { default as getExampleNumber } from '../es6/getExampleNumber'
 
