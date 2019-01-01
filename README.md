@@ -57,7 +57,9 @@ This library comes pre-packaged with three flavors of metadata:
 
 * `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`).
 
-To use a particular metadata set import functions from the relevant sub-package: `libphonenumber-js/max`, `libphonenumber-js/min` or `libphonenumber-js/mobile`. Importing functions directly from `libhponenumber-js` results in using the `min` metadata (which means no support for `.isValid()` and `.getType()`).
+To use a particular metadata set import functions from the relevant sub-package: `libphonenumber-js/max`, `libphonenumber-js/min` or `libphonenumber-js/mobile`.
+
+Importing functions directly from `libhponenumber-js` results in using the `min` metadata (which means no support for `.isValid()` and `.getType()`).
 
 Sometimes (rarely) not all countries are needed and in those cases the developers may want to [generate](https://github.com/catamphetamine/libphonenumber-js#customizing-metadata) their own "custom" metadata set. For those cases there's `libphonenumber-js/core` sub-package which doesn't come pre-wired with any default metadata and instead accepts the metadata as the last argument of each exported function.
 
