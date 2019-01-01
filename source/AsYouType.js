@@ -1,5 +1,5 @@
 // This is an enhanced port of Google Android `libphonenumber`'s
-// `asyoutypeformatter.js` of October 26th, 2018.
+// `asyoutypeformatter.js` of December 31th, 2018.
 //
 // https://github.com/googlei18n/libphonenumber/blob/8d21a365061de2ba0675c878a710a7b24f74d2ae/javascript/i18n/phonenumbers/asyoutypeformatter.js
 //
@@ -51,16 +51,23 @@ const LONGEST_DUMMY_PHONE_NUMBER = repeat(DUMMY_DIGIT, LONGEST_NATIONAL_PHONE_NU
 export const DIGIT_PLACEHOLDER = 'x' // '\u2008' (punctuation space)
 const DIGIT_PLACEHOLDER_MATCHER = new RegExp(DIGIT_PLACEHOLDER)
 
+// Deprecated: Google has removed some formatting pattern related code from their repo.
+// https://github.com/googlei18n/libphonenumber/commit/a395b4fef3caf57c4bc5f082e1152a4d2bd0ba4c
+// Because this library supports generating custom metadata
+// some users may still be using old metadata so the relevant
+// code seems to stay until some next major version update.
+const SUPPORT_LEGACY_FORMATTING_PATTERNS = true
+
 // A pattern that is used to match character classes in regular expressions.
 // An example of a character class is "[1-4]".
-const CREATE_CHARACTER_CLASS_PATTERN = () => /\[([^\[\]])*\]/g
+const CREATE_CHARACTER_CLASS_PATTERN = SUPPORT_LEGACY_FORMATTING_PATTERNS && (() => /\[([^\[\]])*\]/g)
 
 // Any digit in a regular expression that actually denotes a digit. For
 // example, in the regular expression "80[0-2]\d{6,10}", the first 2 digits
 // (8 and 0) are standalone digits, but the rest are not.
 // Two look-aheads are needed because the number following \\d could be a
 // two-digit number, since the phone number can be as long as 15 digits.
-const CREATE_STANDALONE_DIGIT_PATTERN = () => /\d(?=[^,}][^,}])/g
+const CREATE_STANDALONE_DIGIT_PATTERN = SUPPORT_LEGACY_FORMATTING_PATTERNS && (() => /\d(?=[^,}][^,}])/g)
 
 // A pattern that is used to determine if a `format` is eligible
 // to be used by the "as you type formatter".
@@ -754,7 +761,7 @@ export default class AsYouType
 		// (20|3)\d{4}. In those cases we quickly return.
 		// (Though there's no such format in current metadata)
 		/* istanbul ignore if */
-		if (format.pattern().indexOf('|') >= 0)
+		if (SUPPORT_LEGACY_FORMATTING_PATTERNS && format.pattern().indexOf('|') >= 0)
 		{
 			return
 		}
@@ -796,11 +803,17 @@ export default class AsYouType
 	get_template_for_phone_number_format_pattern(format)
 	{
 		// A very smart trick by the guys at Google
-		const number_pattern = format.pattern()
-			// Replace anything in the form of [..] with \d
-			.replace(CREATE_CHARACTER_CLASS_PATTERN(), '\\d')
-			// Replace any standalone digit (not the one in `{}`) with \d
-			.replace(CREATE_STANDALONE_DIGIT_PATTERN(), '\\d')
+		let number_pattern = format.pattern()
+
+		/* istanbul ignore else */
+		if (SUPPORT_LEGACY_FORMATTING_PATTERNS)
+		{
+			number_pattern = number_pattern
+				// Replace anything in the form of [..] with \d
+				.replace(CREATE_CHARACTER_CLASS_PATTERN(), '\\d')
+				// Replace any standalone digit (not the one in `{}`) with \d
+				.replace(CREATE_STANDALONE_DIGIT_PATTERN(), '\\d')
+		}
 
 		// This match will always succeed,
 		// because the "longest dummy phone number"

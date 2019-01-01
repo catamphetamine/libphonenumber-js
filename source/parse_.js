@@ -1,5 +1,5 @@
 // This is a port of Google Android `libphonenumber`'s
-// `phonenumberutil.js` of 17th November, 2016.
+// `phonenumberutil.js` of December 31th, 2018.
 //
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
