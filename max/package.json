@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "libphonenumber-js-max",
   "version": "1.0.0",
   "main": "index.commonjs.js",

@@ -964,6 +964,12 @@ export default class AsYouType
 		this.country = find_country_code(this.countryCallingCode, this.national_number, this.metadata)
 	}
 
+	/**
+	 * Returns an instance of `PhoneNumber` class.
+	 * Will return `undefined` if no national (significant) number
+	 * digits have been entered so far, or if no `defaultCountry` has been
+	 * set and the user enters a phone number not in international format.
+	 */
 	getNumber()
 	{
 		if (!this.countryCallingCode || !this.national_number) {

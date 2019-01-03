@@ -11,4 +11,8 @@ describe('parsePhoneNumberFromString', () => {
 		parsePhoneNumberFromString('Phone: 8 (800) 555 35 35.', 'RU').nationalNumber.should.equal('8005553535')
 		expect(parsePhoneNumberFromString('3', 'RU')).to.be.undefined
 	})
+
+	it('should work in edge cases', () => {
+		expect(parsePhoneNumberFromString('')).to.be.undefined
+	})
 })

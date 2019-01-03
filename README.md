@@ -387,7 +387,7 @@ new AsYouType('US').input('2133734') === '(213) 373-4'
 
 The formatter instance also provides the following getters:
 
- * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) has been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
+ * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) digits have been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
 
  * `getTemplate()` — Returns the template used to format the output. Digits (and the `+` sign, if present) are denoted by `x`-es. Will return `undefined` if no suitable format was found for the number being entered (or if no [national (significant) number](#national-significant-number) has been entered so far).
 
