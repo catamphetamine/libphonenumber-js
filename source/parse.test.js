@@ -21,17 +21,6 @@ describe('parse', () =>
 		parse('(800) 55 35 35', { defaultCountry: 'RU' }).should.deep.equal({})
 		parse('+1 187 215 5230', 'US').should.deep.equal({})
 
-		// Parsing national prefixes and carrier codes
-		// is only required for local phone numbers
-		// but some people don't understand that
-		// and sometimes write international phone numbers
-		// with national prefixes (or maybe even carrier codes).
-		// http://ucken.blogspot.ru/2016/03/trunk-prefixes-in-skype4b.html
-		// Google's original library forgives such mistakes
-		// and so does this library, because it has been requested:
-		// https://github.com/catamphetamine/libphonenumber-js/issues/127
-		// parse('+1 1877 215 5230', 'US').should.deep.equal({})
-
 		parse('911231231', 'BE').should.deep.equal({})
 	})
 

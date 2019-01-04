@@ -79,4 +79,33 @@ describe('parsePhoneNumber', () => {
 		expect(() => parsePhoneNumber('+9991112233', 'US')).to.throw('INVALID_COUNTRY')
 		expect(() => parsePhoneNumber('8005553535                                                                                                                                                                                                                                                 ', 'RU')).to.throw('TOO_LONG')
 	})
+
+	it('should parse incorrect international phone numbers', () => {
+		// Parsing national prefixes and carrier codes
+		// is only required for local phone numbers
+		// but some people don't understand that
+		// and sometimes write international phone numbers
+		// with national prefixes (or maybe even carrier codes).
+		// http://ucken.blogspot.ru/2016/03/trunk-prefixes-in-skype4b.html
+		// Google's original library forgives such mistakes
+		// and so does this library, because it has been requested:
+		// https://github.com/catamphetamine/libphonenumber-js/issues/127
+
+		let phoneNumber
+
+		// For complete numbers it should strip national prefix.
+		phoneNumber = parsePhoneNumber('+1 1877 215 5230')
+		phoneNumber.nationalNumber.should.equal('8772155230')
+		phoneNumber.country.should.equal('US')
+
+		// For complete numbers it should strip national prefix.
+		phoneNumber = parsePhoneNumber('+7 8800 555 3535')
+		phoneNumber.nationalNumber.should.equal('8005553535')
+		phoneNumber.country.should.equal('RU')
+
+		// For incomplete numbers it shouldn't strip national prefix.
+		phoneNumber = parsePhoneNumber('+7 8800 555 353')
+		phoneNumber.nationalNumber.should.equal('8800555353')
+		phoneNumber.country.should.equal('RU')
+	})
 })

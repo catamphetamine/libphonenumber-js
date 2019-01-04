@@ -246,6 +246,19 @@ describe('as you type', () =>
 		formatter.template.should.equal('xxx xx xxx xxxx')
 	})
 
+	it('should not forgive incorrect international phone numbers', () =>
+	{
+		let formatter
+
+		formatter = new as_you_type()
+		formatter.input('+1 1 877 215 5230').should.equal('+118772155230')
+		formatter.getNationalNumber().should.equal('18772155230')
+
+		formatter = new as_you_type()
+		formatter.input('+788005553535').should.equal('+788005553535')
+		formatter.getNationalNumber().should.equal('88005553535')
+	})
+
 	it('should return a partial template for current value', function()
 	{
 		const asYouType = new as_you_type('US')
@@ -435,6 +448,9 @@ describe('as you type', () =>
 		phoneNumber = formatter.getNumber()
 		expect(phoneNumber.country).to.be.undefined
 		phoneNumber.countryCallingCode.should.equal('1')
+
+		// An incorrect NANPA international phone number.
+		// (contains national prefix in an international phone number)
 
 		formatter.reset()
 		formatter.input('+1-1')

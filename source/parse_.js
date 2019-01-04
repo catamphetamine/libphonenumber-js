@@ -451,14 +451,15 @@ function parse_national_number(number, metadata)
 	let national_number = parseIncompletePhoneNumber(number)
 	let carrier_code
 
-	// Only strip national prefixes for non-international phone numbers
-	// because national prefixes can't be present in international phone numbers.
-	// Otherwise, while forgiving, it would parse a NANPA number `+1 1877 215 5230`
-	// first to `1877 215 5230` and then, stripping the leading `1`, to `877 215 5230`,
-	// and then it would assume that's a valid number which it isn't.
-	// So no forgiveness for grandmas here.
-	// The issue asking for this fix:
-	// https://github.com/catamphetamine/libphonenumber-js/issues/159
+	// Parsing national prefixes and carrier codes
+	// is only required for local phone numbers
+	// but some people don't understand that
+	// and sometimes write international phone numbers
+	// with national prefixes (or maybe even carrier codes).
+	// http://ucken.blogspot.ru/2016/03/trunk-prefixes-in-skype4b.html
+	// Google's original library forgives such mistakes
+	// and so does this library, because it has been requested:
+	// https://github.com/catamphetamine/libphonenumber-js/issues/127
 	const { number: potential_national_number, carrierCode } = strip_national_prefix_and_carrier_code(national_number, metadata)
 
 	// If metadata has "possible lengths" then employ the new algorythm.

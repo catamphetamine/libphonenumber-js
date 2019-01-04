@@ -183,9 +183,9 @@ export default class AsYouType
 		{
 			if (!this.countryCallingCode)
 			{
-				// No need to format anything
-				// if there's no national phone number.
-				// (e.g. just the country calling code)
+				// Extract country calling code from the digits entered so far.
+
+				// There must be some digits in order to extract anything from them.
 				if (!this.national_number)
 				{
 					// Return raw phone number
@@ -638,12 +638,7 @@ export default class AsYouType
 
 		// Only strip national prefixes for non-international phone numbers
 		// because national prefixes can't be present in international phone numbers.
-		// Otherwise, while forgiving, it would parse a NANPA number `+1 1877 215 5230`
-		// first to `1877 215 5230` and then, stripping the leading `1`, to `877 215 5230`,
-		// and then it would assume that's a valid number which it isn't.
-		// So no forgiveness for grandmas here.
-		// The issue asking for this fix:
-		// https://github.com/catamphetamine/libphonenumber-js/issues/159
+		// While `parseNumber()` is forgiving is such cases, `AsYouType` is not.
 		const { number: potential_national_number, carrierCode } = strip_national_prefix_and_carrier_code(this.national_number, this.metadata)
 
 		if (carrierCode) {
