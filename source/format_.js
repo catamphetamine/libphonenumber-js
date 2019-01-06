@@ -62,6 +62,15 @@ export default function formatNumber(input, format, options, metadata)
 
 	switch (format)
 	{
+		case 'NATIONAL':
+			// Legacy argument support.
+			// (`{ country: ..., phone: '' }`)
+			if (!nationalNumber) {
+				return ''
+			}
+			number = format_national_number(nationalNumber, 'NATIONAL', metadata)
+			return add_extension(number, input.ext, metadata, options.formatExtension)
+
 		case 'INTERNATIONAL':
 			// Legacy argument support.
 			// (`{ country: ..., phone: '' }`)
@@ -103,15 +112,6 @@ export default function formatNumber(input, format, options, metadata)
 				return add_extension(number, input.ext, metadata, options.formatExtension)
 			}
 			return `${IDDPrefix}${countryCallingCode}${nationalNumber}`
-
-		case 'NATIONAL':
-			// Legacy argument support.
-			// (`{ country: ..., phone: '' }`)
-			if (!nationalNumber) {
-				return ''
-			}
-			number = format_national_number(nationalNumber, 'NATIONAL', metadata)
-			return add_extension(number, input.ext, metadata, options.formatExtension)
 
 		default:
 			throw new Error(`Unknown "format" argument passed to "formatNumber()": "${format}"`)

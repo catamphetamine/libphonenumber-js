@@ -53,7 +53,7 @@ This library comes pre-packaged with three flavors of metadata:
 
 * `max` — The complete metadata set, is about `140 kilobytes` in size (`libphonenumber-js/metadata.full.json`).
 
-* `min` — The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://github.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://github.com/catamphetamine/libphonenumber-js#gettype)). Some simple phone number validation via `.isValid()` still works (basic length check, etc), it's just that it's loose compared to the "advanced" validation (not so strict).
+* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://github.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://github.com/catamphetamine/libphonenumber-js#gettype)). Some simple phone number validation via `.isValid()` still works (basic length check, etc), it's just that it's loose compared to the "advanced" validation (not so strict).
 
 * `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`).
 
