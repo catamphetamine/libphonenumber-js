@@ -21,12 +21,12 @@ export interface Extension extends String { }
 export interface CountryCallingCode extends String { }
 
 type FormatExtension = (number: string, extension: string, metadata: Metadata) => string
+
 type FormatNumberOptionsWithoutIDD = {
   v2?: boolean;
   formatExtension?: FormatExtension;
 };
 
-// Legacy.
 export type FormatNumberOptions = {
   v2?: boolean;
   fromCountry?: CountryCode;
