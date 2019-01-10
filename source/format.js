@@ -10,13 +10,13 @@ export default function formatNumber(arg_1, arg_2, arg_3, arg_4, arg_5)
 		options,
 		metadata
 	}
-	= sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
+	= normalizeArguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 
 	return _formatNumber(input, format, options, metadata)
 }
 
 // Sort out arguments
-function sort_out_arguments(arg_1, arg_2, arg_3, arg_4, arg_5)
+function normalizeArguments(arg_1, arg_2, arg_3, arg_4, arg_5)
 {
 	let input
 	let format

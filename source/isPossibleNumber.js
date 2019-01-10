@@ -1,4 +1,4 @@
-import { sort_out_arguments } from './getNumberType'
+import { normalizeArguments } from './getNumberType'
 import _isPossibleNumber from './isPossibleNumber_'
 
 /**
@@ -17,6 +17,6 @@ import _isPossibleNumber from './isPossibleNumber_'
  */
 export default function isPossibleNumber(arg_1, arg_2, arg_3, arg_4)
 {
-	const { input, options, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
+	const { input, options, metadata } = normalizeArguments(arg_1, arg_2, arg_3, arg_4)
 	return _isPossibleNumber(input, options, metadata)
 }

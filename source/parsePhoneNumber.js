@@ -1,11 +1,11 @@
 import parseNumber from './parse_'
 
 export default function parsePhoneNumber(arg_1, arg_2, arg_3, arg_4) {
-	const { text, options, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
+	const { text, options, metadata } = normalizeArguments(arg_1, arg_2, arg_3, arg_4)
 	return parseNumber(text, { ...options, v2: true }, metadata)
 }
 
-export function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
+export function normalizeArguments(arg_1, arg_2, arg_3, arg_4)
 {
 	let text
 	let options

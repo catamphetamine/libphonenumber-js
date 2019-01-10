@@ -28,12 +28,12 @@ import _parseNumber from './parse_'
 //
 export default function parseNumber(arg_1, arg_2, arg_3, arg_4)
 {
-	const { text, options, metadata } = sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
+	const { text, options, metadata } = normalizeArguments(arg_1, arg_2, arg_3, arg_4)
 	return _parseNumber(text, options, metadata)
 }
 
 // Sort out arguments
-function sort_out_arguments(arg_1, arg_2, arg_3, arg_4)
+function normalizeArguments(arg_1, arg_2, arg_3, arg_4)
 {
 	let text
 	let options
