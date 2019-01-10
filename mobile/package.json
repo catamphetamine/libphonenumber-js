@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "main": "index.commonjs.js",
   "module": "index.js",
-  "types": "../index.d.ts",
+  "types": "../min/index.d.ts",
   "sideEffects": false
 }
