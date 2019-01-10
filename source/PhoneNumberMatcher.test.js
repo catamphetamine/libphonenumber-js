@@ -5,9 +5,34 @@
  */
 
 import PhoneNumberMatcher from './PhoneNumberMatcher'
+import metadata from '../metadata.min.json'
 
 describe('PhoneNumberMatcher', () => {
-	//
+	it('should find phone numbers', () => {
+		const expectedNumbers = [{
+			country : 'RU',
+			nationalNumber : '8005553535',
+			startsAt : 14,
+			endsAt   : 32
+		}, {
+			country : 'US',
+			nationalNumber : '2133734253',
+			startsAt : 41,
+			endsAt   : 55
+		}]
+
+		const matcher = new PhoneNumberMatcher('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', { defaultCountry: 'US', v2: true }, metadata)
+		while (matcher.hasNext()) {
+			const number = matcher.next()
+			const phoneNumber = expectedNumbers.shift()
+			number.startsAt.should.equal(phoneNumber.startsAt)
+			number.endsAt.should.equal(phoneNumber.endsAt)
+			number.number.country.should.equal(phoneNumber.country)
+			number.number.nationalNumber.should.equal(phoneNumber.nationalNumber)
+		}
+
+		expectedNumbers.length.should.equal(0)
+	})
 })
 
 //   /** See {@link PhoneNumberUtilTest#testParseNationalNumber()}. */

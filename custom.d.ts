@@ -71,7 +71,7 @@ export function findNumbers(text: string, options: CountryCode | { defaultCountr
 export function searchNumbers(text: string, metadata: Metadata): IterableIterator<NumberFound>;
 export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: Metadata): IterableIterator<NumberFound>;
 
-export class ParsedNumberMatcher {
+export class PhoneNumberMatcher {
   constructor(text: string, metadata: Metadata);
   constructor(text: string, options: { defaultCountry?: CountryCode }, metadata: Metadata);
   hasNext(): boolean;
@@ -79,8 +79,9 @@ export class ParsedNumberMatcher {
 }
 
 export function getCountryCallingCode(countryCode: CountryCode, metadata: Metadata): CountryCallingCode;
-
+// Deprecated
 export function getPhoneCode(countryCode: CountryCode, metadata: Metadata): CountryCallingCode;
+export function getExtPrefix(countryCode: CountryCode, metadata: Metadata): string;
 
 export function formatIncompletePhoneNumber(number: string, metadata: Metadata): string;
 export function formatIncompletePhoneNumber(number: string, countryCode: CountryCode, metadata: Metadata): string;

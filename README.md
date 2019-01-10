@@ -544,10 +544,10 @@ findNumbers(`
 
 ####
 
-By default it processes the whole text and then outputs the phone numbers found. If the text is very big (say, a hundred thousand characters) then it might freeze the user interface for a couple of seconds. To avoid such lags one can employ iterators to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame`).
+By default it processes the whole text and then outputs the phone numbers found. If the text is very big (say, a hundred thousand characters) then it might freeze the user interface for a couple of seconds. To avoid such lags one can employ "iterator" approach using `searchNumbers()` to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame`).
 
 <details>
-<summary>Asynchronous search example</summary>
+<summary>Asynchronous search example using <code>searchNumbers()</code></summary>
 
 ####
 
@@ -578,7 +578,8 @@ import { PhoneNumberMatcher } from 'libphonenumber-js'
 const matcher = new PhoneNumberMatcher(`
   For tech support call +7 (800) 555-35-35 internationally
   or reach a local US branch at (213) 373-4253 ext. 1234.
-`, 'US', {
+`, {
+  defaultCountry: 'US',
   v2: true
 })
 

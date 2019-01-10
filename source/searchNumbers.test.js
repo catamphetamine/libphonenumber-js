@@ -3,7 +3,7 @@ import metadata from '../metadata.min.json'
 
 describe('searchNumbers', () => {
 	it('should iterate', () => {
-		const expected_numbers =[{
+		const expectedNumbers =[{
 			country : 'RU',
 			phone   : '8005553535',
 			// number   : '+7 (800) 555-35-35',
@@ -18,9 +18,9 @@ describe('searchNumbers', () => {
 		}]
 
 		for (const number of searchNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata)) {
-			number.should.deep.equal(expected_numbers.shift())
+			number.should.deep.equal(expectedNumbers.shift())
 		}
 
-		expected_numbers.length.should.equal(0)
+		expectedNumbers.length.should.equal(0)
 	})
 })

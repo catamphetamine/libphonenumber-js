@@ -125,15 +125,16 @@ export class ParsedNumberSearch {
 export function findNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
 export function searchNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
 
-export class ParsedNumberMatcher {
+export class PhoneNumberMatcher {
   constructor(text: string, options?: { defaultCountry?: CountryCode });
   hasNext(): boolean;
   next(): NumberFound;
 }
 
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
-
+// Deprecated.
 export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;
+export function getExtPrefix(countryCode: CountryCode): string;
 
 export function formatIncompletePhoneNumber(number: string, countryCode?: CountryCode): string;
 export function parseIncompletePhoneNumber(text: string): string;
