@@ -19,7 +19,7 @@ import isViablePhoneNumber from './isViablePhoneNumber'
 import { extractExtension } from './extension'
 import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
 import getCountryCallingCode from './getCountryCallingCode'
-import getNumberType, { check_number_length_for_type } from './getNumberType_'
+import getNumberType, { checkNumberLengthForType } from './getNumberType_'
 import { is_possible_number } from './isPossibleNumber_'
 import { stripIDDPrefix } from './IDD'
 import { parseRFC3966 } from './RFC3966'
@@ -469,7 +469,7 @@ function parse_national_number(number, metadata)
 		// carrier code be long enough to be a possible length for the region.
 		// Otherwise, we don't do the stripping, since the original number could be
 		// a valid short number.
-		switch (check_number_length_for_type(potential_national_number, undefined, metadata))
+		switch (checkNumberLengthForType(potential_national_number, undefined, metadata))
 		{
 			case 'TOO_SHORT':
 			// case 'IS_POSSIBLE_LOCAL_ONLY':

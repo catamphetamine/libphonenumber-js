@@ -2,29 +2,24 @@ import metadata from '../metadata.min.json'
 
 import Metadata, { validateMetadata, getExtPrefix } from './metadata'
 
-describe('metadata', () =>
-{
-	it('should return undefined for non-defined types', function()
-	{
+describe('metadata', () => {
+	it('should return undefined for non-defined types', () => {
 		const FR = new Metadata(metadata).country('FR')
 		type(FR.type('FIXED_LINE')).should.equal('undefined')
 	})
 
-	it('should validate country', function()
-	{
+	it('should validate country', () => {
 		const thrower = () => new Metadata(metadata).country('RUS')
 		thrower.should.throw('Unknown country')
 	})
 
-	it('should return ext prefix for a country', function()
-	{
+	it('should return ext prefix for a country', () => {
 		getExtPrefix('US', metadata).should.equal(' ext. ')
 		getExtPrefix('CA', metadata).should.equal(' ext. ')
 		getExtPrefix('GB', metadata).should.equal(' x')
 	})
 
-	it('should validate metadata', function()
-	{
+	it('should validate metadata', () => {
 		let thrower = () => validateMetadata()
 		thrower.should.throw('`metadata` argument not passed')
 
@@ -53,7 +48,6 @@ describe('metadata', () =>
 	})
 })
 
-function type(something)
-{
+function type(something) {
 	return typeof something
 }

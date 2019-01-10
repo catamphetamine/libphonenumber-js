@@ -1,5 +1,5 @@
 import Metadata from './metadata'
-import { matchesEntirely } from './util'
+import { matchesEntirely, mergeArrays } from './util'
 
 const NON_FIXED_LINE_PHONE_TYPES =
 [
@@ -108,7 +108,7 @@ export function is_of_type(nationalNumber, type, metadata)
 }
 
 // Should only be called for the "new" metadata which has "possible lengths".
-export function check_number_length_for_type(nationalNumber, type, metadata)
+export function checkNumberLengthForType(nationalNumber, type, metadata)
 {
 	const type_info = metadata.type(type)
 
@@ -130,7 +130,7 @@ export function check_number_length_for_type(nationalNumber, type, metadata)
 		{
 			// The rare case has been encountered where no fixedLine data is available
 			// (true for some non-geographical entities), so we just check mobile.
-			return check_number_length_for_type(nationalNumber, 'MOBILE', metadata)
+			return checkNumberLengthForType(nationalNumber, 'MOBILE', metadata)
 		}
 
 		const mobile_type = metadata.type('MOBILE')
@@ -142,14 +142,14 @@ export function check_number_length_for_type(nationalNumber, type, metadata)
 			// Note that when adding the possible lengths from mobile, we have
 			// to again check they aren't empty since if they are this indicates
 			// they are the same as the general desc and should be obtained from there.
-			possible_lengths = merge_arrays(possible_lengths, mobile_type.possibleLengths())
+			possible_lengths = mergeArrays(possible_lengths, mobile_type.possibleLengths())
 			// The current list is sorted; we need to merge in the new list and
 			// re-sort (duplicates are okay). Sorting isn't so expensive because
 			// the lists are very small.
 
 			// if (local_lengths)
 			// {
-			// 	local_lengths = merge_arrays(local_lengths, mobile_type.possibleLengthsLocal())
+			// 	local_lengths = mergeArrays(local_lengths, mobile_type.possibleLengthsLocal())
 			// }
 			// else
 			// {
@@ -192,27 +192,4 @@ export function check_number_length_for_type(nationalNumber, type, metadata)
 
 	// We skip the first element since we've already checked it.
 	return possible_lengths.indexOf(actual_length, 1) >= 0 ? 'IS_POSSIBLE' : 'INVALID_LENGTH'
-}
-
-export function merge_arrays(a, b)
-{
-	const merged = a.slice()
-
-	for (const element of b)
-	{
-		if (a.indexOf(element) < 0)
-		{
-			merged.push(element)
-		}
-	}
-
-	return merged.sort((a, b) => a - b)
-
-	// ES6 version, requires Set polyfill.
-	// let merged = new Set(a)
-	// for (const element of b)
-	// {
-	// 	merged.add(i)
-	// }
-	// return Array.from(merged).sort((a, b) => a - b)
 }

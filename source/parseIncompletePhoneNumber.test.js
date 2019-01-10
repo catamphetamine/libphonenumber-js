@@ -1,9 +1,7 @@
 import parseIncompletePhoneNumber, { parsePhoneNumberCharacter } from './parseIncompletePhoneNumber'
 
-describe('parseIncompletePhoneNumber', () =>
-{
-	it('should parse phone number character', () =>
-	{
+describe('parseIncompletePhoneNumber', () => {
+	it('should parse phone number character', () => {
 		// Accepts leading `+`.
 		parsePhoneNumberCharacter('+').should.equal('+')
 
@@ -20,8 +18,7 @@ describe('parseIncompletePhoneNumber', () =>
 		expect(parsePhoneNumberCharacter('-')).to.be.undefined
 	})
 
-	it('should parse incomplete phone number', () =>
-	{
+	it('should parse incomplete phone number', () => {
 		parseIncompletePhoneNumber('').should.equal('')
 
 		// Doesn't accept non-leading `+`.

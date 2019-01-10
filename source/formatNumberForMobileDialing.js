@@ -6,7 +6,7 @@
 
 import Metadata from './metadata'
 import format from './format_'
-import get_number_type, { check_number_length_for_type } from './getNumberType_'
+import get_number_type, { checkNumberLengthForType } from './getNumberType_'
 import getCountryCallingCode from './getCountryCallingCode'
 import { REGION_CODE_FOR_NON_GEO_ENTITY } from './common'
 
@@ -102,11 +102,11 @@ export default function(number, from_country, with_formatting, metadata)
 			// numbers which might potentially be short numbers, which are always
 			// dialled in national format.
 
-			// Select country for `check_number_length_for_type()`.
+			// Select country for `checkNumberLengthForType()`.
 			metadata.country(country)
 
 			if (can_be_internationally_dialled(number) &&
-				check_number_length_for_type(number.phone, undefined, metadata) !== 'TOO_SHORT')
+				checkNumberLengthForType(number.phone, undefined, metadata) !== 'TOO_SHORT')
 			{
 				formatted_number = format(number, 'INTERNATIONAL', metadata.metadata)
 			}

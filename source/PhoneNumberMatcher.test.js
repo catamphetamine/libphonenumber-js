@@ -6,8 +6,7 @@
 
 import PhoneNumberMatcher from './PhoneNumberMatcher'
 
-describe('PhoneNumberMatcher', () =>
-{
+describe('PhoneNumberMatcher', () => {
 	//
 })
 

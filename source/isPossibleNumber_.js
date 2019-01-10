@@ -1,5 +1,5 @@
 import Metadata from './metadata'
-import { check_number_length_for_type } from './getNumberType_'
+import { checkNumberLengthForType } from './getNumberType_'
 
 export default function isPossibleNumber(input, options, metadata)
 {
@@ -44,7 +44,7 @@ export default function isPossibleNumber(input, options, metadata)
 
 export function is_possible_number(national_number, is_international, metadata)
 {
-	switch (check_number_length_for_type(national_number, undefined, metadata))
+	switch (checkNumberLengthForType(national_number, undefined, metadata))
 	{
 		case 'IS_POSSIBLE':
 			return true

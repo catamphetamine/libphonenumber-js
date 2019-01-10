@@ -33,7 +33,7 @@ import {
 	changeInternationalFormatStyle
 } from './format_'
 
-import { check_number_length_for_type } from './getNumberType_'
+import { checkNumberLengthForType } from './getNumberType_'
 
 import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
 
@@ -676,7 +676,7 @@ export default class AsYouType
 
 	is_possible_number(number)
 	{
-		const validation_result = check_number_length_for_type(number, undefined, this.metadata)
+		const validation_result = checkNumberLengthForType(number, undefined, this.metadata)
 		switch (validation_result)
 		{
 			case 'IS_POSSIBLE':

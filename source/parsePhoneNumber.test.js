@@ -2,14 +2,12 @@ import _parsePhoneNumber from './parsePhoneNumber'
 import metadata from '../metadata.min.json'
 import metadataFull from '../metadata.full.json'
 
-function parsePhoneNumber(...parameters)
-{
+function parsePhoneNumber(...parameters) {
 	parameters.push(metadata)
 	return _parsePhoneNumber.apply(this, parameters)
 }
 
-function parsePhoneNumberFull(...parameters)
-{
+function parsePhoneNumberFull(...parameters) {
 	parameters.push(metadataFull)
 	return _parsePhoneNumber.apply(this, parameters)
 }

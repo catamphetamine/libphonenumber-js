@@ -1,35 +1,32 @@
+// This is a legacy function.
+// Use `findNumbers()` instead.
+
 import findNumbers, { searchPhoneNumbers } from './findPhoneNumbers'
 import { PhoneNumberSearch } from './findPhoneNumbers_'
 import metadata from '../metadata.min.json'
 
-describe('findPhoneNumbers', () =>
-{
-	it('should find numbers', function()
-	{
-		findNumbers('2133734253', 'US', metadata).should.deep.equal
-		([{
+describe('findPhoneNumbers', () => {
+	it('should find numbers', () => {
+		findNumbers('2133734253', 'US', metadata).should.deep.equal([{
 			phone    : '2133734253',
 			country  : 'US',
 			startsAt : 0,
 			endsAt   : 10
 		}])
 
-		findNumbers('(213) 373-4253', 'US', metadata).should.deep.equal
-		([{
+		findNumbers('(213) 373-4253', 'US', metadata).should.deep.equal([{
 			phone    : '2133734253',
 			country  : 'US',
 			startsAt : 0,
 			endsAt   : 14
 		}])
 
-		findNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata).should.deep.equal
-		([{
+		findNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata).should.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 14,
 			endsAt   : 32
-		},
-		{
+		}, {
 			phone    : '2133734253',
 			country  : 'US',
 			startsAt : 41,
@@ -38,14 +35,12 @@ describe('findPhoneNumbers', () =>
 
 		// Opening parenthesis issue.
 		// https://github.com/catamphetamine/libphonenumber-js/issues/252
-		findNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 (that\'s not even in the same country!) as written in the document.', 'US', metadata).should.deep.equal
-		([{
+		findNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 (that\'s not even in the same country!) as written in the document.', 'US', metadata).should.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 14,
 			endsAt   : 32
-		},
-		{
+		}, {
 			phone    : '2133734253',
 			country  : 'US',
 			startsAt : 41,
@@ -53,8 +48,7 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// No default country.
-		findNumbers('The number is +7 (800) 555-35-35 as written in the document.', metadata).should.deep.equal
-		([{
+		findNumbers('The number is +7 (800) 555-35-35 as written in the document.', metadata).should.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 14,
@@ -62,8 +56,7 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// Passing `options` and default country.
-		findNumbers('The number is +7 (800) 555-35-35 as written in the document.', 'US', { leniency: 'VALID' }, metadata).should.deep.equal
-		([{
+		findNumbers('The number is +7 (800) 555-35-35 as written in the document.', 'US', { leniency: 'VALID' }, metadata).should.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 14,
@@ -71,8 +64,7 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// Passing `options`.
-		findNumbers('The number is +7 (800) 555-35-35 as written in the document.', { leniency: 'VALID' }, metadata).should.deep.equal
-		([{
+		findNumbers('The number is +7 (800) 555-35-35 as written in the document.', { leniency: 'VALID' }, metadata).should.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 14,
@@ -80,8 +72,7 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// Not a phone number and a phone number.
-		findNumbers('Digits 12 are not a number, but +7 (800) 555-35-35 is.', { leniency: 'VALID' }, metadata).should.deep.equal
-		([{
+		findNumbers('Digits 12 are not a number, but +7 (800) 555-35-35 is.', { leniency: 'VALID' }, metadata).should.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 32,
@@ -89,8 +80,7 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// Phone number extension.
-		findNumbers('Date 02/17/2018 is not a number, but +7 (800) 555-35-35 ext. 123 is.', { leniency: 'VALID' }, metadata).should.deep.equal
-		([{
+		findNumbers('Date 02/17/2018 is not a number, but +7 (800) 555-35-35 ext. 123 is.', { leniency: 'VALID' }, metadata).should.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			ext      : '123',
@@ -99,17 +89,14 @@ describe('findPhoneNumbers', () =>
 		}])
 	})
 
-	it('shouldn\'t find non-valid numbers', function()
-	{
+	it('shouldn\'t find non-valid numbers', () => {
 		// Not a valid phone number for US.
 		findNumbers('1111111111', 'US', metadata).should.deep.equal([])
 	})
 
-	it('should find non-European digits', function()
-	{
+	it('should find non-European digits', () => {
 		// E.g. in Iraq they don't write `+442323234` but rather `+٤٤٢٣٢٣٢٣٤`.
-		findNumbers('العَرَبِيَّة‎ +٤٤٣٣٣٣٣٣٣٣٣٣عَرَبِيّ‎', metadata).should.deep.equal
-		([{
+		findNumbers('العَرَبِيَّة‎ +٤٤٣٣٣٣٣٣٣٣٣٣عَرَبِيّ‎', metadata).should.deep.equal([{
 			country  : 'GB',
 			phone    : '3333333333',
 			startsAt : 14,
@@ -117,17 +104,14 @@ describe('findPhoneNumbers', () =>
 		}])
 	})
 
-	it('should iterate', function()
-	{
-		const expected_numbers =
-		[{
+	it('should iterate', () => {
+		const expected_numbers = [{
 			country : 'RU',
 			phone   : '8005553535',
 			// number   : '+7 (800) 555-35-35',
 			startsAt : 14,
 			endsAt   : 32
-		},
-		{
+		}, {
 			country : 'US',
 			phone   : '2133734253',
 			// number   : '(213) 373-4253',
@@ -135,16 +119,14 @@ describe('findPhoneNumbers', () =>
 			endsAt   : 55
 		}]
 
-		for (const number of searchPhoneNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata))
-		{
+		for (const number of searchPhoneNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata)) {
 			number.should.deep.equal(expected_numbers.shift())
 		}
 
 		expected_numbers.length.should.equal(0)
 	})
 
-	it('should work in edge cases', function()
-	{
+	it('should work in edge cases', () => {
 		let thrower
 
 		// No input
@@ -163,14 +145,12 @@ describe('findPhoneNumbers', () =>
 		// thrower.should.throw('`metadata` argument not passed')
 	})
 
-	it('shouldn\'t find phone numbers which are not phone numbers', function()
-	{
+	it('shouldn\'t find phone numbers which are not phone numbers', () => {
 		// A timestamp.
 		findNumbers('2012-01-02 08:00', 'US', metadata).should.deep.equal([])
 
 		// A valid number (not a complete timestamp).
-		findNumbers('2012-01-02 08', 'US', metadata).should.deep.equal
-		([{
+		findNumbers('2012-01-02 08', 'US', metadata).should.deep.equal([{
 			country  : 'US',
 			phone    : '2012010208',
 			startsAt : 0,
@@ -184,8 +164,7 @@ describe('findPhoneNumbers', () =>
 		findNumbers('2133734253a', 'US', metadata).should.deep.equal([])
 
 		// Valid phone (same as the one found in the UUID below).
-		findNumbers('The phone number is 231354125.', 'FR', metadata).should.deep.equal
-		([{
+		findNumbers('The phone number is 231354125.', 'FR', metadata).should.deep.equal([{
 			country  : 'FR',
 			phone    : '231354125',
 			startsAt : 20,
@@ -205,15 +184,12 @@ describe('findPhoneNumbers', () =>
 	})
 })
 
-describe('PhoneNumberSearch', () =>
-{
-	it('should search for phone numbers', function()
-	{
+describe('PhoneNumberSearch', () => {
+	it('should search for phone numbers', () => {
 		const finder = new PhoneNumberSearch('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', { defaultCountry: 'US' }, metadata)
 
 		finder.hasNext().should.equal(true)
-		finder.next().should.deep.equal
-		({
+		finder.next().should.deep.equal({
 			country : 'RU',
 			phone   : '8005553535',
 			// number   : '+7 (800) 555-35-35',
@@ -222,8 +198,7 @@ describe('PhoneNumberSearch', () =>
 		})
 
 		finder.hasNext().should.equal(true)
-		finder.next().should.deep.equal
-		({
+		finder.next().should.deep.equal({
 			country : 'US',
 			phone   : '2133734253',
 			// number   : '(213) 373-4253',
@@ -234,8 +209,7 @@ describe('PhoneNumberSearch', () =>
 		finder.hasNext().should.equal(false)
 	})
 
-	it('should work in edge cases', function()
-	{
+	it('should work in edge cases', () => {
 		// No options
 		const search = new PhoneNumberSearch('', undefined, metadata)
 

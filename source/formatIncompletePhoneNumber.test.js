@@ -2,10 +2,8 @@ import formatIncompletePhoneNumber from './formatIncompletePhoneNumber'
 
 import metadata from '../metadata.min.json'
 
-describe('formatIncompletePhoneNumber', () =>
-{
-	it('should format parsed input value', () =>
-	{
+describe('formatIncompletePhoneNumber', () => {
+	it('should format parsed input value', () => {
 		let result
 
 		// National input.

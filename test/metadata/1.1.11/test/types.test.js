@@ -1,7 +1,7 @@
 import metadata from '../metadata.full'
 import Metadata from '../../../../source/metadata'
 import get_number_type_custom from '../../../../source/getNumberType'
-import { check_number_length_for_type, merge_arrays } from '../../../../source/getNumberType_'
+import { checkNumberLengthForType } from '../../../../source/getNumberType_'
 
 function get_number_type(...parameters)
 {
@@ -80,11 +80,6 @@ describe('get_number_type', () =>
 		thrower = () => get_number_type(89150000000, 'RU')
 		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
 	})
-
-	it('should merge arrays', () =>
-	{
-		merge_arrays([1, 2], [2, 3]).should.deep.equal([1, 2, 3])
-	})
 })
 
 function type(something)
@@ -96,5 +91,5 @@ function check_number_length(number, type, country)
 {
 	const _metadata = new Metadata(metadata)
 	_metadata.country(country)
-	return check_number_length_for_type(number, type, _metadata)
+	return checkNumberLengthForType(number, type, _metadata)
 }

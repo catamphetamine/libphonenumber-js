@@ -60,10 +60,8 @@ from '../index.es6'
 import metadata from '../metadata.min.json'
 import examples from '../examples.mobile.json'
 
-describe(`exports`, function()
-{
-	it(`should export ES6`, function()
-	{
+describe(`exports`, () => {
+	it(`should export ES6`, () => {
 		expect(ParseError).to.be.a('function')
 		parsePhoneNumber('+12133734253').nationalNumber.should.equal('2133734253')
 		parsePhoneNumberFromString('+12133734253').nationalNumber.should.equal('2133734253')
@@ -110,8 +108,7 @@ describe(`exports`, function()
 	})
 
 	// Deprecated exports: remove in `2.0.0`.
-	it(`should export ES6 custom functions`, function()
-	{
+	it(`should export ES6 custom functions`, () => {
 		parseCustom('+12133734253', metadata).should.deep.equal({ country: 'US', phone: '2133734253' })
 		formatCustom('2133734253', 'US', 'E.164', metadata).should.equal('+12133734253')
 		getNumberTypeCustom('2133734253', 'US', metadata).should.equal('FIXED_LINE_OR_MOBILE')
@@ -124,8 +121,7 @@ describe(`exports`, function()
 		getCountryCallingCodeCustom('KZ', metadata)
 	})
 
-	it(`should export CommonJS`, function()
-	{
+	it(`should export CommonJS`, () => {
 		const Library = require('../index.common')
 
 		expect(Library.ParseError).to.be.a('function')
@@ -173,8 +169,7 @@ describe(`exports`, function()
 		Library.parseDigits('+123').should.equal('123')
 	})
 
-	it(`should export CommonJS custom functions`, function()
-	{
+	it(`should export CommonJS custom functions`, () => {
 		const Library = require('../custom')
 
 		expect(Library.ParseError).to.be.a('function')

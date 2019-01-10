@@ -1,43 +1,39 @@
 import metadata from '../metadata.min.json'
 import _isValidNumber from './validate'
 
-function is_valid_number(...parameters)
-{
+function isValidNumber(...parameters) {
 	parameters.push(metadata)
 	return _isValidNumber.apply(this, parameters)
 }
 
-describe('validate', () =>
-{
-	it('should validate phone numbers', function()
-	{
-		is_valid_number('+1-213-373-4253').should.equal(true)
-		is_valid_number('+1-213-373').should.equal(false)
+describe('validate', () => {
+	it('should validate phone numbers', () => {
+		isValidNumber('+1-213-373-4253').should.equal(true)
+		isValidNumber('+1-213-373').should.equal(false)
 
-		is_valid_number('+1-213-373-4253', undefined).should.equal(true)
+		isValidNumber('+1-213-373-4253', undefined).should.equal(true)
 
-		is_valid_number('(213) 373-4253', 'US').should.equal(true)
-		is_valid_number('(213) 37', 'US').should.equal(false)
+		isValidNumber('(213) 373-4253', 'US').should.equal(true)
+		isValidNumber('(213) 37', 'US').should.equal(false)
 
-		is_valid_number({ country: 'US', phone: '2133734253' }).should.equal(true)
+		isValidNumber({ country: 'US', phone: '2133734253' }).should.equal(true)
 
 		// No "types" info: should return `true`.
-		is_valid_number('+380972423740').should.equal(true)
+		isValidNumber('+380972423740').should.equal(true)
 
-		is_valid_number('0912345678', 'TW').should.equal(true)
+		isValidNumber('0912345678', 'TW').should.equal(true)
 
 		// Moible numbers starting 07624* are Isle of Man
 		// which has its own "country code" "IM"
 		// which is in the "GB" "country calling code" zone.
 		// So while this number is for "IM" it's still supposed to
 		// be valid when passed "GB" as a default country.
-		is_valid_number('07624369230', 'GB').should.equal(true)
+		isValidNumber('07624369230', 'GB').should.equal(true)
 	})
 
-	it('should refine phone number validation in case extended regular expressions are set for a country', () =>
-	{
+	it('should refine phone number validation in case extended regular expressions are set for a country', () => {
 		// Germany general validation must pass
-		is_valid_number('961111111', 'UZ').should.equal(true)
+		isValidNumber('961111111', 'UZ').should.equal(true)
 
 		// Different regular expressions for precise national number validation.
 		// `types` index in compressed array is `9` for v1.
@@ -50,43 +46,41 @@ describe('validate', () =>
 		]
 
 		// Extended validation must not pass for an invalid phone number
-		is_valid_number('961111111', 'UZ').should.equal(false)
+		isValidNumber('961111111', 'UZ').should.equal(false)
 
 		// Extended validation must pass for a valid phone number
-		is_valid_number('912345678', 'UZ').should.equal(true)
+		isValidNumber('912345678', 'UZ').should.equal(true)
 	})
 
-	it('should work in edge cases', function()
-	{
+	it('should work in edge cases', () => {
 		// No metadata
 		let thrower = () => _isValidNumber('+78005553535')
 		thrower.should.throw('`metadata` argument not passed')
 
 		// Non-phone-number characters in a phone number
-		is_valid_number('+499821958a').should.equal(false)
-		is_valid_number('88005553535x', 'RU').should.equal(false)
+		isValidNumber('+499821958a').should.equal(false)
+		isValidNumber('88005553535x', 'RU').should.equal(false)
 
 		// Doesn't have `types` regexps in default metadata.
-		is_valid_number({ country: 'UA', phone: '300000000' }).should.equal(true)
-		is_valid_number({ country: 'UA', phone: '200000000' }).should.equal(false)
+		isValidNumber({ country: 'UA', phone: '300000000' }).should.equal(true)
+		isValidNumber({ country: 'UA', phone: '200000000' }).should.equal(false)
 
 		// Numerical `value`
-		thrower = () => is_valid_number(88005553535, 'RU')
+		thrower = () => isValidNumber(88005553535, 'RU')
 		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
 
 		// Long country phone code
-		is_valid_number('+3725555555').should.equal(true)
+		isValidNumber('+3725555555').should.equal(true)
 
 		// Invalid country
-		thrower = () => is_valid_number({ phone: '8005553535', country: 'RUS' })
+		thrower = () => isValidNumber({ phone: '8005553535', country: 'RUS' })
 		thrower.should.throw('Unknown country')
 	})
 
-	it('should accept phone number extensions', function()
-	{
+	it('should accept phone number extensions', () => {
 		// International
-		is_valid_number('+12133734253 ext. 123').should.equal(true)
+		isValidNumber('+12133734253 ext. 123').should.equal(true)
 		// National
-		is_valid_number('88005553535 x123', 'RU').should.equal(true)
+		isValidNumber('88005553535 x123', 'RU').should.equal(true)
 	})
 })

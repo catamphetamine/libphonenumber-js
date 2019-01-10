@@ -1,14 +1,12 @@
 import metadata from '../metadata.min.json'
 import _isPossibleNumber from './isPossibleNumber'
 
-function isPossibleNumber(...parameters)
-{
+function isPossibleNumber(...parameters) {
 	parameters.push(metadata)
 	return _isPossibleNumber.apply(this, parameters)
 }
 
-describe('isPossibleNumber', () =>
-{
+describe('isPossibleNumber', () => {
 	it('should work', function()
 	{
 		isPossibleNumber('+79992223344').should.equal(true)
@@ -20,15 +18,13 @@ describe('isPossibleNumber', () =>
 		isPossibleNumber({ phone: '1112223344', countryCallingCode: 7 }).should.equal(true)
 	})
 
-	it('should work v2', function()
-	{
+	it('should work v2', () => {
 		isPossibleNumber({ nationalNumber: '111222334', countryCallingCode: 7 }, { v2: true }).should.equal(false)
 		isPossibleNumber({ nationalNumber: '1112223344', countryCallingCode: 7 }, { v2: true }).should.equal(true)
 		isPossibleNumber({ nationalNumber: '11122233445', countryCallingCode: 7 }, { v2: true }).should.equal(false)
 	})
 
-	it('should work in edge cases', function()
-	{
+	it('should work in edge cases', () => {
 		// Invalid `PhoneNumber` argument.
 		expect(() => isPossibleNumber({}, { v2: true })).to.throw('Invalid phone number object passed')
 

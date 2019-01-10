@@ -1,46 +1,42 @@
 import metadata from '../metadata.min.json'
-import as_you_type_custom, { close_dangling_braces, strip_dangling_braces, repeat } from './AsYouType'
+import AsYouType_, { close_dangling_braces, strip_dangling_braces, repeat } from './AsYouType'
 
-class as_you_type extends as_you_type_custom
-{
-	constructor(country_code)
-	{
+class AsYouType extends AsYouType_ {
+	constructor(country_code) {
 		super(country_code, metadata)
 	}
 }
 
-describe('as you type', () =>
-{
-	it('should parse and format phone numbers as you type', function()
-	{
+describe('as you type', () => {
+	it('should parse and format phone numbers as you type', () => {
 		// International number test
-		new as_you_type().input('+12133734').should.equal('+1 213 373 4')
+		new AsYouType().input('+12133734').should.equal('+1 213 373 4')
 		// Local number test
-		new as_you_type('US').input('2133734').should.equal('(213) 373-4')
+		new AsYouType('US').input('2133734').should.equal('(213) 373-4')
 
 		// With national prefix test
-		new as_you_type('RU').input('880055535').should.equal('8 (800) 555-35')
+		new AsYouType('RU').input('880055535').should.equal('8 (800) 555-35')
 
 		// US national number retains national prefix.
-		new as_you_type('US').input('12133734').should.equal('1 (213) 373-4')
+		new AsYouType('US').input('12133734').should.equal('1 (213) 373-4')
 
 		// US national number retains national prefix (full number).
-		new as_you_type('US').input('12133734253').should.equal('1 (213) 373-4253')
+		new AsYouType('US').input('12133734253').should.equal('1 (213) 373-4253')
 
 		// With national prefix test
-		new as_you_type('RU').input('88005553535').should.equal('8 (800) 555-35-35')
+		new AsYouType('RU').input('88005553535').should.equal('8 (800) 555-35-35')
 
 		// Should discard the national prefix
 		// when a whole phone number format matches
-		new as_you_type('RU').input('8800555353').should.equal('880 055-53-53')
+		new AsYouType('RU').input('8800555353').should.equal('880 055-53-53')
 
-		new as_you_type('CH').input('044-668-1').should.equal('044 668 1')
+		new AsYouType('CH').input('044-668-1').should.equal('044 668 1')
 
 		let formatter
 
 		// Test International phone number (international)
 
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
@@ -107,7 +103,7 @@ describe('as you type', () =>
 
 		// Test Switzerland phone numbers
 
-		formatter = new as_you_type('CH')
+		formatter = new AsYouType('CH')
 
 		formatter.input(' ').should.equal('')
 		formatter.input('0').should.equal('0')
@@ -141,26 +137,26 @@ describe('as you type', () =>
 
 		// Kazakhstan (non-main country for +7 country phone code)
 
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 
 		formatter.input('+77172580659')
 		formatter.country.should.equal('KZ')
 
 		// Brazil
 
-		formatter = new as_you_type('BR')
+		formatter = new AsYouType('BR')
 		formatter.input('11987654321').should.equal('(11) 98765-4321')
 
 		// UK (Jersey) (non-main country for +44 country phone code)
 
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 		formatter.input('+447700300000').should.equal('+44 7700 300000')
 		formatter.template.should.equal('xxx xxxx xxxxxx')
 		formatter.country.should.equal('JE')
 
 		// Test Afghanistan phone numbers
 
-		formatter = new as_you_type('AF')
+		formatter = new AsYouType('AF')
 
 		// No national prefix
 		formatter.input('44444444').should.equal('44444444')
@@ -171,14 +167,14 @@ describe('as you type', () =>
 		formatter.template.should.equal('xxx xxx xxxx')
 
 		// Hungary (braces must be part of the template)
-		formatter = new as_you_type('HU')
+		formatter = new AsYouType('HU')
 		formatter.input('301234567').should.equal('(30) 123 4567')
 		formatter.template.should.equal('(xx) xxx xxxx')
 
 		// Test Russian phone numbers
 		// (with optional national prefix `8`)
 
-		formatter = new as_you_type('RU')
+		formatter = new AsYouType('RU')
 
 		formatter.input('8').should.equal('8')
 		formatter.input('9').should.equal('8 9')
@@ -191,7 +187,7 @@ describe('as you type', () =>
 
 		// Shouldn't strip national prefix if it is optional
 		// and if it's a valid phone number.
-		formatter = new as_you_type('RU')
+		formatter = new AsYouType('RU')
 		// formatter.input('8005553535').should.equal('(800) 555-35-35')
 		formatter.input('8005553535')
 		formatter.getNationalNumber().should.equal('8005553535')
@@ -213,55 +209,53 @@ describe('as you type', () =>
 
 		// National prefix should not be prepended
 		// when formatting local NANPA phone numbers.
-		new as_you_type('US').input('1').should.equal('1')
-		new as_you_type('US').input('12').should.equal('1 2')
-		new as_you_type('US').input('123').should.equal('1 23')
+		new AsYouType('US').input('1').should.equal('1')
+		new AsYouType('US').input('12').should.equal('1 2')
+		new AsYouType('US').input('123').should.equal('1 23')
 
 		// Bulgaria
 		// (should not prepend national prefix `0`)
-		new as_you_type('BG').input('111 222 3').should.equal('1112223')
+		new AsYouType('BG').input('111 222 3').should.equal('1112223')
 
 		// Brazil
 		// (should not add braces around `12`
 		//  because the phone number is being output in the international format)
-		new as_you_type().input('+55123456789').should.equal('+55 12 3456 789')
-		new as_you_type('BR').input('+55123456789').should.equal('+55 12 3456 789')
-		new as_you_type('BR').input('123456789').should.equal('(12) 3456-789')
+		new AsYouType().input('+55123456789').should.equal('+55 12 3456 789')
+		new AsYouType('BR').input('+55123456789').should.equal('+55 12 3456 789')
+		new AsYouType('BR').input('123456789').should.equal('(12) 3456-789')
 
 		// Deutchland
-		new as_you_type().input('+4915539898001').should.equal('+49 15539 898001')
+		new AsYouType().input('+4915539898001').should.equal('+49 15539 898001')
 
 		// KZ detection
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 		formatter.input('+7 702 211 1111')
 		formatter.country.should.equal('KZ')
 		// formatter.valid.should.equal(true)
 
 		// New Zealand formatting fix (issue #89)
-		new as_you_type('NZ').input('0212').should.equal('021 2')
+		new AsYouType('NZ').input('0212').should.equal('021 2')
 
 		// South Korea
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 		formatter.input('+82111111111').should.equal('+82 11 111 1111')
 		formatter.template.should.equal('xxx xx xxx xxxx')
 	})
 
-	it('should not forgive incorrect international phone numbers', () =>
-	{
+	it('should not forgive incorrect international phone numbers', () => {
 		let formatter
 
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 		formatter.input('+1 1 877 215 5230').should.equal('+118772155230')
 		formatter.getNationalNumber().should.equal('18772155230')
 
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 		formatter.input('+788005553535').should.equal('+788005553535')
 		formatter.getNationalNumber().should.equal('88005553535')
 	})
 
-	it('should return a partial template for current value', function()
-	{
-		const asYouType = new as_you_type('US')
+	it('should return a partial template for current value', () => {
+		const asYouType = new AsYouType('US')
 
 		asYouType.input('').should.equal('')
 		expect(asYouType.getTemplate()).to.be.undefined
@@ -278,20 +272,17 @@ describe('as you type', () =>
 		asYouType.getTemplate().should.equal('(xxx)')
 	})
 
-	it('should close dangling braces', function()
-	{
+	it('should close dangling braces', () => {
 		close_dangling_braces('(000) 123-45 (9  )', 15).should.equal('(000) 123-45 (9  )')
 	})
 
-	it('should strip dangling braces', function()
-	{
+	it('should strip dangling braces', () => {
 		strip_dangling_braces('(000) 123-45 (9').should.equal('(000) 123-45 9')
 		strip_dangling_braces('(000) 123-45 (9)').should.equal('(000) 123-45 (9)')
 	})
 
-	it(`should fall back to the default country`, function()
-	{
-		const formatter = new as_you_type('RU')
+	it(`should fall back to the default country`, () => {
+		const formatter = new AsYouType('RU')
 
 		formatter.input('8').should.equal('8')
 		formatter.input('9').should.equal('8 9')
@@ -325,18 +316,17 @@ describe('as you type', () =>
 		formatter.countryCallingCode.should.equal('1')
 	})
 
-	it('should work in edge cases', function()
-	{
+	it('should work in edge cases', () => {
 		let formatter
 		let thrower
 
 		// No metadata
-		thrower = () => new as_you_type_custom('RU')
+		thrower = () => new AsYouType_('RU')
 		thrower.should.throw('`metadata` argument not passed')
 
 		// Second '+' sign
 
-		formatter = new as_you_type('RU')
+		formatter = new AsYouType('RU')
 
 		formatter.input('+').should.equal('+')
 		formatter.input('7').should.equal('+7')
@@ -344,46 +334,46 @@ describe('as you type', () =>
 
 		// Out-of-position '+' sign
 
-		formatter = new as_you_type('RU')
+		formatter = new AsYouType('RU')
 
 		formatter.input('8').should.equal('8')
 		formatter.input('+').should.equal('8')
 
 		// No format matched
 
-		formatter = new as_you_type('RU')
+		formatter = new AsYouType('RU')
 
 		formatter.input('88005553535').should.equal('8 (800) 555-35-35')
 		formatter.input('0').should.equal('880055535350')
 
 		// Invalid country phone code
 
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 
 		formatter.input('+0123').should.equal('+0123')
 
 		// No country specified and not an international number
 
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 
 		formatter.input('88005553535').should.equal('88005553535')
 
 		// Extract national prefix when no `national_prefix` is set
 
-		formatter = new as_you_type('AD')
+		formatter = new AsYouType('AD')
 
 		formatter.input('155555').should.equal('155 555')
 
 		// Typing nonsense
 
-		formatter = new as_you_type('RU')
+		formatter = new AsYouType('RU')
 
 		formatter.input('+1abc2').should.equal('')
 
 		// Should reset default country when explicitly
 		// typing in an international phone number
 
-		formatter = new as_you_type('RU')
+		formatter = new AsYouType('RU')
 
 		formatter.input('+')
 		type(formatter.country).should.equal('undefined')
@@ -392,7 +382,7 @@ describe('as you type', () =>
 		// Country not inferrable from the phone number,
 		// while the phone number itself can already be formatted "completely".
 
-		formatter = new as_you_type()
+		formatter = new AsYouType()
 
 		formatter.input('+12223333333')
 		type(formatter.country).should.equal('undefined')
@@ -400,32 +390,29 @@ describe('as you type', () =>
 
 		// An otherwise matching phone number format is skipped
 		// when it requires a national prefix but no national prefix was entered.
-		formatter = new as_you_type('CN')
+		formatter = new AsYouType('CN')
 		formatter.input('01010000').should.equal('010 10000')
 		formatter.reset().input('1010000').should.equal('10 1000 0')
 
 		// Reset a chosen format when it no longer applies given the new leading digits.
 		// If Google changes metadata for England then this test might not cover the case.
-		formatter = new as_you_type('GB')
+		formatter = new AsYouType('GB')
 		formatter.input('0845').should.equal('0845')
 		// New leading digits don't match the format previously chosen.
 		// Reset the format.
 		formatter.input('0').should.equal('0845 0')
 	})
 
-	it('should not accept phone number extensions', function()
-	{
-		new as_you_type().input('+1-213-373-4253 ext. 123').should.equal('')
+	it('should not accept phone number extensions', () => {
+		new AsYouType().input('+1-213-373-4253 ext. 123').should.equal('')
 	})
 
-	it('should parse non-European digits', function()
-	{
-		new as_you_type().input('+١٢١٢٢٣٢٣٢٣٢').should.equal('+1 212 232 3232')
+	it('should parse non-European digits', () => {
+		new AsYouType().input('+١٢١٢٢٣٢٣٢٣٢').should.equal('+1 212 232 3232')
 	})
 
-	it('should return a PhoneNumber instance', () =>
-	{
-		const formatter = new as_you_type('BR')
+	it('should return a PhoneNumber instance', () => {
+		const formatter = new AsYouType('BR')
 
 		// No country calling code.
 		expect(formatter.getNumber()).to.be.undefined
@@ -461,9 +448,8 @@ describe('as you type', () =>
 		phoneNumber.number.should.equal('+11')
 	})
 
-	it('should parse carrier codes', () =>
-	{
-		const formatter = new as_you_type('BR')
+	it('should parse carrier codes', () => {
+		const formatter = new AsYouType('BR')
 
 		formatter.input('0 15 21 5555-5555')
 		let phoneNumber = formatter.getNumber()
@@ -475,15 +461,13 @@ describe('as you type', () =>
 		expect(phoneNumber.carrierCode).to.be.undefined
 	})
 
-	it('should repeat string N times', function()
-	{
+	it('should repeat string N times', () => {
 		repeat('a', 0).should.equal('')
 		repeat('a', 3).should.equal('aaa')
 		repeat('a', 4).should.equal('aaaa')
 	})
 })
 
-function type(something)
-{
+function type(something) {
 	return typeof something
 }
