@@ -129,9 +129,9 @@ describe('findNumbers', () => {
 		// No input
 		findNumbers('', metadata).should.deep.equal([])
 
-		// No country metadata for this `require` country code
-		thrower = () => findNumbers('123', 'ZZ', metadata)
-		thrower.should.throw('Unknown country')
+		// // No country metadata for this `require` country code
+		// thrower = () => findNumbers('123', 'ZZ', metadata)
+		// thrower.should.throw('Unknown country')
 
 		// Numerical `value`
 		thrower = () => findNumbers(2141111111, 'US')
@@ -143,6 +143,12 @@ describe('findNumbers', () => {
 
 		// No metadata, no default country, no phone numbers.
 		findNumbers('').should.deep.equal([])
+	})
+
+	it('should find international numbers when passed a non-existent default country', () => {
+		const numbers = findNumbers('Phone: +7 (800) 555 35 35. National: 8 (800) 555-55-55', { defaultCountry: 'XX', v2: true }, metadata)
+		numbers.length.should.equal(1)
+		numbers[0].number.nationalNumber.should.equal('8005553535')
 	})
 
 	it('shouldn\'t find phone numbers which are not phone numbers', () => {

@@ -243,7 +243,7 @@ if (phoneNumber) {
 }
 ```
 
-Returns an instance of [`PhoneNumber`](#phonenumber) class, or `undefined` if no phone number could be parsed: for example, when the string contains no phone number, or the phone number starts with a non-existent [country calling code](#country-calling-code), or invalid `defaultCountry` was passed, etc.
+Returns an instance of [`PhoneNumber`](#phonenumber) class, or `undefined` if no phone number could be parsed: for example, when the string contains no phone number, or the phone number starts with a non-existent [country calling code](#country-calling-code), etc.
 
 If a developer wants to know the exact reason why the phone number couldn't be parsed then they can use `parsePhoneNumber()` function which throws the exact error:
 
@@ -265,7 +265,7 @@ try {
 <details>
 <summary>Possible errors</summary>
 
-* `INVALID_COUNTRY` — When `defaultCountry` doesn't exist (`parsePhoneNumber('(111) 222-3333', 'XX')`), or when parsing non-international number without a `defaultCountry` (`parsePhoneNumber('(111) 222-3333')`), or when international number country calling code doesn't exist (`parsePhoneNumber('+9991112223333')`).
+* `INVALID_COUNTRY` — When `defaultCountry` doesn't exist (`parsePhoneNumber('(111) 222-3333', 'XX')`) or isn't supported by this library, or when parsing non-international number without a `defaultCountry` (`parsePhoneNumber('(111) 222-3333')`), or when international number country calling code doesn't exist (`parsePhoneNumber('+9991112223333')`).
 
 * `NOT_A_NUMBER` — When no phone number was found. For example, when there are no digits (`"abcde"`) or when there's not enough digits (`parsePhoneNumber('2', 'US')`, `parsePhoneNumber('+1')`).
 
@@ -604,7 +604,7 @@ Although Google's javascript port doesn't have the `findNumbers()` functionality
 
 ### getExampleNumber(country, examples)
 
-Returns an instance of [`PhoneNumber`](#phonenumber) class.
+Returns an example phone number for a [country](#country-code). Returns an instance of [`PhoneNumber`](#phonenumber) class. Will return `undefined` if `country` doesn't exist or isn't supported by this library.
 
 ```js
 import examples from 'libphonenumber-js/examples.mobile.json'
@@ -615,9 +615,18 @@ const phoneNumber = getExampleNumber('RU', examples)
 phoneNumber.formatNational() === '8 (912) 345-67-89'
 ```
 
+### isSupportedCountry(country)
+
+Checks if a country is supported by this library.
+
+```js
+isSupportedCountry('RU') === true
+isSupportedCountry('XX') === false
+```
+
 ### getCountryCallingCode(country)
 
-There have been requests for a function returning a [country calling code](#country-calling-code) by [country code](#country-code).
+Returns [country calling code](#country-calling-code) for a [country](#country-code). Will throw an error if `country` doesn't exist or isn't supported by this library.
 
 ```js
 getCountryCallingCode('RU') === '7'

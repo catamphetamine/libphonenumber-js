@@ -32,6 +32,8 @@ import parsePreCandidate from './findNumbers/parsePreCandidate'
 import isValidPreCandidate from './findNumbers/isValidPreCandidate'
 import isValidCandidate, { LEAD_CLASS } from './findNumbers/isValidCandidate'
 
+import { isSupportedCountry } from './metadata'
+
 import parseNumber from './parse_'
 
 /**
@@ -161,17 +163,16 @@ export default class PhoneNumberMatcher
   {
     options = {
       ...options,
+      defaultCountry : options.defaultCountry && isSupportedCountry(options.defaultCountry, metadata) ? options.defaultCountry : undefined,
       leniency : options.leniency || options.extended ? 'POSSIBLE' : 'VALID',
       maxTries : options.maxTries || MAX_SAFE_INTEGER
     }
 
-		if (!options.leniency)
-		{
+		if (!options.leniency) {
 			throw new TypeError('`Leniency` not supplied')
 		}
 
-		if (options.maxTries < 0)
-		{
+		if (options.maxTries < 0) {
 			throw new TypeError('`maxTries` not supplied')
 		}
 

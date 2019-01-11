@@ -448,6 +448,11 @@ describe('as you type', () => {
 		phoneNumber.number.should.equal('+11')
 	})
 
+	it('shouldn\'t throw when passed a non-existent default country', () => {
+		new AsYouType('XX').input('+78005553535').should.equal('+7 800 555 35 35')
+		new AsYouType('XX').input('88005553535').should.equal('88005553535')
+	})
+
 	it('should parse carrier codes', () => {
 		const formatter = new AsYouType('BR')
 

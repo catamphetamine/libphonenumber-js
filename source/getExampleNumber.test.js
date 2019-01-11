@@ -10,4 +10,8 @@ describe('getExampleNumber', () => {
 		phoneNumber.countryCallingCode.should.equal('7')
 		phoneNumber.country.should.equal('RU')
 	})
+
+	it('should handle a non-existing country', () => {
+		expect(getExampleNumber('XX', examples, metadata)).to.be.undefined
+	})
 })
