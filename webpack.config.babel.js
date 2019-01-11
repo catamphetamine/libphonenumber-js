@@ -1,32 +1,46 @@
-import webpack from 'webpack'
 import path from 'path'
 
-const library_name = 'libphonenumber-js'
-const global_variable_name = 'libphonenumber'
+let inputFilePath
+let outputFileName
 
-export default
-{
-  entry: path.join(__dirname, '/index.es6.js'),
+switch (process.env.LIBPHONENUMBER_FLAVOR) {
+  case 'min':
+    inputFilePath = 'min/index'
+    outputFileName = 'libphonenumber-min'
+    break
+  case 'max':
+    inputFilePath = 'max/index'
+    outputFileName = 'libphonenumber-max'
+    break
+  case 'mobile':
+    inputFilePath = 'mobile/index'
+    outputFileName = 'libphonenumber-mobile'
+    break
+  // Legacy bundle (legacy default export).
+  default:
+    inputFilePath = 'index.es6'
+    outputFileName = 'libphonenumber-js.min'
+    break
+}
+
+export default {
+  entry: path.join(__dirname, `${inputFilePath}.js`),
   devtool: 'source-map',
-  output:
-  {
-    path           : path.join(__dirname, '/bundle'),
-    filename       : `${library_name}.min.js`,
-    library        : global_variable_name,
+  output: {
+    path           : path.join(__dirname, 'bundle'),
+    filename       : `${outputFileName}.js`,
+    library        : 'libphonenumber',
     libraryTarget  : 'umd',
     umdNamedDefine : true
   },
-  module:
-  {
-    rules:
-    [{
+  module: {
+    rules: [{
       test    : /(\.js)$/,
       loader  : 'babel-loader',
       exclude : /node_modules/
     }]
   },
-  externals:
-  {
+  externals: {
     // Use external version of React
     "react"     : "React",
     "react-dom" : "ReactDOM"

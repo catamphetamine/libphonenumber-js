@@ -968,7 +968,7 @@ isValidNumberForRegion('07624369230', 'IM') === true
 
 I personally wouldn't rely on strict phone number validation too much because it might get outdated:
 
-* First, new phone number rules are added to Google's `libphonenumber` library after they have already been implemented in real life (which introduces a delay).
+* New phone number rules can be added to Google's `libphonenumber` library after they have already been implemented in real life (which can introduce a delay).
 
 <!--
 * Then those new rules from Google's `libphonenumber` are updated automatically in this library (the scheduled update script introduces a small delay of 1 day, unless it malfunctions).
@@ -988,9 +988,11 @@ There's also a React component utilizing this library — [`react-phone-number-i
 
 When reporting an issue one must also provide a link to [Google's `libphonenumber` demo page](https://libphonenumber.appspot.com/) illustrating the expected behaviour. This includes validation, parsing, formatting and "as you type" formatting. For example, for an Australian number `438 331 999` Google's demo [outputs four sections](https://libphonenumber.appspot.com/phonenumberparser?number=438331999&country=AU) — "Parsing Result", "Validation Results", "Formatting Results" and "AsYouTypeFormatter Results". In a bug report, first describe the observed `libphonenumber-js` demo result and then Google's demo result (with a link to it) which must differ from the observed `libphonenumber-js` demo result. If the observed `libphonenumber-js` demo result is the same as Google's demo result and you don't agree with Google's demo result then create an issue in [Google's repo](https://github.com/googlei18n/libphonenumber).
 
+<!--
 Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#customizing-metadata) fed with `metadata.full.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.github.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s.
 
 There is also a possibility of this library's demo metadata being outdated, or this library's metadata lagging behind Google's (I have to update it manually from time to time due to `ssh-agent` not working properly on Windows).
+-->
 
 When reporting `findNumbers()` bugs one should know that `findNumbers()` code was ported from [Google's Java code](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java). I didn't write it myself, I just ported it. Therefore, it is unlikely that anyone other than Google will be fixing such bugs.
 
@@ -1003,12 +1005,14 @@ When reporting `findNumbers()` bugs one should know that `findNumbers()` code wa
 One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.net](https://jsdelivr.net)
 
 ```html
-<script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
+<script src="https://unpkg.com/libphonenumber-js@[version]/bundle/libphonenumber-[type].js"></script>
 
 <script>
   alert(new libphonenumber.AsYouType('US').input('213-373-4253'))
 </script>
 ```
+
+where `[version]` is an npm package version range (for example, `1.x` or `^1.7.6`) and `[type]` is the bundle type: `min`, `max` or `mobile`.
 
 <!--
 ## Standalone
