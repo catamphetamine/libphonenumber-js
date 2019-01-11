@@ -7,7 +7,7 @@
 		<script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
 
 		<script src="./input-format.min.js"></script>
-		<script src="./libphonenumber-js.min.js"></script>
+		<script src="./libphonenumber-max.js"></script>
 
 		<meta charset="utf-8"/>
 	</head>
@@ -165,7 +165,7 @@
 		<p>This is a demo for the new API. <a href="https://catamphetamine.github.io/libphonenumber-js/legacy.html">See legacy API demo</a>.</p>
 
 		<p>
-		Note: Phone number validation here is loose because it uses the (default) reduced metadata set. For more precise phone number validation use <code>"metadata.full.json"</code>. <a href="https://github.com/catamphetamine/libphonenumber-js#isvalidnumberparsednumber">Read more</a>
+		Note: This demo uses "max" metadata set. <a href="https://github.com/catamphetamine/libphonenumber-js#min-vs-max-vs-mobile-vs-core">See readme on "min" vs "max" vs "mobile"</a>.
 		</p>
 
 		<div id="content"></div>
@@ -235,11 +235,7 @@
 						findNumbersText
 					} = this.state
 
-					try {
-						parsedNumber = libphonenumber.parsePhoneNumber(parseValue, parseCountry)
-					} catch (error) {
-						console.error(error)
-					}
+					parsedNumber = libphonenumber.parsePhoneNumberFromString(parseValue, parseCountry)
 
 					try {
 						asYouType = new libphonenumber.AsYouType(asYouTypeCountry)
