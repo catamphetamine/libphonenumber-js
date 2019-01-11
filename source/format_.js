@@ -11,7 +11,7 @@ import { formatRFC3966 } from './RFC3966'
 
 const defaultOptions =
 {
-	formatExtension: (number, extension, metadata) => `${number}${metadata.ext()}${extension}`
+	formatExtension: (formattedNumber, extension, metadata) => `${formattedNumber}${metadata.ext()}${extension}`
 }
 
 // Formats a phone number
@@ -69,7 +69,7 @@ export default function formatNumber(input, format, options, metadata)
 				return ''
 			}
 			number = format_national_number(nationalNumber, 'NATIONAL', metadata)
-			return add_extension(number, input.ext, metadata, options.formatExtension)
+			return addExtension(number, input.ext, metadata, options.formatExtension)
 
 		case 'INTERNATIONAL':
 			// Legacy argument support.
@@ -79,7 +79,7 @@ export default function formatNumber(input, format, options, metadata)
 			}
 			number = format_national_number(nationalNumber, 'INTERNATIONAL', metadata)
 			number = `+${countryCallingCode} ${number}`
-			return add_extension(number, input.ext, metadata, options.formatExtension)
+			return addExtension(number, input.ext, metadata, options.formatExtension)
 
 		case 'E.164':
 			// `E.164` doesn't define "phone number extensions".
@@ -109,7 +109,7 @@ export default function formatNumber(input, format, options, metadata)
 				} else {
 					number = `${IDDPrefix} ${countryCallingCode} ${format_national_number(nationalNumber, 'INTERNATIONAL', metadata)}`
 				}
-				return add_extension(number, input.ext, metadata, options.formatExtension)
+				return addExtension(number, input.ext, metadata, options.formatExtension)
 			}
 			return `${IDDPrefix}${countryCallingCode}${nationalNumber}`
 
@@ -211,9 +211,9 @@ export function changeInternationalFormatStyle(local)
 	return local.replace(new RegExp(`[${VALID_PUNCTUATION}]+`, 'g'), ' ').trim()
 }
 
-function add_extension(number, ext, metadata, formatExtension)
+function addExtension(formattedNumber, ext, metadata, formatExtension)
 {
-	return ext ? formatExtension(number, ext, metadata) : number
+	return ext ? formatExtension(formattedNumber, ext, metadata) : formattedNumber
 }
 
 export function formatIDDSameCountryCallingCodeNumber(number, toCountryCallingCode, fromCountry, toCountryMetadata)
