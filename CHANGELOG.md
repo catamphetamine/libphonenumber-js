@@ -51,6 +51,21 @@ And edit the README:
  * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) has been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
 -->
 
+1.7.6 / 11.01.2019
+==================
+
+  * `findNumbers()`, `searchNumbers()`, `PhoneNumberMatcher` don't throw "Unknown country" error anymore: a non-existent country is simply ignored instead. Same goes for `getExampleNumber()` and `getExtPrefix()`.
+
+  * `parsePhoneNumberFromString()` doesn't return `undefined` if a non-existent default country is passed: it simply ignores such country instead and still parses international numbers.
+
+  * Added `isSupportedCountry(country)` function.
+
+  * Added CDN bundles for `min`/`max`/`mobile` sub-packages.
+
+  * Moved demo to `max` metadata (was `min` previously).
+
+  * Added TypeScript definitions for `min`/`max`/`mobile`/`core` sub-packages.
+
 1.7.1 / 01.12.2018
 ==================
 
