@@ -228,7 +228,7 @@ describe('parse', () => {
 
 		// Numerical `value`
 		thrower = () => parseNumber(2141111111, 'US')
-		thrower.should.throw('A phone number for parsing must be a string.')
+		thrower.should.throw('A text for parsing must be a string.')
 
 		// Input string too long.
 		parseNumber('8005553535                                                                                                                                                                                                                                                 ', 'RU').should.deep.equal({})

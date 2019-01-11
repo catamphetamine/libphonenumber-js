@@ -15,8 +15,8 @@ import _isPossibleNumber from './isPossibleNumber_'
  * isPossibleNumber({ phone: '8005553535', country: 'RU' }, metadata)
  * ```
  */
-export default function isPossibleNumber(arg_1, arg_2, arg_3, arg_4)
+export default function isPossibleNumber()
 {
-	const { input, options, metadata } = normalizeArguments(arg_1, arg_2, arg_3, arg_4)
+	const { input, options, metadata } = normalizeArguments(arguments)
 	return _isPossibleNumber(input, options, metadata)
 }

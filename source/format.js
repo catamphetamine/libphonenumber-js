@@ -1,7 +1,7 @@
 import _formatNumber from './format_'
 import parse from './parse_'
 
-export default function formatNumber(arg_1, arg_2, arg_3, arg_4, arg_5)
+export default function formatNumber()
 {
 	const
 	{
@@ -10,14 +10,16 @@ export default function formatNumber(arg_1, arg_2, arg_3, arg_4, arg_5)
 		options,
 		metadata
 	}
-	= normalizeArguments(arg_1, arg_2, arg_3, arg_4, arg_5)
+	= normalizeArguments(arguments)
 
 	return _formatNumber(input, format, options, metadata)
 }
 
 // Sort out arguments
-function normalizeArguments(arg_1, arg_2, arg_3, arg_4, arg_5)
+function normalizeArguments(args)
 {
+	const [arg_1, arg_2, arg_3, arg_4, arg_5] = Array.prototype.slice.call(args)
+
 	let input
 	let format
 	let options

@@ -4,9 +4,9 @@ import PhoneNumberMatcher from './PhoneNumberMatcher'
 /**
  * @return ES6 `for ... of` iterator.
  */
-export default function searchNumbers(arg_1, arg_2, arg_3, arg_4)
+export default function searchNumbers()
 {
-	const { text, options, metadata } = normalizeArguments(arg_1, arg_2, arg_3, arg_4)
+	const { text, options, metadata } = normalizeArguments(arguments)
 
 	const matcher = new PhoneNumberMatcher(text, options, metadata)
 

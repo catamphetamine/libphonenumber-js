@@ -1,15 +1,7 @@
-import parsePhoneNumber from './parsePhoneNumber'
-import ParseError from './ParseError'
+import { normalizeArguments } from './parsePhoneNumber'
+import parsePhoneNumberFromString_ from './parsePhoneNumberFromString_'
 
 export default function parsePhoneNumberFromString() {
-	try {
-		return parsePhoneNumber.apply(this, arguments)
-	} catch (error) {
-		/* istanbul ignore else */
-		if (error instanceof ParseError) {
-			///
-		} else {
-			throw error
-		}
-	}
+	const { text, options, metadata } = normalizeArguments(arguments)
+	return parsePhoneNumberFromString_(text, options, metadata)
 }

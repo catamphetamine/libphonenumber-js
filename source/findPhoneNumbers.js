@@ -4,17 +4,17 @@
 import _findPhoneNumbers, { searchPhoneNumbers as _searchPhoneNumbers } from './findPhoneNumbers_'
 import { normalizeArguments } from './parsePhoneNumber'
 
-export default function findPhoneNumbers(arg_1, arg_2, arg_3, arg_4)
+export default function findPhoneNumbers()
 {
-	const { text, options, metadata } = normalizeArguments(arg_1, arg_2, arg_3, arg_4)
+	const { text, options, metadata } = normalizeArguments(arguments)
 	return _findPhoneNumbers(text, options, metadata)
 }
 
 /**
  * @return ES6 `for ... of` iterator.
  */
-export function searchPhoneNumbers(arg_1, arg_2, arg_3, arg_4)
+export function searchPhoneNumbers()
 {
-	const { text, options, metadata } = normalizeArguments(arg_1, arg_2, arg_3, arg_4)
+	const { text, options, metadata } = normalizeArguments(arguments)
 	return _searchPhoneNumbers(text, options, metadata)
 }

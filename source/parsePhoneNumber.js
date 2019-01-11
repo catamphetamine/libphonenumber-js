@@ -1,12 +1,14 @@
-import parseNumber from './parse_'
+import parsePhoneNumber_ from './parsePhoneNumber_'
 
-export default function parsePhoneNumber(arg_1, arg_2, arg_3, arg_4) {
-	const { text, options, metadata } = normalizeArguments(arg_1, arg_2, arg_3, arg_4)
-	return parseNumber(text, { ...options, v2: true }, metadata)
+export default function parsePhoneNumber() {
+	const { text, options, metadata } = normalizeArguments(arguments)
+	return parsePhoneNumber_(text, options, metadata)
 }
 
-export function normalizeArguments(arg_1, arg_2, arg_3, arg_4)
+export function normalizeArguments(args)
 {
+	const [arg_1, arg_2, arg_3, arg_4] = Array.prototype.slice.call(args)
+
 	let text
 	let options
 	let metadata
@@ -34,7 +36,8 @@ export function normalizeArguments(arg_1, arg_2, arg_3, arg_4)
 			options = { defaultCountry: arg_2, ...options }
 		}
 	}
-	// `parsePhoneNumber('+78005553535', [options], metadata)`.
+	// `defaultCountry` is not passed.
+	// Example: `parsePhoneNumber('+78005553535', [options], metadata)`.
 	else if (isObject(arg_2))
 	{
 		if (arg_3) {

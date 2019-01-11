@@ -218,7 +218,7 @@ describe('parse', () =>
 
 		// Numerical `value`
 		thrower = () => parse(2141111111, 'US')
-		thrower.should.throw('A phone number for parsing must be a string.')
+		thrower.should.throw('A text for parsing must be a string.')
 	})
 
 	it('should parse phone number extensions', function()

@@ -3,15 +3,17 @@ import _getNumberType from './getNumberType_'
 import parse from './parse_'
 
 // Finds out national phone number type (fixed line, mobile, etc)
-export default function getNumberType(arg_1, arg_2, arg_3, arg_4)
+export default function getNumberType()
 {
-	const { input, options, metadata } = normalizeArguments(arg_1, arg_2, arg_3, arg_4)
+	const { input, options, metadata } = normalizeArguments(arguments)
 	return _getNumberType(input, options, metadata)
 }
 
 // Sort out arguments
-export function normalizeArguments(arg_1, arg_2, arg_3, arg_4)
+export function normalizeArguments(args)
 {
+	const [arg_1, arg_2, arg_3, arg_4] = Array.prototype.slice.call(args)
+
 	let input
 	let options = {}
 	let metadata
