@@ -15,18 +15,19 @@ export class ParseError {
 }
 
 export function findNumbers(text: string, metadata: Metadata): NumberFound[];
-export function findNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: Metadata): NumberFound[];
+export function findNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }, metadata: Metadata): NumberFound[];
 
 export function searchNumbers(text: string, metadata: Metadata): IterableIterator<NumberFound>;
-export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: Metadata): IterableIterator<NumberFound>;
+export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }, metadata: Metadata): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
   constructor(text: string, metadata: Metadata);
-  constructor(text: string, options: { defaultCountry?: CountryCode }, metadata: Metadata);
+  constructor(text: string, options: { defaultCountry?: CountryCode, v2?: boolean }, metadata: Metadata);
   hasNext(): boolean;
   next(): NumberFound;
 }
 
+export function isSupportedCountry(countryCode: CountryCode, metadata: Metadata): boolean;
 export function getCountryCallingCode(countryCode: CountryCode, metadata: Metadata): CountryCallingCode;
 export function getExtPrefix(countryCode: CountryCode, metadata: Metadata): string;
 

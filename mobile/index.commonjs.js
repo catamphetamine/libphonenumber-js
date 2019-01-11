@@ -41,6 +41,10 @@ exports.AsYouType = function AsYouType(country) {
 exports.AsYouType.prototype = Object.create(core.AsYouType.prototype, {})
 exports.AsYouType.prototype.constructor = exports.AsYouType
 
+exports.isSupportedCountry = function isSupportedCountry(country) {
+	return call(core.isSupportedCountry, arguments)
+}
+
 exports.getCountryCallingCode = function getCountryCallingCode() {
 	return call(core.getCountryCallingCode, arguments)
 }

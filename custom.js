@@ -53,6 +53,7 @@ exports.getCountryCallingCode = require('./build/getCountryCallingCode').default
 exports.getPhoneCode = exports.getCountryCallingCode
 
 exports.Metadata = require('./build/metadata').default
+exports.isSupportedCountry = require('./build/metadata').isSupportedCountry
 exports.getExtPrefix = require('./build/metadata').getExtPrefix
 
 exports.parseRFC3966 = require('./build/RFC3966').parseRFC3966

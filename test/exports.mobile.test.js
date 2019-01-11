@@ -10,6 +10,7 @@ import {
 	AsYouType,
 
 	Metadata,
+	isSupportedCountry,
 	getCountryCallingCode,
 	getExtPrefix,
 
@@ -59,8 +60,9 @@ describe('exports/mobile', () => {
 		new AsYouType().input('+12133734253').should.equal('+1 213 373 4253')
 		new AsYouType('US').input('2133734253').should.equal('(213) 373-4253')
 
-		getExtPrefix('US').should.equal(' ext. ')
+		isSupportedCountry('KZ').should.equal(true)
 		getCountryCallingCode('KZ').should.equal('7')
+		getExtPrefix('US').should.equal(' ext. ')
 
 		formatIncompletePhoneNumber('+121337342').should.deep.equal('+1 213 373 42')
 		formatIncompletePhoneNumber('21337342', 'US').should.deep.equal('(213) 373-42')
@@ -103,8 +105,9 @@ describe('exports/mobile', () => {
 		new Library.AsYouType().input('+12133734253').should.equal('+1 213 373 4253')
 		new Library.AsYouType('US').input('2133734253').should.equal('(213) 373-4253')
 
-		Library.getExtPrefix('US').should.equal(' ext. ')
+		Library.isSupportedCountry('KZ').should.equal(true)
 		Library.getCountryCallingCode('KZ').should.equal('7')
+		Library.getExtPrefix('US').should.equal(' ext. ')
 
 		Library.formatIncompletePhoneNumber('+121337342').should.deep.equal('+1 213 373 42')
 		Library.formatIncompletePhoneNumber('21337342', 'US').should.deep.equal('(213) 373-42')

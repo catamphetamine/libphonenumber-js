@@ -11,15 +11,16 @@ export class ParseError {
   message: string;
 }
 
-export function findNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
-export function searchNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
+export function findNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): NumberFound[];
+export function searchNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
-  constructor(text: string, options?: { defaultCountry?: CountryCode });
+  constructor(text: string, options?: { defaultCountry?: CountryCode, v2?: boolean });
   hasNext(): boolean;
   next(): NumberFound;
 }
 
+export function isSupportedCountry(countryCode: CountryCode): boolean;
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
 export function getExtPrefix(countryCode: CountryCode): string;
 

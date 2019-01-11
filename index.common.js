@@ -146,6 +146,13 @@ exports.AsYouType = function AsYouType(country)
 exports.AsYouType.prototype = Object.create(custom.AsYouType.prototype, {})
 exports.AsYouType.prototype.constructor = exports.AsYouType
 
+exports.isSupportedCountry = function()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.isSupportedCountry.apply(this, parameters)
+}
+
 exports.getExtPrefix = function()
 {
 	var parameters = Array.prototype.slice.call(arguments)

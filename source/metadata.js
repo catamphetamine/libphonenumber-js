@@ -347,16 +347,46 @@ const is_object = _ => typeof _ === 'object'
 /* istanbul ignore next */
 const type_of = _ => typeof _
 
+/**
+ * Returns extension prefix for a country.
+ * @param  {string} country
+ * @param  {object} metadata
+ * @return {string?}
+ * @example
+ * // Returns " ext. "
+ * getExtPrefix("US")
+ */
 export function getExtPrefix(country, metadata)
 {
-	return new Metadata(metadata).country(country).ext()
+	metadata = new Metadata(metadata)
+	if (metadata.hasCountry(country)) {
+		return metadata.country(country).ext()
+	}
+	return DEFAULT_EXT_PREFIX
 }
 
+/**
+ * Returns "country calling code" for a country.
+ * Throws an error if the country doesn't exist or isn't supported by this library.
+ * @param  {string} country
+ * @param  {object} metadata
+ * @return {string}
+ * @example
+ * // Returns "44"
+ * getCountryCallingCode("GB")
+ */
 export function getCountryCallingCode(country, metadata)
 {
 	metadata = new Metadata(metadata)
-	if (!metadata.hasCountry(country)) {
-		throw new Error(`Unknown country: ${country}`)
+	if (metadata.hasCountry(country)) {
+		return metadata.country(country).countryCallingCode()
 	}
-	return metadata.country(country).countryCallingCode()
+	throw new Error(`Unknown country: ${country}`)
+}
+
+export function isSupportedCountry(country, metadata)
+{
+	// metadata = new Metadata(metadata)
+	// return metadata.hasCountry(country)
+	return metadata.countries[country] !== undefined
 }

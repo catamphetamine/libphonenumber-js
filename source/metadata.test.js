@@ -1,6 +1,6 @@
 import metadata from '../metadata.min.json'
 
-import Metadata, { validateMetadata, getExtPrefix } from './metadata'
+import Metadata, { validateMetadata, getExtPrefix, isSupportedCountry } from './metadata'
 
 describe('metadata', () => {
 	it('should return undefined for non-defined types', () => {
@@ -13,10 +13,17 @@ describe('metadata', () => {
 		thrower.should.throw('Unknown country')
 	})
 
+	it('should tell if a country is supported', () => {
+		isSupportedCountry('RU', metadata).should.equal(true)
+		isSupportedCountry('XX', metadata).should.equal(false)
+	})
+
 	it('should return ext prefix for a country', () => {
 		getExtPrefix('US', metadata).should.equal(' ext. ')
 		getExtPrefix('CA', metadata).should.equal(' ext. ')
 		getExtPrefix('GB', metadata).should.equal(' x')
+		// expect(getExtPrefix('XX', metadata)).to.equal(undefined)
+		getExtPrefix('XX', metadata).should.equal(' ext. ')
 	})
 
 	it('should validate metadata', () => {

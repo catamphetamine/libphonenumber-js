@@ -10,6 +10,7 @@ import {
 	AsYouType,
 
 	Metadata,
+	isSupportedCountry,
 	getCountryCallingCode,
 	getExtPrefix,
 
@@ -43,8 +44,9 @@ describe('exports/core', () => {
 		new AsYouType('US', metadata).input('+12133734253', metadata).should.equal('+1 213 373 4253')
 
 		new Metadata(metadata)
-		getExtPrefix('US', metadata).should.equal(' ext. ')
+		isSupportedCountry('KZ', metadata).should.equal(true)
 		getCountryCallingCode('KZ', metadata).should.equal('7')
+		getExtPrefix('US', metadata).should.equal(' ext. ')
 
 		getExampleNumber('RU', examples, metadata).nationalNumber.should.equal('9123456789')
 
@@ -74,8 +76,9 @@ describe('exports/core', () => {
 		new Library.AsYouType('US', metadata).input('+12133734253', metadata).should.equal('+1 213 373 4253')
 
 		new Library.Metadata(metadata)
-		Library.getExtPrefix('US', metadata).should.equal(' ext. ')
+		Library.isSupportedCountry('KZ', metadata).should.equal(true)
 		Library.getCountryCallingCode('KZ', metadata).should.equal('7')
+		Library.getExtPrefix('US', metadata).should.equal(' ext. ')
 
 		Library.getExampleNumber('RU', examples, metadata).nationalNumber.should.equal('9123456789')
 

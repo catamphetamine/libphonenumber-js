@@ -48,6 +48,7 @@ import
 	parseDigits,
 
 	Metadata,
+	isSupportedCountry,
 	getExtPrefix,
 	parseRFC3966,
 	formatRFC3966,
@@ -97,6 +98,7 @@ describe(`exports`, () => {
 		getCountryCallingCode('KZ').should.equal('7')
 
 		new Metadata({ countries: {}, country_calling_codes: {} })
+		isSupportedCountry('US', metadata).should.equal(true)
 		getExtPrefix('US', metadata).should.equal(' ext. ')
 		parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })
 		formatRFC3966({ number: '+12133734253' }).should.equal('tel:+12133734253')
@@ -158,6 +160,7 @@ describe(`exports`, () => {
 		Library.getPhoneCode('KZ').should.equal('7')
 		Library.getCountryCallingCode('KZ').should.equal('7')
 
+		Library.isSupportedCountry('US').should.equal(true)
 		Library.getExtPrefix('US').should.equal(' ext. ')
 
 		Library.parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })
@@ -202,6 +205,7 @@ describe(`exports`, () => {
 		Library.getCountryCallingCode('KZ', metadata).should.equal('7')
 		new Library.AsYouType('US', metadata).input('+12133734253').should.equal('+1 213 373 4253')
 		new Library.Metadata({ countries: {}, country_calling_codes: {} })
+		Library.isSupportedCountry('US', metadata).should.equal(true)
 		Library.getExtPrefix('US', metadata).should.equal(' ext. ')
 		Library.parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })
 		Library.formatRFC3966({ number: '+12133734253' }).should.equal('tel:+12133734253')
