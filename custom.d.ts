@@ -1,16 +1,50 @@
-// `parse()` and `parseCustom` are deprecated.
-// Use `fparseNumber()` and `parseNumberCustom()` instead.
-import { Metadata, CountryCallingCode, CountryCode, NumberFormat, NumberFound, NumberType, ParsedNumber, NationalNumber, PhoneNumber, FormatNumberOptions, ParseNumberOptions } from 'libphonenumber-js';
+// `/custom` export is deprecated.
+// Use `/core` sub-package instead.
+
+import {
+  Metadata,
+  PhoneNumber,
+  E164Number,
+  CountryCallingCode,
+  CountryCode,
+  CarrierCode,
+  NationalNumber,
+  Extension,
+  ParseError,
+  NumberFound,
+  NumberType,
+  NumberFormat
+} from './types.d.ts';
+
+import {
+  ParsedNumber,
+  FormatNumberOptions,
+  ParseNumberOptions
+} from './index.d.ts';
+
+export {
+  Metadata,
+  PhoneNumber,
+  E164Number,
+  CountryCallingCode,
+  CountryCode,
+  CarrierCode,
+  NationalNumber,
+  Extension,
+  FormatNumberOptions,
+  ParsedNumber,
+  ParseNumberOptions,
+  ParseError,
+  NumberFound,
+  NumberFormat,
+  NumberType
+};
 
 export function parsePhoneNumber(text: string, metadata: Metadata): PhoneNumber;
 export function parsePhoneNumber(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber;
 
 export function parsePhoneNumberFromString(text: string, metadata: Metadata): PhoneNumber;
 export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber;
-
-export class ParseError {
-  message: string;
-}
 
 export function parse(text: string, metadata: Metadata): ParsedNumber;
 export function parse(text: string, options: CountryCode | ParseNumberOptions, metadata: Metadata): ParsedNumber;
@@ -37,7 +71,7 @@ export function getNumberType(parsedNumber: ParsedNumber, metadata: Metadata): N
 export function getNumberType(phone: NationalNumber, metadata: Metadata): NumberType;
 export function getNumberType(phone: NationalNumber, country: CountryCode, metadata: Metadata): NumberType;
 
-export function getExampleNumber(country: CountryCode, examples: object, metadata: Metadata): PhoneNumber;
+export function getExampleNumber(country: CountryCode, examples: { [country in CountryCode]: NationalNumber }, metadata: Metadata): PhoneNumber | undefined;
 
 export function isPossibleNumber(parsedNumber: ParsedNumber, metadata: Metadata): boolean;
 export function isPossibleNumber(phone: NationalNumber, metadata: Metadata): boolean;
@@ -62,7 +96,7 @@ export class ParsedNumberSearch {
   constructor(text: string, metadata: Metadata);
   constructor(text: string, options: { defaultCountry?: CountryCode }, metadata: Metadata);
   hasNext(): boolean;
-  next(): NumberFound;
+  next(): NumberFound | undefined;
 }
 
 export function findNumbers(text: string, metadata: Metadata): NumberFound[];
@@ -75,7 +109,7 @@ export class PhoneNumberMatcher {
   constructor(text: string, metadata: Metadata);
   constructor(text: string, options: { defaultCountry?: CountryCode, v2?: boolean }, metadata: Metadata);
   hasNext(): boolean;
-  next(): NumberFound;
+  next(): NumberFound | undefined;
 }
 
 export function getCountryCallingCode(countryCode: CountryCode, metadata: Metadata): CountryCallingCode;
@@ -91,11 +125,11 @@ export function parsePhoneNumberCharacter(character: string): string;
 export function parseDigits(character: string): string;
 
 export class AsYouType {
-  constructor(defaultCountryCode: CountryCode, metadata: Metadata);
+  constructor(defaultCountryCode: CountryCode | undefined, metadata: Metadata);
   input(text: string): string;
   reset(): void;
-  country: CountryCode;
-  getNumber(): PhoneNumber;
+  country: CountryCode | undefined;
+  getNumber(): PhoneNumber | undefined;
   getNationalNumber(): string;
-  template: string;
+  getTemplate(): string | undefined;
 }
