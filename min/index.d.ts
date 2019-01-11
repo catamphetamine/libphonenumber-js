@@ -1,5 +1,9 @@
 import { CountryCallingCode, CountryCode, NumberFound, PhoneNumber } from 'libphonenumber-js';
 
+// They say this re-export is required.
+// https://github.com/catamphetamine/libphonenumber-js/pull/290#issuecomment-453281180
+export { CountryCallingCode, CountryCode, NumberFound, PhoneNumber };
+
 export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
 export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode): PhoneNumber;
 
