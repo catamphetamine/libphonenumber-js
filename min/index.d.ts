@@ -10,7 +10,7 @@ import {
   NumberFound,
   NumberType,
   NumberFormat
-} from '../types.d.ts';
+} from '../types';
 
 // They say this re-export is required.
 // https://github.com/catamphetamine/libphonenumber-js/pull/290#issuecomment-453281180

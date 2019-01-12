@@ -1,5 +1,6 @@
-// The default export is deprecated (kinda).
-// Use `/min`, `/max`, `/mobile` sub-packages instead.
+// The default export is currently a legacy one.
+// (containing legacy functions along with the new API).
+// `/min`, `/max`, `/mobile` sub-packages are for the new API only.
 
 import {
   Metadata,
@@ -14,7 +15,7 @@ import {
   NumberFound,
   NumberType,
   NumberFormat
-} from './types.d.ts';
+} from './types';
 
 export {
   Metadata,

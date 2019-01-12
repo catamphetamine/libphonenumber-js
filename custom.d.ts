@@ -14,13 +14,13 @@ import {
   NumberFound,
   NumberType,
   NumberFormat
-} from './types.d.ts';
+} from './types';
 
 import {
   ParsedNumber,
   FormatNumberOptions,
   ParseNumberOptions
-} from './index.d.ts';
+} from './index';
 
 export {
   Metadata,
