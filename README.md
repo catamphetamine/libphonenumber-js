@@ -53,13 +53,13 @@ This library comes pre-packaged with three flavors of metadata:
 
 * `max` — The complete metadata set, is about `140 kilobytes` in size (`libphonenumber-js/metadata.full.json`).
 
-* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://github.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://github.com/catamphetamine/libphonenumber-js#gettype)). Some simple phone number validation via `.isValid()` still works (basic length check, etc), it's just that it's loose compared to the "advanced" validation (not so strict).
+* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://github.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://github.com/catamphetamine/libphonenumber-js#gettype)) for most countries. Some simple phone number validation via `.isValid()` still works (basic length check, etc), it's just that it's loose compared to the "advanced" validation (not so strict).
 
 * `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`).
 
 To use a particular metadata set import functions from the relevant sub-package: `libphonenumber-js/max`, `libphonenumber-js/min` or `libphonenumber-js/mobile`.
 
-Importing functions directly from `libhponenumber-js` results in using the `min` metadata which means loose (non-strict) phone number validation via `.isValid()` and no getting phone number type via `.getType()`.
+Importing functions directly from `libhponenumber-js` results in using the `min` metadata which means loose (non-strict) phone number validation via `.isValid()` and no getting phone number type via `.getType()` for most countries.
 
 Sometimes (rarely) not all countries are needed and in those cases the developers may want to [generate](https://github.com/catamphetamine/libphonenumber-js#customizing-metadata) their own "custom" metadata set. For those cases there's `libphonenumber-js/core` sub-package which doesn't come pre-wired with any default metadata and instead accepts the metadata as the last argument of each exported function.
 
@@ -353,7 +353,7 @@ https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-us
 
 Returns phone number type (fixed line, mobile, toll free, etc) or `undefined` (if the number is invalid or if there are no phone number type regular expressions for this country in metadata).
 
-By default the library uses "minimal" metadata which is only 75 kilobytes in size but also doesn't include the regular expressions for determining a specific phone number type (fixed line, mobile, toll free, etc) resulting in `getType()` returning `undefined` in most cases. If you don't mind the extra 65 kilobytes of metadata then use ["full" metadata](#min-vs-max-vs-mobile-vs-core) instead (140 kilobytes). Google's library always uses "full" metadata so it will yield different `getNumberType()` results compared to the "minimal" metadata used by default in this library.
+By default the library uses "minimal" metadata which is only 75 kilobytes in size but also doesn't include the regular expressions for determining a specific phone number type (fixed line, mobile, toll free, etc) resulting in `getType()` returning `undefined` for most countries. If you don't mind the extra 65 kilobytes of metadata then use ["full" metadata](#min-vs-max-vs-mobile-vs-core) instead (140 kilobytes). Google's library always uses "full" metadata so it will yield different `getNumberType()` results compared to the "minimal" metadata used by default in this library.
 
 <details>
 <summary>The list of possible return values</summary>
@@ -1060,7 +1060,7 @@ Alternatively, a developer may wish to update metadata urgently, without waiting
 This library comes prepackaged with three flavors of [metadata](#metadata):
 
 * `metadata.full.json` — contains everything, including all regular expressions for precise phone number validation and getting phone number type, but is about `140 kilobytes` in size.
-* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type, is about `75 kilobytes` in size.
+* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type for most countries, is about `75 kilobytes` in size.
 * `metadata.mobile.json` — is the "full" metadata which _only_ supports mobile numbers, is about `105 kilobytes` in size.
 
 Sometimes, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 kilobytes (even when including all regular expressions for precise phone number validation and getting phone number type), then they can generate such custom metadata and pass it as the last argument to this library's "core" (used to be called "custom") functions.
