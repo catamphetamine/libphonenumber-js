@@ -14,7 +14,7 @@ import {
   NumberFound,
   NumberType,
   NumberFormat
-} from './types.d.ts';
+} from './types';
 
 export {
   Metadata,
