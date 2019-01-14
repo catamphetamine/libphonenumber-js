@@ -277,7 +277,7 @@
 										style={{ width: '40px', marginLeft: '6px' }}/>
 								</div>
 								<div className="section__line">Actual country: {asYouType ? asYouType.country : '-'}</div>
-								<div className="section__line">National: {asYouType ? asYouType.country && libphonenumber.formatNumber(asYouType.national_number, asYouType.country, 'National') : '-'}</div>
+								<div className="section__line">National: {asYouType ? asYouType.country && libphonenumber.formatNumber(asYouType.getNationalNumber(), asYouType.country, 'National') : '-'}</div>
 								<div className="section__line">Valid: {asYouType ? String(libphonenumber.isValidNumber(this.state.value, asYouType.country)) : '-'}</div>
 								<div className="section__line">Template: {asYouType ? asYouType.getTemplate() : '-'}</div>
 
