@@ -340,6 +340,35 @@ Checks if the phone number is "valid". First checks the phone number length and 
 
 By default the library uses "minimal" metadata which is only 75 kilobytes in size but also doesn't include the precise validation regular expressions resulting in less strict validation rules (some very basic validation like length check is still included for each country). If you don't mind the extra 65 kilobytes of metadata then use ["full" metadata](#min-vs-max-vs-mobile-vs-core) instead (140 kilobytes). Google's library always uses "full" metadata so it will yield different `isValidNumber()` results compared to the "minimal" metadata used by default in this library.
 
+<details>
+<summary>See an example illustrating different results when using <code>/min</code> vs <code>/max</code> vs <code>/mobile</code></summary>
+
+####
+```js
+import { parsePhoneNumberFromString as parseMin } from 'libphonenumber-js'
+import { parsePhoneNumberFromString as parseMax } from 'libphonenumber-js/max'
+import { parsePhoneNumberFromString as parseMobile } from 'libphonenumber-js/mobile'
+
+// Mobile numbers in Singapore starting from `8`
+// can only have the second digit in the range of `0..8`.
+// Here the second digit is `9` which makes it an invalid mobile number.
+// This is a "strict" (advanced) validation rule and is
+// not included in the (default) "min" bundle.
+
+// The basic number length check passes (`8..11`) and the
+// "loose" national number validation regexp check passes too:
+// `(?:1\d{3}|[369]|7000|8(?:\d{2})?)\d{7}`.
+parseMin('+6589555555').isValid() === true
+
+// The "advanced" validation regexp for mobile numbers is
+// `(?:8[1-8]|9[0-8])\\d{6}` and possible lengths are `8`.
+parseMax('+6589555555').isValid() === false
+parseMobile('+6589555555').isValid() === false
+```
+</details>
+
+####
+
 See also ["Using phone number validation feature"](#using-phone-number-validation-feature) considerations.
 
 <!--
@@ -371,6 +400,35 @@ By default the library uses "minimal" metadata which is only 75 kilobytes in siz
 * `PAGER`
 * `UAN`
 * `VOICEMAIL`
+</details>
+
+####
+
+<details>
+<summary>See an example illustrating different results when using <code>/min</code> vs <code>/max</code> vs <code>/mobile</code></summary>
+
+####
+```js
+import { parsePhoneNumberFromString as parseMin } from 'libphonenumber-js'
+import { parsePhoneNumberFromString as parseMax } from 'libphonenumber-js/max'
+import { parsePhoneNumberFromString as parseMobile } from 'libphonenumber-js/mobile'
+
+// Singapore valid mobile number.
+
+// The (default) "min" bundle doesn't contain any regexps for
+// getting phone number type based on national number (for Singapore).
+parseMin('+6584655555').getType() === undefined
+
+// The "max" bundle contains regexps for
+// getting phone number type based on national number
+// for all possible phone number types.
+parseMax('+6584655555').getType() === 'MOBILE'
+
+// The "mobile" bundle contains regexps for
+// getting phone number type based on national number
+// for mobile phone numbers only.
+parseMobile('+6584655555').getType() === 'MOBILE'
+```
 </details>
 
 ### `class` AsYouType(defaultCountry)
