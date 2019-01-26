@@ -42,7 +42,6 @@ describe('exports/mobile', () => {
 
 		// Test "mobile" metadata.
 		parsePhoneNumber('9150000000', 'RU').getType().should.equal('MOBILE')
-		parsePhoneNumber('91187654321', 'AR').getType().should.equal('MOBILE')
 		parsePhoneNumber('51234567', 'EE').getType().should.equal('MOBILE')
 
 		findNumbers('+12133734253').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])

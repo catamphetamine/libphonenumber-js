@@ -12,9 +12,6 @@ describe('getNumberType', () => {
 	it('should infer phone number type MOBILE', () => {
 		getNumberType('9150000000', 'RU').should.equal('MOBILE')
 		getNumberType('7912345678', 'GB').should.equal('MOBILE')
-		getNumberType('91187654321', 'AR').should.equal('MOBILE')
-		// After "Metadata updates for release 8.9.11" it matches both `FIXED_LINE` and `MOBILE`.
-		// getNumberType('15123456789', 'DE').should.equal('MOBILE')
 		getNumberType('51234567', 'EE').should.equal('MOBILE')
 	})
 
