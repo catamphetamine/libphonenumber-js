@@ -8,7 +8,8 @@ import Metadata from './metadata'
 import format from './format_'
 import get_number_type, { checkNumberLengthForType } from './getNumberType_'
 import getCountryCallingCode from './getCountryCallingCode'
-import { REGION_CODE_FOR_NON_GEO_ENTITY } from './common'
+
+const REGION_CODE_FOR_NON_GEO_ENTITY = '001'
 
 /**
  * The prefix that needs to be inserted in front of a Colombian landline number
