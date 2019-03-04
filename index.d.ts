@@ -62,13 +62,13 @@ export interface ParsedNumber {
 }
 
 export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
-export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode): PhoneNumber;
+export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode): PhoneNumber | undefined;
 
 // `parse()` and `parseCustom` are deprecated.
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
 export function parse(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber;
 
-export function parseNumber(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber | undefined;
+export function parseNumber(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber;
 
 // `format()` and `formatCustom` are deprecated.
 // Use `formatNumber()` and `formatNumberCustom()` instead.
