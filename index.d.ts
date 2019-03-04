@@ -68,7 +68,7 @@ export function parsePhoneNumberFromString(text: string, defaultCountry?: Countr
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
 export function parse(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber;
 
-export function parseNumber(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber;
+export function parseNumber(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber | undefined;
 
 // `format()` and `formatCustom` are deprecated.
 // Use `formatNumber()` and `formatNumberCustom()` instead.
