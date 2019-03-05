@@ -62,7 +62,7 @@ export interface ParsedNumber {
 }
 
 export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
-export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode): PhoneNumber;
+export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode): PhoneNumber | undefined;
 
 // `parse()` and `parseCustom` are deprecated.
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
