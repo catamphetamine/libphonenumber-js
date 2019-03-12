@@ -2,35 +2,9 @@
 // (containing legacy functions along with the new API).
 // `/min`, `/max`, `/mobile` sub-packages are for the new API only.
 
-import {
-  Metadata,
-  PhoneNumber,
-  E164Number,
-  CountryCallingCode,
-  CountryCode,
-  CarrierCode,
-  NationalNumber,
-  Extension,
-  ParseError,
-  NumberFound,
-  NumberType,
-  NumberFormat
-} from './types';
+import { CarrierCode, CountryCallingCode, CountryCode, E164Number, Extension, Metadata, NationalNumber, NumberFormat, NumberFound, NumberFoundV2, NumberType, ParseError, PhoneNumber } from './types';
 
-export {
-  Metadata,
-  PhoneNumber,
-  E164Number,
-  CountryCallingCode,
-  CountryCode,
-  CarrierCode,
-  NationalNumber,
-  Extension,
-  ParseError,
-  NumberFound,
-  NumberFormat,
-  NumberType
-};
+export { Metadata, PhoneNumber, E164Number, CountryCallingCode, CountryCode, CarrierCode, NationalNumber, Extension, ParseError, NumberFound, NumberFormat, NumberType };
 
 type FormatExtension = (number: string, extension: string, metadata: Metadata) => string
 
@@ -104,6 +78,7 @@ export class ParsedNumberSearch {
   next(): NumberFound | undefined;
 }
 
+export function findNumbers(text: string, options: { defaultCountry?: CountryCode, v2: true }): NumberFoundV2[];
 export function findNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): NumberFound[];
 export function searchNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): IterableIterator<NumberFound>;
 
