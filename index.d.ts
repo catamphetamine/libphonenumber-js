@@ -104,8 +104,7 @@ export class ParsedNumberSearch {
   next(): NumberFound | undefined;
 }
 
-export function findNumbers(text: string, options: { defaultCountry?: CountryCode, v2: true }): NumberFoundV2[];
-export function findNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): NumberFound[];
+export function findNumbers<T = NumberFound>(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): T[];
 export function searchNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
