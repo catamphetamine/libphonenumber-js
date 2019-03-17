@@ -5,9 +5,6 @@
 # Babel
 .babelrc
 
-# Sources aren't needed for npm
-/source/
-
 # testing package
 /libphonenumber-js-*.tgz
 
