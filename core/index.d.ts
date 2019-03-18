@@ -8,6 +8,7 @@ import {
   NationalNumber,
   Extension,
   ParseError,
+  NumberFoundLegacy,
   NumberFound,
   NumberType,
   NumberFormat
@@ -25,6 +26,7 @@ export {
   NationalNumber,
   Extension,
   ParseError,
+  NumberFoundLegacy,
   NumberFound,
   NumberType,
   NumberFormat
@@ -36,15 +38,15 @@ export function parsePhoneNumber(text: string, defaultCountry: CountryCode, meta
 export function parsePhoneNumberFromString(text: string, metadata: Metadata): PhoneNumber | undefined;
 export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber | undefined;
 
-export function findNumbers(text: string, metadata: Metadata): NumberFound[];
-export function findNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }, metadata: Metadata): NumberFound[];
+export function findNumbers(text: string, metadata: Metadata): NumberFoundLegacy[];
+export function findNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2: true }, metadata: Metadata): NumberFound[];
 
-export function searchNumbers(text: string, metadata: Metadata): IterableIterator<NumberFound>;
-export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }, metadata: Metadata): IterableIterator<NumberFound>;
+export function searchNumbers(text: string, metadata: Metadata): IterableIterator<NumberFoundLegacy>;
+export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2: true }, metadata: Metadata): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
   constructor(text: string, metadata: Metadata);
-  constructor(text: string, options: { defaultCountry?: CountryCode, v2?: boolean }, metadata: Metadata);
+  constructor(text: string, options: { defaultCountry?: CountryCode, v2: true }, metadata: Metadata);
   hasNext(): boolean;
   next(): NumberFound | undefined;
 }

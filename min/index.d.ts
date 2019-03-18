@@ -7,6 +7,7 @@ import {
   NationalNumber,
   Extension,
   ParseError,
+  NumberFoundLegacy,
   NumberFound,
   NumberType,
   NumberFormat
@@ -23,6 +24,7 @@ export {
   NationalNumber,
   Extension,
   ParseError,
+  NumberFoundLegacy,
   NumberFound,
   NumberType,
   NumberFormat
@@ -31,11 +33,14 @@ export {
 export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
 export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode): PhoneNumber | undefined;
 
-export function findNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): NumberFound[];
-export function searchNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): IterableIterator<NumberFound>;
+export function findNumbers(text: string, options?: CountryCode): NumberFoundLegacy[];
+export function searchNumbers(text: string, options?: CountryCode): IterableIterator<NumberFoundLegacy>;
+
+export function findNumbers(text: string, { defaultCountry?: CountryCode, v2: true }): NumberFound[];
+export function searchNumbers(text: string, { defaultCountry?: CountryCode, v2: true }): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
-  constructor(text: string, options?: { defaultCountry?: CountryCode, v2?: boolean });
+  constructor(text: string, options?: { defaultCountry?: CountryCode, v2: true });
   hasNext(): boolean;
   next(): NumberFound | undefined;
 }

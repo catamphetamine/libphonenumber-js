@@ -56,7 +56,7 @@ export class PhoneNumber {
   getURI(options?: FormatNumberOptionsWithoutIDD): string;
 }
 
-export interface NumberFoundV2 {
+export interface NumberFound {
   number: PhoneNumber,
   startsAt: number,
   endsAt: number
@@ -69,8 +69,6 @@ export interface NumberFoundLegacy {
   startsAt: number,
   endsAt: number
 }
-
-export type NumberFound = NumberFoundV2 | NumberFoundLegacy
 
 export class ParseError {
   message: string;

@@ -12,6 +12,7 @@ import {
   NationalNumber,
   Extension,
   ParseError,
+  NumberFoundLegacy,
   NumberFound,
   NumberType,
   NumberFormat
@@ -27,6 +28,7 @@ export {
   NationalNumber,
   Extension,
   ParseError,
+  NumberFoundLegacy,
   NumberFound,
   NumberFormat,
   NumberType
@@ -94,21 +96,24 @@ export function isValidNumber(phone: NationalNumber, country?: CountryCode): boo
 export function isValidNumberForRegion(phone: NationalNumber, country: CountryCode): boolean;
 
 // Deprecated.
-export function findParsedNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
-export function searchParsedNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
+export function findParsedNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFoundLegacy[];
+export function searchParsedNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFoundLegacy>;
 
 // Deprecated.
 export class ParsedNumberSearch {
   constructor(text: string, options?: { defaultCountry?: CountryCode });
   hasNext(): boolean;
-  next(): NumberFound | undefined;
+  next(): NumberFoundLegacy | undefined;
 }
 
-export function findNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): NumberFound[];
-export function searchNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode, v2?: boolean }): IterableIterator<NumberFound>;
+export function findNumbers(text: string, options?: CountryCode): NumberFoundLegacy[];
+export function searchNumbers(text: string, options?: CountryCode): IterableIterator<NumberFoundLegacy>;
+
+export function findNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): NumberFound[];
+export function searchNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
-  constructor(text: string, options?: { defaultCountry?: CountryCode, v2?: boolean });
+  constructor(text: string, options?: { defaultCountry?: CountryCode, v2: true });
   hasNext(): boolean;
   next(): NumberFound | undefined;
 }
