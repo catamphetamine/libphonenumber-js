@@ -36,8 +36,8 @@ export function parsePhoneNumberFromString(text: string, defaultCountry?: Countr
 export function findNumbers(text: string, options?: CountryCode): NumberFoundLegacy[];
 export function searchNumbers(text: string, options?: CountryCode): IterableIterator<NumberFoundLegacy>;
 
-export function findNumbers(text: string, { defaultCountry?: CountryCode, v2: true }): NumberFound[];
-export function searchNumbers(text: string, { defaultCountry?: CountryCode, v2: true }): IterableIterator<NumberFound>;
+export function findNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): NumberFound[];
+export function searchNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
   constructor(text: string, options?: { defaultCountry?: CountryCode, v2: true });
