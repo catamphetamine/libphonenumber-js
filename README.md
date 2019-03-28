@@ -59,7 +59,7 @@ This library comes pre-packaged with three flavors of metadata:
 
 To use a particular metadata set import functions from the relevant sub-package: `libphonenumber-js/max`, `libphonenumber-js/min` or `libphonenumber-js/mobile`.
 
-Importing functions directly from `libhponenumber-js` results in using the `min` metadata which means loose (non-strict) phone number validation via `.isValid()` and no getting phone number type via `.getType()` for most countries.
+Importing functions directly from `libphonenumber-js` results in using the `min` metadata which means loose (non-strict) phone number validation via `.isValid()` and no getting phone number type via `.getType()` for most countries.
 
 Sometimes (rarely) not all countries are needed and in those cases the developers may want to [generate](https://github.com/catamphetamine/libphonenumber-js#customizing-metadata) their own "custom" metadata set. For those cases there's `libphonenumber-js/core` sub-package which doesn't come pre-wired with any default metadata and instead accepts the metadata as the last argument of each exported function.
 
