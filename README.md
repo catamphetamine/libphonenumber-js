@@ -299,7 +299,7 @@ const phoneNumber = new PhoneNumber('RU', '8005553535', metadata)
 
 Formats the phone number into a string according to a `format`.
 
-Available `format`s:
+Available `formats`:
 
   * `NATIONAL` — Example: `"(213) 373-4253"`
   * `INTERNATIONAL` — Example: `"+1 213 373 4253"`
