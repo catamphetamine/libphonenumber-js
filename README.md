@@ -1193,7 +1193,7 @@ And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) 
 
 ```js
 var core = require('libphonenumber-js/core')
-var metadata = require(libphonenumber-js/metadata.full.json)
+var metadata = require('libphonenumber-js/metadata.full.json')
 
 function call(func, _arguments) {
   var args = Array.prototype.slice.call(_arguments)
@@ -1250,7 +1250,7 @@ And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) 
 
 ```js
 var custom = require('libphonenumber-js/custom')
-var metadata = require(libphonenumber-js/metadata.full.json)
+var metadata = require('libphonenumber-js/metadata.full.json')
 
 exports.parseNumber = function parseNumber() {
   var parameters = Array.prototype.slice.call(arguments)
