@@ -224,6 +224,19 @@ export function strip_national_prefix_and_carrier_code(number, metadata)
 		return { number }
 	}
 
+	// In many countries the national prefix
+	// is not just a constant digit (like `0` in UK)
+	// but can be different depending on the phone number
+	// (and can be also absent for some phone numbers).
+	//
+	// So `national_prefix_for_parsing` is used when parsing
+	// a national-prefixed (local) phone number
+	// into a national significant phone number
+	// extracting that possible national prefix out of it.
+	//
+	// Example `national_prefix_for_parsing` for Australia (AU) is `0|(183[12])`.
+	// Which means that in Australia the national prefix can be: `0`, `1831`, `1832`.
+
 	// Attempt to parse the first digits as a national prefix
 	const national_prefix_pattern = new RegExp('^(?:' + metadata.nationalPrefixForParsing() + ')')
 	const national_prefix_matcher = national_prefix_pattern.exec(number)
@@ -249,26 +262,31 @@ export function strip_national_prefix_and_carrier_code(number, metadata)
 
 	let national_significant_number
 
-	// `national_prefix_for_parsing` capturing groups
-	// (used only for really messy cases: Argentina, Brazil, Mexico, Somalia)
-	const captured_groups_count = national_prefix_matcher.length - 1
-
-	// If the national number tranformation is needed then do it.
+	// In some really messy cases (Argentina, Brazil, Mexico, Somalia)
+	// just `national_prefix_for_parsing` regexp is not enough to extract
+	// the national number and then strip it like `number.slice(national_prefix.length)`.
+	// For such cases `national_prefix_transform_rule` regexp is present
+	// which contains "capturing groups" that are later used in such
+	// `national_prefix_transform_rule`to strip the national prefix
+	// from the national significant number.
 	//
 	// `national_prefix_matcher[captured_groups_count]` means that
-	// the corresponding captured group is not empty.
-	// It can be empty if it's optional.
+	// the corresponding "captured group" is not empty.
+	// It can be empty if the "capturing groups" are defined as optional.
 	// Example: "0?(?:...)?" for Argentina.
 	//
+	const captured_groups_count = national_prefix_matcher.length - 1
 	if (metadata.nationalPrefixTransformRule() && national_prefix_matcher[captured_groups_count])
 	{
 		national_significant_number = number.replace(national_prefix_pattern, metadata.nationalPrefixTransformRule())
 	}
-	// Else, no transformation is necessary,
-	// and just strip the national prefix.
+	// If it's a simple-enough case then just strip the national prefix from the number.
 	else
 	{
-		national_significant_number = number.slice(national_prefix_matcher[0].length)
+		// National prefix is the whole substring matched by
+		// the `national_prefix_for_parsing` regexp.
+		const national_prefix = national_prefix_matcher[0]
+		national_significant_number = number.slice(national_prefix.length)
 	}
 
 	let carrierCode
