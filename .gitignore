@@ -38,3 +38,9 @@ npm-debug.log
 /metadata.min.json
 /metadata.mobile.json
 /examples.mobile.json
+
+# metadata.js
+/metadata.full.json.js
+/metadata.min.json.js
+/metadata.mobile.json.js
+/examples.mobile.json.js

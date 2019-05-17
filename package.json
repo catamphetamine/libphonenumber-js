@@ -7,7 +7,6 @@
   "sideEffects": false,
   "dependencies": {
     "minimist": "^1.2.0",
-    "semver-compare": "^1.0.0",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {
@@ -38,10 +37,14 @@
     "metadata:update:release": "npm run metadata:download && babel-node runnable/metadata-update-and-release",
     "metadata:update:branch": "npm run metadata:branch && npm run metadata:download && babel-node runnable/metadata-update-and-push",
     "metadata:update:pull-request": "npm run metadata:branch && npm run metadata:download && babel-node runnable/metadata-update-and-push-and-pull-request",
-    "metadata:generate": "npm-run-all metadata:generate:min metadata:generate:full metadata:generate:mobile",
+    "metadata:generate": "npm-run-all metadata:generate:min metadata:generate:full metadata:generate:mobile metadata:generate:min:js metadata:generate:full:js metadata:generate:mobile:js metadata:generate:mobile:examples:js",
     "metadata:generate:min": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.min.json --examples mobile",
     "metadata:generate:full": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.full.json --extended --debug",
     "metadata:generate:mobile": "babel-node -- runnable/generate ../PhoneNumberMetadata.xml ../metadata.mobile.json --types mobile",
+    "metadata:generate:min:js": "babel-node -- runnable/json-to-js ./metadata.min.json",
+    "metadata:generate:full:js": "babel-node -- runnable/json-to-js ./metadata.full.json",
+    "metadata:generate:mobile:js": "babel-node -- runnable/json-to-js ./metadata.mobile.json",
+    "metadata:generate:mobile:examples:js": "babel-node -- runnable/json-to-js ./examples.mobile.json",
     "metadata:download": "babel-node runnable/download https://raw.githubusercontent.com/googlei18n/libphonenumber/master/resources/PhoneNumberMetadata.xml PhoneNumberMetadata.xml",
     "test": "mocha --require babel-core/register --colors --bail --reporter spec --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
     "test-coverage": "istanbul cover -x \"build/**\" -x \"es6/**\" -x \"*.test.js\" -x \"source/findNumbers/Leniency.js\" -x \"source/PhoneNumberMatcher.js\" node_modules/mocha/bin/_mocha -- --require babel-core/register --colors --reporter dot --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",

@@ -1,4 +1,7 @@
-import metadata from '../metadata.mobile.json'
+// Importing from `.json.js` a workaround for a bug in web browsers' "native"
+// ES6 importing system which is uncapable of importing "*.json" files.
+// https://github.com/catamphetamine/libphonenumber-js/issues/239
+import metadata from '../metadata.mobile.json.js'
 
 import {
 	parsePhoneNumber as _parsePhoneNumber,

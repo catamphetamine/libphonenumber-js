@@ -1,7 +1,10 @@
 // Deprecated.
 // Use `libphonenumber-js/min` or `libphonenumber-js/max` or `libphonenumber-js/core` instead.
 
-import metadata from './metadata.min.json'
+// Importing from `.json.js` a workaround for a bug in web browsers' "native"
+// ES6 importing system which is uncapable of importing "*.json" files.
+// https://github.com/catamphetamine/libphonenumber-js/issues/239
+import metadata from './metadata.min.json.js'
 
 import parsePhoneNumberCustom from './es6/parsePhoneNumber'
 import parsePhoneNumberFromStringCustom from './es6/parsePhoneNumberFromString'
