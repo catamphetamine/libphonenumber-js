@@ -262,17 +262,37 @@ export function strip_national_prefix_and_carrier_code(number, metadata)
 
 	let national_significant_number
 
-	// In some really messy cases (Argentina, Brazil, Mexico, Somalia)
-	// just `national_prefix_for_parsing` regexp is not enough to extract
-	// the national number and then strip it like `number.slice(national_prefix.length)`.
+	// In more complex cases just `national_prefix_for_parsing` regexp
+	// is not enough to extract the national number and then strip it
+	// like `number.slice(national_prefix.length)` because when parsing
+	// national numbers it's not always clear whether the first digits
+	// are a national prefix or part of the national significant number.
 	// For such cases `national_prefix_transform_rule` regexp is present
 	// which contains "capturing groups" that are later used in such
-	// `national_prefix_transform_rule`to strip the national prefix
-	// from the national significant number.
+	// `national_prefix_transform_rule` to transform the national number
+	// being parsed into the national significant number.
+	//
+	// Example.
+	// Country: U.S. Virgin Islands (VI).
+	// Country calling code: +1.
+	// Leading digits: 340.
+	// Phone number format: +1 (340) xxx-xxxx.
+	// National prefix: 1.
+	// National prefix for parsing: 1|([2-9]\d{6})$.
+	// National prefix transform rule: 340$1.
+	//
+	// So for input "13401234567" "national prefix for parsing" regexp
+	// will return "1" and the national significant number will be
+	// "13401234567".slice("1".length) === "(340) 123-4567".
+	//
+	// And for input "3401234567" "national prefix for parsing" regexp
+	// the "captured group" will be "3401234567" and the national significant
+	// number will be "3401234567".replace("340123", "340340123") === "(340) 3401234567".
 	//
 	// `national_prefix_matcher[captured_groups_count]` means that
 	// the corresponding "captured group" is not empty.
-	// It can be empty if the "capturing groups" are defined as optional.
+	// It can be empty if the regexp either doesn't have any "capturing groups"
+	// or if the "capturing groups" are defined as optional.
 	// Example: "0?(?:...)?" for Argentina.
 	//
 	const captured_groups_count = national_prefix_matcher.length - 1
