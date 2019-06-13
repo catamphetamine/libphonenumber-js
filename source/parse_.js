@@ -544,6 +544,25 @@ function parse_national_number(number, metadata)
 	}
 }
 
+// Return true if it's an international phone number but without the plus sign
+function isValidInternationalPhoneNumberWithoutPlusSign(number, country, metadata)
+{
+	const countryMetadata = (country) ? new Metadata(metadata) : null
+	if (countryMetadata) {
+		countryMetadata.country(country)
+		const countryCallingCode = countryMetadata.countryCallingCode()
+		const nationalNumberPattern = countryMetadata.nationalNumberPattern()
+		const potentialNationalNumber = number.substring(countryCallingCode.length)
+		const { national_number } = parse_national_number(potentialNationalNumber, countryMetadata)
+
+		if (number.startsWith(countryCallingCode) && matchesEntirely(national_number, nationalNumberPattern)) {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Determines the country for a given (possibly incomplete) phone number.
 // export function get_country_from_phone_number(number, metadata)
 // {
@@ -570,6 +589,10 @@ export function extractCountryCallingCode(number, country, metadata)
 	// then don't extract country phone code.
 	if (number[0] !== '+')
 	{
+		if (isValidInternationalPhoneNumberWithoutPlusSign(number, country, metadata)) {
+			return extractCountryCallingCode('+' + number, country, metadata)
+		}
+
 		// Convert an "out-of-country" dialing phone number
 		// to a proper international phone number.
 		const numberWithoutIDD = stripIDDPrefix(number, country, metadata)

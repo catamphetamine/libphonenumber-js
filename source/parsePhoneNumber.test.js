@@ -26,6 +26,24 @@ describe('parsePhoneNumber', () => {
 		parsePhoneNumberFull('Phone: 8 (800) 555 35 35.', 'RU').getType().should.equal('TOLL_FREE')
 	})
 
+	it('should parse phone numbers even without plus sign', () => {
+		const phoneNumber1 = parsePhoneNumber('Phone: 33 1 69 45 48 50.', 'FR')
+		phoneNumber1.country.should.equal('FR')
+		phoneNumber1.countryCallingCode.should.equal('33')
+		phoneNumber1.nationalNumber.should.equal('169454850')
+		phoneNumber1.number.should.equal('+33169454850')
+		phoneNumber1.isPossible().should.equal(true)
+		phoneNumber1.isValid().should.equal(true)
+
+		const phoneNumber2 = parsePhoneNumber('Phone: 33 (0) 1 69 45 48 50.', 'FR')
+		phoneNumber2.country.should.equal('FR')
+		phoneNumber2.countryCallingCode.should.equal('33')
+		phoneNumber2.nationalNumber.should.equal('169454850')
+		phoneNumber2.number.should.equal('+33169454850')
+		phoneNumber2.isPossible().should.equal(true)
+		phoneNumber2.isValid().should.equal(true)
+	})
+
 	it('shouldn\'t set country when it\'s non-derivable', () => {
 		const phoneNumber = parsePhoneNumber('+7 111 555 35 35')
 		expect(phoneNumber.country).to.be.undefined

@@ -67,6 +67,23 @@ describe('parse', () => {
 		parseNumber('07624369230', 'GB').should.deep.equal({ country: 'IM', phone: '7624369230' })
 	})
 
+	it('should parse valid phone numbers even without plus sign', () => {
+		// France
+		parseNumber('33169454850', 'FR').should.deep.equal({ country: 'FR', phone: '169454850' })
+
+		// Long country phone code.
+		parseNumber('212659777777', 'MA').should.deep.equal({ country: 'MA', phone: '659777777' })
+
+		// UK (Jersey)
+		parseNumber('44 7700 300000', 'JE').should.deep.equal({ country: 'JE', phone: '7700300000' })
+
+		// KZ
+		parseNumber('7 702 211 1111', 'KZ').should.deep.equal({ country: 'KZ', phone: '7022111111' })
+
+		// DE
+		parseNumber('49360777642', 'DE').should.deep.equal({ country: 'DE', phone: '360777642' })
+	})
+
 	it('should parse possible numbers', () => {
 		// Invalid phone number for a given country.
 		parseNumber('1112223344', 'RU', { extended: true }).should.deep.equal({
