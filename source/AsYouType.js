@@ -53,6 +53,7 @@ const DIGIT_PLACEHOLDER_MATCHER = new RegExp(DIGIT_PLACEHOLDER)
 
 // Deprecated: Google has removed some formatting pattern related code from their repo.
 // https://github.com/googlei18n/libphonenumber/commit/a395b4fef3caf57c4bc5f082e1152a4d2bd0ba4c
+// "We no longer have numbers in formatting matching patterns, only \d."
 // Because this library supports generating custom metadata
 // some users may still be using old metadata so the relevant
 // code seems to stay until some next major version update.

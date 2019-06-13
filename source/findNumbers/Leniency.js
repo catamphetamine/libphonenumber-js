@@ -50,7 +50,7 @@ export default
 	 * country code "+1". If you are not sure about which level to use,
 	 * email the discussion group libphonenumber-discuss@googlegroups.com.
 	 */
-	STRICT_GROUPING(number, candidate, metadata)
+	STRICT_GROUPING(number, candidate, metadata, regExpCache)
 	{
 		const candidateString = candidate.toString()
 
@@ -67,7 +67,8 @@ export default
 			number,
 			candidate,
 			metadata,
-			allNumberGroupsRemainGrouped
+			allNumberGroupsRemainGrouped,
+			regExpCache
 		)
   },
 
@@ -82,7 +83,7 @@ export default
 	 * code "+1". If you are not sure about which level to use, email the discussion group
 	 * libphonenumber-discuss@googlegroups.com.
 	 */
-	EXACT_GROUPING(number, candidate, metadata)
+	EXACT_GROUPING(number, candidate, metadata, regExpCache)
 	{
 		const candidateString = candidate.toString()
 
@@ -99,7 +100,8 @@ export default
 			number,
 			candidate,
 			metadata,
-   		allNumberGroupsAreExactlyPresent
+			allNumberGroupsAreExactlyPresent,
+			regExpCache
 		)
 	}
 }
@@ -224,32 +226,34 @@ export function containsMoreThanOneSlashInNationalNumber(number, candidate)
   return true
 }
 
-function checkNumberGroupingIsValid
-(
+function checkNumberGroupingIsValid(
   number,
   candidate,
   metadata,
-  checkGroups
-)
-{
-  // TODO: Evaluate how this works for other locales (testing has been limited to NANPA regions)
-  // and optimise if necessary.
+  checkGroups,
+  regExpCache
+) {
   const normalizedCandidate = normalizeDigits(candidate, true /* keep non-digits */)
   let formattedNumberGroups = getNationalNumberGroups(metadata, number, null)
-  if (checkGroups(metadata, number, normalizedCandidate, formattedNumberGroups))
-  {
+  if (checkGroups(metadata, number, normalizedCandidate, formattedNumberGroups)) {
     return true
   }
 
-  // If this didn't pass, see if there are any alternate formats, and try them instead.
+  // If this didn't pass, see if there are any alternate formats that match, and try them instead.
   const alternateFormats = MetadataManager.getAlternateFormatsForCountry(number.getCountryCode())
+  const nationalSignificantNumber = util.getNationalSignificantNumber(number)
 
-  if (alternateFormats)
-  {
-    for (const alternateFormat of alternateFormats.numberFormats())
-    {
+  if (alternateFormats) {
+    for (const alternateFormat of alternateFormats.numberFormats()) {
+      if (alternateFormat.leadingDigitsPatterns().length > 0) {
+        // There is only one leading digits pattern for alternate formats.
+        const leadingDigitsRegExp = regExpCache.getPatternForRegExp('^' + alternateFormat.leadingDigitsPatterns()[0])
+        if (!leadingDigitsRegExp.test(nationalSignificantNumber)) {
+          // Leading digits don't match; try another one.
+          continue
+        }
+      }
       formattedNumberGroups = getNationalNumberGroups(metadata, number, alternateFormat)
-
       if (checkGroups(metadata, number, normalizedCandidate, formattedNumberGroups)) {
         return true
       }
@@ -261,24 +265,22 @@ function checkNumberGroupingIsValid
 
 /**
  * Helper method to get the national-number part of a number, formatted without any national
- * prefix, and return it as a set of digit blocks that would be formatted together.
+ * prefix, and return it as a set of digit blocks that would be formatted together following
+ * standard formatting rules.
  */
-function getNationalNumberGroups
-(
+function getNationalNumberGroups(
 	metadata,
 	number,
 	formattingPattern
-)
-{
-  if (formattingPattern)
-  {
+) {
+  if (formattingPattern) {
     // We format the NSN only, and split that according to the separator.
     const nationalSignificantNumber = util.getNationalSignificantNumber(number)
     return util.formatNsnUsingPattern(nationalSignificantNumber,
                                       formattingPattern, 'RFC3966', metadata).split('-')
 	}
 
-  // This will be in the format +CC-DG;ext=EXT where DG represents groups of digits.
+  // This will be in the format +CC-DG1-DG2-DGX;ext=EXT where DG1..DGX represents groups of digits.
   const rfc3966Format = formatNumber(number, 'RFC3966', metadata)
 
   // We remove the extension part from the formatted string before splitting it into different

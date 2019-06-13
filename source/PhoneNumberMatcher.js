@@ -14,6 +14,8 @@ import {
 
 import { EXTN_PATTERNS_FOR_MATCHING } from './extension'
 
+import RegExpCache from './findNumbers/RegExpCache'
+
 import {
 	limit,
 	trimAfterFirstMatch
@@ -143,6 +145,12 @@ export default class PhoneNumberMatcher
 
   /** The next index to start searching at. Undefined in {@link State#DONE}. */
   searchIndex = 0
+
+  // A cache for frequently used country-specific regular expressions. Set to 32 to cover ~2-3
+  // countries being used for the same doc with ~10 patterns for each country. Some pages will have
+  // a lot more countries in use, but typically fewer numbers for each so expanding the cache for
+  // that use-case won't have a lot of benefit.
+  regExpCache = new RegExpCache(32)
 
   /**
    * Creates a new instance. See the factory methods in {@link PhoneNumberUtil} on how to obtain a
@@ -320,7 +328,7 @@ export default class PhoneNumberMatcher
       return
     }
 
-    if (this.leniency(number, candidate, this.metadata))
+    if (this.leniency(number, candidate, this.metadata, this.regExpCache))
     {
       // // We used parseAndKeepRawInput to create this number,
       // // but for now we don't return the extra values parsed.
