@@ -10,6 +10,7 @@ module.exports = {
 
 			"plugins":
 			[
+				["@babel/transform-for-of", { loose: true }],
 				"@babel/proposal-class-properties"
 			]
 		},
@@ -22,6 +23,7 @@ module.exports = {
 
 			"plugins":
 			[
+				["@babel/transform-for-of", { loose: true }],
 				"@babel/proposal-class-properties"
 			]
 		},
@@ -34,6 +36,7 @@ module.exports = {
 
 			"plugins":
 			[
+				["@babel/transform-for-of", { loose: true }],
 				"@babel/proposal-class-properties"
 			]
 		}
