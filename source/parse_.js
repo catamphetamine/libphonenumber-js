@@ -154,6 +154,10 @@ export default function parse(text, options = {}, metadata)
 			phoneNumber.ext = ext
 		}
 
+		if (metadata.leadingDigits()){
+			phoneNumber.leadingDigits = metadata.leadingDigits();
+		}
+
 		return phoneNumber
 	}
 
@@ -174,7 +178,8 @@ export default function parse(text, options = {}, metadata)
 		valid,
 		possible : valid ? true : (options.extended === true) && metadata.possibleLengths() && is_possible_number(nationalNumber, countryCallingCode !== undefined, metadata),
 		phone : nationalNumber,
-		ext
+		ext,
+		leadingDigits: metadata.leadingDigits()
 	}
 }
 
