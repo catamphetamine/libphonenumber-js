@@ -218,10 +218,6 @@ describe('parse', () => {
 		// `matchesEntirely()` bug fix.
 		parseNumber('+4915784846111‬').should.deep.equal({ country: 'DE', phone: '15784846111' })
 
-		// National prefix transform rule (Mexico).
-		// Local cell phone from a land line: 044 -> 1.
-		parseNumber('0445511111111', 'MX').should.deep.equal({ country: 'MX', phone: '15511111111' })
-
 		// No metadata
 		thrower = () => _parseNumber('')
 		thrower.should.throw('`metadata` argument not passed')
