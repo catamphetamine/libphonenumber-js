@@ -167,9 +167,9 @@ describe('as you type', () => {
 		formatter.template.should.equal('xxx xxx xxxx')
 
 		// Hungary (braces must be part of the template)
-		formatter = new AsYouType('HU')
-		formatter.input('301234567').should.equal('(30) 123 4567')
-		formatter.template.should.equal('(xx) xxx xxxx')
+		formatter = new AsYouType('RU')
+		formatter.input('88005553535').should.equal('8 (800) 555-35-35')
+		formatter.template.should.equal('x (xxx) xxx-xx-xx')
 
 		// Test Russian phone numbers
 		// (with optional national prefix `8`)
