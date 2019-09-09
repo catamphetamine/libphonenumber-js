@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.7.23",
+  "version": "1.7.24",
   "description": "A simpler (and smaller) rewrite of Google Android's popular libphonenumber library",
   "main": "index.common.js",
   "module": "index.es6.js",
