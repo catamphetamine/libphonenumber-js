@@ -957,6 +957,7 @@ export default class AsYouType
 		return phoneNumber
 	}
 
+	// This method is still used in `react-phone-number-input/source/input-control.js`.
 	getNationalNumber() {
 		return this.nationalNumber
 	}
