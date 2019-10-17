@@ -49,13 +49,13 @@ If you're not using a bundler then use a [standalone version from a CDN](https:/
 
 ## "min" vs "max" vs "mobile" vs "core"
 
-This library comes pre-packaged with three flavors of metadata:
+This library requires choosing a "metadata" set to be used, "metadata" being a list of phone number parsing and formatting rules for all countries. The complete list of rules is huge, so this library provides a way to optimize bundle size by choosing between `max`, `min`, `mobile` and custom metadata:
 
 * `max` — The complete metadata set, is about `140 kilobytes` in size (`libphonenumber-js/metadata.full.json`).
 
-* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://github.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://github.com/catamphetamine/libphonenumber-js#gettype)) for most countries. Some simple phone number validation via `.isValid()` still works (basic length check, etc), it's just that it's loose compared to the "advanced" validation (not so strict).
+* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://github.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://github.com/catamphetamine/libphonenumber-js#gettype)) for most countries. Some simple phone number validation via `.isValid()` still works (basic length check, etc), it's just that it's loose compared to the "advanced" validation (not so strict). Choose this when not using `isValidPhoneNumber(value)` function.
 
-* `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`).
+* `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`). Choose this when using `isValidPhoneNumber(value)` function, but only dealing with mobile phone numbers.
 
 To use a particular metadata set import functions from the relevant sub-package: `libphonenumber-js/max`, `libphonenumber-js/min` or `libphonenumber-js/mobile`.
 
