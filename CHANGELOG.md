@@ -53,6 +53,11 @@ And edit the README:
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
 
+1.7.27 / 18.11.2019
+===================
+
+  * Added `getCountries()` function that returns a list of all available two-letter country codes. This is to prevent some users from having to deal with `Unknown country` error.
+
 1.7.6 / 11.01.2019
 ==================
 

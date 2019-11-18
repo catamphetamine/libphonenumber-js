@@ -28,6 +28,7 @@ import PhoneNumberMatcherCustom from './es6/PhoneNumberMatcher'
 import AsYouTypeCustom from './es6/AsYouType'
 
 import getCountryCallingCodeCustom from './es6/getCountryCallingCode'
+import getCountriesCustom from './es6/getCountries'
 export { default as Metadata } from './es6/metadata'
 import { getExtPrefix as getExtPrefixCustom, isSupportedCountry as isSupportedCountryCustom } from './es6/metadata'
 import { parseRFC3966 as parseRFC3966Custom, formatRFC3966 as formatRFC3966Custom } from './es6/RFC3966'
@@ -229,6 +230,11 @@ export
 	DIGIT_PLACEHOLDER
 }
 from './es6/AsYouType'
+
+export function getCountries()
+{
+	return getCountriesCustom(metadata)
+}
 
 export function getCountryCallingCode(country)
 {

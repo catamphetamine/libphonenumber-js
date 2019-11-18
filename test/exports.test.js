@@ -26,6 +26,7 @@ import
 	PhoneNumberMatcher,
 
 	AsYouType,
+	getCountries,
 	getCountryCallingCode,
 	// `getPhoneCode` name is deprecated.
 	getPhoneCode,
@@ -95,6 +96,7 @@ describe(`exports`, () => {
 
 		// `getPhoneCode` name is deprecated.
 		getPhoneCode('KZ').should.equal('7')
+		expect(getCountries().indexOf('KZ') > 0).to.be.true
 		getCountryCallingCode('KZ').should.equal('7')
 
 		new Metadata({ countries: {}, country_calling_codes: {} })
@@ -158,6 +160,7 @@ describe(`exports`, () => {
 
 		// `getPhoneCode` name is deprecated.
 		Library.getPhoneCode('KZ').should.equal('7')
+		expect(Library.getCountries().indexOf('KZ') > 0).to.be.true
 		Library.getCountryCallingCode('KZ').should.equal('7')
 
 		Library.isSupportedCountry('US').should.equal(true)

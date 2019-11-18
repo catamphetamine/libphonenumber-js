@@ -48,6 +48,7 @@ exports.parseDigits   = require('./build/parseDigits').default
 exports.DIGITS            = require('./build/parseDigits').DIGITS
 exports.DIGIT_PLACEHOLDER = require('./build/AsYouType').DIGIT_PLACEHOLDER
 
+exports.getCountries = require('./build/getCountries').default
 exports.getCountryCallingCode = require('./build/getCountryCallingCode').default
 // `getPhoneCode` name is deprecated, use `getCountryCallingCode` instead.
 exports.getPhoneCode = exports.getCountryCallingCode

@@ -14,6 +14,7 @@ exports.AsYouType = require('../build/AsYouType').default
 
 exports.Metadata = require('../build/metadata').default
 exports.isSupportedCountry = require('../build/metadata').isSupportedCountry
+exports.getCountries = require('../build/getCountries').default
 exports.getCountryCallingCode = require('../build/metadata').getCountryCallingCode
 exports.getExtPrefix = require('../build/metadata').getExtPrefix
 

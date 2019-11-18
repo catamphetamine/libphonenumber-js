@@ -14,6 +14,7 @@ import {
 	AsYouType as _AsYouType,
 
 	isSupportedCountry as _isSupportedCountry,
+	getCountries as _getCountries,
 	getCountryCallingCode as _getCountryCallingCode,
 	getExtPrefix as _getExtPrefix,
 
@@ -75,6 +76,10 @@ AsYouType.prototype.constructor = AsYouType
 
 export function isSupportedCountry() {
 	return call(_isSupportedCountry, arguments)
+}
+
+export function getCountries() {
+	return call(_getCountries, arguments)
 }
 
 export function getCountryCallingCode() {

@@ -8,6 +8,7 @@ export { default as PhoneNumberMatcher } from '../es6/PhoneNumberMatcher'
 
 export { default as AsYouType } from '../es6/AsYouType'
 
+export { default as getCountries } from '../es6/getCountries'
 export { default as Metadata, isSupportedCountry, getCountryCallingCode, getExtPrefix } from '../es6/metadata'
 
 export { default as getExampleNumber } from '../es6/getExampleNumber'

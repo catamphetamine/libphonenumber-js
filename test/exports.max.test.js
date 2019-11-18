@@ -11,6 +11,7 @@ import {
 
 	Metadata,
 	isSupportedCountry,
+	getCountries,
 	getCountryCallingCode,
 	getExtPrefix,
 
@@ -59,6 +60,7 @@ describe('exports/max', () => {
 		new AsYouType('US').input('2133734253').should.equal('(213) 373-4253')
 
 		isSupportedCountry('KZ').should.equal(true)
+		expect(getCountries().indexOf('KZ') > 0).to.be.true
 		getCountryCallingCode('KZ').should.equal('7')
 		getExtPrefix('US').should.equal(' ext. ')
 
@@ -104,6 +106,7 @@ describe('exports/max', () => {
 		new Library.AsYouType('US').input('2133734253').should.equal('(213) 373-4253')
 
 		Library.isSupportedCountry('KZ').should.equal(true)
+		expect(Library.getCountries().indexOf('KZ') > 0).to.be.true
 		Library.getCountryCallingCode('KZ').should.equal('7')
 		Library.getExtPrefix('US').should.equal(' ext. ')
 

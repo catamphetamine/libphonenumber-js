@@ -45,6 +45,10 @@ exports.isSupportedCountry = function isSupportedCountry(country) {
 	return call(core.isSupportedCountry, arguments)
 }
 
+exports.getCountries = function getCountries() {
+	return call(core.getCountries, arguments)
+}
+
 exports.getCountryCallingCode = function getCountryCallingCode() {
 	return call(core.getCountryCallingCode, arguments)
 }

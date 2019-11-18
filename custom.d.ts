@@ -114,6 +114,7 @@ export class PhoneNumberMatcher {
   next(): NumberFound | undefined;
 }
 
+export function getCountries(metadata: Metadata): CountryCode[];
 export function getCountryCallingCode(countryCode: CountryCode, metadata: Metadata): CountryCallingCode;
 // Deprecated
 export function getPhoneCode(countryCode: CountryCode, metadata: Metadata): CountryCallingCode;

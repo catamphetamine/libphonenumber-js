@@ -118,6 +118,7 @@ export class PhoneNumberMatcher {
   next(): NumberFound | undefined;
 }
 
+export function getCountries(): CountryCode[];
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
 // Deprecated.
 export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;

@@ -52,6 +52,7 @@ export class PhoneNumberMatcher {
 }
 
 export function isSupportedCountry(countryCode: CountryCode, metadata: Metadata): boolean;
+export function getCountries(metadata: Metadata): CountryCode[];
 export function getCountryCallingCode(countryCode: CountryCode, metadata: Metadata): CountryCallingCode;
 export function getExtPrefix(countryCode: CountryCode, metadata: Metadata): string;
 

@@ -22,6 +22,11 @@ export default class Metadata
 		this.v3 = metadata.version !== undefined // && compare(metadata.version, V4) === -1
 	}
 
+	getCountries()
+	{
+		return Object.keys(this.metadata.countries)
+	}
+
 	hasCountry(country)
 	{
 		return this.metadata.countries[country] !== undefined

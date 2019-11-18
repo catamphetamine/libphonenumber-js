@@ -11,6 +11,7 @@ import {
 
 	Metadata,
 	isSupportedCountry,
+	getCountries,
 	getCountryCallingCode,
 	getExtPrefix,
 
@@ -45,6 +46,7 @@ describe('exports/core', () => {
 
 		new Metadata(metadata)
 		isSupportedCountry('KZ', metadata).should.equal(true)
+		expect(getCountries(metadata).indexOf('KZ') > 0).to.be.true
 		getCountryCallingCode('KZ', metadata).should.equal('7')
 		getExtPrefix('US', metadata).should.equal(' ext. ')
 
@@ -77,6 +79,7 @@ describe('exports/core', () => {
 
 		new Library.Metadata(metadata)
 		Library.isSupportedCountry('KZ', metadata).should.equal(true)
+		expect(Library.getCountries(metadata).indexOf('KZ') > 0).to.be.true
 		Library.getCountryCallingCode('KZ', metadata).should.equal('7')
 		Library.getExtPrefix('US', metadata).should.equal(' ext. ')
 

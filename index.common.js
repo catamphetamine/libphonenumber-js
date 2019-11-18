@@ -183,6 +183,11 @@ exports.formatRFC3966 = function()
 exports.DIGITS = custom.DIGITS
 exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
 
+exports.getCountries = function()
+{
+	return custom.getCountries(metadata)
+}
+
 exports.getCountryCallingCode = function(country)
 {
 	return custom.getCountryCallingCode(country, metadata)

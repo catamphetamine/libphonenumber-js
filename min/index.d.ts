@@ -46,6 +46,7 @@ export class PhoneNumberMatcher {
 }
 
 export function isSupportedCountry(countryCode: CountryCode): boolean;
+export function getCountries(): CountryCode[];
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
 export function getExtPrefix(countryCode: CountryCode): string;
 
