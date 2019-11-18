@@ -682,6 +682,14 @@ isSupportedCountry('RU') === true
 isSupportedCountry('XX') === false
 ```
 
+### getCountries()
+
+Returns a list of supported countries.
+
+```js
+getCountries() === ["AC", "AD", ...]
+```
+
 ### getCountryCallingCode(country)
 
 Returns [country calling code](#country-calling-code) for a [country](#country-code). Will throw an error if `country` doesn't exist or isn't supported by this library.
