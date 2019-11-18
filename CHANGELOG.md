@@ -51,6 +51,8 @@ And edit the README:
  * `getNumber()` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) has been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
 -->
 
+<!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
+
 1.7.6 / 11.01.2019
 ==================
 
