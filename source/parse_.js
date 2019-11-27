@@ -108,7 +108,7 @@ export default function parse(text, options = {}, metadata)
 	}
 
 	// Validate national (significant) number length.
-	if (nationalNumber.length < MIN_LENGTH_FOR_NSN) {
+	if (!nationalNumber || nationalNumber.length < MIN_LENGTH_FOR_NSN) {
 		// Won't throw here because the regexp already demands length > 1.
 		/* istanbul ignore if */
 		if (options.v2) {
@@ -432,7 +432,10 @@ function result(country, national_number, ext)
 
 /**
  * Parses a viable phone number.
- * Returns `{ country, countryCallingCode, nationalNumber }`.
+ * @param {string} formattedPhoneNumber
+ * @param {string} [defaultCountry]
+ * @param {Metadata} metadata
+ * @return {object} Returns `{ country: string?, countryCallingCode: string?, nationalNumber: string? }`.
  */
 function parsePhoneNumber(formattedPhoneNumber, defaultCountry, metadata)
 {
@@ -442,23 +445,25 @@ function parsePhoneNumber(formattedPhoneNumber, defaultCountry, metadata)
 		metadata.metadata
 	)
 
-	if (!number) {
-		return { countryCallingCode }
-	}
-
 	let country
 
 	if (countryCallingCode)
 	{
 		metadata.chooseCountryByCountryCallingCode(countryCallingCode)
 	}
-	else if (defaultCountry)
+	// If `formattedPhoneNumber` is in "national" format
+	// then `number` is defined and `countryCallingCode` isn't.
+	else if (number && defaultCountry)
 	{
 		metadata.country(defaultCountry)
 		country = defaultCountry
 		countryCallingCode = getCountryCallingCode(defaultCountry, metadata.metadata)
 	}
 	else return {}
+
+	if (!number) {
+		return { countryCallingCode }
+	}
 
 	const { nationalNumber, carrierCode } = parseNationalNumber(number, metadata)
 

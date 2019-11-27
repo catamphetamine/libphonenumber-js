@@ -71,6 +71,7 @@ describe('parsePhoneNumber', () => {
 		// Won't throw here because the regexp already demands length > 1.
 		// expect(() => parsePhoneNumber('11', 'RU')).to.throw('TOO_SHORT')
 		expect(() => parsePhoneNumber('+443')).to.throw('TOO_SHORT')
+		expect(() => parsePhoneNumber('+370')).to.throw('TOO_SHORT')
 		expect(() => parsePhoneNumber('88888888888888888888', 'RU')).to.throw('TOO_LONG')
 		expect(() => parsePhoneNumber('8 (800) 555 35 35')).to.throw('INVALID_COUNTRY')
 		expect(() => parsePhoneNumber('+9991112233')).to.throw('INVALID_COUNTRY')
