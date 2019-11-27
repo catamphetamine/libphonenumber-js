@@ -75,10 +75,10 @@ export default function parse(text, options = {}, metadata)
 	}
 
 	// Parse the phone number.
-	const { number: formatted_phone_number, ext } = parse_input(text, options.v2)
+	const { number: formattedPhoneNumber, ext } = parse_input(text, options.v2)
 
 	// If the phone number is not viable then return nothing.
-	if (!formatted_phone_number)
+	if (!formattedPhoneNumber)
 	{
 		if (options.v2) {
 			throw new ParseError('NOT_A_NUMBER')
@@ -89,19 +89,18 @@ export default function parse(text, options = {}, metadata)
 	const
 	{
 		country,
-		national_number : nationalNumber,
+		nationalNumber,
 		countryCallingCode,
 		carrierCode
 	}
-	= parse_phone_number
+	= parsePhoneNumber
 	(
-		formatted_phone_number,
+		formattedPhoneNumber,
 		options.defaultCountry,
 		metadata
 	)
 
-	if (!metadata.selectedCountry())
-	{
+	if (!metadata.selectedCountry()) {
 		if (options.v2) {
 			throw new ParseError('INVALID_COUNTRY')
 		}
@@ -433,11 +432,15 @@ function result(country, national_number, ext)
 
 /**
  * Parses a viable phone number.
- * Returns `{ country, countryCallingCode, national_number }`.
+ * Returns `{ country, countryCallingCode, nationalNumber }`.
  */
-function parse_phone_number(formatted_phone_number, default_country, metadata)
+function parsePhoneNumber(formattedPhoneNumber, defaultCountry, metadata)
 {
-	let { countryCallingCode, number } = extractCountryCallingCode(formatted_phone_number, default_country, metadata.metadata)
+	let { countryCallingCode, number } = extractCountryCallingCode(
+		formattedPhoneNumber,
+		defaultCountry,
+		metadata.metadata
+	)
 
 	if (!number) {
 		return { countryCallingCode }
@@ -449,15 +452,15 @@ function parse_phone_number(formatted_phone_number, default_country, metadata)
 	{
 		metadata.chooseCountryByCountryCallingCode(countryCallingCode)
 	}
-	else if (default_country)
+	else if (defaultCountry)
 	{
-		metadata.country(default_country)
-		country = default_country
-		countryCallingCode = getCountryCallingCode(default_country, metadata.metadata)
+		metadata.country(defaultCountry)
+		country = defaultCountry
+		countryCallingCode = getCountryCallingCode(defaultCountry, metadata.metadata)
 	}
 	else return {}
 
-	const { national_number, carrier_code } = parse_national_number(number, metadata)
+	const { nationalNumber, carrierCode } = parseNationalNumber(number, metadata)
 
 	// Sometimes there are several countries
 	// corresponding to the same country phone code
@@ -469,7 +472,7 @@ function parse_phone_number(formatted_phone_number, default_country, metadata)
 	// get their countries populated with the full set of
 	// "phone number type" regular expressions.
 	//
-	const exactCountry = find_country_code(countryCallingCode, national_number, metadata)
+	const exactCountry = find_country_code(countryCallingCode, nationalNumber, metadata)
 	if (exactCountry)
 	{
 		country = exactCountry
@@ -479,15 +482,15 @@ function parse_phone_number(formatted_phone_number, default_country, metadata)
 	return {
 		country,
 		countryCallingCode,
-		national_number,
-		carrierCode: carrier_code
+		nationalNumber,
+		carrierCode
 	}
 }
 
-function parse_national_number(number, metadata)
+function parseNationalNumber(number, metadata)
 {
-	let national_number = parseIncompletePhoneNumber(number)
-	let carrier_code
+	let nationalNumber = parseIncompletePhoneNumber(number)
+	let carrierCode
 
 	// Parsing national prefixes and carrier codes
 	// is only required for local phone numbers
@@ -498,7 +501,10 @@ function parse_national_number(number, metadata)
 	// Google's original library forgives such mistakes
 	// and so does this library, because it has been requested:
 	// https://github.com/catamphetamine/libphonenumber-js/issues/127
-	const { number: potential_national_number, carrierCode } = strip_national_prefix_and_carrier_code(national_number, metadata)
+	const {
+		number: potentialNationalNumber,
+		carrierCode: potentialCarrierCode
+	} = strip_national_prefix_and_carrier_code(nationalNumber, metadata)
 
 	// If metadata has "possible lengths" then employ the new algorythm.
 	if (metadata.possibleLengths())
@@ -507,15 +513,15 @@ function parse_national_number(number, metadata)
 		// carrier code be long enough to be a possible length for the region.
 		// Otherwise, we don't do the stripping, since the original number could be
 		// a valid short number.
-		switch (checkNumberLengthForType(potential_national_number, undefined, metadata))
+		switch (checkNumberLengthForType(potentialNationalNumber, undefined, metadata))
 		{
 			case 'TOO_SHORT':
 			// case 'IS_POSSIBLE_LOCAL_ONLY':
 			case 'INVALID_LENGTH':
 				break
 			default:
-				national_number = potential_national_number
-				carrier_code = carrierCode
+				nationalNumber = potentialNationalNumber
+				carrierCode = potentialCarrierCode
 		}
 	}
 	else
@@ -526,28 +532,28 @@ function parse_national_number(number, metadata)
 		// a national prefix and a leading digit of a valid national phone number,
 		// like `8` is the national prefix for Russia and both
 		// `8 800 555 35 35` and `800 555 35 35` are valid numbers.
-		if (matchesEntirely(national_number, metadata.nationalNumberPattern()) &&
-				!matchesEntirely(potential_national_number, metadata.nationalNumberPattern()))
+		if (matchesEntirely(nationalNumber, metadata.nationalNumberPattern()) &&
+				!matchesEntirely(potentialNationalNumber, metadata.nationalNumberPattern()))
 		{
 			// Keep the number without stripping national prefix.
 		}
 		else
 		{
-			national_number = potential_national_number
-			carrier_code = carrierCode
+			nationalNumber = potentialNationalNumber
+			carrierCode = potentialCarrierCode
 		}
 	}
 
 	return {
-		national_number,
-		carrier_code
+		nationalNumber,
+		carrierCode
 	}
 }
 
 // Determines the country for a given (possibly incomplete) phone number.
 // export function get_country_from_phone_number(number, metadata)
 // {
-// 	return parse_phone_number(number, null, metadata).country
+// 	return parsePhoneNumber(number, null, metadata).country
 // }
 
 // Parses a formatted phone number
