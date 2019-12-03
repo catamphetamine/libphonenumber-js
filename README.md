@@ -1032,7 +1032,7 @@ isValidNumberForRegion('07624369230', 'IM') === true
 
 ## Using phone number validation feature
 
-I personally wouldn't rely on strict phone number validation too much because it might get outdated:
+I personally don't use strict phone number validation in my projects because telephone numbering plans sometimes change and so validation rules can change too which means that [`PhoneNumber.isValid()`](#isvalid) function may become outdated if a website isn't re-deployed regularly. For example:
 
 * New phone number rules can be added to Google's `libphonenumber` library after they have already been implemented in real life (which can introduce a delay).
 
@@ -1040,11 +1040,13 @@ I personally wouldn't rely on strict phone number validation too much because it
 * Then those new rules from Google's `libphonenumber` are updated automatically in this library (the scheduled update script introduces a small delay of 1 day, unless it malfunctions).
 -->
 
-* From time to time those new rules from Google's `libphonenumber` are updated in this library.
+* After that those new rules from Google's `libphonenumber` are merged in this library (another delay).
 
-* And then there's still the web application itself using this library and until a developer installs `libphonenumber-js@latest` manually and redeploys the web application it's gonna use the old (potentially outdated) phone number validation rules which could result in losing customers with perfectly valid (but not yet supported) phone numbers if a website form is too strict about validating user's input.
+* And then there's still the web application itself using this library and until a developer installs `libphonenumber-js@latest` manually and rebuilds and redeploys the web application, it's gonna use the old (potentially outdated) phone number validation rules which could result in losing rare customers with newly valid (but previously non-valid) phone numbers if a website form is too strict about validating user's input.
 
-Phone number validation rules are [constantly changing](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) for `--extended` rules and are fairly static for "general" ones. Still imagine a web application (e.g. a promosite or a "personal website") being deployed once and then running for years without any maintenance.
+Phone number validation rules are [being updated regularly](https://github.com/googlei18n/libphonenumber/commits/master/resources/PhoneNumberMetadata.xml) in Google's repo. Imagine a web application (for example, a "promo-site" or a "personal website") with a "Contact Us" form being deployed once and then running for years without any maintenance.
+
+If it was required to validate a phone number being input by a user, then I'd personally use something like [`PhoneNumber.isPossible()`](#ispossible) that just validates phone number length.
 
 ## React
 
