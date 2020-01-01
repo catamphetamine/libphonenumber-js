@@ -684,7 +684,7 @@ isSupportedCountry('XX') === false
 
 ### getCountries()
 
-Returns a list of supported countries.
+Returns a list of supported countries (excluding `"001"` that stands for "Non-geographical entity").
 
 ```js
 getCountries() === ["AC", "AD", ...]

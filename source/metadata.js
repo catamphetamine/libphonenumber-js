@@ -24,7 +24,7 @@ export default class Metadata
 
 	getCountries()
 	{
-		return Object.keys(this.metadata.countries)
+		return Object.keys(this.metadata.countries).filter(_ => _ !== '001')
 	}
 
 	hasCountry(country)
