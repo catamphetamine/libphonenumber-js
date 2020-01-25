@@ -1070,7 +1070,7 @@ When reporting `findNumbers()` bugs one should know that `findNumbers()` code wa
 
 ## CDN
 
-One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.net](https://jsdelivr.net)
+One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.com](https://jsdelivr.com)
 
 ```html
 <script src="https://unpkg.com/libphonenumber-js@[version]/bundle/libphonenumber-[type].js"></script>
