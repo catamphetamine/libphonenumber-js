@@ -4,11 +4,9 @@
 [![npm downloads](https://img.shields.io/npm/dm/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
 [![coverage](https://img.shields.io/coveralls/catamphetamine/libphonenumber-js/master.svg?style=flat-square)](https://coveralls.io/r/catamphetamine/libphonenumber-js?branch=master)
 
-My take on rewriting Google Android's [`libphonenumber`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/) library in clean javascript.
+A simpler and smaller rewrite of Google Android's [`libphonenumber`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/) library in clean javascript.
 
 [See Demo](https://catamphetamine.github.io/libphonenumber-js/)
-
-Having done that out of curiosity in 2016, if you ask me now, I wouldn't rewrite it, and instead would simply port the Java code to javascript: a fairly simple thing to do, manageable in a couple of full-time weeks (for me, because I already know the inner workings), but I'd prefer doing something else in those two full-time weeks now, so I'm not rewriting it. Fear not though — it seems to work. Somehow. Just kidding. You're probably fine using it. I mean, a blunt 1:1 copy-paste port from Java to javascript would automatically come with a "100% working guaranteed" sticker on it, but that wouldn't be fun, would it. A lot of people seem to be using this library now, and I eventually fix any potential bugs if they're reported properly.
 
 ## LibPhoneNumber
 
