@@ -1044,7 +1044,7 @@ When reporting `findPhoneNumbersInText()` bugs one should know that `findPhoneNu
 
 ## CDN
 
-One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.net](https://jsdelivr.net)
+One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.com](https://jsdelivr.com)
 
 ```html
 <script src="https://unpkg.com/libphonenumber-js@[version]/bundle/libphonenumber-[type].js"></script>
