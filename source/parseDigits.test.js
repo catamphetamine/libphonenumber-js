@@ -1,6 +1,6 @@
 import parseDigits from './parseDigits'
 
-describe('parseIncompletePhoneNumber', () => {
+describe('parseDigits', () => {
 	it('should parse digits', () => {
 		parseDigits('+٤٤٢٣٢٣٢٣٤').should.equal('442323234')
 	})

@@ -8,8 +8,7 @@ import AsYouType from './AsYouType'
  * @param {string?} country - Two-letter ("ISO 3166-1 alpha-2") country code.
  * @return {string} Formatted (possibly incomplete) phone number.
  */
-export default function formatIncompletePhoneNumber(value, country, metadata)
-{
+export default function formatIncompletePhoneNumber(value, country, metadata) {
 	if (!metadata) {
 		metadata = country
 		country = undefined

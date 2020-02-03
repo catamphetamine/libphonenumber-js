@@ -63,7 +63,7 @@ export default function formatNumber(input, format, options, metadata) {
 			if (!nationalNumber) {
 				return ''
 			}
-			number = formatNationalNumber(nationalNumber, 'NATIONAL', metadata)
+			number = formatNationalNumber(nationalNumber, 'NATIONAL', metadata, options)
 			return addExtension(number, input.ext, metadata, options.formatExtension)
 
 		case 'INTERNATIONAL':
@@ -72,7 +72,7 @@ export default function formatNumber(input, format, options, metadata) {
 			if (!nationalNumber) {
 				return `+${countryCallingCode}`
 			}
-			number = formatNationalNumber(nationalNumber, 'INTERNATIONAL', metadata)
+			number = formatNationalNumber(nationalNumber, 'INTERNATIONAL', metadata, options)
 			number = `+${countryCallingCode} ${number}`
 			return addExtension(number, input.ext, metadata, options.formatExtension)
 
@@ -96,11 +96,17 @@ export default function formatNumber(input, format, options, metadata) {
 				return
 			}
 			if (options.humanReadable) {
-				const formattedForSameCountryCallingCode = countryCallingCode && formatIDDSameCountryCallingCodeNumber(nationalNumber, metadata.countryCallingCode(), options.fromCountry, metadata)
+				const formattedForSameCountryCallingCode = countryCallingCode && formatIDDSameCountryCallingCodeNumber(
+					nationalNumber,
+					metadata.countryCallingCode(),
+					options.fromCountry,
+					metadata,
+					options
+				)
 				if (formattedForSameCountryCallingCode) {
 					number = formattedForSameCountryCallingCode
 				} else {
-					number = `${IDDPrefix} ${countryCallingCode} ${formatNationalNumber(nationalNumber, 'INTERNATIONAL', metadata)}`
+					number = `${IDDPrefix} ${countryCallingCode} ${formatNationalNumber(nationalNumber, 'INTERNATIONAL', metadata, options)}`
 				}
 				return addExtension(number, input.ext, metadata, options.formatExtension)
 			}
@@ -120,25 +126,25 @@ export const FIRST_GROUP_PATTERN = /(\$\d)/
 export function formatNationalNumberUsingFormat(
 	number,
 	format,
-	useInternationalFormat,
-	includeNationalPrefixForNationalFormat,
+	useInternationalSeparator,
+	useNationalPrefixFormattingRule,
 	metadata
 ) {
 	const formattedNumber = number.replace(
 		new RegExp(format.pattern()),
-		useInternationalFormat ?
+		useInternationalSeparator ?
 			format.internationalFormat() :
-			format.nationalPrefixFormattingRule() && (!format.nationalPrefixIsOptionalWhenFormatting() || includeNationalPrefixForNationalFormat) ?
+			useNationalPrefixFormattingRule && format.nationalPrefixFormattingRule() ?
 				format.format().replace(FIRST_GROUP_PATTERN, format.nationalPrefixFormattingRule()) :
 				format.format()
 	)
-	if (useInternationalFormat) {
-		return changeInternationalFormatStyle(formattedNumber)
+	if (useInternationalSeparator) {
+		return applyInternationalSeparatorStyle(formattedNumber)
 	}
 	return formattedNumber
 }
 
-function formatNationalNumber(number, formatAs, metadata) {
+function formatNationalNumber(number, formatAs, metadata, options) {
 	const format = chooseFormatForNumber(metadata.formats(), number)
 	if (!format) {
 		return number
@@ -147,7 +153,7 @@ function formatNationalNumber(number, formatAs, metadata) {
 		number,
 		format,
 		formatAs === 'INTERNATIONAL',
-		true,
+		format.nationalPrefixIsOptionalWhenFormattingInNationalFormat() && options.nationalPrefix === false ? false : true,
 		metadata
 	)
 }
@@ -200,7 +206,7 @@ function chooseFormatForNumber(availableFormats, nationalNnumber) {
 // In the modern age all output is done on displays where spaces are clearly distinguishable
 // so hyphens can be safely replaced with spaces without losing any legibility.
 //
-export function changeInternationalFormatStyle(local) {
+export function applyInternationalSeparatorStyle(local) {
 	return local.replace(new RegExp(`[${VALID_PUNCTUATION}]+`, 'g'), ' ').trim()
 }
 
@@ -208,11 +214,12 @@ function addExtension(formattedNumber, ext, metadata, formatExtension) {
 	return ext ? formatExtension(formattedNumber, ext, metadata) : formattedNumber
 }
 
-export function formatIDDSameCountryCallingCodeNumber(
+function formatIDDSameCountryCallingCodeNumber(
 	number,
 	toCountryCallingCode,
 	fromCountry,
-	toCountryMetadata
+	toCountryMetadata,
+	options
 ) {
 	const fromCountryMetadata = new Metadata(toCountryMetadata.metadata)
 	fromCountryMetadata.country(fromCountry)
@@ -221,7 +228,7 @@ export function formatIDDSameCountryCallingCodeNumber(
 		// For NANPA regions, return the national format for these regions
 		// but prefix it with the country calling code.
 		if (toCountryCallingCode === '1') {
-			return toCountryCallingCode + ' ' + formatNationalNumber(number, 'NATIONAL', toCountryMetadata)
+			return toCountryCallingCode + ' ' + formatNationalNumber(number, 'NATIONAL', toCountryMetadata, options)
 		}
 		// If regions share a country calling code, the country calling code need
 		// not be dialled. This also applies when dialling within a region, so this
@@ -232,6 +239,6 @@ export function formatIDDSameCountryCallingCodeNumber(
 		// country calling code. Details here:
 		// http://www.petitfute.com/voyage/225-info-pratiques-reunion
 		//
-		return formatNationalNumber(number, 'NATIONAL', toCountryMetadata)
+		return formatNationalNumber(number, 'NATIONAL', toCountryMetadata, options)
 	}
 }

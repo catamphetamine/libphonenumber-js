@@ -327,6 +327,54 @@ describe('parse', () => {
 		parseNumber('+99989160151539')
 	})
 
+	it('should work with Argentina numbers', () => {
+		// The same mobile number is written differently
+		// in different formats in Argentina:
+		// `9` gets prepended in international format.
+		parseNumber('+54 9 3435 55 1212').should.deep.equal({
+			country: 'AR',
+			phone: '93435551212'
+		})
+		parseNumber('0343 15-555-1212', 'AR').should.deep.equal({
+			country: 'AR',
+			phone: '93435551212'
+		})
+	})
+
+	it('should work with Mexico numbers', () => {
+		// Fixed line.
+		parseNumber('+52 449 978 0001').should.deep.equal({
+			country: 'MX',
+			phone: '4499780001'
+		})
+		parseNumber('01 (449)978-0001', 'MX').should.deep.equal({
+			country: 'MX',
+			phone: '4499780001'
+		})
+		parseNumber('(449)978-0001', 'MX').should.deep.equal({
+			country: 'MX',
+			phone: '4499780001'
+		})
+		// Mobile.
+		// `1` is prepended before area code to mobile numbers in international format.
+		parseNumber('+52 1 33 1234-5678', 'MX').should.deep.equal({
+			country: 'MX',
+			phone: '3312345678'
+		})
+		parseNumber('+52 33 1234-5678', 'MX').should.deep.equal({
+			country: 'MX',
+			phone: '3312345678'
+		})
+		parseNumber('044 (33) 1234-5678', 'MX').should.deep.equal({
+			country: 'MX',
+			phone: '3312345678'
+		})
+		parseNumber('045 33 1234-5678', 'MX').should.deep.equal({
+			country: 'MX',
+			phone: '3312345678'
+		})
+	})
+
 	it('should extract country calling code from a number', () => {
 		extractCountryCallingCode('+78005553535', null, metadata).should.deep.equal({
 			countryCallingCode: '7',

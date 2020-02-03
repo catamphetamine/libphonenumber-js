@@ -53,6 +53,15 @@ And edit the README:
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
 
+1.7.32 / 03.02.2020
+===================
+
+* Refactored the code. Mostly `AsYouType` formatter.
+
+* Fixed `AsYouType` formatter bugs ([#318](https://github.com/catamphetamine/libphonenumber-js/issues/318)).
+
+* Added `nationalPrefix: boolean` option to `PhoneNumber.format()` — Some phone numbers can be formatted both with national prefix and without it. In such cases the library defaults to "with national prefix" (for legacy reasons). Pass `nationalPrefix: false` option to force formatting without national prefix in such cases.
+
 1.7.27 / 18.11.2019
 ===================
 

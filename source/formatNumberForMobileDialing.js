@@ -83,19 +83,6 @@ export default function(number, from_country, with_formatting, metadata)
 				// empty string here.
 				''
 		}
-		else if (is_valid_number && country == 'HU')
-		{
-			// The national format for HU numbers doesn't contain the national prefix,
-			// because that is how numbers are normally written down. However, the
-			// national prefix is obligatory when dialing from a mobile phone. As a
-			// result, we add it back here if it is a valid regular length phone
-			// number.
-
-			// Select country for `.nationalPrefix()`.
-			metadata.country(country)
-
-			formatted_number = metadata.nationalPrefix() + ' ' + format(number, 'NATIONAL', metadata.metadata)
-		}
 		else if (getCountryCallingCode(country, metadata.metadata) === '1')
 		{
 			// For NANPA countries, we output international format for numbers that

@@ -161,7 +161,8 @@ export default function(input, version, included_countries, extended, included_p
 		}
 	}
 
-	// Parse the XML metadata
+	// Parse the XML metadata.
+	// See: https://github.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md
 	return parseStringPromisified(input).then((xml) =>
 	{
 		// https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml
@@ -181,6 +182,10 @@ export default function(input, version, included_countries, extended, included_p
 			if (included_countries && !included_countries.has(country_code))
 			{
 				continue
+			}
+
+			if (territory.$.nationalPrefixOptionalWhenFormatting) {
+				throw new Error('`nationalPrefixOptionalWhenFormatting` encountered on a country level: uncomment the relevant code part below.')
 			}
 
 			// Country metadata
@@ -260,7 +265,7 @@ export default function(input, version, included_countries, extended, included_p
 				//
 				// For example, mobile numbers in Argentina are written in two completely
 				// different ways when dialed in-country and out-of-country
-				// (e.g. 0343 15 555 1212 is exactly the same number as +54 9 343 555 1212).
+				// (e.g. 0343 15-555-1212 is exactly the same number as +54 9 3435 55 1212).
 				// Therefore for Argentina `national_prefix_transform_rule` is `9$1`.
 				//
 				national_prefix_transform_rule: territory.$.nationalPrefixTransformRule,
@@ -288,7 +293,7 @@ export default function(input, version, included_countries, extended, included_p
 				// This seems to only be used for validating
 				// possible formats in AsYouType formatter.
 				//
-				national_prefix_is_optional_when_formatting: territory.$.nationalPrefixOptionalWhenFormatting ? Boolean(territory.$.nationalPrefixOptionalWhenFormatting) : undefined,
+				// national_prefix_is_optional_when_formatting: territory.$.nationalPrefixOptionalWhenFormatting ? Boolean(territory.$.nationalPrefixOptionalWhenFormatting) : undefined,
 
 				// I suppose carrier codes can be omitted.
 				// They are required only for Brazil and Columbia,
@@ -436,11 +441,11 @@ export default function(input, version, included_countries, extended, included_p
 				if (country.formats !== undefined) {
 					throw new Error(`Country "${country_code}" is supposed to inherit formats from "${main_country_for_region_code}" but has its own formats defined.`)
 				}
-				if (country.nationalPrefixFormattingRule !== undefined) {
-					throw new Error(`Country "${country_code}" is supposed to inherit "nationalPrefixFormattingRule" from "${main_country_for_region_code}" but has its own "nationalPrefixFormattingRule" defined.`)
+				if (country.national_prefix_formatting_rule !== undefined) {
+					throw new Error(`Country "${country_code}" is supposed to inherit "national_prefix_formatting_rule" from "${main_country_for_region_code}" but has its own "national_prefix_formatting_rule" defined.`)
 				}
-				if (country.nationalPrefixIsOptionalWhenFormatting !== undefined) {
-					throw new Error(`Country "${country_code}" is supposed to inherit "nationalPrefixIsOptionalWhenFormatting" from "${main_country_for_region_code}" but has its own "nationalPrefixIsOptionalWhenFormatting" defined.`)
+				if (country.national_prefix_is_optional_when_formatting !== undefined) {
+					throw new Error(`Country "${country_code}" is supposed to inherit "national_prefix_is_optional_when_formatting" from "${main_country_for_region_code}" but has its own "national_prefix_is_optional_when_formatting" defined.`)
 				}
 			}
 		}

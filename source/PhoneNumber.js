@@ -46,7 +46,12 @@ export default class PhoneNumber {
 	}
 
 	format(format, options) {
-		return formatNumber(this, format, options ? { ...options, v2: true } : { v2: true }, this.metadata)
+		return formatNumber(
+			this,
+			format,
+			options ? { ...options, v2: true } : { v2: true },
+			this.metadata
+		)
 	}
 
 	formatNational(options) {

@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import as_you_type_custom, { close_dangling_braces, repeat } from '../../../../source/AsYouType'
+import as_you_type_custom, { repeat } from '../../../../source/AsYouType'
 
 class as_you_type extends as_you_type_custom
 {
@@ -50,7 +50,7 @@ describe('as you type', () =>
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		formatter.countryCallingCode.should.equal('1')
-		type(formatter.getTemplate()).should.equal('undefined')
+		formatter.getTemplate().should.equal('xx')
 
 		formatter.input('2').should.equal('+1 2')
 		formatter.getTemplate().should.equal('xx x')
@@ -79,7 +79,7 @@ describe('as you type', () =>
 		// along with the regular spaces
 		formatter.template.should.equal('xx xxx xxx xxxx')
 
-		formatter.input('5').should.equal('+121333344445')
+		formatter.input('5').should.equal('+1 21333344445')
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
@@ -140,7 +140,7 @@ describe('as you type', () =>
 		// Brazil
 
 		formatter = new as_you_type('BR')
-		formatter.input('11987654321').should.equal('(11) 98765-4321')
+		formatter.input('11987654321').should.equal('11 98765-4321')
 
 		// UK (Jersey) (non-main country for +44 country phone code)
 
@@ -163,8 +163,8 @@ describe('as you type', () =>
 
 		// Hungary (braces must be part of the template)
 		formatter = new as_you_type('HU')
-		formatter.input('301234567').should.equal('(30) 123 4567')
-		formatter.template.should.equal('(xx) xxx xxxx')
+		formatter.input('301234567').should.equal('30 123 4567')
+		formatter.template.should.equal('xx xxx xxxx')
 
 		// Test Russian phone numbers
 		// (with optional national prefix `8`)
@@ -213,7 +213,7 @@ describe('as you type', () =>
 		//  because the phone number is being output in the international format)
 		new as_you_type().input('+55123456789').should.equal('+55 12 3456 789')
 		new as_you_type('BR').input('+55123456789').should.equal('+55 12 3456 789')
-		new as_you_type('BR').input('123456789').should.equal('(12) 3456-789')
+		new as_you_type('BR').input('123456789').should.equal('12 3456-789')
 
 		// Deutchland
 		new as_you_type().input('+4915539898001').should.equal('+49 15539 898001')
@@ -233,28 +233,6 @@ describe('as you type', () =>
 		formatter.template.should.equal('xxx xx xxx xxxx')
 	})
 
-	it('should close dangling braces', function()
-	{
-		close_dangling_braces('(9)', 2).should.equal('(9)')
-
-		let formatter
-
-		// Test braces (US)
-
-		formatter = new as_you_type('US')
-
-		formatter.input('999').should.equal('(999)')
-		formatter.input('1').should.equal('(999) 1')
-
-		// Test braces (RU)
-
-		formatter = new as_you_type('RU')
-
-		formatter.input('8').should.equal('8')
-		formatter.input('999').should.equal('8 (999)')
-		formatter.input('1').should.equal('8 (999) 1')
-	})
-
 	it(`should fall back to the default country`, function()
 	{
 		const formatter = new as_you_type('RU')
@@ -265,28 +243,24 @@ describe('as you type', () =>
 		// formatter.valid.should.be.false
 		formatter.template.should.equal('x (xxx) xxx-xx-xx')
 		formatter.country.should.equal('RU')
-		formatter.countryCallingCode.should.equal('7')
 
 		formatter.input('000000000000').should.equal('8999000000000000')
 
 		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
-		formatter.countryCallingCode.should.equal('7')
 
 		formatter.reset()
 
 		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
-		formatter.countryCallingCode.should.equal('7')
 
 		formatter.input('+1-213-373-4253').should.equal('+1 213 373 4253')
 
 		// formatter.valid.should.be.true
 		formatter.template.should.equal('xx xxx xxx xxxx')
 		formatter.country.should.equal('US')
-		formatter.countryCallingCode.should.equal('1')
 	})
 
 	it('should work in edge cases', function()

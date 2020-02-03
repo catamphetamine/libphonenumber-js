@@ -161,16 +161,21 @@ export default function parse(text, options = {}, metadata) {
 		countryCallingCode,
 		carrierCode,
 		valid,
-		possible : valid ? true : (options.extended === true) && metadata.possibleLengths() && is_possible_number(nationalNumber, countryCallingCode !== undefined, metadata),
-		phone : nationalNumber,
+		possible: valid ? true : (options.extended === true) && metadata.possibleLengths() && is_possible_number(nationalNumber, countryCallingCode !== undefined, metadata),
+		phone: nationalNumber,
 		ext
 	}
 }
 
 /**
- * Extracts a parseable phone number.
- * @param  {string} text - Input.
- * @return {string}.
+ * Extracts a formatted phone number from text.
+ * Doesn't guarantee that the extracted phone number
+ * is a valid phone number (for example, doesn't validate its length).
+ * @param  {string} text
+ * @return {string}
+ * @example
+ * // Returns "(213) 373-4253".
+ * extractFormattedPhoneNumber("Call (213) 373-4253 for assistance.")
  */
 export function extractFormattedPhoneNumber(text, v2) {
 	if (!text) {
@@ -194,99 +199,68 @@ export function extractFormattedPhoneNumber(text, v2) {
 		.replace(AFTER_PHONE_NUMBER_END_PATTERN, '')
 }
 
-// Strips any national prefix (such as 0, 1) present in the number provided.
-// "Carrier codes" are only used  in Colombia and Brazil,
-// and only when dialing within those countries from a mobile phone to a fixed line number.
+/**
+ * Strips any national prefix (such as 0, 1) present in the number provided.
+ * "Carrier codes" are only used  in Colombia and Brazil,
+ * and only when dialing within those countries from a mobile phone to a fixed line number.
+ * Sometimes it won't actually strip national prefix
+ * and will instead prepend some digits to the `number`:
+ * for example, when number `2345678` is passed with `VI` country selected,
+ * it will return `{ number: "3402345678" }`, because `340` area code is prepended.
+ * @param {string} number — National number digits.
+ * @param {object} metadata — Metadata with country selected.
+ * @return {object} `{ number, carrierCode }`.
+ */
 export function stripNationalPrefixAndCarrierCode(number, metadata) {
-	if (!number || !metadata.nationalPrefixForParsing()) {
+	if (!number) {
 		return { number }
 	}
 
-	// In many countries the national prefix
-	// is not just a constant digit (like `0` in UK)
-	// but can be different depending on the phone number
-	// (and can be also absent for some phone numbers).
-	//
-	// So `national_prefix_for_parsing` is used when parsing
-	// a national-prefixed (local) phone number
-	// into a national significant phone number
-	// extracting that possible national prefix out of it.
-	//
-	// Example `national_prefix_for_parsing` for Australia (AU) is `0|(183[12])`.
-	// Which means that in Australia the national prefix can be: `0`, `1831`, `1832`.
-
-	// Attempt to parse the first digits as a national prefix
-	const national_prefix_pattern = new RegExp('^(?:' + metadata.nationalPrefixForParsing() + ')')
-	const national_prefix_matcher = national_prefix_pattern.exec(number)
-
-	// If no national prefix is present in the phone number,
-	// but the national prefix is optional for this country,
-	// then consider this phone number valid.
-	//
-	// Google's reference `libphonenumber` implementation
-	// wouldn't recognize such phone numbers as valid,
-	// but I think it would perfectly make sense
-	// to consider such phone numbers as valid
-	// because if a national phone number was originally
-	// formatted without the national prefix
-	// then it must be parseable back into the original national number.
-	// In other words, `parse(format(number))`
-	// must always be equal to `number`.
-	//
-	if (!national_prefix_matcher) {
+	if (!metadata.nationalPrefixForParsing()) {
 		return { number }
 	}
 
-	let national_significant_number
+	// See METADATA.md for the description of
+	// `national_prefix_for_parsing` and `national_prefix_transform_rule`.
 
-	// In more complex cases just `national_prefix_for_parsing` regexp
-	// is not enough to extract the national number and then strip it
-	// like `number.slice(national_prefix.length)` because when parsing
-	// national numbers it's not always clear whether the first digits
-	// are a national prefix or part of the national significant number.
-	// For such cases `national_prefix_transform_rule` regexp is present
-	// which contains "capturing groups" that are later used in such
-	// `national_prefix_transform_rule` to transform the national number
-	// being parsed into the national significant number.
-	//
-	// Example.
-	// Country: U.S. Virgin Islands (VI).
-	// Country calling code: +1.
-	// Leading digits: 340.
-	// Phone number format: +1 (340) xxx-xxxx.
-	// National prefix: 1.
-	// National prefix for parsing: 1|([2-9]\d{6})$.
-	// National prefix transform rule: 340$1.
-	//
-	// So for input "13401234567" "national prefix for parsing" regexp
-	// will return "1" and the national significant number will be
-	// "13401234567".slice("1".length) === "(340) 123-4567".
-	//
-	// And for input "3401234567" "national prefix for parsing" regexp
-	// the "captured group" will be "3401234567" and the national significant
-	// number will be "3401234567".replace("340123", "340340123") === "(340) 3401234567".
-	//
-	// `national_prefix_matcher[captured_groups_count]` means that
-	// the corresponding "captured group" is not empty.
-	// It can be empty if the regexp either doesn't have any "capturing groups"
-	// or if the "capturing groups" are defined as optional.
-	// Example: "0?(?:...)?" for Argentina.
-	//
-	const captured_groups_count = national_prefix_matcher.length - 1
-	if (metadata.nationalPrefixTransformRule() && national_prefix_matcher[captured_groups_count]) {
-		national_significant_number = number.replace(national_prefix_pattern, metadata.nationalPrefixTransformRule())
+	// Attempt to parse the first digits as a national prefix.
+	const prefixPattern = new RegExp('^(?:' + metadata.nationalPrefixForParsing() + ')')
+	const prefixMatch = prefixPattern.exec(number)
+
+	if (!prefixMatch) {
+		return { number }
 	}
-	// If it's a simple-enough case then just strip the national prefix from the number.
+
+	let nationalSignificantNumber
+	let carrierCode
+
+	// If a "capturing group" didn't match
+	// then its element in `prefixMatch[]` array will be `undefined`.
+
+	const capturedGroupsCount = prefixMatch.length - 1
+	if (metadata.nationalPrefixTransformRule() &&
+		capturedGroupsCount > 0 && prefixMatch[capturedGroupsCount]) {
+		nationalSignificantNumber = number.replace(
+			prefixPattern,
+			metadata.nationalPrefixTransformRule()
+		)
+		// Carrier code is the last captured group,
+		// but only when there's more than one captured group.
+		if (capturedGroupsCount > 1 && prefixMatch[capturedGroupsCount]) {
+			carrierCode = prefixMatch[1]
+		}
+	}
+	// If it's a simple-enough case then just
+	// strip the national prefix from the number.
 	else {
 		// National prefix is the whole substring matched by
 		// the `national_prefix_for_parsing` regexp.
-		const national_prefix = national_prefix_matcher[0]
-		national_significant_number = number.slice(national_prefix.length)
-	}
-
-	let carrierCode
-	if (captured_groups_count > 0) {
-		carrierCode = national_prefix_matcher[1]
+		const nationalPrefix = prefixMatch[0]
+		nationalSignificantNumber = number.slice(nationalPrefix.length)
+		// Carrier code is the last captured group.
+		if (capturedGroupsCount > 0) {
+			carrierCode = prefixMatch[1]
+		}
 	}
 
 	// The following is done in `get_country_and_national_number_for_local_number()` instead.
@@ -301,13 +275,13 @@ export function stripNationalPrefixAndCarrierCode(number, metadata) {
 	// // like `8` is the national prefix for Russia and both
 	// // `8 800 555 35 35` and `800 555 35 35` are valid numbers.
 	// if (matchesEntirely(number, national_number_rule) &&
-	// 		!matchesEntirely(national_significant_number, national_number_rule)) {
+	// 	!matchesEntirely(nationalSignificantNumber, national_number_rule)) {
 	// 	return number
 	// }
 
 	// Return the parsed national (significant) number
    return {
-   	number: national_significant_number,
+   	number: nationalSignificantNumber,
    	carrierCode
    }
 }

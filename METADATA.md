@@ -1,6 +1,6 @@
 # Metadata
 
-This document describes `metadata.json` that's generated from `PhoneNumberMetadata.xml` by running `npm run metadata:generate` command. It serves as an intermediary step for generating all other metadata (such as `metadata.min.json`), and is therefore not included in the final distribution.
+This document describes `metadata.json` that's generated from `PhoneNumberMetadata.xml` by running `npm run metadata:generate` command. It serves as an intermediary step for generating all other metadata (such as `metadata.min.json`), and is therefore not included in the final distribution. See [`PhoneNumberMetadata.xml`](https://github.com/google/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) in Google's repo. They also have some [docs](https://github.com/google/libphonenumber/blob/master/resources/phonemetadata.proto) on metadata fields too.
 
 ## Country calling codes
 
@@ -54,6 +54,8 @@ As another example, some countries support "utility" prefixes, like Australia (n
 
 Another example are U.S. Virgin Islands (national prefix `1`) whose phone numbers always start with a `340` area code because there's no other area code in this tiny (`346.36` square kilometers) island country. So it's common for its citizens to call `693-4800` instead of `(340) 693-4800`, and Google's `libphonenumber` handles this case by `national_prefix_for_parsing` being `1|([2-9]\d{6})$`.
 
+Another type of "prefix" is a ["carrier code"](https://www.voip-info.org/carrier-identification-codes/). If `national_prefix_transform_rule` is defined and `national_prefix_for_parsing` has more than one "capturing group", then the first "capturing group" is the "carrier code". If `national_prefix_transform_rule` is not defined and `national_prefix_for_parsing` has any "capturing groups", then the first "capturing group" is the "carrier code".
+
 ### `national_prefix_transform_rule`
 
 If `national_prefix_for_parsing` regular expression contains ["capturing groups"](https://www.regular-expressions.info/refcapture.html) (parentheses), then `national_prefix_transform_rule` defines how a national phone number is parsed into a [national (significant) number](https://github.com/catamphetamine/libphonenumber-js#national-significant-number). So, in a way, they're the "two side of one coin", being "alter egos" of each other: whenever `national_prefix_for_parsing` removes a "significant" part of a phone number, it does so with a "capturing group", so that `national_prefix_transform_rule` would immediately put it back.
@@ -72,7 +74,7 @@ Phone number examples for each one of the phone number `types`.
 
 ### `formats`
 
-Describes all possible phone number formats for this country.
+Describes all possible phone number formats for this country. May be missing if phone numbers aren't formatted for this country (there're many such countries, usually small islands).
 
 #### `pattern`
 

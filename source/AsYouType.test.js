@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import AsYouType_, { close_dangling_braces, strip_dangling_braces, repeat } from './AsYouType'
+import AsYouType_, { closeNonPairedParens, stripNonPairedParens, repeat } from './AsYouType'
 
 class AsYouType extends AsYouType_ {
 	constructor(country_code) {
@@ -8,23 +8,42 @@ class AsYouType extends AsYouType_ {
 }
 
 describe('as you type', () => {
+	it('should use "national_prefix_formatting_rule"', () => {
+		// With national prefix (full).
+		new AsYouType('RU').input('88005553535').should.equal('8 (800) 555-35-35')
+		// With national prefix (partial).
+		new AsYouType('RU').input('880055535').should.equal('8 (800) 555-35')
+	})
+
+	it('should populate national number template (digit by digit)', () => {
+		const formatter = new AsYouType('US')
+		formatter.input('1')
+		formatter.template.should.equal('x (xxx) xxx-xxxx')
+		formatter.populatedNationalNumberTemplate.should.equal('1 (xxx) xxx-xxxx')
+		formatter.input('213')
+		formatter.populatedNationalNumberTemplate.should.equal('1 (213) xxx-xxxx')
+		formatter.input('3734253')
+		formatter.populatedNationalNumberTemplate.should.equal('1 (213) 373-4253')
+	})
+
+	it('should populate national number template (attempt to format complete number)', () => {
+		const formatter = new AsYouType('US')
+		formatter.input('12133734253').should.equal('1 (213) 373-4253')
+		formatter.template.should.equal('x (xxx) xxx-xxxx')
+		formatter.populatedNationalNumberTemplate.should.equal('1 (213) 373-4253')
+	})
+
 	it('should parse and format phone numbers as you type', () => {
 		// International number test
 		new AsYouType().input('+12133734').should.equal('+1 213 373 4')
 		// Local number test
 		new AsYouType('US').input('2133734').should.equal('(213) 373-4')
 
-		// With national prefix test
-		new AsYouType('RU').input('880055535').should.equal('8 (800) 555-35')
-
 		// US national number retains national prefix.
 		new AsYouType('US').input('12133734').should.equal('1 (213) 373-4')
 
 		// US national number retains national prefix (full number).
 		new AsYouType('US').input('12133734253').should.equal('1 (213) 373-4253')
-
-		// With national prefix test
-		new AsYouType('RU').input('88005553535').should.equal('8 (800) 555-35-35')
 
 		// Should discard the national prefix
 		// when a whole phone number format matches
@@ -41,21 +60,21 @@ describe('as you type', () => {
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		type(formatter.countryCallingCode).should.equal('undefined')
-		type(formatter.template).should.equal('undefined')
+		formatter.getTemplate().should.equal('')
 
 		formatter.input('+').should.equal('+')
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		type(formatter.countryCallingCode).should.equal('undefined')
-		type(formatter.template).should.equal('undefined')
+		formatter.getTemplate().should.equal('x')
 
 		formatter.input('1').should.equal('+1')
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
 		formatter.countryCallingCode.should.equal('1')
-		type(formatter.getTemplate()).should.equal('undefined')
+		formatter.getTemplate().should.equal('xx')
 
 		formatter.input('2').should.equal('+1 2')
 		formatter.getTemplate().should.equal('xx x')
@@ -84,7 +103,7 @@ describe('as you type', () => {
 		// along with the regular spaces
 		formatter.template.should.equal('xx xxx xxx xxxx')
 
-		formatter.input('5').should.equal('+121333344445')
+		formatter.input('5').should.equal('+1 21333344445')
 
 		// formatter.valid.should.be.false
 		type(formatter.country).should.equal('undefined')
@@ -145,7 +164,7 @@ describe('as you type', () => {
 		// Brazil
 
 		formatter = new AsYouType('BR')
-		formatter.input('11987654321').should.equal('(11) 98765-4321')
+		formatter.input('11987654321').should.equal('11 98765-4321')
 
 		// UK (Jersey) (non-main country for +44 country phone code)
 
@@ -166,7 +185,7 @@ describe('as you type', () => {
 		formatter.reset().input('044444444').should.equal('044 444 444')
 		formatter.template.should.equal('xxx xxx xxxx')
 
-		// Hungary (braces must be part of the template)
+		// Braces must be part of the template.
 		formatter = new AsYouType('RU')
 		formatter.input('88005553535').should.equal('8 (800) 555-35-35')
 		formatter.template.should.equal('x (xxx) xxx-xx-xx')
@@ -222,7 +241,7 @@ describe('as you type', () => {
 		//  because the phone number is being output in the international format)
 		new AsYouType().input('+55123456789').should.equal('+55 12 3456 789')
 		new AsYouType('BR').input('+55123456789').should.equal('+55 12 3456 789')
-		new AsYouType('BR').input('123456789').should.equal('(12) 3456-789')
+		new AsYouType('BR').input('123456789').should.equal('12 3456-789')
 
 		// Deutchland
 		new AsYouType().input('+4915539898001').should.equal('+49 15539 898001')
@@ -246,11 +265,14 @@ describe('as you type', () => {
 		let formatter
 
 		formatter = new AsYouType()
-		formatter.input('+1 1 877 215 5230').should.equal('+118772155230')
+		// formatter.input('+1 1 877 215 5230').should.equal('+1 1 877 215 5230')
+		formatter.input('+1 1 877 215 5230').should.equal('+1 18772155230')
+		// formatter.getNationalNumber().should.equal('8772155230')
 		formatter.getNationalNumber().should.equal('18772155230')
 
 		formatter = new AsYouType()
-		formatter.input('+788005553535').should.equal('+788005553535')
+		formatter.input('+78800555353').should.equal('+7 880 055 53 53')
+		formatter.input('5').should.equal('+7 88005553535')
 		formatter.getNationalNumber().should.equal('88005553535')
 	})
 
@@ -258,7 +280,7 @@ describe('as you type', () => {
 		const asYouType = new AsYouType('US')
 
 		asYouType.input('').should.equal('')
-		expect(asYouType.getTemplate()).to.be.undefined
+		asYouType.getTemplate().should.equal('')
 
 		asYouType.input('2').should.equal('2')
 		// asYouType.getTemplate().should.equal('x')
@@ -272,13 +294,13 @@ describe('as you type', () => {
 		asYouType.getTemplate().should.equal('(xxx)')
 	})
 
-	it('should close dangling braces', () => {
-		close_dangling_braces('(000) 123-45 (9  )', 15).should.equal('(000) 123-45 (9  )')
+	it('should close non-paired braces', () => {
+		closeNonPairedParens('(000) 123-45 (9  )', 15).should.equal('(000) 123-45 (9  )')
 	})
 
-	it('should strip dangling braces', () => {
-		strip_dangling_braces('(000) 123-45 (9').should.equal('(000) 123-45 9')
-		strip_dangling_braces('(000) 123-45 (9)').should.equal('(000) 123-45 (9)')
+	it('should strip non-paired braces', () => {
+		stripNonPairedParens('(000) 123-45 (9').should.equal('(000) 123-45 9')
+		stripNonPairedParens('(000) 123-45 (9)').should.equal('(000) 123-45 (9)')
 	})
 
 	it(`should fall back to the default country`, () => {
@@ -292,21 +314,21 @@ describe('as you type', () => {
 		// formatter.valid.should.be.false
 		formatter.template.should.equal('x (xxx) xxx-xx-xx')
 		formatter.country.should.equal('RU')
-		formatter.countryCallingCode.should.equal('7')
+		// formatter.countryCallingCode.should.equal('7')
 
 		formatter.input('000000000000').should.equal('8999000000000000')
 
 		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
-		formatter.countryCallingCode.should.equal('7')
+		// formatter.countryCallingCode.should.equal('7')
 
 		formatter.reset()
 
 		// formatter.valid.should.be.false
 		type(formatter.template).should.equal('undefined')
 		formatter.country.should.equal('RU')
-		formatter.countryCallingCode.should.equal('7')
+		// formatter.countryCallingCode.should.equal('7')
 
 		formatter.input('+1-213-373-4253').should.equal('+1 213 373 4253')
 
@@ -443,9 +465,72 @@ describe('as you type', () => {
 		formatter.input('+1-1')
 
 		phoneNumber = formatter.getNumber()
+		expect(phoneNumber).to.not.be.undefined
+
+		formatter.input('1')
+		phoneNumber = formatter.getNumber()
 		expect(phoneNumber.country).to.be.undefined
 		phoneNumber.countryCallingCode.should.equal('1')
-		phoneNumber.number.should.equal('+11')
+		phoneNumber.number.should.equal('+111')
+	})
+
+	it('should work with Argentina numbers', () => {
+		// The same mobile number is written differently
+		// in different formats in Argentina:
+		// `9` gets prepended in international format.
+		const asYouType = new AsYouType('AR')
+		asYouType.input('+5493435551212').should.equal('+54 9 3435 55 1212')
+		asYouType.reset()
+		// Digits shouldn't be changed.
+		// Normally formats `034 35 15 55 1212` as `03934 35-55-1212`.
+		asYouType.input('0343515551212').should.equal('0343515551212')
+	})
+
+	it('should work with Mexico numbers', () => {
+		const asYouType = new AsYouType('MX')
+		// Fixed line.
+		asYouType.input('+52(449)978-000').should.equal('+52 449 978 000')
+		asYouType.input('1').should.equal('+52 449 978 0001')
+		asYouType.reset()
+		asYouType.input('01449978000').should.equal('01449 978 000')
+		asYouType.getTemplate().should.equal('xxxxx xxx xxx')
+		asYouType.input('1').should.equal('01449 978 0001')
+		asYouType.getTemplate().should.equal('xxxxx xxx xxxx')
+		asYouType.reset()
+		asYouType.input('(449)978-000').should.equal('449 978 000')
+		asYouType.getTemplate().should.equal('xxx xxx xxx')
+		asYouType.input('1').should.equal('449 978 0001')
+		asYouType.getTemplate().should.equal('xxx xxx xxxx')
+		// Mobile.
+		// `1` is prepended before area code to mobile numbers in international format.
+		asYouType.reset()
+		asYouType.input('+521331234567').should.equal('+52 13 3123 4567')
+		asYouType.getTemplate().should.equal('xxx xx xxxx xxxx')
+		// https://issuetracker.google.com/issues/147938979
+		// asYouType.input('8').should.equal('+52 133 1234 5678')
+		// asYouType.getTemplate().should.equal('xxx xxx xxxx xxxx')
+		asYouType.input('8').should.equal('+52 13312345678')
+		asYouType.getTemplate().should.equal('xxx xxxxxxxxxxx')
+		asYouType.reset()
+		asYouType.input('+52331234567').should.equal('+52 33 1234 567')
+		asYouType.input('8').should.equal('+52 33 1234 5678')
+		asYouType.reset()
+		asYouType.input('044331234567').should.equal('04433 1234 567')
+		asYouType.input('8').should.equal('04433 1234 5678')
+		asYouType.reset()
+		asYouType.input('045331234567').should.equal('04533 1234 567')
+		asYouType.input('8').should.equal('04533 1234 5678')
+	})
+
+	it('should not duplicate area code for certain countries', () => {
+		// https://github.com/catamphetamine/libphonenumber-js/issues/318
+		const asYouType = new AsYouType('VI')
+		// Even though `parse("3406934")` would return a
+		// "(340) 340-6934" national number, still
+		// "As You Type" formatter should leave it as "(340) 6934".
+		asYouType.input('340693').should.equal('(340) 693')
+		asYouType.input('4').should.equal('(340) 693-4')
+		asYouType.input('123').should.equal('(340) 693-4123')
 	})
 
 	it('shouldn\'t throw when passed a non-existent default country', () => {
@@ -465,6 +550,38 @@ describe('as you type', () => {
 		phoneNumber = formatter.getNumber()
 		expect(phoneNumber.carrierCode).to.be.undefined
 	})
+
+	it('should return PhoneNumber', () => {
+		const formatter = new AsYouType('RU')
+		formatter.input('+1111')
+		formatter.getNumber().number.should.equal('+1111')
+	})
+
+	it('shouldn\'t choose a format when there\'re too many digits for any of them', () => {
+		const formatter = new AsYouType('RU')
+		formatter.input('88005553535')
+		formatter.chosenFormat.format().should.equal('$1 $2-$3-$4')
+		formatter.reset()
+		formatter.input('880055535355')
+		expect(formatter.chosenFormat).to.be.undefined
+	})
+
+	it('should get separator after national prefix', () => {
+		// Russia.
+		// Has separator after national prefix.
+		const formatter = new AsYouType('RU')
+		const format = formatter.metadata.formats()[0]
+		format.nationalPrefixFormattingRule().should.equal('8 ($1)')
+		formatter.getSeparatorAfterNationalPrefix(format).should.equal(' ')
+		// Britain.
+		// Has no separator after national prefix.
+		const formatter2 = new AsYouType('GB')
+		const format2 = formatter2.metadata.formats()[0]
+		format2.nationalPrefixFormattingRule().should.equal('0$1')
+		formatter2.getSeparatorAfterNationalPrefix(format2).should.equal('')
+	})
+
+	756789
 
 	it('should repeat string N times', () => {
 		repeat('a', 0).should.equal('')

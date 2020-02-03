@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import { changeInternationalFormatStyle } from './format_'
+import { applyInternationalSeparatorStyle } from './format_'
 import _formatNumber from './format'
 
 function formatNumber(...parameters) {
@@ -37,8 +37,16 @@ describe('format', () => {
 		},
 		'NATIONAL', options).should.equal('8 (800) 555-35-35 доб. 123')
 
+		// Parse number from string.
 		formatNumber('+78005553535', 'NATIONAL', options).should.equal('8 (800) 555-35-35')
 		formatNumber('8005553535', 'RU', 'NATIONAL', options).should.equal('8 (800) 555-35-35')
+	})
+
+	it('should format with national prefix when specifically instructed', () => {
+		// With national prefix.
+		formatNumber('88005553535', 'RU', 'NATIONAL').should.equal('8 (800) 555-35-35')
+		// Without national prefix via an explicitly set option.
+		formatNumber('88005553535', 'RU', 'NATIONAL', { nationalPrefix: false }).should.equal('800 555-35-35')
 	})
 
 	it('should format valid phone numbers', () => {
@@ -109,8 +117,8 @@ describe('format', () => {
 	})
 
 	it('should change Google\'s international format style', () => {
-		changeInternationalFormatStyle('(xxx) xxx-xx-xx').should.equal('xxx xxx xx xx')
-		changeInternationalFormatStyle('(xxx)xxx').should.equal('xxx xxx')
+		applyInternationalSeparatorStyle('(xxx) xxx-xx-xx').should.equal('xxx xxx xx xx')
+		applyInternationalSeparatorStyle('(xxx)xxx').should.equal('xxx xxx')
 	})
 
 	it('should format phone number extensions', () => {
@@ -161,6 +169,32 @@ describe('format', () => {
 			ext     : '123'
 		},
 		'INTERNATIONAL').should.equal('+44 7912 345678 x123')
+	})
+
+	it('should work with Argentina numbers', () => {
+		// The same mobile number is written differently
+		// in different formats in Argentina:
+		// `9` gets prepended in international format.
+		formatNumber({ country: 'AR', phone: '3435551212' }, 'INTERNATIONAL')
+			.should.equal('+54 3435 55 1212')
+		formatNumber({ country: 'AR', phone: '3435551212' }, 'NATIONAL')
+			.should.equal('03435 55-1212')
+	})
+
+	it('should work with Mexico numbers', () => {
+		// Fixed line.
+		formatNumber({ country: 'MX', phone: '4499780001' }, 'INTERNATIONAL')
+			.should.equal('+52 449 978 0001')
+		formatNumber({ country: 'MX', phone: '4499780001' }, 'NATIONAL')
+			.should.equal('449 978 0001')
+			// or '(449)978-0001'.
+		// Mobile.
+		// `1` is prepended before area code to mobile numbers in international format.
+		formatNumber({ country: 'MX', phone: '3312345678' }, 'INTERNATIONAL')
+			.should.equal('+52 33 1234 5678')
+		formatNumber({ country: 'MX', phone: '3312345678' }, 'NATIONAL')
+			.should.equal('33 1234 5678')
+			// or '045 33 1234-5678'.
 	})
 
 	it('should format possible numbers', () => {

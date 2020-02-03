@@ -66,23 +66,19 @@ export function parseDigit(character)
  * // Outputs '8800555'.
  * ```
  */
-export default function parseDigits(string)
-{
+export default function parseDigits(string) {
 	let result = ''
-
 	// Using `.split('')` here instead of normal `for ... of`
 	// because the importing application doesn't neccessarily include an ES6 polyfill.
 	// The `.split('')` approach discards "exotic" UTF-8 characters
 	// (the ones consisting of four bytes) but digits
 	// (including non-European ones) don't fall into that range
 	// so such "exotic" characters would be discarded anyway.
-	for (const character of string.split(''))
-	{
+	for (const character of string.split('')) {
 		const digit = parseDigit(character)
 		if (digit) {
 			result += digit
 		}
 	}
-
 	return result
 }

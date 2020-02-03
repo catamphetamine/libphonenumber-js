@@ -9,10 +9,11 @@ const V3 = '1.2.0'
 
 const DEFAULT_EXT_PREFIX = ' ext. '
 
-export default class Metadata
-{
-	constructor(metadata)
-	{
+/**
+ * See: https://github.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md
+ */
+export default class Metadata {
+	constructor(metadata) {
 		validateMetadata(metadata)
 
 		this.metadata = metadata
@@ -22,27 +23,22 @@ export default class Metadata
 		this.v3 = metadata.version !== undefined // && compare(metadata.version, V4) === -1
 	}
 
-	getCountries()
-	{
+	getCountries() {
 		return Object.keys(this.metadata.countries).filter(_ => _ !== '001')
 	}
 
-	hasCountry(country)
-	{
+	hasCountry(country) {
 		return this.metadata.countries[country] !== undefined
 	}
 
-	country(country)
-	{
-		if (!country)
-		{
+	country(country) {
+		if (!country) {
 			this._country = undefined
 			this.country_metadata = undefined
 			return this
 		}
 
-		if (!this.hasCountry(country))
-		{
+		if (!this.hasCountry(country)) {
 			throw new Error(`Unknown country: ${country}`)
 		}
 
@@ -51,111 +47,97 @@ export default class Metadata
 		return this
 	}
 
-	getDefaultCountryMetadataForRegion()
-	{
+	getDefaultCountryMetadataForRegion() {
 		return this.metadata.countries[this.countryCallingCodes()[this.countryCallingCode()][0]]
 	}
 
-	countryCallingCode()
-	{
+	countryCallingCode() {
 		return this.country_metadata[0]
 	}
 
-	IDDPrefix()
-	{
+	IDDPrefix() {
 		if (this.v1 || this.v2) return
 		return this.country_metadata[1]
 	}
 
-	defaultIDDPrefix()
-	{
+	defaultIDDPrefix() {
 		if (this.v1 || this.v2) return
 		return this.country_metadata[12]
 	}
 
-	nationalNumberPattern()
-	{
+	nationalNumberPattern() {
 		if (this.v1 || this.v2) return this.country_metadata[1]
 		return this.country_metadata[2]
 	}
 
-	possibleLengths()
-	{
+	possibleLengths() {
 		if (this.v1) return
 		return this.country_metadata[this.v2 ? 2 : 3]
 	}
 
-	_getFormats(country_metadata)
-	{
+	_getFormats(country_metadata) {
 		return country_metadata[this.v1 ? 2 : this.v2 ? 3 : 4]
 	}
 
 	// For countries of the same region (e.g. NANPA)
 	// formats are all stored in the "main" country for that region.
 	// E.g. "RU" and "KZ", "US" and "CA".
-	formats()
-	{
+	formats() {
 		const formats = this._getFormats(this.country_metadata) || this._getFormats(this.getDefaultCountryMetadataForRegion()) || []
 		return formats.map(_ => new Format(_, this))
 	}
 
-	nationalPrefix()
-	{
+	nationalPrefix() {
 		return this.country_metadata[this.v1 ? 3 : this.v2 ? 4 : 5]
 	}
 
-	_getNationalPrefixFormattingRule(country_metadata)
-	{
+	_getNationalPrefixFormattingRule(country_metadata) {
 		return country_metadata[this.v1 ? 4 : this.v2 ? 5 : 6]
 	}
 
 	// For countries of the same region (e.g. NANPA)
 	// national prefix formatting rule is stored in the "main" country for that region.
 	// E.g. "RU" and "KZ", "US" and "CA".
-	nationalPrefixFormattingRule()
-	{
+	nationalPrefixFormattingRule() {
 		return this._getNationalPrefixFormattingRule(this.country_metadata) || this._getNationalPrefixFormattingRule(this.getDefaultCountryMetadataForRegion())
 	}
 
-	nationalPrefixForParsing()
-	{
-		// If `national_prefix_for_parsing` is not set explicitly,
-		// then infer it from `national_prefix` (if any)
-		return this.country_metadata[this.v1 ? 5 : this.v2 ? 6 : 7] || this.nationalPrefix()
+	_nationalPrefixForParsing() {
+		return this.country_metadata[this.v1 ? 5 : this.v2 ? 6 : 7]
 	}
 
-	nationalPrefixTransformRule()
-	{
+	nationalPrefixForParsing() {
+		// If `national_prefix_for_parsing` is not set explicitly,
+		// then infer it from `national_prefix` (if any)
+		return this._nationalPrefixForParsing() || this.nationalPrefix()
+	}
+
+	nationalPrefixTransformRule() {
 		return this.country_metadata[this.v1 ? 6 : this.v2 ? 7 : 8]
 	}
 
-	_getNationalPrefixIsOptionalWhenFormatting()
-	{
+	_getNationalPrefixIsOptionalWhenFormatting() {
 		return !!this.country_metadata[this.v1 ? 7 : this.v2 ? 8 : 9]
 	}
 
 	// For countries of the same region (e.g. NANPA)
-	// "national prefix is optional when parsing" flag is
+	// "national prefix is optional when formatting" flag is
 	// stored in the "main" country for that region.
 	// E.g. "RU" and "KZ", "US" and "CA".
-	nationalPrefixIsOptionalWhenFormatting()
-	{
+	nationalPrefixIsOptionalWhenFormattingInNationalFormat() {
 		return this._getNationalPrefixIsOptionalWhenFormatting(this.country_metadata) ||
 			this._getNationalPrefixIsOptionalWhenFormatting(this.getDefaultCountryMetadataForRegion())
 	}
 
-	leadingDigits()
-	{
+	leadingDigits() {
 		return this.country_metadata[this.v1 ? 8 : this.v2 ? 9 : 10]
 	}
 
-	types()
-	{
+	types() {
 		return this.country_metadata[this.v1 ? 9 : this.v2 ? 10 : 11]
 	}
 
-	hasTypes()
-	{
+	hasTypes() {
 		// Versions 1.2.0 - 1.2.4: can be `[]`.
 		/* istanbul ignore next */
 		if (this.types() && this.types().length === 0) {
@@ -166,22 +148,18 @@ export default class Metadata
 		return !!this.types()
 	}
 
-	type(type)
-	{
-		if (this.hasTypes() && getType(this.types(), type))
-		{
+	type(type) {
+		if (this.hasTypes() && getType(this.types(), type)) {
 			return new Type(getType(this.types(), type), this)
 		}
 	}
 
-	ext()
-	{
+	ext() {
 		if (this.v1 || this.v2) return DEFAULT_EXT_PREFIX
 		return this.country_metadata[13] || DEFAULT_EXT_PREFIX
 	}
 
-	countryCallingCodes()
-	{
+	countryCallingCodes() {
 		if (this.v1) return this.metadata.country_phone_code_to_countries
 		return this.metadata.country_calling_codes
 	}
@@ -196,109 +174,101 @@ export default class Metadata
 	// `country_calling_code` is always valid.
 	// But the actual country may not necessarily be part of the metadata.
 	//
-	chooseCountryByCountryCallingCode(country_calling_code)
-	{
+	chooseCountryByCountryCallingCode(country_calling_code) {
 		const country = this.countryCallingCodes()[country_calling_code][0]
-
 		// Do not want to test this case.
 		// (custom metadata, not all countries).
 		/* istanbul ignore else */
-		if (this.hasCountry(country))
-		{
+		if (this.hasCountry(country)) {
 			this.country(country)
 		}
 	}
 
-	selectedCountry()
-	{
+	selectedCountry() {
 		return this._country
 	}
 }
 
-class Format
-{
-	constructor(format, metadata)
-	{
+class Format {
+	constructor(format, metadata) {
 		this._format = format
 		this.metadata = metadata
 	}
 
-	pattern()
-	{
+	pattern() {
 		return this._format[0]
 	}
 
-	format()
-	{
+	format() {
 		return this._format[1]
 	}
 
-	leadingDigitsPatterns()
-	{
+	leadingDigitsPatterns() {
 		return this._format[2] || []
 	}
 
-	nationalPrefixFormattingRule()
-	{
+	nationalPrefixFormattingRule() {
 		return this._format[3] || this.metadata.nationalPrefixFormattingRule()
 	}
 
-	nationalPrefixIsOptionalWhenFormatting()
-	{
-		return !!this._format[4] || this.metadata.nationalPrefixIsOptionalWhenFormatting()
+	nationalPrefixIsOptionalWhenFormattingInNationalFormat() {
+		return !!this._format[4] || this.metadata.nationalPrefixIsOptionalWhenFormattingInNationalFormat()
 	}
 
-	nationalPrefixIsMandatoryWhenFormatting()
-	{
+	nationalPrefixIsMandatoryWhenFormattingInNationalFormat() {
 		// National prefix is omitted if there's no national prefix formatting rule
 		// set for this country, or when the national prefix formatting rule
 		// contains no national prefix itself, or when this rule is set but
 		// national prefix is optional for this phone number format
 		// (and it is not enforced explicitly)
-		return this.usesNationalPrefix() && !this.nationalPrefixIsOptionalWhenFormatting()
+		return this.usesNationalPrefix() && !this.nationalPrefixIsOptionalWhenFormattingInNationalFormat()
 	}
 
 	// Checks whether national prefix formatting rule contains national prefix.
-	usesNationalPrefix()
-	{
+	usesNationalPrefix() {
 		return this.nationalPrefixFormattingRule() &&
-			// Check that national prefix formatting rule is not a dummy one.
-			this.nationalPrefixFormattingRule() !== '$1' &&
-			// Check that national prefix formatting rule actually has national prefix digit(s).
-			/\d/.test(this.nationalPrefixFormattingRule().replace('$1', ''))
+			// Check that national prefix formatting rule is not a "dummy" one.
+			!FIRST_GROUP_ONLY_PREFIX_PATTERN.test(this.nationalPrefixFormattingRule())
+			// Previously, `FIRST_GROUP_ONLY_PREFIX_PATTERN` check was instead done via:
+			// // Check that national prefix formatting rule is not a "dummy" one.
+			// this.nationalPrefixFormattingRule() !== '$1' &&
+			// // Check that national prefix formatting rule actually has national prefix digit(s).
+			// // Filters out cases like "($1)".
+			// // Is used in place of `libphonenumber`'s `FIRST_GROUP_ONLY_PREFIX_PATTERN_` regexp.
+			// /\d/.test(this.nationalPrefixFormattingRule().replace('$1', ''))
 	}
 
-	internationalFormat()
-	{
+	internationalFormat() {
 		return this._format[5] || this.format()
 	}
 }
 
-class Type
-{
-	constructor(type, metadata)
-	{
+/**
+ * A pattern that is used to determine if the national prefix formatting rule
+ * has the first group only, i.e., does not start with the national prefix.
+ * Note that the pattern explicitly allows for unbalanced parentheses.
+ */
+const FIRST_GROUP_ONLY_PREFIX_PATTERN = /^\(?\$1\)?$/
+
+class Type {
+	constructor(type, metadata) {
 		this.type = type
 		this.metadata = metadata
 	}
 
-	pattern()
-	{
+	pattern() {
 		if (this.metadata.v1) return this.type
 		return this.type[0]
 	}
 
-	possibleLengths()
-	{
+	possibleLengths() {
 		if (this.metadata.v1) return
 		return this.type[1] || this.metadata.possibleLengths()
 	}
 }
 
-function getType(types, type)
-{
-	switch (type)
-	{
+function getType(types, type) {
+	switch (type) {
 		case 'FIXED_LINE':
 			return types[0]
 		case 'MOBILE':
@@ -322,22 +292,18 @@ function getType(types, type)
 	}
 }
 
-export function validateMetadata(metadata)
-{
-	if (!metadata)
-	{
+export function validateMetadata(metadata) {
+	if (!metadata) {
 		throw new Error('[libphonenumber-js] `metadata` argument not passed. Check your arguments.')
 	}
 
 	// `country_phone_code_to_countries` was renamed to
 	// `country_calling_codes` in `1.0.18`.
-	if
-	(
+	if (
 		!is_object(metadata) ||
 		!is_object(metadata.countries) ||
 		(!is_object(metadata.country_calling_codes) && !is_object(metadata.country_phone_code_to_countries))
-	)
-	{
+	) {
 		throw new Error(`[libphonenumber-js] \`metadata\` argument was passed but it's not a valid metadata. Must be an object having \`.countries\` and \`.country_calling_codes\` child object properties. Got ${is_object(metadata) ? 'an object of shape: { ' + Object.keys(metadata).join(', ') + ' }' : 'a ' + type_of(metadata) + ': ' + metadata}.`)
 	}
 }
@@ -361,8 +327,7 @@ const type_of = _ => typeof _
  * // Returns " ext. "
  * getExtPrefix("US")
  */
-export function getExtPrefix(country, metadata)
-{
+export function getExtPrefix(country, metadata) {
 	metadata = new Metadata(metadata)
 	if (metadata.hasCountry(country)) {
 		return metadata.country(country).ext()
@@ -380,8 +345,7 @@ export function getExtPrefix(country, metadata)
  * // Returns "44"
  * getCountryCallingCode("GB")
  */
-export function getCountryCallingCode(country, metadata)
-{
+export function getCountryCallingCode(country, metadata) {
 	metadata = new Metadata(metadata)
 	if (metadata.hasCountry(country)) {
 		return metadata.country(country).countryCallingCode()
@@ -389,8 +353,7 @@ export function getCountryCallingCode(country, metadata)
 	throw new Error(`Unknown country: ${country}`)
 }
 
-export function isSupportedCountry(country, metadata)
-{
+export function isSupportedCountry(country, metadata) {
 	// metadata = new Metadata(metadata)
 	// return metadata.hasCountry(country)
 	return metadata.countries[country] !== undefined
