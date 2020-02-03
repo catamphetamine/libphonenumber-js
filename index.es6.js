@@ -23,6 +23,8 @@ import { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNum
 
 import findNumbersCustom from './es6/findNumbers'
 import searchNumbersCustom from './es6/searchNumbers'
+import findPhoneNumbersInTextCustom from './es6/findPhoneNumbersInText'
+import searchPhoneNumbersInTextCustom from './es6/searchPhoneNumbersInText'
 import PhoneNumberMatcherCustom from './es6/PhoneNumberMatcher'
 
 import AsYouTypeCustom from './es6/AsYouType'
@@ -158,6 +160,20 @@ export function searchNumbers()
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return searchNumbersCustom.apply(this, parameters)
+}
+
+export function findPhoneNumbersInText()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return findPhoneNumbersInTextCustom.apply(this, parameters)
+}
+
+export function searchPhoneNumbersInText()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return searchPhoneNumbersInTextCustom.apply(this, parameters)
 }
 
 export function PhoneNumberMatcher(text, options)

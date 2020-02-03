@@ -4,6 +4,8 @@ export { default as parsePhoneNumberFromString } from '../es6/parsePhoneNumberFr
 
 export { default as findNumbers } from '../es6/findNumbers'
 export { default as searchNumbers } from '../es6/searchNumbers'
+export { default as findPhoneNumbersInText } from '../es6/findPhoneNumbersInText'
+export { default as searchPhoneNumbersInText } from '../es6/searchPhoneNumbersInText'
 export { default as PhoneNumberMatcher } from '../es6/PhoneNumberMatcher'
 
 export { default as AsYouType } from '../es6/AsYouType'

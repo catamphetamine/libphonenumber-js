@@ -5,6 +5,8 @@ import {
 
 	findNumbers,
 	searchNumbers,
+	findPhoneNumbersInText,
+	searchPhoneNumbersInText,
 	PhoneNumberMatcher,
 
 	AsYouType,
@@ -40,6 +42,8 @@ describe('exports/core', () => {
 
 		findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')
+		findPhoneNumbersInText('+12133734253', metadata)[0].number.number.should.equal('+12133734253')
+		searchPhoneNumbersInText('+12133734253', metadata)[Symbol.iterator]().next.should.be.a('function')
 		new PhoneNumberMatcher('+12133734253', undefined, metadata).find.should.be.a('function')
 
 		new AsYouType('US', metadata).input('+12133734253', metadata).should.equal('+1 213 373 4253')
@@ -73,6 +77,8 @@ describe('exports/core', () => {
 
 		Library.findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')
+		Library.findPhoneNumbersInText('+12133734253', metadata)[0].number.number.should.equal('+12133734253')
+		Library.searchPhoneNumbersInText('+12133734253', metadata)[Symbol.iterator]().next.should.be.a('function')
 		new Library.PhoneNumberMatcher('+12133734253', undefined, metadata).find.should.be.a('function')
 
 		new Library.AsYouType('US', metadata).input('+12133734253', metadata).should.equal('+1 213 373 4253')

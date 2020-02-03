@@ -155,14 +155,12 @@ _(new API)_
 -->
 
 ```js
-import { findNumbers } from 'libphonenumber-js'
+import { findPhoneNumbersInText } from 'libphonenumber-js'
 
-findNumbers(`
+findPhoneNumbersInText(`
   For tech support call +7 (800) 555-35-35 internationally
   or reach a local US branch at (213) 373-4253 ext. 1234.
-`, 'US', {
-  v2: true
-})
+`, 'US')
 
 // Outputs:
 //
@@ -187,36 +185,6 @@ findNumbers(`
 //   endsAt   : 110
 // }]
 ```
-
-<!--
-<details>
-<summary>Legacy API</summary>
-
-```js
-import { findNumbers } from 'libphonenumber-js'
-
-findNumbers(`
-  For tech support call +7 (800) 555-35-35 internationally
-  or reach a local US branch at (213) 373-4253 ext. 1234.
-`, 'US')
-
-// Outputs:
-//
-// [{
-//   phone    : '8005553535',
-//   country  : 'RU',
-//   startsAt : 22,
-//   endsAt   : 40
-// }, {
-//   phone    : '2133734253',
-//   country  : 'US',
-//   ext      : '1234',
-//   startsAt : 86,
-//   endsAt   : 110
-// }]
-```
-</details>
--->
 
 ## Definitions
 
@@ -533,21 +501,19 @@ asYouType.getTemplate() === 'xx xxx xxx xxxx'
 
 Google's "As You Type" formatter does not support entering phone number extensions. If your project requires phone number extensions input then use a separate input field for that.
 
-### findNumbers(text: string, [defaultCountry: string?], [options]): object[]
+### findPhoneNumbersInText(text: string, [defaultCountry: string?], [options]): object[]
 
 Searches for phone numbers in `text`.
 
 New API (starting from version `1.6.0`) returns phone numbers as instances of [`PhoneNumber`](#phonenumber) class when passed `v2: true` option. Legacy API (before version `1.6.0`) only returns phone numbers as `country`, `phone`, `ext`.
 
 ```js
-import { findNumbers } from 'libphonenumber-js'
+import { findPhoneNumbersInText } from 'libphonenumber-js'
 
-findNumbers(`
+findPhoneNumbersInText(`
   For tech support call +7 (800) 555-35-35 internationally
   or reach a local US branch at (213) 373-4253 ext. 1234.
-`, 'US', {
-  v2: true
-})
+`, 'US')
 
 // Outputs:
 //
@@ -572,6 +538,8 @@ findNumbers(`
 //   endsAt   : 110
 // }]
 ```
+
+(in previous versions, it was called `findNumbers()`)
 
 <details>
 <summary>Legacy API (before version <code>1.6.0</code>) example</summary>
@@ -606,17 +574,19 @@ findNumbers(`
 
 ####
 
-By default it processes the whole text and then outputs the phone numbers found. If the text is very big (say, a hundred thousand characters) then it might freeze the user interface for a couple of seconds. To avoid such lags one can employ "iterator" approach using `searchNumbers()` to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame`).
+By default it processes the whole text and then outputs the phone numbers found. If the text is very big (say, a hundred thousand characters) then it might freeze the user interface for a couple of seconds. To avoid such lags one can employ "iterator" approach using `searchPhoneNumbersInText()` to perform the search asynchronously (e.g. using `requestIdleCallback` or `requestAnimationFrame`).
+
+(in previous versions, it was called `searchNumbers()`)
 
 <details>
-<summary>Asynchronous search example using <code>searchNumbers()</code></summary>
+<summary>Asynchronous search example using <code>searchPhoneNumbersInText()</code></summary>
 
 ####
 
 ES6 iterator:
 
 ```js
-import { searchNumbers } from 'libphonenumber-js'
+import { searchPhoneNumbersInText } from 'libphonenumber-js'
 
 const text = `
   For tech support call +7 (800) 555-35-35 internationally
@@ -624,7 +594,7 @@ const text = `
 `
 
 async function() {
-  for (const number of searchNumbers(text, 'US', { v2: true })) {
+  for (const number of searchPhoneNumbersInText(text, 'US')) {
     console.log(number)
     await new Promise(resolve => setTimeout(resolve, 0))
   }
@@ -662,7 +632,7 @@ iteration()
 
 ####
 
-Although Google's javascript port doesn't have the `findNumbers()` functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness. The `findNumbers()` function provided is a port of Google's `PhoneNumberMatcher.java` into javascript.
+Although Google's javascript port doesn't have the `findPhoneNumbersInText()` functionality the Java and C++ ports do. I guess Google just doesn't need to crawl phone numbers on Node.js because they can afford to hire a Java/C++ developer to do that. Still, javascript nowadays is the most popular programming language given its simplicity and user-friendliness. The `findPhoneNumbersInText()` function provided is a port of Google's `PhoneNumberMatcher.java` into javascript.
 
 ### getExampleNumber(country: string, examples: object): PhoneNumber
 
@@ -1066,7 +1036,7 @@ Phone number validation bugs should **only** be reported if they appear when usi
 There is also a possibility of this library's demo metadata being outdated, or this library's metadata lagging behind Google's (I have to update it manually from time to time due to `ssh-agent` not working properly on Windows).
 -->
 
-When reporting `findNumbers()` bugs one should know that `findNumbers()` code was ported from [Google's Java code](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java). I didn't write it myself, I just ported it. Therefore, it is unlikely that anyone other than Google will be fixing such bugs.
+When reporting `findPhoneNumbersInText()` bugs one should know that `findPhoneNumbersInText()` code was ported from [Google's Java code](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java). I didn't write it myself, I just ported it. Therefore, it is unlikely that anyone other than Google will be fixing such bugs.
 
 ## TypeScript
 
@@ -1176,7 +1146,7 @@ In ES6 that would be:
 ```js
 import {
   parsePhoneNumberFromString as _parsePhoneNumberFromString,
-  findNumbers as _findNumbers,
+  findPhoneNumbersInText as _findPhoneNumbersInText,
   AsYouType as _AsYouType
 } from 'libphonenumber-js/core'
 
@@ -1192,8 +1162,8 @@ export function parsePhoneNumberFromString() {
   return call(_parsePhoneNumberFromString, arguments)
 }
 
-export function findNumbers() {
-  return call(_findNumbers, arguments)
+export function findPhoneNumbersInText() {
+  return call(_findPhoneNumbersInText, arguments)
 }
 
 export function AsYouType(country) {
@@ -1219,8 +1189,8 @@ exports.parsePhoneNumberFromString = function parsePhoneNumberFromString() {
   return call(core.parsePhoneNumberFromString, arguments)
 }
 
-exports.findNumbers = function findNumbers() {
-  return call(core.findNumbers, arguments)
+exports.findPhoneNumbersInText = function findPhoneNumbersInText() {
+  return call(core.findPhoneNumbersInText, arguments)
 }
 
 exports.AsYouType = function AsYouType(country) {
@@ -1360,7 +1330,7 @@ launchctl list | grep 'libphonenumber-js'
 
 ## Maintenance
 
-Google periodically releases new metadata with the changes described in the [release notes](https://github.com/googlei18n/libphonenumber/blob/master/release_notes.txt). Sometimes those are minor non-breaking updates, sometimes those are major-version breaking updates. The metadata should be periodically updated via `autoupdate.cmd` (Windows) and `autoupdate.sh` (Linux/macOS) scripts. Also Google sometimes (very rarely) updates their code: [`phonenumberutil.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js) (`parseNumber()`, `formatNumber()`, `isValidNumber()`, `getNumberType()`), [`asyoutypeformatter.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/asyoutypeformatter.js) (`AsYouType`), [`PhoneNumberMatcher`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) (`findNumbers()`). The latest sync-up was performed on Jan 19th, 2020.
+Google periodically releases new metadata with the changes described in the [release notes](https://github.com/googlei18n/libphonenumber/blob/master/release_notes.txt). Sometimes those are minor non-breaking updates, sometimes those are major-version breaking updates. The metadata should be periodically updated via `autoupdate.cmd` (Windows) and `autoupdate.sh` (Linux/macOS) scripts. Also Google sometimes (very rarely) updates their code: [`phonenumberutil.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js) (`parseNumber()`, `formatNumber()`, `isValidNumber()`, `getNumberType()`), [`asyoutypeformatter.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/asyoutypeformatter.js) (`AsYouType`), [`PhoneNumberMatcher`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) (`findPhoneNumbersInText()`). The latest sync-up was performed on Jan 19th, 2020.
 
 ## Contributing
 

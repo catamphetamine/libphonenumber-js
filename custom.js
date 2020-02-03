@@ -25,6 +25,8 @@ exports.isValidNumberForRegion = require('./build/isValidNumberForRegion').defau
 
 exports.findNumbers        = require('./build/findNumbers').default
 exports.searchNumbers      = require('./build/searchNumbers').default
+exports.findPhoneNumbersInText = require('./build/findPhoneNumbersInText').default
+exports.searchPhoneNumbersInText = require('./build/searchPhoneNumbersInText').default
 exports.PhoneNumberMatcher = require('./build/PhoneNumberMatcher').default
 
 // Deprecated.

@@ -107,6 +107,12 @@ export function findNumbers(text: string, options: CountryCode | { defaultCountr
 export function searchNumbers(text: string, metadata: Metadata): IterableIterator<NumberFoundLegacy>;
 export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2: true }, metadata: Metadata): IterableIterator<NumberFound>;
 
+export function findPhoneNumbersInText(text: string, metadata: Metadata): NumberFound[];
+export function findPhoneNumbersInText(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: Metadata): NumberFound[];
+
+export function searchPhoneNumbersInText(text: string, metadata: Metadata): IterableIterator<NumberFound>;
+export function searchPhoneNumbersInText(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: Metadata): IterableIterator<NumberFound>;
+
 export class PhoneNumberMatcher {
   constructor(text: string, metadata: Metadata);
   constructor(text: string, options: { defaultCountry?: CountryCode, v2: true }, metadata: Metadata);

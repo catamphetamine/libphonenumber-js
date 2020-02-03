@@ -5,6 +5,8 @@ import {
 
 	findNumbers,
 	searchNumbers,
+	findPhoneNumbersInText,
+	searchPhoneNumbersInText,
 	PhoneNumberMatcher,
 
 	AsYouType,
@@ -55,6 +57,9 @@ describe('exports/mobile', () => {
 		searchNumbers('2133734253', { defaultCountry: 'US' })[Symbol.iterator]().next.should.be.a('function')
 		searchNumbers('2133734253', undefined, { defaultCountry: 'US' })[Symbol.iterator]().next.should.be.a('function')
 
+		findPhoneNumbersInText('+12133734253')[0].number.number.should.equal('+12133734253')
+		searchPhoneNumbersInText('+12133734253')[Symbol.iterator]().next.should.be.a('function')
+
 		new PhoneNumberMatcher('+12133734253').find.should.be.a('function')
 
 		new AsYouType().input('+12133734253').should.equal('+1 213 373 4253')
@@ -100,6 +105,9 @@ describe('exports/mobile', () => {
 		Library.searchNumbers('2133734253', 'US')[Symbol.iterator]().next.should.be.a('function')
 		Library.searchNumbers('2133734253', { defaultCountry: 'US' })[Symbol.iterator]().next.should.be.a('function')
 		Library.searchNumbers('2133734253', undefined, { defaultCountry: 'US' })[Symbol.iterator]().next.should.be.a('function')
+
+		Library.findPhoneNumbersInText('+12133734253')[0].number.number.should.equal('+12133734253')
+		Library.searchPhoneNumbersInText('+12133734253')[Symbol.iterator]().next.should.be.a('function')
 
 		new Library.PhoneNumberMatcher('+12133734253', undefined).find.should.be.a('function')
 

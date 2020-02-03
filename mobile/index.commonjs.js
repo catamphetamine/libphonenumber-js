@@ -29,6 +29,14 @@ exports.searchNumbers = function searchNumbers() {
 	return call(core.searchNumbers, arguments)
 }
 
+exports.findPhoneNumbersInText = function findPhoneNumbersInText() {
+	return call(core.findPhoneNumbersInText, arguments)
+}
+
+exports.searchPhoneNumbersInText = function searchPhoneNumbersInText() {
+	return call(core.searchPhoneNumbersInText, arguments)
+}
+
 exports.PhoneNumberMatcher = function PhoneNumberMatcher(text, options) {
 	return core.PhoneNumberMatcher.call(this, text, options, metadata)
 }

@@ -9,6 +9,8 @@ import {
 
 	findNumbers as _findNumbers,
 	searchNumbers as _searchNumbers,
+	findPhoneNumbersInText as _findPhoneNumbersInText,
+	searchPhoneNumbersInText as _searchPhoneNumbersInText,
 	PhoneNumberMatcher as _PhoneNumberMatcher,
 
 	AsYouType as _AsYouType,
@@ -60,6 +62,14 @@ export function findNumbers() {
 
 export function searchNumbers() {
 	return call(_searchNumbers, arguments)
+}
+
+export function findPhoneNumbersInText() {
+	return call(_findPhoneNumbersInText, arguments)
+}
+
+export function searchPhoneNumbersInText() {
+	return call(_searchPhoneNumbersInText, arguments)
 }
 
 export function PhoneNumberMatcher(text, options) {

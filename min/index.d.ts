@@ -39,6 +39,9 @@ export function searchNumbers(text: string, options?: CountryCode): IterableIter
 export function findNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): NumberFound[];
 export function searchNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): IterableIterator<NumberFound>;
 
+export function findPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
+export function searchPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
+
 export class PhoneNumberMatcher {
   constructor(text: string, options?: { defaultCountry?: CountryCode, v2: true });
   hasNext(): boolean;

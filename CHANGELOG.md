@@ -62,6 +62,8 @@ And edit the README:
 
 * Added `nationalPrefix: boolean` option to `PhoneNumber.format()` — Some phone numbers can be formatted both with national prefix and without it. In such cases the library defaults to "with national prefix" (for legacy reasons). Pass `nationalPrefix: false` option to force formatting without national prefix in such cases.
 
+* Renamed `findNumbers(text, { v2: true })` to `findPhoneNumbersInText(text)`, and `searchNumbers(text, { v2: true })` to `searchPhoneNumbersInText(text)`.
+
 1.7.27 / 18.11.2019
 ===================
 

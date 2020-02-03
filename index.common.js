@@ -130,6 +130,20 @@ exports.searchNumbers = function searchPhoneNumbers()
 	return custom.searchNumbers.apply(this, parameters)
 }
 
+exports.findPhoneNumbersInText = function findPhoneNumbersInText()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.findPhoneNumbersInText.apply(this, parameters)
+}
+
+exports.searchPhoneNumbersInText = function searchPhoneNumbersInText()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.searchPhoneNumbersInText.apply(this, parameters)
+}
+
 exports.PhoneNumberMatcher = function PhoneNumberMatcher(text, options)
 {
 	custom.PhoneNumberMatcher.call(this, text, options, metadata)

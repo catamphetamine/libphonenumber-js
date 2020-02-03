@@ -36,7 +36,8 @@ type FormatNumberOptions = {
   v2?: boolean;
   fromCountry?: CountryCode;
   humanReadable?: boolean;
-  formatExtension?: FormatExtension
+  nationalPrefix?: boolean;
+  formatExtension?: FormatExtension;
 };
 
 export class PhoneNumber {
