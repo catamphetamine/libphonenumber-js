@@ -422,6 +422,10 @@ parseMobile('+6584655555').getType() === 'MOBILE'
 ```
 </details>
 
+#### `isEqual(phoneNumber: PhoneNumber): boolean`
+
+Compares two `PhoneNumber`s: returns `true` if they're equal, `false` otherwise.
+
 ### `class` AsYouType([options or defaultCountry])
 
 Creates a formatter for a partially entered phone number.

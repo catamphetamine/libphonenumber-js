@@ -22,4 +22,10 @@ describe('PhoneNumber', () => {
 		})
 		.should.equal('8 (800) 555-35-35 доб. 123')
 	})
+
+	it('should compare phone numbers', () => {
+		new PhoneNumber('RU', '8005553535', metadata).isEqual(new PhoneNumber('RU', '8005553535', metadata)).should.equal(true)
+		new PhoneNumber('RU', '8005553535', metadata).isEqual(new PhoneNumber('7', '8005553535', metadata)).should.equal(true)
+		new PhoneNumber('RU', '8005553535', metadata).isEqual(new PhoneNumber('RU', '8005553536', metadata)).should.equal(false)
+	})
 })
