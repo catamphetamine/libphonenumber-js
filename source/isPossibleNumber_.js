@@ -1,7 +1,7 @@
 import Metadata from './metadata'
 import { checkNumberLengthForType } from './getNumberType_'
 
-export default function isPossibleNumber(input, options, metadata)
+export default function isPossiblePhoneNumber(input, options, metadata)
 {
 	/* istanbul ignore if */
 	if (options === undefined) {
@@ -10,15 +10,12 @@ export default function isPossibleNumber(input, options, metadata)
 
 	metadata = new Metadata(metadata)
 
-	if (options.v2)
-	{
+	if (options.v2) {
 		if (!input.countryCallingCode) {
 			throw new Error('Invalid phone number object passed')
 		}
 		metadata.chooseCountryByCountryCallingCode(input.countryCallingCode)
-	}
-	else
-	{
+	} else {
 		if (!input.phone) {
 			return false
 		}
@@ -35,21 +32,24 @@ export default function isPossibleNumber(input, options, metadata)
 		}
 	}
 
-	if (!metadata.possibleLengths()) {
-		throw new Error('Metadata too old')
+	if (metadata.possibleLengths()) {
+		return isPossibleNumber(input.phone || input.nationalNumber, undefined, metadata)
+	} else {
+		if (input.countryCallingCode && metadata.isNonGeographicCallingCode(input.countryCallingCode)) {
+			// "Non-geographical entities" don't have `possibleLengths`.
+			return true
+		} else {
+			throw new Error('Missing "possibleLengths" in metadata. Perhaps the metadata has been generated before v1.0.18.');
+		}
 	}
-
-	return is_possible_number(input.phone || input.nationalNumber, undefined, metadata)
 }
 
-export function is_possible_number(national_number, is_international, metadata)
-{
-	switch (checkNumberLengthForType(national_number, undefined, metadata))
-	{
+export function isPossibleNumber(nationalNumber, isInternational, metadata) {
+	switch (checkNumberLengthForType(nationalNumber, undefined, metadata)) {
 		case 'IS_POSSIBLE':
 			return true
 		// case 'IS_POSSIBLE_LOCAL_ONLY':
-		// 	return !is_international
+		// 	return !isInternational
 		default:
 			return false
 	}

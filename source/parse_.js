@@ -20,7 +20,7 @@ import { extractExtension } from './extension'
 import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
 import getCountryCallingCode from './getCountryCallingCode'
 import getNumberType, { checkNumberLengthForType } from './getNumberType_'
-import { is_possible_number } from './isPossibleNumber_'
+import { isPossibleNumber } from './isPossibleNumber_'
 import { stripIDDPrefix } from './IDD'
 import { parseRFC3966 } from './RFC3966'
 import PhoneNumber from './PhoneNumber'
@@ -166,7 +166,7 @@ export default function parse(text, options, metadata) {
 		countryCallingCode,
 		carrierCode,
 		valid,
-		possible: valid ? true : (options.extended === true) && metadata.possibleLengths() && is_possible_number(nationalNumber, countryCallingCode !== undefined, metadata),
+		possible: valid ? true : (options.extended === true) && metadata.possibleLengths() && isPossibleNumber(nationalNumber, countryCallingCode !== undefined, metadata),
 		phone: nationalNumber,
 		ext
 	}
