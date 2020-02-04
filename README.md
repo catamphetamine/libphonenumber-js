@@ -192,7 +192,7 @@ findPhoneNumbersInText(`
 
 ### Non-geographical numbering plan
 
-There're several calling codes that don't belong to a country:
+There're several calling codes that don't belong to any country:
 
 * `+800` — [Universal International Toll Free Number](https://en.wikipedia.org/wiki/Toll-free_telephone_number)
 * `+808` — [Universal International Shared Cost Number](https://en.wikipedia.org/wiki/Shared-cost_service)

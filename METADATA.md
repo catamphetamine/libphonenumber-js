@@ -8,7 +8,7 @@ This document describes `metadata.json` that's generated from `PhoneNumberMetada
 
 ## Countries
 
-Contains metadata for each country.
+`countries` — Contains metadata for each country.
 
 ### `phone_code`
 
@@ -72,6 +72,10 @@ Regular expressions for all possible phone number types for this country: fixed 
 
 Phone number examples for each one of the phone number `types`.
 
+### `possible_lengths`
+
+Possible national (significant) number lengths. Is defined for all `countries`. Isn't defined for ["non-geographical entities"](#non-geographical-entities)
+
 ### `formats`
 
 Describes all possible phone number formats for this country. May be missing if phone numbers aren't formatted for this country (there're many such countries, usually small islands).
@@ -105,3 +109,9 @@ This field specifies whether the national prefix can be omitted when formatting 
 #### `leading_digits_patterns`
 
 "Leading digits" patterns are used in `AsYouType` formatter to choose a format suitable for the phone number being input: if a phone number's "leading digits" match those of a format, then that format is used to format the phone number being input. Each subsequent leading digits pattern in `leading_digits_patterns` array requires one more leading digit.
+
+## Non-geographical entities
+
+There're [calling codes](https://github.com/catamphetamine/libphonenumber-js#non-geographical-numbering-plan) that don't correspond to any country. For example, "Global Mobile Satellite System" (`+881`). Such phone numbering systems are called "non-geographical entities" in Google's code. These "non-geographical entitites" reside in their own `nonGeographical` property, analogous to the `countries` property. `nonGeographical` is an object with keys being calling codes of the corresponding "non-geographical entities", and values being same as the values of the `countries` property.
+
+All "non-geographical entities" have `001` [country code](https://github.com/catamphetamine/libphonenumber-js#country-code). And they also don't have [`possible_lengths`](#possible-lengths).
