@@ -223,7 +223,7 @@ describe('format', () => {
 		formatNumber('+78005553535', 'IDD', { fromCountry: 'US', humanReadable: true }).should.equal('011 7 800 555 35 35')
 	})
 
-	it('should format non-geographical numbering plan phone numbers', () => {
+	it('should format non-geographic numbering plan phone numbers', () => {
 		// https://github.com/catamphetamine/libphonenumber-js/issues/323
 		// Buggy behavior of non-geographic numbering plans on old metadata.
 		formatNumber('+870773111632', 'INTERNATIONAL').should.equal('+979 7 7311 1632')

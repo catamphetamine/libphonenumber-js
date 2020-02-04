@@ -281,4 +281,18 @@ describe('parse', () =>
 			possible           : true
 		})
 	})
+
+	it('should parse non-geographic numbers', () =>
+	{
+		parse('+870773111632', { extended: true }).should.deep.equal
+		({
+			country            : undefined,
+			countryCallingCode : '870',
+			phone              : '773111632',
+			carrierCode        : undefined,
+			ext                : undefined,
+			valid              : true,
+			possible           : true
+		})
+	})
 })

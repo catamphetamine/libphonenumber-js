@@ -234,7 +234,7 @@ export default class PhoneNumberMatcher
 				if (match) {
 					if (this.options.v2) {
 						const phoneNumber = new PhoneNumber(
-              match.country === '001' ? match.countryCallingCode : match.country,
+              match.country || match.countryCallingCode,
               match.phone,
               this.metadata
             )
@@ -344,13 +344,14 @@ export default class PhoneNumberMatcher
       // number.clearPreferredDomesticCarrierCode()
 
       const result = {
-        startsAt : offset,
-        endsAt   : offset + candidate.length,
-        country  : number.country,
-        phone    : number.phone
+        startsAt: offset,
+        endsAt: offset + candidate.length,
+        phone: number.phone
       }
 
-      if (result.country === '001') {
+      if (number.country && number.country !== '001') {
+        result.country = number.country
+      } else {
         result.countryCallingCode = number.countryCallingCode
       }
 

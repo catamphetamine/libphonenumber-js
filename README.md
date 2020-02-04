@@ -25,6 +25,7 @@ One part of me was curious about how all this phone number parsing and formattin
   * Doesn't parse alphabetic phone numbers like `1-800-GOT-MILK`.
   * Doesn't parse or format special "local"-only phone numbers: numbers specific to a "local" area (for example, a city) with the "area code" omitted (like `456-789` with the "area code" `(123)` omitted vs. the full `(123) 456-789` number), emergency phone numbers like `911`, ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-) (short SMS-only numbers), numbers starting with a [`*`](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md) (like `*555`), etc.
   * Doesn't use hyphens and brackets when formatting international phone numbers (looks cleaner).
+  * Doesn't use the `"001"` country code for ["non-geographic"](#non-geographic) phone numbers. Instead, `PhoneNumber` class has an `.isNonGeographic()` method.
 
   <!--
   * Doesn't use ["carrier codes"](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md) when formatting numbers: "carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
@@ -188,9 +189,9 @@ findPhoneNumbersInText(`
 
 ### Country code
 
-"Country code" means either a [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) (like `US`) or a special `001` country code used for ["non-geographical entities"](#non-geographical-numbering-plan) (as per [Google's libphonenumber library](https://github.com/googlei18n/libphonenumber/blob/0068d861a68d3d4612f7bf8646ab844dd3cefce5/java/libphonenumber/test/com/google/i18n/phonenumbers/RegionCode.java#L23-L24)). For example, `+7 800 555 35 35` phone number belongs to Russia so it has `RU` country code where as `+800 1 1111 1111` phone number could belong to any country so it has `001` country code.
+"Country code" means either a [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) (like `US`). <!-- or a special `001` country code used for ["non-geographic entities"](#non-geographic) (as per [Google's libphonenumber library](https://github.com/googlei18n/libphonenumber/blob/0068d861a68d3d4612f7bf8646ab844dd3cefce5/java/libphonenumber/test/com/google/i18n/phonenumbers/RegionCode.java#L23-L24)). -->
 
-### Non-geographical numbering plan
+### Non-geographic
 
 There're several calling codes that don't belong to any country:
 
@@ -203,7 +204,7 @@ There're several calling codes that don't belong to any country:
 * `+888` — [United Nations Office for the Coordination of Humanitarian Affairs](https://en.wikipedia.org/wiki/United_Nations_Office_for_the_Coordination_of_Humanitarian_Affairs#International_Dialing_Code)
 * `+979` — [International Premium Rate Service](https://en.wikipedia.org/wiki/International_Premium_Rate_Service)
 
-Such numbers will have their `country` set to `"001"` when parsed.
+Such phone numbering plans are called "non-geographic", and their phone numbers have `country` set to `undefined`.
 
 ### National (significant) number
 
@@ -234,7 +235,7 @@ Available `options`:
 
 * `defaultCountry` — Default country for parsing national numbers. Instead of passing `options.defaultCountry` one could pass `defaultCountry` argument directly.
 
-* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographical numbering plans"](#non-geographical-numbering-plan) and they don't have a country code, so `defaultCountry` can't be specified for them.
+* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographic numbering plans"](#non-geographic) and they don't have a country code, so `defaultCountry` can't be specified for them.
 
 If a developer wants to know the exact reason why the phone number couldn't be parsed then they can use `parsePhoneNumber()` function which throws the exact error:
 
@@ -280,7 +281,7 @@ const phoneNumber = new PhoneNumber('RU', '8005553535', metadata)
 * `number: string` — The phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format. Example: `"+12133734253"`.
 * `countryCallingCode: string` — The [country calling code](#country-calling-code). Example: `"1"`.
 * `nationalNumber: string` — The [national (significant) number](#national-significant-number). Example: `"2133734253"`.
-* `country: string?` — The [country code](#country-code). Example: `"US"`. Will be `undefined` when no `country` could be derived from the phone number. For example, when several countries have the same `countryCallingCode` and the `nationalNumber` doesn't look like it belongs to any of them.
+* `country: string?` — The [country code](#country-code). Example: `"US"`. Will be `undefined` when no `country` could be derived from the phone number. For example, when several countries have the same `countryCallingCode` and the `nationalNumber` doesn't look like it belongs to any of them. Or when a number belongs to a [non-geographic numbering plan](#non-geographic).
 * `ext: string?` — The [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)), if any. Example: `"1234"`.
 * `carrierCode: string?` — The ["carrier code"](https://www.voip-info.org/carrier-identification-codes/), if any. Example: `"15"`. "Carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
 
@@ -424,6 +425,10 @@ parseMobile('+6584655555').getType() === 'MOBILE'
 ```
 </details>
 
+#### `isNonGeographic(): boolean`
+
+Returns `true` if the number belongs to a ["non-geographic numbering plan"](#non-geographic).
+
 #### `isEqual(phoneNumber: PhoneNumber): boolean`
 
 Compares two `PhoneNumber`s: returns `true` if they're equal, `false` otherwise.
@@ -436,7 +441,7 @@ Available `options`:
 
 * `defaultCountry` — Default country for parsing national numbers. Instead of passing `options.defaultCountry` one could pass `defaultCountry` argument directly.
 
-* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographical numbering plans"](#non-geographical-numbering-plan) and they don't have a country code, so `defaultCountry` can't be specified for them.
+* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographic numbering plans"](#non-geographic) and they don't have a country code, so `defaultCountry` can't be specified for them.
 
  * `input(text)` — Takes any text, parses it and appends the digits to the input. Returns the formatted phone number.
  * `reset()` — Resets the input.
@@ -540,7 +545,7 @@ Available `options`:
 
 * `defaultCountry` — Default country for parsing national numbers. Instead of passing `options.defaultCountry` one could pass `defaultCountry` argument directly.
 
-* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographical numbering plans"](#non-geographical-numbering-plan) and they don't have a country code, so `defaultCountry` can't be specified for them.
+* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographic numbering plans"](#non-geographic) and they don't have a country code, so `defaultCountry` can't be specified for them.
 
 ```js
 import { findPhoneNumbersInText } from 'libphonenumber-js'
@@ -693,7 +698,9 @@ isSupportedCountry('XX') === false
 
 ### getCountries(): string[]
 
-Returns a list of supported countries (excluding `"001"` that stands for ["non-geographical entity"](#non-geographical-numbering-plan)).
+Returns a list of supported countries.
+
+<!-- (excluding `"001"` that stands for ["non-geographic entity"](#non-geographic)). -->
 
 ```js
 getCountries() === ["AC", "AD", ...]

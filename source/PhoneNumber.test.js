@@ -28,4 +28,9 @@ describe('PhoneNumber', () => {
 		new PhoneNumber('RU', '8005553535', metadata).isEqual(new PhoneNumber('7', '8005553535', metadata)).should.equal(true)
 		new PhoneNumber('RU', '8005553535', metadata).isEqual(new PhoneNumber('RU', '8005553536', metadata)).should.equal(false)
 	})
+
+	it('should tell if a number is non-geographic', () => {
+		new PhoneNumber('7', '8005553535', metadata).isNonGeographic().should.equal(false)
+		new PhoneNumber('870', '773111632', metadata).isNonGeographic().should.equal(true)
+	})
 })

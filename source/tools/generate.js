@@ -172,7 +172,7 @@ export default function(input, version, included_countries, extended, included_p
 
 		const country_calling_code_to_countries = {}
 		const countries = {}
-		const nonGeographical = {}
+		const nonGeographic = {}
 
 		for (const territory of xml.phoneNumberMetadata.territories[0].territory)
 		{
@@ -382,7 +382,9 @@ export default function(input, version, included_countries, extended, included_p
 			}
 
 			if (country_code === '001') {
-				nonGeographical[country.phone_code] = country
+				nonGeographic[country.phone_code] = country
+				// Populate numbering plan possible lengths.
+				populateNumberingPlanPossibleLengths(country)
 			} else {
 				// Add this country's metadata
 				// to the metadata map.
@@ -472,8 +474,8 @@ export default function(input, version, included_countries, extended, included_p
 
 				visited_countries[country_code] = true
 
-				// Populate possible lengths
-				populate_possible_lengths(countries[country_code])
+				// Populate numbering plan possible lengths.
+				populateNumberingPlanPossibleLengths(countries[country_code])
 
 				if (countries[country_code].possible_lengths.length === 0) {
 					throw new Error(`No "possibleLengths" set for country "${country_code}". "react-phone-number-input" relies on "possibleLengths" being always present.`)
@@ -550,7 +552,7 @@ export default function(input, version, included_countries, extended, included_p
 			version,
 			countries,
 			country_calling_codes: country_calling_code_to_countries,
-			nonGeographical
+			nonGeographic
 		}
 	})
 }
@@ -684,7 +686,12 @@ function parse_possible_lengths(possible_length_string)
 
 const arrays_are_equal = (a1, a2) => a1.length === a2.length && a1.every((_, i) => _ === a2[i])
 
-function populate_possible_lengths(metadata)
+/**
+ * Sets `metadata.possible_lengths` to a combination of `possible_length`s
+ * of all types present in the numbering plan metadata.
+ * @param  {object} metadata
+ */
+function populateNumberingPlanPossibleLengths(metadata)
 {
 	const types = metadata.types
 

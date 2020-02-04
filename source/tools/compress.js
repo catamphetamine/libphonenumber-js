@@ -3,15 +3,15 @@ export default function compress(input) {
 	for (const countryCode of Object.keys(input.countries)) {
 		countries[countryCode] = compressNumberingPlan(input.countries[countryCode])
 	}
-	const nonGeographical = {}
-	for (const callingCode of Object.keys(input.nonGeographical)) {
-		nonGeographical[callingCode] = compressNumberingPlan(input.nonGeographical[callingCode])
+	const nonGeographic = {}
+	for (const callingCode of Object.keys(input.nonGeographic)) {
+		nonGeographic[callingCode] = compressNumberingPlan(input.nonGeographic[callingCode])
 	}
 	return {
 		version: input.version,
 		country_calling_codes: input.country_calling_codes,
 		countries,
-		nonGeographical
+		nonGeographic
 	}
 }
 

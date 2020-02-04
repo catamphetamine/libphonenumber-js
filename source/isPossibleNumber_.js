@@ -35,8 +35,15 @@ export default function isPossiblePhoneNumber(input, options, metadata)
 	if (metadata.possibleLengths()) {
 		return isPossibleNumber(input.phone || input.nationalNumber, undefined, metadata)
 	} else {
+		// There was a bug between `1.7.35` and `1.7.37` where "possible_lengths"
+		// were missing for "non-geographical" numbering plans.
+		// Just assume the number is possible in such cases:
+		// it's unlikely that anyone generated their custom metadata
+		// in that short period of time (one day).
+		// This code can be removed in some future major version update.
 		if (input.countryCallingCode && metadata.isNonGeographicCallingCode(input.countryCallingCode)) {
-			// "Non-geographical entities" don't have `possibleLengths`.
+			// "Non-geographic entities" did't have `possibleLengths`
+			// due to a bug in metadata generation process.
 			return true
 		} else {
 			throw new Error('Missing "possibleLengths" in metadata. Perhaps the metadata has been generated before v1.0.18.');

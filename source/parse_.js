@@ -35,6 +35,8 @@ const PHONE_NUMBER_START_PATTERN = new RegExp('[' + PLUS_CHARS + VALID_DIGITS + 
 // Regular expression of trailing characters that we want to remove.
 const AFTER_PHONE_NUMBER_END_PATTERN = new RegExp('[^' + VALID_DIGITS + ']+$')
 
+const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
+
 // `options`:
 //  {
 //    country:
@@ -155,7 +157,9 @@ export default function parse(text, options, metadata) {
 	// Check if national phone number pattern matches the number.
 	// National number pattern is different for each country,
 	// even for those ones which are part of the "NANPA" group.
-	const valid = country && matchesEntirely(nationalNumber, metadata.nationalNumberPattern()) ? true : false
+	const valid = (options.extended ? metadata.hasSelectedNumberingPlan() : country) ?
+		matchesEntirely(nationalNumber, metadata.nationalNumberPattern()) :
+		false
 
 	if (!options.extended) {
 		return valid ? result(country, nationalNumber, ext) : {}
@@ -166,7 +170,11 @@ export default function parse(text, options, metadata) {
 		countryCallingCode,
 		carrierCode,
 		valid,
-		possible: valid ? true : (options.extended === true) && metadata.possibleLengths() && isPossibleNumber(nationalNumber, countryCallingCode !== undefined, metadata),
+		possible: valid ? true : (
+			options.extended === true &&
+			metadata.possibleLengths() &&
+			isPossibleNumber(nationalNumber, countryCallingCode !== undefined, metadata) ? true : false
+		),
 		phone: nationalNumber,
 		ext
 	}
@@ -292,8 +300,11 @@ export function stripNationalPrefixAndCarrierCode(number, metadata) {
 }
 
 export function findCountryCode(callingCode, nationalPhoneNumber, metadata) {
-	if (metadata.isNonGeographicCallingCode(callingCode)) {
-		return '001'
+	/* istanbul ignore if */
+	if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
+		if (metadata.isNonGeographicCallingCode(callingCode)) {
+			return '001'
+		}
 	}
 	// Is always non-empty, because `callingCode` is always valid
 	const possibleCountries = metadata.getCountryCodesForCallingCode(callingCode)
@@ -394,7 +405,16 @@ function parsePhoneNumber(
 	// then `number` is defined and `countryCallingCode` isn't.
 	else if (number && (defaultCountry || defaultCallingCode)) {
 		metadata.selectNumberingPlan(defaultCountry, defaultCallingCode)
-		country = defaultCountry || (metadata.isNonGeographicCallingCode(defaultCallingCode) ? '001' : undefined)
+		if (defaultCountry) {
+			country = defaultCountry
+		} else {
+			/* istanbul ignore if */
+			if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
+				if (metadata.isNonGeographicCallingCode(defaultCallingCode)) {
+					country = '001'
+				}
+			}
+		}
 		countryCallingCode = defaultCallingCode || getCountryCallingCode(defaultCountry, metadata.metadata)
 	}
 	else return {}
@@ -418,7 +438,12 @@ function parsePhoneNumber(
 	const exactCountry = findCountryCode(countryCallingCode, nationalNumber, metadata)
 	if (exactCountry) {
 		country = exactCountry
-		if (country !== '001') {
+		/* istanbul ignore if */
+		if (exactCountry === '001') {
+			// Can't happen with `USE_NON_GEOGRAPHIC_COUNTRY_CODE` being `false`.
+			// If `USE_NON_GEOGRAPHIC_COUNTRY_CODE` is set to `true` for some reason,
+			// then remove the "istanbul ignore if".
+		} else {
 			metadata.country(country)
 		}
 	}

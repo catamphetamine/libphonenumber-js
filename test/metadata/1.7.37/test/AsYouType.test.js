@@ -1,13 +1,11 @@
 import metadata from '../metadata.min.json'
-import AsYouType_, { closeNonPairedParens, stripNonPairedParens, repeat } from './AsYouType'
+import AsYouType_, { closeNonPairedParens, stripNonPairedParens, repeat } from '../../../../source/AsYouType'
 
 class AsYouType extends AsYouType_ {
 	constructor(country_code) {
 		super(country_code, metadata)
 	}
 }
-
-const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
 describe('as you type', () => {
 	it('should use "national_prefix_formatting_rule"', () => {
@@ -553,31 +551,12 @@ describe('as you type', () => {
 		expect(phoneNumber.carrierCode).to.be.undefined
 	})
 
-	it('should format when default country calling code is configured', () => {
-		const formatter = new AsYouType({ defaultCallingCode: '7' })
-		formatter.input('88005553535').should.equal('8 (800) 555-35-35')
-		formatter.getNumber().countryCallingCode.should.equal('7')
-		formatter.getNumber().country.should.equal('RU')
-	})
-
-	it('shouldn\'t return PhoneNumber if country calling code hasn\'t been input yet', () => {
-		const formatter = new AsYouType()
-		formatter.input('+80')
-		expect(formatter.getNumber()).to.be.undefined
-	})
-
 	it('should format non-geographic numbering plan phone numbers', () => {
 		const formatter = new AsYouType()
 		formatter.input('+').should.equal('+')
 		formatter.input('8').should.equal('+8')
 		formatter.input('7').should.equal('+87')
-		expect(formatter.country).to.be.undefined
 		formatter.input('0').should.equal('+870')
-		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
-			formatter.country.should.equal('001')
-		} else {
-			expect(formatter.country).to.be.undefined
-		}
 		formatter.input('7').should.equal('+870 7')
 		formatter.input('7').should.equal('+870 77')
 		formatter.input('3').should.equal('+870 773')
@@ -587,53 +566,6 @@ describe('as you type', () => {
 		formatter.input('6').should.equal('+870 773 111 6')
 		formatter.input('3').should.equal('+870 773 111 63')
 		formatter.input('2').should.equal('+870 773 111 632')
-		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
-			formatter.getNumber().country.should.equal('001')
-		} else {
-			expect(formatter.country).to.be.undefined
-		}
-		formatter.getNumber().countryCallingCode.should.equal('870')
-	})
-
-	it('should format non-geographic numbering plan phone numbers (default country calling code)', () => {
-		const formatter = new AsYouType({ defaultCallingCode: '870' })
-		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
-			formatter.getNumber().country.should.equal('001')
-		} else {
-			expect(formatter.country).to.be.undefined
-		}
-		formatter.input('7').should.equal('7')
-		formatter.input('7').should.equal('77')
-		formatter.input('3').should.equal('773')
-		formatter.input('1').should.equal('773 1')
-		formatter.input('1').should.equal('773 11')
-		formatter.input('1').should.equal('773 111')
-		formatter.input('6').should.equal('773 111 6')
-		formatter.input('3').should.equal('773 111 63')
-		formatter.input('2').should.equal('773 111 632')
-		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
-			formatter.getNumber().country.should.equal('001')
-		} else {
-			expect(formatter.country).to.be.undefined
-		}
-		formatter.getNumber().countryCallingCode.should.equal('870')
-	})
-
-	it('should not format non-geographic numbering plan phone numbers (default country 001)', () => {
-		const formatter = new AsYouType('001')
-		expect(formatter.defaultCountry).to.be.undefined
-		expect(formatter.defaultCallingCode).to.be.undefined
-		formatter.input('7').should.equal('7')
-		formatter.input('7').should.equal('77')
-		formatter.input('3').should.equal('773')
-		formatter.input('1').should.equal('7731')
-		formatter.input('1').should.equal('77311')
-		formatter.input('1').should.equal('773111')
-		formatter.input('6').should.equal('7731116')
-		formatter.input('3').should.equal('77311163')
-		formatter.input('2').should.equal('773111632')
-		expect(formatter.country).to.be.undefined
-		expect(formatter.getNumber()).to.be.undefined
 	})
 
 	it('should return PhoneNumber', () => {

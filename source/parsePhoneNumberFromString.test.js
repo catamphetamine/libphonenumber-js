@@ -6,6 +6,8 @@ function parsePhoneNumberFromString(...parameters) {
 	return _parsePhoneNumberFromString.apply(this, parameters)
 }
 
+const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
+
 describe('parsePhoneNumberFromString', () => {
 	it('should parse phone numbers from string', () => {
 		parsePhoneNumberFromString('Phone: 8 (800) 555 35 35.', 'RU').nationalNumber.should.equal('8005553535')
@@ -22,17 +24,32 @@ describe('parsePhoneNumberFromString', () => {
 	})
 
 
-	it('should parse non-geographical numbering plan phone numbers (extended)', () => {
+	it('should parse non-geographic numbering plan phone numbers (extended)', () => {
 		const phoneNumber = parsePhoneNumberFromString('+870773111632')
 		phoneNumber.number.should.equal('+870773111632')
-		phoneNumber.country.should.equal('001')
+		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
+			phoneNumber.country.should.equal('001')
+		} else {
+			expect(phoneNumber.country).to.be.undefined
+		}
 		phoneNumber.countryCallingCode.should.equal('870')
 	})
 
-	it('should parse non-geographical numbering plan phone numbers (default country code) (extended)', () => {
+	it('should parse non-geographic numbering plan phone numbers (default country code) (extended)', () => {
 		const phoneNumber = parsePhoneNumberFromString('773111632', { defaultCallingCode: '870' })
 		phoneNumber.number.should.equal('+870773111632')
-		phoneNumber.country.should.equal('001')
+		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
+			phoneNumber.country.should.equal('001')
+		} else {
+			expect(phoneNumber.country).to.be.undefined
+		}
 		phoneNumber.countryCallingCode.should.equal('870')
+	})
+
+	it('should determine the possibility of non-geographic phone numbers', () => {
+		const phoneNumber = parsePhoneNumberFromString('+870773111632')
+		phoneNumber.isPossible().should.equal(true)
+		const phoneNumber2 = parsePhoneNumberFromString('+8707731116321')
+		phoneNumber2.isPossible().should.equal(false)
 	})
 })

@@ -107,9 +107,4 @@ describe('parsePhoneNumber', () => {
 		phoneNumber.nationalNumber.should.equal('8800555353')
 		phoneNumber.country.should.equal('RU')
 	})
-
-	it('shouldn\'t throw when "possibleLengths" are missing on "non-geographical entities" metadata', () => {
-		const phoneNumber = parsePhoneNumber('+870773111632')
-		phoneNumber.isPossible().should.equal(true)
-	})
 })

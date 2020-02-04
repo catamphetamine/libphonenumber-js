@@ -551,7 +551,7 @@ describe('as you type', () => {
 		expect(phoneNumber.carrierCode).to.be.undefined
 	})
 
-	it('should format non-geographical numbering plan phone numbers', () => {
+	it('should format non-geographic numbering plan phone numbers', () => {
 		const formatter = new AsYouType()
 		formatter.input('+').should.equal('+')
 		formatter.input('8').should.equal('+8')

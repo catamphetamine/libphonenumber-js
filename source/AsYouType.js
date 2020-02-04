@@ -101,6 +101,8 @@ const VALID_FORMATTED_PHONE_NUMBER_PART =
 
 const VALID_FORMATTED_PHONE_NUMBER_PART_PATTERN = new RegExp('^' + VALID_FORMATTED_PHONE_NUMBER_PART + '$', 'i')
 
+const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
+
 export default class AsYouType {
 	// Not setting `options` to a constructor argument
 	// not to break backwards compatibility
@@ -129,8 +131,11 @@ export default class AsYouType {
 			this.defaultCountry = defaultCountry
 		}
 		if (defaultCallingCode) {
-			if (this.metadata.isNonGeographicCallingCode(defaultCallingCode)) {
-				this.defaultCountry = '001'
+			/* istanbul ignore if */
+			if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
+				if (this.metadata.isNonGeographicCallingCode(defaultCallingCode)) {
+					this.defaultCountry = '001'
+				}
 			}
 			this.defaultCallingCode = defaultCallingCode
 		}
@@ -930,9 +935,16 @@ export default class AsYouType {
 		if (!this.nationalNumberDigits) {
 			return undefined
 		}
+		let countryCode = this.country
+		/* istanbul ignore if */
+		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
+			if (this.country === '001') {
+				countryCode = undefined
+			}
+		}
 		const callingCode = this.countryCallingCode || this.defaultCallingCode
 		const phoneNumber = new PhoneNumber(
-			this.country === '001' ? callingCode : this.country || callingCode,
+			countryCode || callingCode,
 			this.nationalNumberDigits,
 			this.metadata.metadata
 		)

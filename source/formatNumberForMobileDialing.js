@@ -105,7 +105,7 @@ export default function(number, from_country, with_formatting, metadata)
 		}
 		else
 		{
-			// For non-geographical countries, Mexican and Chilean fixed line and
+			// For non-geographic countries, Mexican and Chilean fixed line and
 			// mobile numbers, we output international format for numbers that can be
 			// dialed internationally, as that always works.
 			if

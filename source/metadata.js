@@ -7,7 +7,7 @@ const V2 = '1.0.18'
 // Added "idd_prefix" and "default_idd_prefix".
 const V3 = '1.2.0'
 
-// Moved `001` country code to "nonGeographical" section of metadata.
+// Moved `001` country code to "nonGeographic" section of metadata.
 const V4 = '1.7.35'
 
 const DEFAULT_EXT_PREFIX = ' ext. '
@@ -30,9 +30,11 @@ export default class Metadata {
 		return this.metadata.countries[countryCode]
 	}
 
-	nonGeographical() {
+	nonGeographic() {
 		if (this.v1 || this.v2 || this.v3) return
-		return this.metadata.nonGeographical
+		// `nonGeographical` was a typo.
+		// It's present in metadata generated from `1.7.35` to `1.7.37`.
+		return this.metadata.nonGeographic || this.metadata.nonGeographical
 	}
 
 	hasCountry(country) {
@@ -43,8 +45,8 @@ export default class Metadata {
 		if (this.getCountryCodesForCallingCode(callingCode)) {
 			return true
 		}
-		if (this.nonGeographical()) {
-			if (this.nonGeographical()[callingCode]) {
+		if (this.nonGeographic()) {
+			if (this.nonGeographic()[callingCode]) {
 				return true
 			}
 		} else {
@@ -57,10 +59,10 @@ export default class Metadata {
 	}
 
 	isNonGeographicCallingCode(callingCode) {
-		if (this.nonGeographical()) {
-			if (this.nonGeographical()[callingCode]) {
-				return true
-			}
+		if (this.nonGeographic()) {
+			return this.nonGeographic()[callingCode] ? true : false
+		} else {
+			return this.getCountryCodesForCallingCode(callingCode) ? false : true
 		}
 	}
 
@@ -117,8 +119,8 @@ export default class Metadata {
 		if (countryCode) {
 			return this.getCountryMetadata(countryCode)
 		}
-		if (this.nonGeographical()) {
-			const metadata = this.nonGeographical()[callingCode]
+		if (this.nonGeographic()) {
+			const metadata = this.nonGeographic()[callingCode]
 			if (metadata) {
 				return metadata
 			}

@@ -128,7 +128,7 @@ export function checkNumberLengthForType(nationalNumber, type, metadata)
 		if (!metadata.type('FIXED_LINE'))
 		{
 			// The rare case has been encountered where no fixedLine data is available
-			// (true for some non-geographical entities), so we just check mobile.
+			// (true for some non-geographic entities), so we just check mobile.
 			return checkNumberLengthForType(nationalNumber, 'MOBILE', metadata)
 		}
 

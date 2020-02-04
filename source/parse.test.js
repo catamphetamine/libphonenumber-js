@@ -7,6 +7,8 @@ function parseNumber(...parameters) {
 	return _parseNumber.apply(this, parameters)
 }
 
+const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
+
 describe('parse', () => {
 	it('should not parse invalid phone numbers', () => {
 		// Too short.
@@ -375,23 +377,31 @@ describe('parse', () => {
 		})
 	})
 
-	it('should parse non-geographical numbering plan phone numbers', () => {
-		parseNumber('+870773111632').should.deep.equal({
-			country: '001',
-			phone: '773111632'
-		})
+	it('should parse non-geographic numbering plan phone numbers', () => {
+		parseNumber('+870773111632').should.deep.equal(
+			USE_NON_GEOGRAPHIC_COUNTRY_CODE ?
+			{
+				country: '001',
+				phone: '773111632'
+			} :
+			{}
+		)
 	})
 
-	it('should parse non-geographical numbering plan phone numbers (default country code)', () => {
-		parseNumber('773111632', { defaultCallingCode: '870' }).should.deep.equal({
-			country: '001',
-			phone: '773111632'
-		})
+	it('should parse non-geographic numbering plan phone numbers (default country code)', () => {
+		parseNumber('773111632', { defaultCallingCode: '870' }).should.deep.equal(
+			USE_NON_GEOGRAPHIC_COUNTRY_CODE ?
+			{
+				country: '001',
+				phone: '773111632'
+			} :
+			{}
+		)
 	})
 
-	it('should parse non-geographical numbering plan phone numbers (extended)', () => {
+	it('should parse non-geographic numbering plan phone numbers (extended)', () => {
 		parseNumber('+870773111632', { extended: true }).should.deep.equal({
-			country: '001',
+			country: USE_NON_GEOGRAPHIC_COUNTRY_CODE ? '001' : undefined,
 			countryCallingCode: '870',
 			phone: '773111632',
 			carrierCode: undefined,
@@ -401,9 +411,9 @@ describe('parse', () => {
 		})
 	})
 
-	it('should parse non-geographical numbering plan phone numbers (default country code) (extended)', () => {
+	it('should parse non-geographic numbering plan phone numbers (default country code) (extended)', () => {
 		parseNumber('773111632', { defaultCallingCode: '870', extended: true }).should.deep.equal({
-			country: '001',
+			country: USE_NON_GEOGRAPHIC_COUNTRY_CODE ? '001' : undefined,
 			countryCallingCode: '870',
 			phone: '773111632',
 			carrierCode: undefined,
@@ -418,7 +428,7 @@ describe('parse', () => {
 			.to.throw('Unknown calling code')
 	})
 
-	it('shouldn\'t set `country` when there\'s no `defaultCountry` and `defaultCallingCode` is not of a "non-geographical entity"', () => {
+	it('shouldn\'t set `country` when there\'s no `defaultCountry` and `defaultCallingCode` is not of a "non-geographic entity"', () => {
 		parseNumber('88005553535', { defaultCallingCode: '7' }).should.deep.equal({
 			country: 'RU',
 			phone: '8005553535'

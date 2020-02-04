@@ -5,10 +5,12 @@ import isValidNumberForRegion from './isValidNumberForRegion_'
 import getNumberType from './getNumberType_'
 import formatNumber from './format_'
 
+const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
+
 export default class PhoneNumber {
 	constructor(countryCallingCode, nationalNumber, metadata) {
 		if (!countryCallingCode) {
-			throw new TypeError('`countryCallingCode` not passed')
+			throw new TypeError('`country` or `countryCallingCode` not passed')
 		}
 		if (!nationalNumber) {
 			throw new TypeError('`nationalNumber` not passed')
@@ -20,8 +22,13 @@ export default class PhoneNumber {
 			this.country = countryCallingCode
 			_metadata.country(countryCallingCode)
 			countryCallingCode = _metadata.countryCallingCode()
-		} else if (_metadata.isNonGeographicCallingCode(countryCallingCode)) {
-			this.country = '001'
+		} else {
+			/* istanbul ignore if */
+			if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
+				if (_metadata.isNonGeographicCallingCode(countryCallingCode)) {
+					this.country = '001'
+				}
+			}
 		}
 		this.countryCallingCode = countryCallingCode
 		this.nationalNumber = nationalNumber
@@ -35,6 +42,11 @@ export default class PhoneNumber {
 
 	isValid() {
 		return isValidNumber(this, { v2: true }, this.metadata)
+	}
+
+	isNonGeographic() {
+		const metadata = new Metadata(this.metadata)
+		return metadata.isNonGeographicCallingCode(this.countryCallingCode)
 	}
 
 	isEqual(phoneNumber) {
