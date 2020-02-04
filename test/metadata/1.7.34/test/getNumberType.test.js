@@ -1,7 +1,7 @@
 import metadata from '../metadata.full'
-import Metadata from './metadata'
-import { checkNumberLengthForType } from './getNumberType_'
-import _getNumberType from './getNumberType'
+import Metadata from '../../../../source/metadata'
+import { checkNumberLengthForType } from '../../../../source/getNumberType_'
+import _getNumberType from '../../../../source/getNumberType'
 
 function getNumberType(...parameters) {
 	parameters.push(metadata)
@@ -23,10 +23,6 @@ describe('getNumberType', () => {
 
 		getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
 		getNumberType('5002345678', 'US').should.equal('PERSONAL_NUMBER')
-	})
-
-	it('should work when no country is passed', () => {
-		getNumberType('+79150000000').should.equal('MOBILE')
 	})
 
 	it('should return FIXED_LINE_OR_MOBILE when there is ambiguity', () => {

@@ -1,4 +1,4 @@
-import findPhoneNumbersInText from './findPhoneNumbersInText'
+import findPhoneNumbersInText from '../../../../source/findPhoneNumbersInText'
 import metadata from '../metadata.min.json'
 
 describe('findPhoneNumbersInText', () => {
@@ -29,16 +29,6 @@ describe('findPhoneNumbersInText', () => {
 	it('should find phone numbers in text', () => {
 		const NUMBERS = ['+78005553535', '+12133734253']
 		const results = findPhoneNumbersInText('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', metadata)
-		let i = 0
-		while (i < results.length) {
-			results[i].number.number.should.equal(NUMBERS[i])
-			i++
-		}
-	})
-
-	it('should find phone numbers in text (default country calling code)', () => {
-		const NUMBERS = ['+870773111632']
-		const results = findPhoneNumbersInText('The number is 773 111 632', { defaultCallingCode: '870' }, metadata)
 		let i = 0
 		while (i < results.length) {
 			results[i].number.number.should.equal(NUMBERS[i])

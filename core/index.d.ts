@@ -71,7 +71,7 @@ export function parsePhoneNumberCharacter(character: string): string;
 export function parseDigits(character: string): string;
 
 export class AsYouType {
-  constructor(defaultCountryCode: CountryCode | undefined, metadata: Metadata);
+  constructor(defaultCountryCode: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string } | undefined, metadata: Metadata);
   input(text: string): string;
   reset(): void;
   getNumber(): PhoneNumber | undefined;

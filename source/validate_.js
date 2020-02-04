@@ -31,8 +31,12 @@ import getNumberType from './getNumberType_'
  * isValidNumber({ phone: '8005553535', country: 'RU' }, metadata)
  * ```
  */
-export default function isValidNumber(input, options = {}, metadata)
+export default function isValidNumber(input, options, metadata)
 {
+	// If assigning the `{}` default value is moved to the arguments above,
+	// code coverage would decrease for some weird reason.
+	options = options || {}
+
 	metadata = new Metadata(metadata)
 
 	// This is just to support `isValidNumber({})`
@@ -42,12 +46,7 @@ export default function isValidNumber(input, options = {}, metadata)
 		return false
 	}
 
-	if (!metadata.hasCountry(input.country))
-	{
-		throw new Error(`Unknown country: ${input.country}`)
-	}
-
-	metadata.country(input.country)
+	metadata.selectNumberingPlan(input.country, input.countryCallingCode)
 
 	// By default, countries only have type regexps when it's required for
 	// distinguishing different countries having the same `countryCallingCode`.

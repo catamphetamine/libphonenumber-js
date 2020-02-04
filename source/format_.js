@@ -36,7 +36,7 @@ export default function formatNumber(input, format, options, metadata) {
 
 	metadata = new Metadata(metadata)
 
-	if (input.country) {
+	if (input.country && input.country !== '001') {
 		// Validate `input.country`.
 		if (!metadata.hasCountry(input.country)) {
 			throw new Error(`Unknown country: ${input.country}`)

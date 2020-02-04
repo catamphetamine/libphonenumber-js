@@ -6,7 +6,7 @@ import generate from '../source/tools/generate'
 import compress from '../source/tools/compress'
 import info from '../package.json'
 
-const REGION_CODE_FOR_NON_GEO_ENTITY = '001'
+// const REGION_CODE_FOR_NON_GEO_ENTITY = '001'
 
 const input = fs.readFileSync(path.join(__dirname, process.argv[2]), 'utf8')
 const output_file = process.argv[3]
@@ -57,10 +57,10 @@ generate(input, info.version, included_countries, extended, included_phone_numbe
 	{
 		var examples = Object.keys(output.countries).reduce(function(out, country_code)
 		{
-			if (country_code === REGION_CODE_FOR_NON_GEO_ENTITY)
-			{
-				return out
-			}
+			// if (country_code === REGION_CODE_FOR_NON_GEO_ENTITY)
+			// {
+			// 	return out
+			// }
 
 			var mobile = output.countries[country_code].examples.mobile
 			var fixed_line = output.countries[country_code].examples.fixed_line

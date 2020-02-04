@@ -188,7 +188,20 @@ findPhoneNumbersInText(`
 
 ### Country code
 
-"Country code" means either a [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) (like `US`) or a special `001` country code used for non-geographical entities (as per [Google's libphonenumber library](https://github.com/googlei18n/libphonenumber/blob/0068d861a68d3d4612f7bf8646ab844dd3cefce5/java/libphonenumber/test/com/google/i18n/phonenumbers/RegionCode.java#L23-L24)). For example, `+7 800 555 35 35` phone number belongs to Russia so it has `RU` country code where as `+800 1 1111 1111` phone number could belong to any country so it has `001` country code.
+"Country code" means either a [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) (like `US`) or a special `001` country code used for ["non-geographical entities"](#non-geographical-numbering-plan) (as per [Google's libphonenumber library](https://github.com/googlei18n/libphonenumber/blob/0068d861a68d3d4612f7bf8646ab844dd3cefce5/java/libphonenumber/test/com/google/i18n/phonenumbers/RegionCode.java#L23-L24)). For example, `+7 800 555 35 35` phone number belongs to Russia so it has `RU` country code where as `+800 1 1111 1111` phone number could belong to any country so it has `001` country code.
+
+### Non-geographical numbering plan
+
+There're several calling codes that don't belong to a country:
+
+* `+800` — [Universal International Toll Free Number](https://en.wikipedia.org/wiki/Toll-free_telephone_number)
+* `+808` — [Universal International Shared Cost Number](https://en.wikipedia.org/wiki/Shared-cost_service)
+* `+870` — [Inmarsat Global Limited](https://en.wikipedia.org/wiki/Inmarsat)
+* `+878` — [Universal Personal Telecommunications](https://en.wikipedia.org/wiki/Universal_Personal_Telecommunications)
+* `+881` — [Global Mobile Satellite System](https://en.wikipedia.org/wiki/Global_Mobile_Satellite_System)
+* `+882` and `+883` — [International Networks](https://en.wikipedia.org/wiki/International_Networks_(country_code))
+* `+888` — [United Nations Office for the Coordination of Humanitarian Affairs](https://en.wikipedia.org/wiki/United_Nations_Office_for_the_Coordination_of_Humanitarian_Affairs#International_Dialing_Code)
+* `+979` — [International Premium Rate Service](https://en.wikipedia.org/wiki/International_Premium_Rate_Service)
 
 ### National (significant) number
 
@@ -200,7 +213,9 @@ findPhoneNumbersInText(`
 
 ## API
 
-### parsePhoneNumberFromString(string, [defaultCountry]): PhoneNumber
+### parsePhoneNumberFromString(string, [options or defaultCountry]): PhoneNumber
+
+Parses a phone number from `string`.
 
 ```js
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
@@ -212,6 +227,12 @@ if (phoneNumber) {
 ```
 
 Returns an instance of [`PhoneNumber`](#phonenumber) class, or `undefined` if no phone number could be parsed: for example, when the string contains no phone number, or the phone number starts with a non-existent [country calling code](#country-calling-code), etc.
+
+Available `options`:
+
+* `defaultCountry` — Default country for parsing national numbers. Instead of passing `options.defaultCountry` one could pass `defaultCountry` argument directly.
+
+* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographical numbering plans"](#non-geographical-numbering-plan) and they don't have a country code, so `defaultCountry` can't be specified for them.
 
 If a developer wants to know the exact reason why the phone number couldn't be parsed then they can use `parsePhoneNumber()` function which throws the exact error:
 
@@ -401,9 +422,15 @@ parseMobile('+6584655555').getType() === 'MOBILE'
 ```
 </details>
 
-### `class` AsYouType(defaultCountry: string?)
+### `class` AsYouType([options or defaultCountry])
 
-Creates a formatter for a partially entered phone number. The [`defaultCountry`](#country-code) is optional and, if specified, is gonna be the default country for formatting non-international phone numbers. The formatter instance provides two methods:
+Creates a formatter for a partially entered phone number.
+
+Available `options`:
+
+* `defaultCountry` — Default country for parsing national numbers. Instead of passing `options.defaultCountry` one could pass `defaultCountry` argument directly.
+
+* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographical numbering plans"](#non-geographical-numbering-plan) and they don't have a country code, so `defaultCountry` can't be specified for them.
 
  * `input(text)` — Takes any text, parses it and appends the digits to the input. Returns the formatted phone number.
  * `reset()` — Resets the input.
@@ -415,7 +442,7 @@ new AsYouType('US').input('2133734') === '(213) 373-4'
 
 The formatter instance also provides the following getters:
 
- * `getNumber(): PhoneNumber` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) digits have been entered so far, or if no `defaultCountry` has been set and the user enters a phone number not in international format.
+ * `getNumber(): PhoneNumber` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) digits have been entered so far, or if no `defaultCountry`/`defaultCallingCode` has been set and the user enters a phone number not in international format.
 
  * `getTemplate(): string` — Returns the template used to format the output. Digits (and the `+` sign, if present) are denoted by `x`-es.
 
@@ -503,7 +530,11 @@ Google's "As You Type" formatter does not support entering phone number extensio
 
 Searches for phone numbers in `text`.
 
-New API (starting from version `1.6.0`) returns phone numbers as instances of [`PhoneNumber`](#phonenumber) class when passed `v2: true` option. Legacy API (before version `1.6.0`) only returns phone numbers as `country`, `phone`, `ext`.
+Available `options`:
+
+* `defaultCountry` — Default country for parsing national numbers. Instead of passing `options.defaultCountry` one could pass `defaultCountry` argument directly.
+
+* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographical numbering plans"](#non-geographical-numbering-plan) and they don't have a country code, so `defaultCountry` can't be specified for them.
 
 ```js
 import { findPhoneNumbersInText } from 'libphonenumber-js'
@@ -656,7 +687,7 @@ isSupportedCountry('XX') === false
 
 ### getCountries(): string[]
 
-Returns a list of supported countries (excluding `"001"` that stands for "Non-geographical entity").
+Returns a list of supported countries (excluding `"001"` that stands for ["non-geographical entity"](#non-geographical-numbering-plan)).
 
 ```js
 getCountries() === ["AC", "AD", ...]

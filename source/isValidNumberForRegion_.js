@@ -5,6 +5,9 @@ import isValidNumber from './validate_'
  * Is just an alias for `phoneNumber.isValid() && phoneNumber.country === country`.
  * https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-use-isvalidnumberforregion
  */
-export default function isValidNumberForRegion(input, country, options = {}, metadata) {
+export default function isValidNumberForRegion(input, country, options, metadata) {
+	// If assigning the `{}` default value is moved to the arguments above,
+	// code coverage would decrease for some weird reason.
+	options = options || {}
 	return input.country === country && isValidNumber(input, options, metadata)
 }

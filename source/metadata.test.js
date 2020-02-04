@@ -26,6 +26,10 @@ describe('metadata', () => {
 		getExtPrefix('XX', metadata).should.equal(' ext. ')
 	})
 
+	it('should cover non-occuring edge cases', () => {
+		new Metadata(metadata).getNumberingPlanMetadata('999')
+	})
+
 	it('should validate metadata', () => {
 		let thrower = () => validateMetadata()
 		thrower.should.throw('`metadata` argument not passed')
@@ -46,9 +50,6 @@ describe('metadata', () => {
 		thrower.should.throw('Got an object of shape')
 
 		thrower = () => validateMetadata({ country_calling_codes: {}, countries: 2 })
-		thrower.should.throw('Got an object of shape')
-
-		thrower = () => validateMetadata({ country_calling_codes: 1, countries: {} })
 		thrower.should.throw('Got an object of shape')
 
 		validateMetadata({ country_calling_codes: {}, countries: {}, b: 3 })

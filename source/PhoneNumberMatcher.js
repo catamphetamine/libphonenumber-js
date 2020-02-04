@@ -171,9 +171,10 @@ export default class PhoneNumberMatcher
   {
     options = {
       ...options,
-      defaultCountry : options.defaultCountry && isSupportedCountry(options.defaultCountry, metadata) ? options.defaultCountry : undefined,
-      leniency : options.leniency || options.extended ? 'POSSIBLE' : 'VALID',
-      maxTries : options.maxTries || MAX_SAFE_INTEGER
+      defaultCallingCode: options.defaultCallingCode,
+      defaultCountry: options.defaultCountry && isSupportedCountry(options.defaultCountry, metadata) ? options.defaultCountry : undefined,
+      leniency: options.leniency || options.extended ? 'POSSIBLE' : 'VALID',
+      maxTries: options.maxTries || MAX_SAFE_INTEGER
     }
 
 		if (!options.leniency) {
@@ -191,8 +192,7 @@ export default class PhoneNumberMatcher
 		/** The degree of validation requested. */
 		this.leniency = Leniency[options.leniency]
 
-		if (!this.leniency)
-		{
+		if (!this.leniency) {
 			throw new TypeError(`Unknown leniency: ${options.leniency}.`)
 		}
 
@@ -233,7 +233,11 @@ export default class PhoneNumberMatcher
 
 				if (match) {
 					if (this.options.v2) {
-						const phoneNumber = new PhoneNumber(match.country, match.phone, this.metadata)
+						const phoneNumber = new PhoneNumber(
+              match.country === '001' ? match.countryCallingCode : match.country,
+              match.phone,
+              this.metadata
+            )
 						if (match.ext) {
 							phoneNumber.ext = match.ext
 						}
@@ -319,7 +323,8 @@ export default class PhoneNumberMatcher
     const number = parseNumber(
       candidate, {
         extended: true,
-        defaultCountry: this.options.defaultCountry
+        defaultCountry: this.options.defaultCountry,
+        defaultCallingCode: this.options.defaultCallingCode
       },
       this.metadata
     )
@@ -343,6 +348,10 @@ export default class PhoneNumberMatcher
         endsAt   : offset + candidate.length,
         country  : number.country,
         phone    : number.phone
+      }
+
+      if (result.country === '001') {
+        result.countryCallingCode = number.countryCallingCode
       }
 
       if (number.ext) {

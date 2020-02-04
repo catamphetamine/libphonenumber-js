@@ -31,7 +31,7 @@ export {
 };
 
 export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
-export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode): PhoneNumber | undefined;
+export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): PhoneNumber | undefined;
 
 export function findNumbers(text: string, options?: CountryCode): NumberFoundLegacy[];
 export function searchNumbers(text: string, options?: CountryCode): IterableIterator<NumberFoundLegacy>;
@@ -39,8 +39,8 @@ export function searchNumbers(text: string, options?: CountryCode): IterableIter
 export function findNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): NumberFound[];
 export function searchNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): IterableIterator<NumberFound>;
 
-export function findPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
-export function searchPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
+export function findPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): NumberFound[];
+export function searchPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
   constructor(text: string, options?: { defaultCountry?: CountryCode, v2: true });
@@ -61,7 +61,7 @@ export function parsePhoneNumberCharacter(character: string): string;
 export function parseDigits(character: string): string;
 
 export class AsYouType {
-  constructor(defaultCountryCode?: CountryCode);
+  constructor(defaultCountryCode?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string });
   input(text: string): string;
   reset(): void;
   getNumber(): PhoneNumber | undefined;

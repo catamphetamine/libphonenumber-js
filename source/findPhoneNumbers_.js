@@ -93,10 +93,12 @@ export class PhoneNumberSearch
 	// Iteration tristate.
 	state = 'NOT_READY'
 
-	constructor(text, options = {}, metadata)
+	constructor(text, options, metadata)
 	{
 		this.text = text
-		this.options = options
+		// If assigning the `{}` default value is moved to the arguments above,
+		// code coverage would decrease for some weird reason.
+		this.options = options || {}
 		this.metadata = metadata
 
 		this.regexp = new RegExp

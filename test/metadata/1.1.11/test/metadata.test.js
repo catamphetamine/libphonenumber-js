@@ -39,9 +39,6 @@ describe('metadata', () =>
 		thrower = () => validateMetadata({ country_calling_codes: {}, countries: 2 })
 		thrower.should.throw('Got an object of shape')
 
-		thrower = () => validateMetadata({ country_calling_codes: 1, countries: {} })
-		thrower.should.throw('Got an object of shape')
-
 		validateMetadata({ country_calling_codes: {}, countries: {}, b: 3 })
 	})
 

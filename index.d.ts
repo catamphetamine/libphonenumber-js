@@ -64,13 +64,13 @@ export interface ParsedNumber {
 }
 
 export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
-export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode): PhoneNumber | undefined;
+export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): PhoneNumber | undefined;
 
 // `parse()` and `parseCustom` are deprecated.
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
 export function parse(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber;
 
-export function parseNumber(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber;
+export function parseNumber(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber | {};
 
 // `format()` and `formatCustom` are deprecated.
 // Use `formatNumber()` and `formatNumberCustom()` instead.
@@ -112,8 +112,8 @@ export function searchNumbers(text: string, options?: CountryCode): IterableIter
 export function findNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): NumberFound[];
 export function searchNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): IterableIterator<NumberFound>;
 
-export function findPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFound[];
-export function searchPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFound>;
+export function findPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): NumberFound[];
+export function searchPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
   constructor(text: string, options?: { defaultCountry?: CountryCode, v2: true });
@@ -134,7 +134,7 @@ export function parsePhoneNumberCharacter(character: string): string;
 export function parseDigits(character: string): string;
 
 export class AsYouType {
-  constructor(defaultCountryCode?: CountryCode);
+  constructor(defaultCountryCode?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string });
   input(text: string): string;
   reset(): void;
   country: CountryCode | undefined;

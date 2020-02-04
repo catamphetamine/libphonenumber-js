@@ -172,6 +172,7 @@ export default function(input, version, included_countries, extended, included_p
 
 		const country_calling_code_to_countries = {}
 		const countries = {}
+		const nonGeographical = {}
 
 		for (const territory of xml.phoneNumberMetadata.territories[0].territory)
 		{
@@ -179,8 +180,7 @@ export default function(input, version, included_countries, extended, included_p
 			const country_code = territory.$.id
 
 			// Skip this country if it has not been explicitly included
-			if (included_countries && !included_countries.has(country_code))
-			{
+			if (included_countries && !included_countries.has(country_code)) {
 				continue
 			}
 
@@ -281,7 +281,7 @@ export default function(input, version, included_countries, extended, included_p
 				//
 				// Can be `undefined`.
 				//
-				national_prefix_formatting_rule: national_prefix_formatting_rule(territory.$.nationalPrefixFormattingRule, territory.$.nationalPrefix),
+				national_prefix_formatting_rule: getNationalPrefixFormattingRule(territory.$.nationalPrefixFormattingRule, territory.$.nationalPrefix),
 
 				// Is it possible that a national (significant)
 				// phone number has leading zeroes?
@@ -356,7 +356,7 @@ export default function(input, version, included_countries, extended, included_p
 				({
 					pattern: number_format.$.pattern,
 					leading_digits_patterns: number_format.leadingDigits ? number_format.leadingDigits.map(leading_digits => leading_digits.replace(/\s/g, '')) : undefined,
-					national_prefix_formatting_rule: national_prefix_formatting_rule(number_format.$.nationalPrefixFormattingRule, territory.$.nationalPrefix),
+					national_prefix_formatting_rule: getNationalPrefixFormattingRule(number_format.$.nationalPrefixFormattingRule, territory.$.nationalPrefix),
 					national_prefix_is_optional_when_formatting: number_format.$.nationalPrefixOptionalWhenFormatting ? Boolean(number_format.$.nationalPrefixOptionalWhenFormatting) : undefined,
 					format: number_format.format[0],
 					international_format: number_format.intlFormat ? number_format.intlFormat[0] : undefined
@@ -381,33 +381,32 @@ export default function(input, version, included_countries, extended, included_p
 				}
 			}
 
-			// Add this country's metadata
-			// to the metadata map.
-			countries[country_code] = country
+			if (country_code === '001') {
+				nonGeographical[country.phone_code] = country
+			} else {
+				// Add this country's metadata
+				// to the metadata map.
+				countries[country_code] = country
 
-			// Register this country's "country phone code"
+				// Register this country's "country phone code"
+				if (!country_calling_code_to_countries[country.phone_code]) {
+					country_calling_code_to_countries[country.phone_code] = []
+				}
 
-			if (!country_calling_code_to_countries[country.phone_code])
-			{
-				country_calling_code_to_countries[country.phone_code] = []
-			}
-
-			// In case of several countries
-			// having the same country phone code.
-			//
-			// E.g. for USA and Canada, USA is the
-			// "main country for phone code 1".
-			//
-			// (maybe this field is not used at all
-			//  in which case this field is to be removed)
-			//
-			if (territory.$.mainCountryForCode === "true")
-			{
-				country_calling_code_to_countries[country.phone_code].unshift(country_code)
-			}
-			else
-			{
-				country_calling_code_to_countries[country.phone_code].push(country_code)
+				// In case of several countries
+				// having the same country phone code.
+				//
+				// E.g. for USA and Canada, USA is the
+				// "main country for phone code 1".
+				//
+				// (maybe this field is not used at all
+				//  in which case this field is to be removed)
+				//
+				if (territory.$.mainCountryForCode === "true") {
+					country_calling_code_to_countries[country.phone_code].unshift(country_code)
+				} else {
+					country_calling_code_to_countries[country.phone_code].push(country_code)
+				}
 			}
 		}
 
@@ -550,19 +549,17 @@ export default function(input, version, included_countries, extended, included_p
 		return {
 			version,
 			countries,
-			country_calling_codes: country_calling_code_to_countries
+			country_calling_codes: country_calling_code_to_countries,
+			nonGeographical
 		}
 	})
 }
 
 // Replaces $NP with national prefix and $FG with the first group ($1)
-function national_prefix_formatting_rule(rule, national_prefix)
-{
-	if (!rule)
-	{
+function getNationalPrefixFormattingRule(rule, national_prefix) {
+	if (!rule) {
 		return
 	}
-
 	// Replace $NP with national prefix and $FG with the first group ($1)
 	return rule
 		.replace('$NP', national_prefix)
@@ -574,7 +571,7 @@ function get_phone_number_types(territory)
 {
 	return phone_number_types.reduce((output, type) =>
 	{
-		const camel_cased_type = underscore_to_camel_case(type)
+		const camel_cased_type = underscoreToCamelCase(type)
 		const pattern = territory[camel_cased_type] && territory[camel_cased_type][0].nationalNumberPattern[0].replace(/\s/g, '')
 		const possible_lengths = territory[camel_cased_type] && territory[camel_cased_type][0].possibleLengths[0].$.national
 		const possible_lengths_local = territory[camel_cased_type] && territory[camel_cased_type][0].possibleLengths[0].$.localOnly
@@ -595,29 +592,19 @@ function get_phone_number_types(territory)
 }
 
 // Extracts various phone number type examples from country XML metadata
-function get_phone_number_examples(territory)
-{
-	return phone_number_types.reduce((output, type) =>
-	{
-		const camel_cased_type = underscore_to_camel_case(type)
+function get_phone_number_examples(territory) {
+	return phone_number_types.reduce((output, type) => {
+		const camel_cased_type = underscoreToCamelCase(type)
 		const example = territory[camel_cased_type] && territory[camel_cased_type][0].exampleNumber[0]
-
-		if (example)
-		{
+		if (example) {
 			output[type] = example
 		}
-
 		return output
-	},
-	{})
+	}, {})
 }
 
-function underscore_to_camel_case(string)
-{
-	return string.replace(/(\_\w)/g, function(match)
-	{
-		return match[1].toUpperCase()
-	})
+function underscoreToCamelCase(string) {
+	return string.replace(/(\_\w)/g, match => match[1].toUpperCase())
 }
 
 /**
@@ -761,14 +748,10 @@ function populate_possible_lengths(metadata)
 	}
 }
 
-function parseStringPromisified(input)
-{
-	return new Promise((resolve, reject) =>
-	{
-		parseString(input, (error, result) =>
-		{
-			if (error)
-			{
+function parseStringPromisified(input) {
+	return new Promise((resolve, reject) => {
+		parseString(input, (error, result) => {
+			if (error) {
 				return reject(error)
 			}
 			resolve(result)

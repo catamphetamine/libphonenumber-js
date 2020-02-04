@@ -1,6 +1,6 @@
 import metadata from '../metadata.min.json'
-import { applyInternationalSeparatorStyle } from './format_'
-import _formatNumber from './format'
+import { applyInternationalSeparatorStyle } from '../../../../source/format_'
+import _formatNumber from '../../../../source/format'
 
 function formatNumber(...parameters) {
 	parameters.push(metadata)
@@ -225,7 +225,7 @@ describe('format', () => {
 
 	it('should format non-geographical numbering plan phone numbers', () => {
 		// https://github.com/catamphetamine/libphonenumber-js/issues/323
-		formatNumber('+870773111632', 'INTERNATIONAL').should.equal('+870 773 111 632')
-		formatNumber('+870773111632', 'NATIONAL').should.equal('773 111 632')
+		// Buggy behavior of non-geographic numbering plans on old metadata.
+		formatNumber('+870773111632', 'INTERNATIONAL').should.equal('+979 7 7311 1632')
 	})
 })

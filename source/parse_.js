@@ -61,7 +61,11 @@ const AFTER_PHONE_NUMBER_END_PATTERN = new RegExp('[^' + VALID_DIGITS + ']+$')
 // parse('+7 800 555 35 35', metadata)
 // ```
 //
-export default function parse(text, options = {}, metadata) {
+export default function parse(text, options, metadata) {
+	// If assigning the `{}` default value is moved to the arguments above,
+	// code coverage would decrease for some weird reason.
+	options = options || {}
+
 	metadata = new Metadata(metadata)
 
 	// Validate `defaultCountry`.
@@ -91,10 +95,11 @@ export default function parse(text, options = {}, metadata) {
 	} = parsePhoneNumber(
 		formattedPhoneNumber,
 		options.defaultCountry,
+		options.defaultCallingCode,
 		metadata
 	)
 
-	if (!metadata.selectedCountry()) {
+	if (!metadata.hasSelectedNumberingPlan()) {
 		if (options.v2) {
 			throw new ParseError('INVALID_COUNTRY')
 		}
@@ -286,9 +291,15 @@ export function stripNationalPrefixAndCarrierCode(number, metadata) {
    }
 }
 
-export function findCountryCode(countryCallingCode, nationalPhoneNumber, metadata) {
-	// Is always non-empty, because `countryCallingCode` is always valid
-	const possibleCountries = metadata.countryCallingCodes()[countryCallingCode]
+export function findCountryCode(callingCode, nationalPhoneNumber, metadata) {
+	if (metadata.isNonGeographicCallingCode(callingCode)) {
+		return '001'
+	}
+	// Is always non-empty, because `callingCode` is always valid
+	const possibleCountries = metadata.getCountryCodesForCallingCode(callingCode)
+	if (!possibleCountries) {
+		return
+	}
 	// If there's just one country corresponding to the country code,
 	// then just return it, without further phone number digits validation.
 	if (possibleCountries.length === 1) {
@@ -358,10 +369,16 @@ function result(country, national_number, ext) {
  * Parses a viable phone number.
  * @param {string} formattedPhoneNumber
  * @param {string} [defaultCountry]
+ * @param {string} [defaultCallingCode]
  * @param {Metadata} metadata
  * @return {object} Returns `{ country: string?, countryCallingCode: string?, nationalNumber: string? }`.
  */
-function parsePhoneNumber(formattedPhoneNumber, defaultCountry, metadata) {
+function parsePhoneNumber(
+	formattedPhoneNumber,
+	defaultCountry,
+	defaultCallingCode,
+	metadata
+) {
 	let { countryCallingCode, number } = extractCountryCallingCode(
 		formattedPhoneNumber,
 		defaultCountry,
@@ -375,10 +392,10 @@ function parsePhoneNumber(formattedPhoneNumber, defaultCountry, metadata) {
 	}
 	// If `formattedPhoneNumber` is in "national" format
 	// then `number` is defined and `countryCallingCode` isn't.
-	else if (number && defaultCountry) {
-		metadata.country(defaultCountry)
-		country = defaultCountry
-		countryCallingCode = getCountryCallingCode(defaultCountry, metadata.metadata)
+	else if (number && (defaultCountry || defaultCallingCode)) {
+		metadata.selectNumberingPlan(defaultCountry, defaultCallingCode)
+		country = defaultCountry || (metadata.isNonGeographicCallingCode(defaultCallingCode) ? '001' : undefined)
+		countryCallingCode = defaultCallingCode || getCountryCallingCode(defaultCountry, metadata.metadata)
 	}
 	else return {}
 
@@ -401,7 +418,9 @@ function parsePhoneNumber(formattedPhoneNumber, defaultCountry, metadata) {
 	const exactCountry = findCountryCode(countryCallingCode, nationalNumber, metadata)
 	if (exactCountry) {
 		country = exactCountry
-		metadata.country(country)
+		if (country !== '001') {
+			metadata.country(country)
+		}
 	}
 
 	return {
@@ -517,7 +536,7 @@ export function extractCountryCallingCode(number, country, metadata) {
 	let i = 2
 	while (i - 1 <= MAX_LENGTH_COUNTRY_CODE && i <= number.length) {
 		const countryCallingCode = number.slice(1, i)
-		if (metadata.countryCallingCodes()[countryCallingCode]) {
+		if (metadata.hasCallingCode(countryCallingCode)) {
 			return {
 				countryCallingCode,
 				number: number.slice(i)

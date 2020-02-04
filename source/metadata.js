@@ -7,6 +7,9 @@ const V2 = '1.0.18'
 // Added "idd_prefix" and "default_idd_prefix".
 const V3 = '1.2.0'
 
+// Moved `001` country code to "nonGeographical" section of metadata.
+const V4 = '1.7.35'
+
 const DEFAULT_EXT_PREFIX = ' ext. '
 
 /**
@@ -15,95 +18,264 @@ const DEFAULT_EXT_PREFIX = ' ext. '
 export default class Metadata {
 	constructor(metadata) {
 		validateMetadata(metadata)
-
 		this.metadata = metadata
-
-		this.v1 = !metadata.version
-		this.v2 = metadata.version !== undefined && compare(metadata.version, V3) === -1
-		this.v3 = metadata.version !== undefined // && compare(metadata.version, V4) === -1
+		setVersion.call(this, metadata)
 	}
 
 	getCountries() {
 		return Object.keys(this.metadata.countries).filter(_ => _ !== '001')
 	}
 
-	hasCountry(country) {
-		return this.metadata.countries[country] !== undefined
+	getCountryMetadata(countryCode) {
+		return this.metadata.countries[countryCode]
 	}
 
-	country(country) {
-		if (!country) {
-			this._country = undefined
-			this.country_metadata = undefined
-			return this
-		}
+	nonGeographical() {
+		if (this.v1 || this.v2 || this.v3) return
+		return this.metadata.nonGeographical
+	}
 
-		if (!this.hasCountry(country)) {
-			throw new Error(`Unknown country: ${country}`)
-		}
+	hasCountry(country) {
+		return this.getCountryMetadata(country) !== undefined
+	}
 
-		this._country = country
-		this.country_metadata = this.metadata.countries[country]
+	hasCallingCode(callingCode) {
+		if (this.getCountryCodesForCallingCode(callingCode)) {
+			return true
+		}
+		if (this.nonGeographical()) {
+			if (this.nonGeographical()[callingCode]) {
+				return true
+			}
+		} else {
+			// A hacky workaround for old custom metadata (generated before V4).
+			const countryCodes = this.countryCallingCodes()[callingCode]
+			if (countryCodes && countryCodes.length === 1 && countryCodes[0] === '001') {
+				return true
+			}
+		}
+	}
+
+	isNonGeographicCallingCode(callingCode) {
+		if (this.nonGeographical()) {
+			if (this.nonGeographical()[callingCode]) {
+				return true
+			}
+		}
+	}
+
+	// Deprecated.
+	country(countryCode) {
+		return this.selectNumberingPlan(countryCode)
+	}
+
+	selectNumberingPlan(countryCode, callingCode) {
+		if (countryCode && countryCode !== '001') {
+			if (!this.hasCountry(countryCode)) {
+				throw new Error(`Unknown country: ${countryCode}`)
+			}
+			this.numberingPlan = new NumberingPlan(this.getCountryMetadata(countryCode), this)
+		} else if (callingCode) {
+			if (!this.hasCallingCode(callingCode)) {
+				throw new Error(`Unknown calling code: ${callingCode}`)
+			}
+			this.numberingPlan = new NumberingPlan(this.getNumberingPlanMetadata(callingCode), this)
+		} else {
+			this.numberingPlan = undefined
+		}
 		return this
 	}
 
-	getDefaultCountryMetadataForRegion() {
-		return this.metadata.countries[this.countryCallingCodes()[this.countryCallingCode()][0]]
+	getCountryCodesForCallingCode(callingCode) {
+		const countryCodes = this.countryCallingCodes()[callingCode]
+		if (countryCodes) {
+			// Metadata before V4 included "non-geographic entity" calling codes
+			// inside `country_calling_codes` (for example, `"881":["001"]`).
+			// Now the semantics of `country_calling_codes` has changed:
+			// it's specifically for "countries" now.
+			// Older versions of custom metadata will simply skip parsing
+			// "non-geographic entity" phone numbers with new versions
+			// of this library: it's not considered a bug,
+			// because such numbers are extremely rare,
+			// and developers extremely rarely use custom metadata.
+			if (countryCodes.length === 1 && countryCodes[0].length === 3) {
+				return
+			}
+			return countryCodes
+		}
 	}
 
+	getCountryCodeForCallingCode(callingCode) {
+		const countryCodes = this.getCountryCodesForCallingCode(callingCode)
+		if (countryCodes) {
+			return countryCodes[0]
+		}
+	}
+
+	getNumberingPlanMetadata(callingCode) {
+		const countryCode = this.getCountryCodeForCallingCode(callingCode)
+		if (countryCode) {
+			return this.getCountryMetadata(countryCode)
+		}
+		if (this.nonGeographical()) {
+			const metadata = this.nonGeographical()[callingCode]
+			if (metadata) {
+				return metadata
+			}
+		} else {
+			// A hacky workaround for old custom metadata (generated before V4).
+			const countryCodes = this.countryCallingCodes()[callingCode]
+			if (countryCodes && countryCodes.length === 1 && countryCodes[0] === '001') {
+				return this.metadata.countries['001']
+			}
+		}
+	}
+
+	// Deprecated.
 	countryCallingCode() {
-		return this.country_metadata[0]
+		return this.numberingPlan.callingCode()
+	}
+
+	// Deprecated.
+	IDDPrefix() {
+		return this.numberingPlan.IDDPrefix()
+	}
+
+	// Deprecated.
+	defaultIDDPrefix() {
+		return this.numberingPlan.defaultIDDPrefix()
+	}
+
+	// Deprecated.
+	nationalNumberPattern() {
+		return this.numberingPlan.nationalNumberPattern()
+	}
+
+	// Deprecated.
+	possibleLengths() {
+		return this.numberingPlan.possibleLengths()
+	}
+
+	// Deprecated.
+	formats() {
+		return this.numberingPlan.formats()
+	}
+
+	// Deprecated.
+	nationalPrefixForParsing() {
+		return this.numberingPlan.nationalPrefixForParsing()
+	}
+
+	// Deprecated.
+	nationalPrefixTransformRule() {
+		return this.numberingPlan.nationalPrefixTransformRule()
+	}
+
+	// Deprecated.
+	leadingDigits() {
+		return this.numberingPlan.leadingDigits()
+	}
+
+	// Deprecated.
+	hasTypes() {
+		return this.numberingPlan.hasTypes()
+	}
+
+	// Deprecated.
+	type(type) {
+		return this.numberingPlan.type(type)
+	}
+
+	// Deprecated.
+	ext() {
+		return this.numberingPlan.ext()
+	}
+
+	countryCallingCodes() {
+		if (this.v1) return this.metadata.country_phone_code_to_countries
+		return this.metadata.country_calling_codes
+	}
+
+	// Deprecated.
+	chooseCountryByCountryCallingCode(callingCode) {
+		this.selectNumberingPlan(null, callingCode)
+	}
+
+	hasSelectedNumberingPlan() {
+		return this.numberingPlan !== undefined
+	}
+}
+
+class NumberingPlan {
+	constructor(metadata, globalMetadataObject) {
+		this.globalMetadataObject = globalMetadataObject
+		this.metadata = metadata
+		setVersion.call(this, globalMetadataObject.metadata)
+	}
+
+	callingCode() {
+		return this.metadata[0]
+	}
+
+	// Formatting information for regions which share
+	// a country calling code is contained by only one region
+	// for performance reasons. For example, for NANPA region
+	// ("North American Numbering Plan Administration",
+	//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
+	// it will be contained in the metadata for `US`.
+	getDefaultCountryMetadataForRegion() {
+		return this.globalMetadataObject.getNumberingPlanMetadata(this.callingCode())
 	}
 
 	IDDPrefix() {
 		if (this.v1 || this.v2) return
-		return this.country_metadata[1]
+		return this.metadata[1]
 	}
 
 	defaultIDDPrefix() {
 		if (this.v1 || this.v2) return
-		return this.country_metadata[12]
+		return this.metadata[12]
 	}
 
 	nationalNumberPattern() {
-		if (this.v1 || this.v2) return this.country_metadata[1]
-		return this.country_metadata[2]
+		if (this.v1 || this.v2) return this.metadata[1]
+		return this.metadata[2]
 	}
 
 	possibleLengths() {
 		if (this.v1) return
-		return this.country_metadata[this.v2 ? 2 : 3]
+		return this.metadata[this.v2 ? 2 : 3]
 	}
 
-	_getFormats(country_metadata) {
-		return country_metadata[this.v1 ? 2 : this.v2 ? 3 : 4]
+	_getFormats(metadata) {
+		return metadata[this.v1 ? 2 : this.v2 ? 3 : 4]
 	}
 
 	// For countries of the same region (e.g. NANPA)
 	// formats are all stored in the "main" country for that region.
 	// E.g. "RU" and "KZ", "US" and "CA".
 	formats() {
-		const formats = this._getFormats(this.country_metadata) || this._getFormats(this.getDefaultCountryMetadataForRegion()) || []
+		const formats = this._getFormats(this.metadata) || this._getFormats(this.getDefaultCountryMetadataForRegion()) || []
 		return formats.map(_ => new Format(_, this))
 	}
 
 	nationalPrefix() {
-		return this.country_metadata[this.v1 ? 3 : this.v2 ? 4 : 5]
+		return this.metadata[this.v1 ? 3 : this.v2 ? 4 : 5]
 	}
 
-	_getNationalPrefixFormattingRule(country_metadata) {
-		return country_metadata[this.v1 ? 4 : this.v2 ? 5 : 6]
+	_getNationalPrefixFormattingRule(metadata) {
+		return metadata[this.v1 ? 4 : this.v2 ? 5 : 6]
 	}
 
 	// For countries of the same region (e.g. NANPA)
 	// national prefix formatting rule is stored in the "main" country for that region.
 	// E.g. "RU" and "KZ", "US" and "CA".
 	nationalPrefixFormattingRule() {
-		return this._getNationalPrefixFormattingRule(this.country_metadata) || this._getNationalPrefixFormattingRule(this.getDefaultCountryMetadataForRegion())
+		return this._getNationalPrefixFormattingRule(this.metadata) || this._getNationalPrefixFormattingRule(this.getDefaultCountryMetadataForRegion())
 	}
 
 	_nationalPrefixForParsing() {
-		return this.country_metadata[this.v1 ? 5 : this.v2 ? 6 : 7]
+		return this.metadata[this.v1 ? 5 : this.v2 ? 6 : 7]
 	}
 
 	nationalPrefixForParsing() {
@@ -113,11 +285,11 @@ export default class Metadata {
 	}
 
 	nationalPrefixTransformRule() {
-		return this.country_metadata[this.v1 ? 6 : this.v2 ? 7 : 8]
+		return this.metadata[this.v1 ? 6 : this.v2 ? 7 : 8]
 	}
 
 	_getNationalPrefixIsOptionalWhenFormatting() {
-		return !!this.country_metadata[this.v1 ? 7 : this.v2 ? 8 : 9]
+		return !!this.metadata[this.v1 ? 7 : this.v2 ? 8 : 9]
 	}
 
 	// For countries of the same region (e.g. NANPA)
@@ -125,16 +297,16 @@ export default class Metadata {
 	// stored in the "main" country for that region.
 	// E.g. "RU" and "KZ", "US" and "CA".
 	nationalPrefixIsOptionalWhenFormattingInNationalFormat() {
-		return this._getNationalPrefixIsOptionalWhenFormatting(this.country_metadata) ||
+		return this._getNationalPrefixIsOptionalWhenFormatting(this.metadata) ||
 			this._getNationalPrefixIsOptionalWhenFormatting(this.getDefaultCountryMetadataForRegion())
 	}
 
 	leadingDigits() {
-		return this.country_metadata[this.v1 ? 8 : this.v2 ? 9 : 10]
+		return this.metadata[this.v1 ? 8 : this.v2 ? 9 : 10]
 	}
 
 	types() {
-		return this.country_metadata[this.v1 ? 9 : this.v2 ? 10 : 11]
+		return this.metadata[this.v1 ? 9 : this.v2 ? 10 : 11]
 	}
 
 	hasTypes() {
@@ -156,36 +328,7 @@ export default class Metadata {
 
 	ext() {
 		if (this.v1 || this.v2) return DEFAULT_EXT_PREFIX
-		return this.country_metadata[13] || DEFAULT_EXT_PREFIX
-	}
-
-	countryCallingCodes() {
-		if (this.v1) return this.metadata.country_phone_code_to_countries
-		return this.metadata.country_calling_codes
-	}
-
-	// Formatting information for regions which share
-	// a country calling code is contained by only one region
-	// for performance reasons. For example, for NANPA region
-	// ("North American Numbering Plan Administration",
-	//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
-	// it will be contained in the metadata for `US`.
-	//
-	// `country_calling_code` is always valid.
-	// But the actual country may not necessarily be part of the metadata.
-	//
-	chooseCountryByCountryCallingCode(country_calling_code) {
-		const country = this.countryCallingCodes()[country_calling_code][0]
-		// Do not want to test this case.
-		// (custom metadata, not all countries).
-		/* istanbul ignore else */
-		if (this.hasCountry(country)) {
-			this.country(country)
-		}
-	}
-
-	selectedCountry() {
-		return this._country
+		return this.metadata[13] || DEFAULT_EXT_PREFIX
 	}
 }
 
@@ -299,12 +442,8 @@ export function validateMetadata(metadata) {
 
 	// `country_phone_code_to_countries` was renamed to
 	// `country_calling_codes` in `1.0.18`.
-	if (
-		!is_object(metadata) ||
-		!is_object(metadata.countries) ||
-		(!is_object(metadata.country_calling_codes) && !is_object(metadata.country_phone_code_to_countries))
-	) {
-		throw new Error(`[libphonenumber-js] \`metadata\` argument was passed but it's not a valid metadata. Must be an object having \`.countries\` and \`.country_calling_codes\` child object properties. Got ${is_object(metadata) ? 'an object of shape: { ' + Object.keys(metadata).join(', ') + ' }' : 'a ' + type_of(metadata) + ': ' + metadata}.`)
+	if (!is_object(metadata) || !is_object(metadata.countries)) {
+		throw new Error(`[libphonenumber-js] \`metadata\` argument was passed but it's not a valid metadata. Must be an object having \`.countries\` child object property. Got ${is_object(metadata) ? 'an object of shape: { ' + Object.keys(metadata).join(', ') + ' }' : 'a ' + type_of(metadata) + ': ' + metadata}.`)
 	}
 }
 
@@ -358,3 +497,15 @@ export function isSupportedCountry(country, metadata) {
 	// return metadata.hasCountry(country)
 	return metadata.countries[country] !== undefined
 }
+
+function setVersion(metadata) {
+	this.v1 = !metadata.version
+	this.v2 = metadata.version !== undefined && compare(metadata.version, V3) === -1
+	this.v3 = metadata.version !== undefined && compare(metadata.version, V4) === -1
+	this.v4 = metadata.version !== undefined // && compare(metadata.version, V5) === -1
+}
+
+// const ISO_COUNTRY_CODE = /^[A-Z]{2}$/
+// function isCountryCode(countryCode) {
+// 	return ISO_COUNTRY_CODE.test(countryCodeOrCountryCallingCode)
+// }

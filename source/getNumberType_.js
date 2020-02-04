@@ -15,24 +15,23 @@ const NON_FIXED_LINE_PHONE_TYPES =
 ]
 
 // Finds out national phone number type (fixed line, mobile, etc)
-export default function getNumberType(input, options = {}, metadata)
+export default function getNumberType(input, options, metadata)
 {
+	// If assigning the `{}` default value is moved to the arguments above,
+	// code coverage would decrease for some weird reason.
+	options = options || {}
+
 	// When `parse()` returned `{}`
 	// meaning that the phone number is not a valid one.
-	if (!input.country)
-	{
+	if (!input.country) {
 		return
 	}
 
 	metadata = new Metadata(metadata)
 
-	if (!metadata.hasCountry(input.country))
-	{
-		throw new Error(`Unknown country: ${input.country}`)
-	}
+	metadata.selectNumberingPlan(input.country, input.countryCallingCode)
 
 	const nationalNumber = options.v2 ? input.nationalNumber : input.phone
-	metadata.country(input.country)
 
 	// The following is copy-pasted from the original function:
 	// https://github.com/googlei18n/libphonenumber/blob/3ea547d4fbaa2d0b67588904dfa5d3f2557c27ff/javascript/i18n/phonenumbers/phonenumberutil.js#L2835

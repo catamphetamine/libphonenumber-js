@@ -108,14 +108,33 @@ export default class AsYouType {
 	options = {}
 
 	/**
-	 * @param {string?} [defaultCountry] - The default country used for parsing non-international phone numbers.
+	 * @param {(string|object)?} [optionsOrDefaultCountry] - The default country used for parsing non-international phone numbers. Can also be an `options` object.
 	 * @param {Object} metadata
 	 */
-	constructor(defaultCountry, metadata) {
+	constructor(optionsOrDefaultCountry, metadata) {
 		this.metadata = new Metadata(metadata)
+		// Set `defaultCountry` and `defaultCallingCode` options.
+		let defaultCountry
+		let defaultCallingCode
+		// Turns out `null` also has type "object". Weird.
+		if (optionsOrDefaultCountry) {
+			if (typeof optionsOrDefaultCountry === 'object') {
+				defaultCountry = optionsOrDefaultCountry.defaultCountry
+				defaultCallingCode = optionsOrDefaultCountry.defaultCallingCode
+			} else {
+				defaultCountry = optionsOrDefaultCountry
+			}
+		}
 		if (defaultCountry && this.metadata.hasCountry(defaultCountry)) {
 			this.defaultCountry = defaultCountry
 		}
+		if (defaultCallingCode) {
+			if (this.metadata.isNonGeographicCallingCode(defaultCallingCode)) {
+				this.defaultCountry = '001'
+			}
+			this.defaultCallingCode = defaultCallingCode
+		}
+		// Reset.
 		this.reset()
 	}
 
@@ -127,15 +146,15 @@ export default class AsYouType {
 		this.nationalNumberDigits = ''
 		this.nationalPrefix = ''
 		this.carrierCode = ''
-		this.setCountry(this.defaultCountry)
+		this.setCountry(this.defaultCountry, this.defaultCallingCode)
 		this.resetFormat()
 		return this
 	}
 
-	setCountry(country) {
+	setCountry(country, callingCode) {
 		this.country = country
-		this.metadata.country(country)
-		if (country) {
+		this.metadata.selectNumberingPlan(country, callingCode)
+		if (this.metadata.hasSelectedNumberingPlan()) {
 			this.initializePhoneNumberFormatsForCountry()
 		} else {
 			this.matchingFormats = []
@@ -280,6 +299,11 @@ export default class AsYouType {
 			}
 		} else {
 			this.nationalNumberDigits += nextDigits
+			// If `defaultCallingCode` is set,
+			// see if the `country` could be derived.
+			if (!this.country) {
+				this.determineTheCountry()
+			}
 			// Some national prefixes are substrings of other national prefixes
 			// (for the same country), therefore try to extract national prefix each time
 			// because a longer national prefix might be available at some point in time.
@@ -613,12 +637,12 @@ export default class AsYouType {
 		this.metadata.chooseCountryByCountryCallingCode(countryCallingCode)
 		this.initializePhoneNumberFormatsForCountry()
 		this.resetFormat()
-		return this.metadata.selectedCountry() !== undefined
+		return this.metadata.hasSelectedNumberingPlan()
 	}
 
 	extractNationalPrefix() {
 		this.nationalPrefix = ''
-		if (!this.metadata.selectedCountry()) {
+		if (!this.metadata.hasSelectedNumberingPlan()) {
 			return
 		}
 		// Only strip national prefixes for non-international phone numbers
@@ -684,7 +708,8 @@ export default class AsYouType {
 	}
 
 	isCountryCallingCodeAmbiguous() {
-		return this.metadata.countryCallingCodes()[this.countryCallingCode].length > 1
+		const countryCodes = this.metadata.getCountryCodesForCallingCode(this.countryCallingCode)
+		return countryCodes && countryCodes.length > 1
 	}
 
 	createFormattingTemplate(format) {
@@ -872,29 +897,6 @@ export default class AsYouType {
 		if (this.isInternational()) {
 			return applyInternationalSeparatorStyle(format.internationalFormat())
 		}
-		// if (this.nationalPrefix) {
-		// 	return `\\d{${this.nationalPrefix.length}}` + this.getSeparatorAfterNationalPrefix() + format.format()
-		// }
-		// // If national prefix formatting rule is defined for
-		// // this phone number format.
-		// if (format.nationalPrefixFormattingRule()) {
-		// 	// If the user did input the national prefix,
-		// 	// or if the national prefix formatting rule
-		// 	// does not use national prefix at all,
-		// 	// and only uses "nationalPrefixFormattingRule"
-		// 	// as a hack to format the number properly,
-		// 	// then apply the "nationalPrefixFormattingRule".
-		// 	if (format.usesNationalPrefix() && !this.nationalPrefix) {
-		// 		// Don't use "nationalPrefixFormattingRule"
-		// 		// because it assumes that national prefix is present,
-		// 		// but it hasn't been input.
-		// 	} else {
-		// 		return format.format().replace(
-		// 			FIRST_GROUP_PATTERN,
-		// 			format.nationalPrefixFormattingRule()
-		// 		)
-		// 	}
-		// }
 		return format.format()
 	}
 
@@ -903,7 +905,7 @@ export default class AsYouType {
 	// and the national phone number.
 	determineTheCountry() {
 		this.country = findCountryCode(
-			this.countryCallingCode,
+			this.isInternational() ? this.countryCallingCode : this.defaultCallingCode,
 			this.nationalNumberDigits,
 			this.metadata
 		)
@@ -916,11 +918,21 @@ export default class AsYouType {
 	 * set and the user enters a phone number not in international format.
 	 */
 	getNumber() {
-		if (!(this.countryCallingCode || this.defaultCountry) || !this.nationalNumberDigits) {
+		if (this.isInternational()) {
+			if (!this.countryCallingCode) {
+				return
+			}
+		} else {
+			if (!this.country && !this.defaultCallingCode) {
+				return
+			}
+		}
+		if (!this.nationalNumberDigits) {
 			return undefined
 		}
+		const callingCode = this.countryCallingCode || this.defaultCallingCode
 		const phoneNumber = new PhoneNumber(
-			this.country || this.countryCallingCode,
+			this.country === '001' ? callingCode : this.country || callingCode,
 			this.nationalNumberDigits,
 			this.metadata.metadata
 		)

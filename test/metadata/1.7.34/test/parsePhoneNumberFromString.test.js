@@ -1,4 +1,4 @@
-import _parsePhoneNumberFromString from './parsePhoneNumberFromString'
+import _parsePhoneNumberFromString from '../../../../source/parsePhoneNumberFromString'
 import metadata from '../metadata.min.json'
 
 function parsePhoneNumberFromString(...parameters) {
@@ -19,20 +19,5 @@ describe('parsePhoneNumberFromString', () => {
 	it('should parse phone numbers when invalid country code is passed', () => {
 		parsePhoneNumberFromString('Phone: +7 (800) 555 35 35.', 'XX').nationalNumber.should.equal('8005553535')
 		expect(parsePhoneNumberFromString('Phone: 8 (800) 555-35-35.', 'XX')).to.be.undefined
-	})
-
-
-	it('should parse non-geographical numbering plan phone numbers (extended)', () => {
-		const phoneNumber = parsePhoneNumberFromString('+870773111632')
-		phoneNumber.number.should.equal('+870773111632')
-		phoneNumber.country.should.equal('001')
-		phoneNumber.countryCallingCode.should.equal('870')
-	})
-
-	it('should parse non-geographical numbering plan phone numbers (default country code) (extended)', () => {
-		const phoneNumber = parsePhoneNumberFromString('773111632', { defaultCallingCode: '870' })
-		phoneNumber.number.should.equal('+870773111632')
-		phoneNumber.country.should.equal('001')
-		phoneNumber.countryCallingCode.should.equal('870')
 	})
 })

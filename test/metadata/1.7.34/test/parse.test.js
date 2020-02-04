@@ -1,6 +1,6 @@
 import metadata from '../metadata.min.json'
-import _parseNumber from './parse'
-import { extractCountryCallingCode } from './parse_'
+import _parseNumber from '../../../../source/parse'
+import { extractCountryCallingCode } from '../../../../source/parse_'
 
 function parseNumber(...parameters) {
 	parameters.push(metadata)
@@ -376,53 +376,7 @@ describe('parse', () => {
 	})
 
 	it('should parse non-geographical numbering plan phone numbers', () => {
-		parseNumber('+870773111632').should.deep.equal({
-			country: '001',
-			phone: '773111632'
-		})
-	})
-
-	it('should parse non-geographical numbering plan phone numbers (default country code)', () => {
-		parseNumber('773111632', { defaultCallingCode: '870' }).should.deep.equal({
-			country: '001',
-			phone: '773111632'
-		})
-	})
-
-	it('should parse non-geographical numbering plan phone numbers (extended)', () => {
-		parseNumber('+870773111632', { extended: true }).should.deep.equal({
-			country: '001',
-			countryCallingCode: '870',
-			phone: '773111632',
-			carrierCode: undefined,
-			ext: undefined,
-			possible: true,
-			valid: true
-		})
-	})
-
-	it('should parse non-geographical numbering plan phone numbers (default country code) (extended)', () => {
-		parseNumber('773111632', { defaultCallingCode: '870', extended: true }).should.deep.equal({
-			country: '001',
-			countryCallingCode: '870',
-			phone: '773111632',
-			carrierCode: undefined,
-			ext: undefined,
-			possible: true,
-			valid: true
-		})
-	})
-
-	it('shouldn\'t crash when invalid `defaultCallingCode` is passed', () => {
-		expect(() => parseNumber('773111632', { defaultCallingCode: '999' }))
-			.to.throw('Unknown calling code')
-	})
-
-	it('shouldn\'t set `country` when there\'s no `defaultCountry` and `defaultCallingCode` is not of a "non-geographical entity"', () => {
-		parseNumber('88005553535', { defaultCallingCode: '7' }).should.deep.equal({
-			country: 'RU',
-			phone: '8005553535'
-		})
+		parseNumber('+870773111632').should.deep.equal({})
 	})
 
 	it('should extract country calling code from a number', () => {

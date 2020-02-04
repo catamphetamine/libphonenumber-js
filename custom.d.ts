@@ -46,13 +46,13 @@ export function parsePhoneNumber(text: string, metadata: Metadata): PhoneNumber;
 export function parsePhoneNumber(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber;
 
 export function parsePhoneNumberFromString(text: string, metadata: Metadata): PhoneNumber;
-export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber;
+export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }, metadata: Metadata): PhoneNumber;
 
 export function parse(text: string, metadata: Metadata): ParsedNumber;
 export function parse(text: string, options: CountryCode | ParseNumberOptions, metadata: Metadata): ParsedNumber;
 
-export function parseNumber(text: string, metadata: Metadata): ParsedNumber;
-export function parseNumber(text: string, options: CountryCode | ParseNumberOptions, metadata: Metadata): ParsedNumber;
+export function parseNumber(text: string, metadata: Metadata): ParsedNumber | {};
+export function parseNumber(text: string, options: CountryCode | ParseNumberOptions, metadata: Metadata): ParsedNumber | {};
 
 // `format()` and `formatCustom` are deprecated.
 // Use `formatNumber()` and `formatNumberCustom()` instead.
@@ -108,10 +108,10 @@ export function searchNumbers(text: string, metadata: Metadata): IterableIterato
 export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2: true }, metadata: Metadata): IterableIterator<NumberFound>;
 
 export function findPhoneNumbersInText(text: string, metadata: Metadata): NumberFound[];
-export function findPhoneNumbersInText(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: Metadata): NumberFound[];
+export function findPhoneNumbersInText(text: string, options: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }, metadata: Metadata): NumberFound[];
 
 export function searchPhoneNumbersInText(text: string, metadata: Metadata): IterableIterator<NumberFound>;
-export function searchPhoneNumbersInText(text: string, options: CountryCode | { defaultCountry?: CountryCode }, metadata: Metadata): IterableIterator<NumberFound>;
+export function searchPhoneNumbersInText(text: string, options: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }, metadata: Metadata): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
   constructor(text: string, metadata: Metadata);
@@ -134,7 +134,7 @@ export function parsePhoneNumberCharacter(character: string): string;
 export function parseDigits(character: string): string;
 
 export class AsYouType {
-  constructor(defaultCountryCode: CountryCode | undefined, metadata: Metadata);
+  constructor(defaultCountryCode: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string } | undefined, metadata: Metadata);
   input(text: string): string;
   reset(): void;
   country: CountryCode | undefined;
