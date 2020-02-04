@@ -203,6 +203,8 @@ There're several calling codes that don't belong to any country:
 * `+888` — [United Nations Office for the Coordination of Humanitarian Affairs](https://en.wikipedia.org/wiki/United_Nations_Office_for_the_Coordination_of_Humanitarian_Affairs#International_Dialing_Code)
 * `+979` — [International Premium Rate Service](https://en.wikipedia.org/wiki/International_Premium_Rate_Service)
 
+Such numbers will have their `country` set to `"001"` when parsed.
+
 ### National (significant) number
 
 "National (significant) number" are the national phone number digits (without "national prefix"). For example, `+1 213 373 4253` (or `(213) 373-4253` in national format) is a US phone number and its national (significant) number is `213 373 4253`. Another example is `+33 1 45 45 32 45` (or `01 45 45 32 45` in national format) which is a [French](https://en.wikipedia.org/wiki/Telephone_numbers_in_France) phone number where they add `0` "national prefix" when writing phone numbers in national format; in this case the national (significant) number is `1 45 45 32 45`.
