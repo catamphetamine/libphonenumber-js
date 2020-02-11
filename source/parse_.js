@@ -222,80 +222,67 @@ export function extractFormattedPhoneNumber(text, v2) {
  * it will return `{ number: "3402345678" }`, because `340` area code is prepended.
  * @param {string} number — National number digits.
  * @param {object} metadata — Metadata with country selected.
- * @return {object} `{ number, carrierCode }`.
+ * @return {object} `{ nationalNumber: string?, carrierCode: string? }`.
  */
 export function stripNationalPrefixAndCarrierCode(number, metadata) {
-	if (!number) {
-		return { number }
-	}
+	if (number && metadata.nationalPrefixForParsing()) {
+		// See METADATA.md for the description of
+		// `national_prefix_for_parsing` and `national_prefix_transform_rule`.
+		// Attempt to parse the first digits as a national prefix.
+		const prefixPattern = new RegExp('^(?:' + metadata.nationalPrefixForParsing() + ')')
+		const prefixMatch = prefixPattern.exec(number)
+		if (prefixMatch) {
+			let nationalNumber
+			let carrierCode
+			// If a "capturing group" didn't match
+			// then its element in `prefixMatch[]` array will be `undefined`.
+			const capturedGroupsCount = prefixMatch.length - 1
+			if (metadata.nationalPrefixTransformRule() &&
+				capturedGroupsCount > 0 && prefixMatch[capturedGroupsCount]) {
+				nationalNumber = number.replace(
+					prefixPattern,
+					metadata.nationalPrefixTransformRule()
+				)
+				// Carrier code is the last captured group,
+				// but only when there's more than one captured group.
+				if (capturedGroupsCount > 1 && prefixMatch[capturedGroupsCount]) {
+					carrierCode = prefixMatch[1]
+				}
+			}
+			// If it's a simple-enough case then just
+			// strip the national prefix from the number.
+			else {
+				// National prefix is the whole substring matched by
+				// the `national_prefix_for_parsing` regexp.
+				const nationalPrefix = prefixMatch[0]
+				nationalNumber = number.slice(nationalPrefix.length)
+				// Carrier code is the last captured group.
+				if (capturedGroupsCount > 0) {
+					carrierCode = prefixMatch[1]
+				}
+			}
+			// We require that the national (significant) number remaining after
+			// stripping the national prefix and carrier code be long enough
+			// to be a possible length for the region. Otherwise, we don't do
+			// the stripping, since the original number could be a valid number.
+			// For example, in some countries (Russia, Belarus) the same digit
+			// could be both a national prefix and a leading digit of a valid
+			// national phone number, like `8` is the national prefix for Russia
+			// and `800 555 35 35` is a valid national (significant) number.
 
-	if (!metadata.nationalPrefixForParsing()) {
-		return { number }
-	}
-
-	// See METADATA.md for the description of
-	// `national_prefix_for_parsing` and `national_prefix_transform_rule`.
-
-	// Attempt to parse the first digits as a national prefix.
-	const prefixPattern = new RegExp('^(?:' + metadata.nationalPrefixForParsing() + ')')
-	const prefixMatch = prefixPattern.exec(number)
-
-	if (!prefixMatch) {
-		return { number }
-	}
-
-	let nationalSignificantNumber
-	let carrierCode
-
-	// If a "capturing group" didn't match
-	// then its element in `prefixMatch[]` array will be `undefined`.
-
-	const capturedGroupsCount = prefixMatch.length - 1
-	if (metadata.nationalPrefixTransformRule() &&
-		capturedGroupsCount > 0 && prefixMatch[capturedGroupsCount]) {
-		nationalSignificantNumber = number.replace(
-			prefixPattern,
-			metadata.nationalPrefixTransformRule()
-		)
-		// Carrier code is the last captured group,
-		// but only when there's more than one captured group.
-		if (capturedGroupsCount > 1 && prefixMatch[capturedGroupsCount]) {
-			carrierCode = prefixMatch[1]
+			if (matchesEntirely(number, metadata.nationalNumberPattern()) &&
+				!matchesEntirely(nationalNumber, metadata.nationalNumberPattern())) {
+				// Don't strip national prefix or carrier code.
+			} else {
+				return {
+					nationalNumber,
+					carrierCode
+				}
+			}
 		}
 	}
-	// If it's a simple-enough case then just
-	// strip the national prefix from the number.
-	else {
-		// National prefix is the whole substring matched by
-		// the `national_prefix_for_parsing` regexp.
-		const nationalPrefix = prefixMatch[0]
-		nationalSignificantNumber = number.slice(nationalPrefix.length)
-		// Carrier code is the last captured group.
-		if (capturedGroupsCount > 0) {
-			carrierCode = prefixMatch[1]
-		}
-	}
-
-	// The following is done in `get_country_and_national_number_for_local_number()` instead.
-	//
-	// // Verify the parsed national (significant) number for this country
-	// const national_number_rule = new RegExp(metadata.nationalNumberPattern())
-	// //
-	// // If the original number (before stripping national prefix) was viable,
-	// // and the resultant number is not, then prefer the original phone number.
-	// // This is because for some countries (e.g. Russia) the same digit could be both
-	// // a national prefix and a leading digit of a valid national phone number,
-	// // like `8` is the national prefix for Russia and both
-	// // `8 800 555 35 35` and `800 555 35 35` are valid numbers.
-	// if (matchesEntirely(number, national_number_rule) &&
-	// 	!matchesEntirely(nationalSignificantNumber, national_number_rule)) {
-	// 	return number
-	// }
-
-	// Return the parsed national (significant) number
    return {
-   	number: nationalSignificantNumber,
-   	carrierCode
+   	nationalNumber: number
    }
 }
 
@@ -396,8 +383,8 @@ function parsePhoneNumber(
 		metadata.metadata
 	)
 
+	// Choose a country by `countryCallingCode`.
 	let country
-
 	if (countryCallingCode) {
 		metadata.chooseCountryByCountryCallingCode(countryCallingCode)
 	}
@@ -423,7 +410,7 @@ function parsePhoneNumber(
 		return { countryCallingCode }
 	}
 
-	const { nationalNumber, carrierCode } = parseNationalNumber(number, metadata)
+	const { nationalNumber, carrierCode } = parseNationalPhoneNumber(number, metadata)
 
 	// Sometimes there are several countries
 	// corresponding to the same country phone code
@@ -456,10 +443,7 @@ function parsePhoneNumber(
 	}
 }
 
-function parseNationalNumber(number, metadata) {
-	let nationalNumber = parseIncompletePhoneNumber(number)
-	let carrierCode
-
+function parseNationalPhoneNumber(number, metadata) {
 	// Parsing national prefixes and carrier codes
 	// is only required for local phone numbers
 	// but some people don't understand that
@@ -470,41 +454,26 @@ function parseNationalNumber(number, metadata) {
 	// and so does this library, because it has been requested:
 	// https://github.com/catamphetamine/libphonenumber-js/issues/127
 	const {
-		number: potentialNationalNumber,
-		carrierCode: potentialCarrierCode
-	} = stripNationalPrefixAndCarrierCode(nationalNumber, metadata)
-
-	// If metadata has "possible lengths" then employ the new algorythm.
+		nationalNumber,
+		carrierCode
+	} = stripNationalPrefixAndCarrierCode(
+		parseIncompletePhoneNumber(number),
+		metadata
+	)
+	// If not using legacy generated metadata (before version `1.0.18`)
+	// then it has "possible lengths", so use those to validate the number length.
 	if (metadata.possibleLengths()) {
 		// We require that the NSN remaining after stripping the national prefix and
 		// carrier code be long enough to be a possible length for the region.
 		// Otherwise, we don't do the stripping, since the original number could be
 		// a valid short number.
-		switch (checkNumberLengthForType(potentialNationalNumber, undefined, metadata)) {
+		switch (checkNumberLengthForType(nationalNumber, undefined, metadata)) {
 			case 'TOO_SHORT':
-			// case 'IS_POSSIBLE_LOCAL_ONLY':
 			case 'INVALID_LENGTH':
-				break
-			default:
-				nationalNumber = potentialNationalNumber
-				carrierCode = potentialCarrierCode
-		}
-	} else {
-		// If the original number (before stripping national prefix) was viable,
-		// and the resultant number is not, then prefer the original phone number.
-		// This is because for some countries (e.g. Russia) the same digit could be both
-		// a national prefix and a leading digit of a valid national phone number,
-		// like `8` is the national prefix for Russia and both
-		// `8 800 555 35 35` and `800 555 35 35` are valid numbers.
-		if (matchesEntirely(nationalNumber, metadata.nationalNumberPattern()) &&
-				!matchesEntirely(potentialNationalNumber, metadata.nationalNumberPattern())) {
-			// Keep the number without stripping national prefix.
-		} else {
-			nationalNumber = potentialNationalNumber
-			carrierCode = potentialCarrierCode
+			// case 'IS_POSSIBLE_LOCAL_ONLY':
+				return { nationalNumber: number }
 		}
 	}
-
 	return {
 		nationalNumber,
 		carrierCode

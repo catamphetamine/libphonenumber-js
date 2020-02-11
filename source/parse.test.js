@@ -448,4 +448,12 @@ describe('parse', () => {
 
 		extractCountryCallingCode('', null, metadata).should.deep.equal({})
 	})
+
+	it('should correctly parse numbers starting with the same digit as the national prefix', () => {
+		// https://github.com/catamphetamine/libphonenumber-js/issues/373
+		parseNumber('+37582004910060').should.deep.equal({
+			country: 'BY',
+			phone: '82004910060'
+		});
+	})
 })

@@ -654,7 +654,7 @@ export default class AsYouType {
 		// because national prefixes can't be present in international phone numbers.
 		// While `parseNumber()` is forgiving is such cases, `AsYouType` is not.
 		const {
-			number: potentialNationalNumber,
+			nationalNumber,
 			carrierCode
 		} = stripNationalPrefixAndCarrierCode(
 			this.nationalNumberDigits,
@@ -665,52 +665,31 @@ export default class AsYouType {
 		// strip national prefix and will instead prepend some digits to the `number`:
 		// for example, when number `2345678` is passed with `VI` country selected,
 		// it will return `{ number: "3402345678" }`, because `340` area code is prepended.
-		// So check if the `potentialNationalNumber` is actually at the end of `this.nationalNumberDigits`.
-		if (potentialNationalNumber) {
-			const index = this.nationalNumberDigits.indexOf(potentialNationalNumber)
-			if (index < 0 || index !== this.nationalNumberDigits.length - potentialNationalNumber.length) {
+		// So check if the `nationalNumber` is actually at the end of `this.nationalNumberDigits`.
+		if (nationalNumber) {
+			const index = this.nationalNumberDigits.indexOf(nationalNumber)
+			if (index < 0 || index !== this.nationalNumberDigits.length - nationalNumber.length) {
 				return
 			}
 		}
 		if (carrierCode) {
 			this.carrierCode = carrierCode
 		}
-		// We require that the NSN remaining after stripping the national prefix and
-		// carrier code be long enough to be a possible length for the region.
-		// Otherwise, we don't do the stripping, since the original number could be
-		// a valid short number.
-		if (!this.metadata.possibleLengths() ||
-			this.isPossibleNumber(this.nationalNumberDigits) &&
-			!this.isPossibleNumber(potentialNationalNumber)) {
-			// Verify the parsed national (significant) number for this country
-			//
-			// If the original number (before stripping national prefix) was viable,
-			// and the resultant number is not, then prefer the original phone number.
-			// This is because for some countries (e.g. Russia) the same digit could be both
-			// a national prefix and a leading digit of a valid national phone number,
-			// like `8` is the national prefix for Russia and both
-			// `8 800 555 35 35` and `800 555 35 35` are valid numbers.
-			if (matchesEntirely(this.nationalNumberDigits, this.metadata.nationalNumberPattern()) &&
-				!matchesEntirely(potentialNationalNumber, this.metadata.nationalNumberPattern())) {
-				return
-			}
-		}
-		this.nationalPrefix = this.nationalNumberDigits.slice(0, this.nationalNumberDigits.length - potentialNationalNumber.length)
-		this.nationalNumberDigits = potentialNationalNumber
+		this.nationalPrefix = this.nationalNumberDigits.slice(0, this.nationalNumberDigits.length - nationalNumber.length)
+		this.nationalNumberDigits = nationalNumber
 		return this.nationalPrefix
 	}
 
-	isPossibleNumber(number) {
-		const validation_result = checkNumberLengthForType(number, undefined, this.metadata)
-		switch (validation_result) {
-			case 'IS_POSSIBLE':
-				return true
-			// case 'IS_POSSIBLE_LOCAL_ONLY':
-			// 	return !this.isInternational()
-			default:
-				return false
-		}
-	}
+	// isPossibleNumber(number) {
+	// 	switch (checkNumberLengthForType(number, undefined, this.metadata)) {
+	// 		case 'IS_POSSIBLE':
+	// 			return true
+	// 		// case 'IS_POSSIBLE_LOCAL_ONLY':
+	// 		// 	return !this.isInternational()
+	// 		default:
+	// 			return false
+	// 	}
+	// }
 
 	isCountryCallingCodeAmbiguous() {
 		const countryCodes = this.metadata.getCountryCodesForCallingCode(this.countryCallingCode)
