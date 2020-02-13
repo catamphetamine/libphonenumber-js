@@ -26,8 +26,9 @@
     "mocha": "^5.0.5",
     "npm-run-all": "^1.4.0",
     "rimraf": "^2.5.0",
-    "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.12"
+    "rollup": "^1.31.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-terser": "^5.2.0"
   },
   "scripts": {
     "metadata:update:job": "git reset --hard && git pull && npm install && npm run metadata:update:release",
@@ -50,16 +51,11 @@
     "test": "mocha --require @babel/register --colors --bail --reporter spec --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
     "test-coverage": "istanbul cover -x \"build/**\" -x \"es6/**\" -x \"*.test.js\" -x \"source/findNumbers/Leniency.js\" -x \"source/findNumbers/RegExpCache.js\" -x \"source/findNumbers/LRUCache.js\" -x \"source/PhoneNumberMatcher.js\" -x \"source/tools/semver-compare.js\" node_modules/mocha/bin/_mocha -- --require @babel/register --colors --reporter dot --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
     "test-travis": "istanbul cover -x \"build/**\" -x \"es6/**\" -x \"*.test.js\" -x \"source/findNumbers/Leniency.js\" -x \"source/findNumbers/RegExpCache.js\" -x \"source/findNumbers/LRUCache.js\" -x \"source/PhoneNumberMatcher.js\" -x \"source/tools/semver-compare.js\" node_modules/mocha/bin/_mocha --report lcovonly -- --require @babel/register --colors --reporter spec --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
-    "build:browser:production": "npm-run-all build:browser:production:legacy build:browser:production:min build:browser:production:max build:browser:production:mobile",
-    "build:browser:production:legacy": "webpack --mode production --progress --colors",
-    "build:browser:production:min": "cross-env LIBPHONENUMBER_FLAVOR=min webpack --mode production --progress --colors",
-    "build:browser:production:max": "cross-env LIBPHONENUMBER_FLAVOR=max webpack --mode production --progress --colors",
-    "build:browser:production:mobile": "cross-env LIBPHONENUMBER_FLAVOR=mobile webpack --mode production --progress --colors",
-    "build:browser:dev:legacy": "cross-env WEBPACK_ENV=dev webpack --mode development --progress --colors --watch",
-    "clean-for-build": "rimraf ./build/**/* ./es6/**/*",
-    "build-commonjs-modules": "cross-env BABEL_ENV=commonjs babel ./source --out-dir ./build --source-maps --ignore test.js",
-    "build-es6-modules": "cross-env BABEL_ENV=es6 babel ./source --out-dir ./es6 --source-maps --ignore test.j",
-    "build": "npm-run-all clean-for-build build-commonjs-modules build-es6-modules build:browser:production",
+    "clean": "rimraf ./build/**/* ./es6/**/*",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel ./source --out-dir ./build --source-maps --ignore test.js",
+    "build:modules": "cross-env BABEL_ENV=es6 babel ./source --out-dir ./es6 --source-maps --ignore test.j",
+    "build:bundle": "rollup --config rollup.config.js",
+    "build": "npm-run-all clean build:commonjs build:modules build:bundle",
     "prepublish": "crlf --set=LF bin/* && npm run metadata:generate && crlf --set=LF metadata.*.json && npm-run-all build test"
   },
   "repository": {
