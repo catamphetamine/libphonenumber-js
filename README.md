@@ -26,6 +26,7 @@ One part of me was curious about how all this phone number parsing and formattin
   * Doesn't parse or format special "local"-only phone numbers: numbers specific to a "local" area (for example, a city) with the "area code" omitted (like `456-789` with the "area code" `(123)` omitted vs. the full `(123) 456-789` number), emergency phone numbers like `911`, ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-) (short SMS-only numbers), numbers starting with a [`*`](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md) (like `*555`), etc.
   * Doesn't use hyphens and brackets when formatting international phone numbers (looks cleaner).
   * Doesn't use the `"001"` country code for ["non-geographic"](#non-geographic) phone numbers. Instead, `PhoneNumber` class has an `.isNonGeographic()` method.
+  * [Doesn't autocorrect](#missing-) a missing `+` in international phone numbers.
 
   <!--
   * Doesn't use ["carrier codes"](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md) when formatting numbers: "carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
