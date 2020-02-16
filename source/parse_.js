@@ -533,7 +533,7 @@ export function extractCountryCallingCode(number, country, metadata) {
 						(
 							!matchesEntirely(number, metadata.nationalNumberPattern())
 							&&
-							matchesEntirely(number, metadata.nationalNumberPattern())
+							matchesEntirely(possibleShorterNumber, metadata.nationalNumberPattern())
 						)
 						||
 						checkNumberLengthForType(number, undefined, metadata) === 'TOO_LONG'
