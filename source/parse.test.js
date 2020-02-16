@@ -96,21 +96,23 @@ describe('parse', () => {
 
 		// International phone number.
 		// Single country with the given country phone code.
+		// Strips national prefix `0`.
 		parseNumber('+33011222333', { extended: true }).should.deep.equal({
 			country            : 'FR',
 			countryCallingCode : '33',
-			phone              : '011222333',
+			phone              : '11222333',
 			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
-			possible           : true
+			possible           : false
 		})
 
 		// Too short.
+		// Strips national prefix `8`.
 		parseNumber('+7 (800) 55-35-35', { extended: true }).should.deep.equal({
-			country            : 'RU',
+			country            : undefined,
 			countryCallingCode : '7',
-			phone              : '800553535',
+			phone              : '00553535',
 			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
@@ -443,7 +445,8 @@ describe('parse', () => {
 
 		extractCountryCallingCode('+7800', null, metadata).should.deep.equal({
 			countryCallingCode: '7',
-			number: '800'
+			// Strips national prefix `8`.
+			number: '00'
 		})
 
 		extractCountryCallingCode('', null, metadata).should.deep.equal({})

@@ -520,7 +520,12 @@ export function extractCountryCallingCode(number, country, metadata) {
 				if (number.indexOf(countryCallingCode) === 0) {
 					metadata = new Metadata(metadata)
 					metadata.country(country)
-					const possibleShorterNumber = number.slice(countryCallingCode.length)
+					const {
+						nationalNumber: possibleShorterNumber,
+					} = stripNationalPrefixAndCarrierCode(
+						number.slice(countryCallingCode.length),
+						metadata
+					)
 					// If the number was not valid before but is valid now,
 					// or if it was too long before, we consider the number
 					// with the country calling code stripped to be a better result
@@ -569,9 +574,16 @@ export function extractCountryCallingCode(number, country, metadata) {
 	while (i - 1 <= MAX_LENGTH_COUNTRY_CODE && i <= number.length) {
 		const countryCallingCode = number.slice(1, i)
 		if (metadata.hasCallingCode(countryCallingCode)) {
+			metadata.chooseCountryByCountryCallingCode(countryCallingCode)
+			const {
+				nationalNumber
+			} = stripNationalPrefixAndCarrierCode(
+				number.slice(i),
+				metadata
+			)
 			return {
 				countryCallingCode,
-				number: number.slice(i)
+				number: nationalNumber
 			}
 		}
 		i++
