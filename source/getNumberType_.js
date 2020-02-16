@@ -121,6 +121,11 @@ export function checkNumberLengthForType(nationalNumber, type, metadata)
 	let possible_lengths = type_info && type_info.possibleLengths() || metadata.possibleLengths()
 	// let local_lengths    = type_info && type.possibleLengthsLocal() || metadata.possibleLengthsLocal()
 
+	// Metadata before version `1.0.18` didn't contain `possible_lengths`.
+	if (!possible_lengths) {
+		return 'IS_POSSIBLE'
+	}
+
 	if (type === 'FIXED_LINE_OR_MOBILE')
 	{
 		// No such country in metadata.

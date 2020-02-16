@@ -192,7 +192,7 @@ describe('parse', () => {
 		parseNumber('1', 'US', { extended: true }).should.deep.equal({})
 
 		// Too long of a number.
-		parseNumber('1111111111111111111', 'US', { extended: true }).should.deep.equal({})
+		parseNumber('1111111111111111111', 'RU', { extended: true }).should.deep.equal({})
 
 		// Not a number.
 		parseNumber('abcdefg', 'US', { extended: true }).should.deep.equal({})
@@ -454,6 +454,24 @@ describe('parse', () => {
 		parseNumber('+37582004910060').should.deep.equal({
 			country: 'BY',
 			phone: '82004910060'
+		});
+	})
+
+	it('should autocorrect numbers without a leading +', () => {
+		// https://github.com/catamphetamine/libphonenumber-js/issues/376
+		parseNumber('375447521111', 'BY').should.deep.equal({
+			country: 'BY',
+			phone: '447521111'
+		});
+		// https://github.com/catamphetamine/libphonenumber-js/issues/316
+		parseNumber('33612902554', 'FR').should.deep.equal({
+			country: 'FR',
+			phone: '612902554'
+		});
+		// https://github.com/catamphetamine/libphonenumber-js/issues/375
+		parseNumber('61438331999', 'AU').should.deep.equal({
+			country: 'AU',
+			phone: '438331999'
 		});
 	})
 })

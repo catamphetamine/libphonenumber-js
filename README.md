@@ -26,7 +26,6 @@ One part of me was curious about how all this phone number parsing and formattin
   * Doesn't parse or format special "local"-only phone numbers: numbers specific to a "local" area (for example, a city) with the "area code" omitted (like `456-789` with the "area code" `(123)` omitted vs. the full `(123) 456-789` number), emergency phone numbers like `911`, ["short codes"](https://support.twilio.com/hc/en-us/articles/223182068-What-is-a-short-code-) (short SMS-only numbers), numbers starting with a [`*`](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md) (like `*555`), etc.
   * Doesn't use hyphens and brackets when formatting international phone numbers (looks cleaner).
   * Doesn't use the `"001"` country code for ["non-geographic"](#non-geographic) phone numbers. Instead, `PhoneNumber` class has an `.isNonGeographic()` method.
-  * [Doesn't autocorrect](#missing-) a missing `+` in international phone numbers.
 
   <!--
   * Doesn't use ["carrier codes"](https://github.com/googlei18n/libphonenumber/blob/master/FALSEHOODS.md) when formatting numbers: "carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
@@ -1080,28 +1079,6 @@ There is also a possibility of this library's demo metadata being outdated, or t
 -->
 
 When reporting `findPhoneNumbersInText()` bugs one should know that `findPhoneNumbersInText()` code was ported from [Google's Java code](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java). I didn't write it myself, I just ported it. Therefore, it is unlikely that anyone other than Google will be fixing such bugs.
-
-## Missing `+`
-
-Google's `libphonenumber` automatically corrects international numbers that're missing a leading `+`. This library could do it as well, and it [has been requested](https://github.com/catamphetamine/libphonenumber-js/issues/316) [numerous times](https://github.com/catamphetamine/libphonenumber-js/issues/376). Still, I don't feel like there's enough reason to do so. I can understand why Google did this: it's because they, being a Giant "Evil" MegaCorporation, want to crawl any possible phone number on Earth. My personal opinion though is that people should educate themselves, and if they're educated enough to know that there exists an "international" format for every phone number, then they should also educate themselves that such "international" format requires a leading `+`. Otherwise, that would be "half-education", that would have more of a negative impact rather than a positive one, resuling in [ignorance](https://en.wikipedia.org/wiki/Ignorance), "ignorance" being a mindset when a person doesn't care to see the full picture and instead only settles for a small portion of it, sculpting such small pieces of false beliefs over time together into a monstrous dogmatic chimera inside their mind. We've seen such examples in the history: [fascism](https://en.wikipedia.org/wiki/Fascism), [racism](https://en.wikipedia.org/wiki/Racism), [religious violence](https://en.wikipedia.org/wiki/Religious_violence), and so on. Knowledge is power, and power can be destructive when placed in the hands of those not familiar with the basics of using it, leading to chaos and possibly a catastrophe. So don't settle for half-knowledge, demand the full picture, and don't encourage other people's ignorance, or other people or businesses spreading the half-knowledge desease in pursuit of money, dumbing down the society with every passing decade. There's always making of a choice, even when you think that you're not taking any sides and being so-called "unopinionated" (encouraging something is an opinion itself).
-
-Having said that, for those who still want to autocorrect the missing `+`, here's a code snippet doing just that:
-
-```js
-import { parsePhoneNumberFromString, getCountryCallingCode } from 'libphonenumber-js'
-
-export default function autoFixParseNumber(number, country) {
-  const phoneNumber = parsePhoneNumberFromString(number, country)
-  if (phoneNumber) {
-    return phoneNumber
-  }
-  if (country && number[0] !== '+') {
-    if (number.indexOf(getCountryCallingCode(country)) === 0) {
-      return parsePhoneNumberFromString('+' + number, country)
-    }
-  }
-}
-```
 
 ## TypeScript
 

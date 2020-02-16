@@ -190,7 +190,7 @@ describe('parse', () => {
 		parseNumber('1', 'US', { extended: true }).should.deep.equal({})
 
 		// Too long of a number.
-		parseNumber('1111111111111111111', 'US', { extended: true }).should.deep.equal({})
+		parseNumber('1111111111111111111', 'RU', { extended: true }).should.deep.equal({})
 
 		// Not a number.
 		parseNumber('abcdefg', 'US', { extended: true }).should.deep.equal({})
