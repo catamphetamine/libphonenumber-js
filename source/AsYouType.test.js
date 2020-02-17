@@ -648,6 +648,19 @@ describe('as you type', () => {
 		formatter.input('33612902554').should.equal('33612902554')
 		formatter.getNumber().country.should.equal('FR')
 		formatter.getNumber().nationalNumber.should.equal('612902554')
+		// On second thought, this "prepend default area code" feature won't be added,
+		// because when a user selects "British Virgin Islands" and inputs
+		// "2291234", then they see "(229) 123-4" which clearly indicates that
+		// they should input the complete phone number (with area code).
+		// So, unless a user completely doesn't understand what they're doing,
+		// they'd input the complete phone number (with area code).
+		// // Should prepend the default area code in British Virgin Islands.
+		// // https://github.com/catamphetamine/react-phone-number-input/issues/335
+		// const formatter2 = new AsYouType('VG')
+		// formatter2.input('2291234').should.equal('(229) 123-4')
+		// formatter2.getNumber().country.should.equal('VG')
+		// formatter2.getNumber().nationalNumber.should.equal('2842291234')
+		// formatter2.getNumber().number.should.equal('+12842291234')
 	})
 
 	it('shouldn\'t choose a format when there\'re too many digits for any of them', () => {
