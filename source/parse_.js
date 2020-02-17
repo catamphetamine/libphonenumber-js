@@ -213,7 +213,8 @@ export function extractFormattedPhoneNumber(text, v2) {
 }
 
 /**
- * Strips any national prefix (such as 0, 1) present in the number provided.
+ * Strips any national prefix (such as 0, 1) present in a
+ * (possibly incomplete) number provided.
  * "Carrier codes" are only used  in Colombia and Brazil,
  * and only when dialing within those countries from a mobile phone to a fixed line number.
  * Sometimes it won't actually strip national prefix
@@ -222,7 +223,7 @@ export function extractFormattedPhoneNumber(text, v2) {
  * it will return `{ number: "3402345678" }`, because `340` area code is prepended.
  * @param {string} number — National number digits.
  * @param {object} metadata — Metadata with country selected.
- * @return {object} `{ nationalNumber: string?, carrierCode: string? }`.
+ * @return {object} `{ nationalNumber: string, carrierCode: string? }`.
  */
 export function stripNationalPrefixAndCarrierCode(number, metadata) {
 	if (number && metadata.nationalPrefixForParsing()) {
@@ -411,39 +412,13 @@ function parsePhoneNumber(
 		return { countryCallingCode }
 	}
 
-	// Parsing national prefixes and carrier codes
-	// is only required for local phone numbers
-	// but some people don't understand that
-	// and sometimes write international phone numbers
-	// with national prefixes (or maybe even carrier codes).
-	// http://ucken.blogspot.ru/2016/03/trunk-prefixes-in-skype4b.html
-	// Google's original library forgives such mistakes
-	// and so does this library, because it has been requested:
-	// https://github.com/catamphetamine/libphonenumber-js/issues/127
-	let {
+	const {
 		nationalNumber,
 		carrierCode
-	} = stripNationalPrefixAndCarrierCode(
+	} = stripNationalPrefixAndCarrierCodeFromCompleteNumber(
 		parseIncompletePhoneNumber(number),
 		metadata
 	)
-
-	// If not using legacy generated metadata (before version `1.0.18`)
-	// then it has "possible lengths", so use those to validate the number length.
-	if (metadata.possibleLengths()) {
-		// "We require that the NSN remaining after stripping the national prefix and
-		// carrier code be long enough to be a possible length for the region.
-		// Otherwise, we don't do the stripping, since the original number could be
-		// a valid short number."
-		// https://github.com/google/libphonenumber/blob/876268eb1ad6cdc1b7b5bef17fc5e43052702d57/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberUtil.java#L3236-L3250
-		switch (checkNumberLengthForType(nationalNumber, undefined, metadata)) {
-			case 'TOO_SHORT':
-			case 'INVALID_LENGTH':
-			// case 'IS_POSSIBLE_LOCAL_ONLY':
-				nationalNumber = number
-				carrierCode = undefined
-		}
-	}
 
 	// Sometimes there are several countries
 	// corresponding to the same country phone code
@@ -476,7 +451,55 @@ function parsePhoneNumber(
 	}
 }
 
-//
+/**
+ * Strips national prefix and carrier code from a complete phone number.
+ * The difference from the non-"FromCompleteNumber" function is that
+ * it won't extract national prefix if the resultant number is too short
+ * to be a complete number for the selected phone numbering plan.
+ * @param  {string} number — Complete phone number digits.
+ * @param  {Metadata} metadata — Metadata with a phone numbering plan selected.
+ * @return {object} `{ nationalNumber: string, carrierCode: string? }`.
+ */
+export function stripNationalPrefixAndCarrierCodeFromCompleteNumber(number, metadata) {
+	// Parsing national prefixes and carrier codes
+	// is only required for local phone numbers
+	// but some people don't understand that
+	// and sometimes write international phone numbers
+	// with national prefixes (or maybe even carrier codes).
+	// http://ucken.blogspot.ru/2016/03/trunk-prefixes-in-skype4b.html
+	// Google's original library forgives such mistakes
+	// and so does this library, because it has been requested:
+	// https://github.com/catamphetamine/libphonenumber-js/issues/127
+	const {
+		nationalNumber,
+		carrierCode
+	} = stripNationalPrefixAndCarrierCode(
+		parseIncompletePhoneNumber(number),
+		metadata
+	)
+	// If a national prefix has been extracted, check to see
+	// if the resultant number isn't too short.
+	if (nationalNumber.length !== number.length + (carrierCode ? carrierCode.length : 0)) {
+		// If not using legacy generated metadata (before version `1.0.18`)
+		// then it has "possible lengths", so use those to validate the number length.
+		if (metadata.possibleLengths()) {
+			// "We require that the NSN remaining after stripping the national prefix and
+			// carrier code be long enough to be a possible length for the region.
+			// Otherwise, we don't do the stripping, since the original number could be
+			// a valid short number."
+			// https://github.com/google/libphonenumber/blob/876268eb1ad6cdc1b7b5bef17fc5e43052702d57/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberUtil.java#L3236-L3250
+			switch (checkNumberLengthForType(nationalNumber, undefined, metadata)) {
+				case 'TOO_SHORT':
+				case 'INVALID_LENGTH':
+				// case 'IS_POSSIBLE_LOCAL_ONLY':
+					// Don't strip the national prefix.
+					return { nationalNumber: number }
+			}
+		}
+	}
+	return { nationalNumber, carrierCode }
+}
+
 /**
  * Converts a phone number digits (possibly with a `+`)
  * into a calling code and the rest phone number digits.
@@ -487,7 +510,7 @@ function parsePhoneNumber(
  * @param  {string} [country] — Default country.
  * @param  {string} [callingCode] — Default calling code (some phone numbering plans are non-geographic).
  * @param  {object} metadata
- * @return {object} `{ countryCallingCode: string?, number: string? }`
+ * @return {object} `{ countryCallingCode: string?, number: string }`
  * @example
  * // Returns `{ countryCallingCode: "1", number: "2133734253" }`.
  * extractCountryCallingCode('2133734253', 'US', null, metadata)
@@ -527,44 +550,19 @@ export function extractCountryCallingCode(
 			// and do some checks on the validity of the number before and after.
 			// https://github.com/catamphetamine/libphonenumber-js/issues/376
 			if (country || callingCode) {
-				const countryCallingCode = country ? getCountryCallingCode(country, metadata) : callingCode
-				if (number.indexOf(countryCallingCode) === 0) {
-					metadata = new Metadata(metadata)
-					metadata.selectNumberingPlan(country, callingCode)
-					const possibleShorterNumber = number.slice(countryCallingCode.length)
-					const {
-						nationalNumber: possibleShorterNationalNumber,
-					} = stripNationalPrefixAndCarrierCode(
-						possibleShorterNumber,
-						metadata
-					)
-					const {
-						nationalNumber
-					} = stripNationalPrefixAndCarrierCode(
-						number,
-						metadata
-					)
-					// If the number was not valid before but is valid now,
-					// or if it was too long before, we consider the number
-					// with the country calling code stripped to be a better result
-					// and keep that instead.
-					// For example, in Germany (+49), `49` is a valid area code,
-					// so if a number starts with `49`, it could be both a valid
-					// national German number or an international number without
-					// a leading `+`.
-					if (
-						(
-							!matchesEntirely(nationalNumber, metadata.nationalNumberPattern())
-							&&
-							matchesEntirely(possibleShorterNationalNumber, metadata.nationalNumberPattern())
-						)
-						||
-						checkNumberLengthForType(nationalNumber, undefined, metadata) === 'TOO_LONG'
-					) {
-						return {
-							countryCallingCode,
-							number: possibleShorterNumber
-						}
+				const {
+					countryCallingCode,
+					number: shorterNumber
+				} = extractCountryCallingCodeFromInternationalNumberWithoutPlusSign(
+					number,
+					country,
+					callingCode,
+					metadata
+				)
+				if (countryCallingCode) {
+					return {
+						countryCallingCode,
+						number: shorterNumber
 					}
 				}
 			}
@@ -602,4 +600,62 @@ export function extractCountryCallingCode(
 	}
 
 	return {}
+}
+
+/**
+ * Sometimes some people incorrectly input international phone numbers
+ * without the leading `+`. This function corrects such input.
+ * @param  {string} number — Phone number digits.
+ * @param  {string?} country
+ * @param  {string?} callingCode
+ * @param  {object} metadata
+ * @return {object} `{ countryCallingCode: string?, number: string }`.
+ */
+export function extractCountryCallingCodeFromInternationalNumberWithoutPlusSign(
+	number,
+	country,
+	callingCode,
+	metadata
+) {
+	const countryCallingCode = country ? getCountryCallingCode(country, metadata) : callingCode
+	if (number.indexOf(countryCallingCode) === 0) {
+		metadata = new Metadata(metadata)
+		metadata.selectNumberingPlan(country, callingCode)
+		const possibleShorterNumber = number.slice(countryCallingCode.length)
+		const {
+			nationalNumber: possibleShorterNationalNumber,
+		} = stripNationalPrefixAndCarrierCode(
+			possibleShorterNumber,
+			metadata
+		)
+		const {
+			nationalNumber
+		} = stripNationalPrefixAndCarrierCode(
+			number,
+			metadata
+		)
+		// If the number was not valid before but is valid now,
+		// or if it was too long before, we consider the number
+		// with the country calling code stripped to be a better result
+		// and keep that instead.
+		// For example, in Germany (+49), `49` is a valid area code,
+		// so if a number starts with `49`, it could be both a valid
+		// national German number or an international number without
+		// a leading `+`.
+		if (
+			(
+				!matchesEntirely(nationalNumber, metadata.nationalNumberPattern())
+				&&
+				matchesEntirely(possibleShorterNationalNumber, metadata.nationalNumberPattern())
+			)
+			||
+			checkNumberLengthForType(nationalNumber, undefined, metadata) === 'TOO_LONG'
+		) {
+			return {
+				countryCallingCode,
+				number: possibleShorterNumber
+			}
+		}
+	}
+	return { number }
 }

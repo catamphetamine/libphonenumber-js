@@ -648,6 +648,13 @@ describe('as you type', () => {
 		formatter.input('33612902554').should.equal('33612902554')
 		formatter.getNumber().country.should.equal('FR')
 		formatter.getNumber().nationalNumber.should.equal('612902554')
+		formatter.getNumber().number.should.equal('+33612902554')
+		// Should also strip national prefix.
+		formatter.reset()
+		formatter.input('330612902554').should.equal('330612902554')
+		formatter.getNumber().country.should.equal('FR')
+		formatter.getNumber().nationalNumber.should.equal('612902554')
+		formatter.getNumber().number.should.equal('+33612902554')
 		// On second thought, this "prepend default area code" feature won't be added,
 		// because when a user selects "British Virgin Islands" and inputs
 		// "2291234", then they see "(229) 123-4" which clearly indicates that

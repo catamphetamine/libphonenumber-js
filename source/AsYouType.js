@@ -24,7 +24,9 @@ import {
 	extractCountryCallingCode,
 	extractFormattedPhoneNumber,
 	findCountryCode,
-	stripNationalPrefixAndCarrierCode
+	stripNationalPrefixAndCarrierCode,
+	stripNationalPrefixAndCarrierCodeFromCompleteNumber,
+	extractCountryCallingCodeFromInternationalNumberWithoutPlusSign
 } from './parse_'
 
 import {
@@ -923,20 +925,32 @@ export default class AsYouType {
 		}
 		const callingCode = this.countryCallingCode || this.defaultCallingCode
 		let nationalNumber = this.nationalNumberDigits
+		let carrierCode = this.carrierCode
 		// When an international number without a leading `+` has been autocorrected,
 		// extract country calling code, because normally it's only extracted
 		// for international numbers with a leading `+`.
-		if (!this.isInternational()) {
+		// Could also just use `parsePhoneNumberFromString()` here
+		// instead of hacking around this single case.
+		if (!this.isInternational() && this.nationalNumberDigits === this.digits) {
 			const {
-				number: shorterNationalNumber
-			} = extractCountryCallingCode(
-				this.nationalNumberDigits,
+				countryCallingCode,
+				number
+			} = extractCountryCallingCodeFromInternationalNumberWithoutPlusSign(
+				this.digits,
 				countryCode,
 				callingCode,
 				this.metadata.metadata
 			)
-			if (shorterNationalNumber !== nationalNumber) {
+			if (countryCallingCode) {
+				const {
+					nationalNumber: shorterNationalNumber,
+					carrierCode: newCarrierCode
+				} = stripNationalPrefixAndCarrierCodeFromCompleteNumber(
+					number,
+					this.metadata
+				)
 				nationalNumber = shorterNationalNumber
+				carrierCode = newCarrierCode
 			}
 		}
 		const phoneNumber = new PhoneNumber(
@@ -944,8 +958,8 @@ export default class AsYouType {
 			nationalNumber,
 			this.metadata.metadata
 		)
-		if (this.carrierCode) {
-			phoneNumber.carrierCode = this.carrierCode
+		if (carrierCode) {
+			phoneNumber.carrierCode = carrierCode
 		}
 		// Phone number extensions are not supported by "As You Type" formatter.
 		return phoneNumber
