@@ -642,6 +642,14 @@ describe('as you type', () => {
 		formatter.getNumber().number.should.equal('+1111')
 	})
 
+	it('should return PhoneNumber with autocorrected international numbers without leading +', () => {
+		// https://github.com/catamphetamine/libphonenumber-js/issues/316
+		const formatter = new AsYouType('FR')
+		formatter.input('33612902554').should.equal('33612902554')
+		formatter.getNumber().country.should.equal('FR')
+		formatter.getNumber().nationalNumber.should.equal('612902554')
+	})
+
 	it('shouldn\'t choose a format when there\'re too many digits for any of them', () => {
 		const formatter = new AsYouType('RU')
 		formatter.input('88005553535')

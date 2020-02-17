@@ -16,50 +16,36 @@ const SINGLE_IDD_PREFIX = /^[\d]+(?:[~\u2053\u223C\uFF5E][\d]+)?$/
 
 // For regions that have multiple IDD prefixes
 // a preferred IDD prefix is returned.
-export function getIDDPrefix(country, metadata)
-{
+export function getIDDPrefix(country, callingCode, metadata) {
 	const countryMetadata = new Metadata(metadata)
-	countryMetadata.country(country)
-
-	if (SINGLE_IDD_PREFIX.test(countryMetadata.IDDPrefix()))
-	{
+	countryMetadata.selectNumberingPlan(country, callingCode)
+	if (SINGLE_IDD_PREFIX.test(countryMetadata.IDDPrefix())) {
 		return countryMetadata.IDDPrefix()
 	}
-
 	return countryMetadata.defaultIDDPrefix()
 }
 
-export function stripIDDPrefix(number, country, metadata)
-{
+export function stripIDDPrefix(number, country, callingCode, metadata) {
 	if (!country) {
 		return
 	}
-
 	// Check if the number is IDD-prefixed.
-
 	const countryMetadata = new Metadata(metadata)
-	countryMetadata.country(country)
-
+	countryMetadata.selectNumberingPlan(country, callingCode)
 	const IDDPrefixPattern = new RegExp(countryMetadata.IDDPrefix())
-
 	if (number.search(IDDPrefixPattern) !== 0) {
 		return
 	}
-
 	// Strip IDD prefix.
 	number = number.slice(number.match(IDDPrefixPattern)[0].length)
-
 	// Some kind of a weird edge case.
 	// No explanation from Google given.
 	const matchedGroups = number.match(CAPTURING_DIGIT_PATTERN)
 	/* istanbul ignore next */
-	if (matchedGroups && matchedGroups[1] != null && matchedGroups[1].length > 0)
-	{
-		if (matchedGroups[1] === '0')
-		{
+	if (matchedGroups && matchedGroups[1] != null && matchedGroups[1].length > 0) {
+		if (matchedGroups[1] === '0') {
 			return
 		}
 	}
-
 	return number
 }

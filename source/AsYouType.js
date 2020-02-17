@@ -632,6 +632,7 @@ export default class AsYouType {
 		} = extractCountryCallingCode(
 			'+' + this.digits,
 			this.defaultCountry,
+			this.defaultCallingCode,
 			this.metadata.metadata
 		)
 		if (!countryCallingCode) {
@@ -660,7 +661,6 @@ export default class AsYouType {
 			this.nationalNumberDigits,
 			this.metadata
 		)
-
 		// Sometimes `stripNationalPrefixAndCarrierCode()` won't actually
 		// strip national prefix and will instead prepend some digits to the `number`:
 		// for example, when number `2345678` is passed with `VI` country selected,
@@ -922,9 +922,26 @@ export default class AsYouType {
 			}
 		}
 		const callingCode = this.countryCallingCode || this.defaultCallingCode
+		let nationalNumber = this.nationalNumberDigits
+		// When an international number without a leading `+` has been autocorrected,
+		// extract country calling code, because normally it's only extracted
+		// for international numbers with a leading `+`.
+		if (!this.isInternational()) {
+			const {
+				number: shorterNationalNumber
+			} = extractCountryCallingCode(
+				this.nationalNumberDigits,
+				countryCode,
+				callingCode,
+				this.metadata.metadata
+			)
+			if (shorterNationalNumber !== nationalNumber) {
+				nationalNumber = shorterNationalNumber
+			}
+		}
 		const phoneNumber = new PhoneNumber(
 			countryCode || callingCode,
-			this.nationalNumberDigits,
+			nationalNumber,
 			this.metadata.metadata
 		)
 		if (this.carrierCode) {

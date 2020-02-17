@@ -16,9 +16,8 @@ describe('format', () => {
 		formatNumber('+12111111111', 'NATIONAL').should.equal('(211) 111-1111')
 
 		// Formatting invalid E.164 numbers.
-		// Strips national prefix `1`.
-		formatNumber('+11111', 'INTERNATIONAL').should.equal('+1 111')
-		formatNumber('+11111', 'NATIONAL').should.equal('111')
+		formatNumber('+11111', 'INTERNATIONAL').should.equal('+1 1111')
+		formatNumber('+11111', 'NATIONAL').should.equal('1111')
 	})
 
 	it('should work with the first object argument expanded', () => {

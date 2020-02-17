@@ -9,10 +9,10 @@ import { parseDigit } from './parseDigits'
  * @return {string}
  * @example
  * ```js
- * parseIncompletePhoneNumber('8 (800) 555')
  * // Outputs '8800555'.
- * parseIncompletePhoneNumber('+7 800 555')
+ * parseIncompletePhoneNumber('8 (800) 555')
  * // Outputs '+7800555'.
+ * parseIncompletePhoneNumber('+7 800 555')
  * ```
  */
 export default function parseIncompletePhoneNumber(string) {

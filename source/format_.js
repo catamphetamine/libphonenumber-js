@@ -91,7 +91,7 @@ export default function formatNumber(input, format, options, metadata) {
 				return
 				// throw new Error('`fromCountry` option not passed for IDD-prefixed formatting.')
 			}
-			const IDDPrefix = getIDDPrefix(options.fromCountry, metadata.metadata)
+			const IDDPrefix = getIDDPrefix(options.fromCountry, undefined, metadata.metadata)
 			if (!IDDPrefix) {
 				return
 			}

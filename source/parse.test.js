@@ -96,23 +96,22 @@ describe('parse', () => {
 
 		// International phone number.
 		// Single country with the given country phone code.
-		// Strips national prefix `0`.
 		parseNumber('+33011222333', { extended: true }).should.deep.equal({
 			country            : 'FR',
 			countryCallingCode : '33',
-			phone              : '11222333',
+			phone              : '011222333',
 			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
-			possible           : false
+			possible           : true
 		})
 
 		// Too short.
-		// Strips national prefix `8`.
+		// Won't strip national prefix `8` because otherwise the number would be too short.
 		parseNumber('+7 (800) 55-35-35', { extended: true }).should.deep.equal({
-			country            : undefined,
+			country            : 'RU',
 			countryCallingCode : '7',
-			phone              : '00553535',
+			phone              : '800553535',
 			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
@@ -438,18 +437,17 @@ describe('parse', () => {
 	})
 
 	it('should extract country calling code from a number', () => {
-		extractCountryCallingCode('+78005553535', null, metadata).should.deep.equal({
+		extractCountryCallingCode('+78005553535', null, null, metadata).should.deep.equal({
 			countryCallingCode: '7',
 			number: '8005553535'
 		})
 
-		extractCountryCallingCode('+7800', null, metadata).should.deep.equal({
+		extractCountryCallingCode('+7800', null, null, metadata).should.deep.equal({
 			countryCallingCode: '7',
-			// Strips national prefix `8`.
-			number: '00'
+			number: '800'
 		})
 
-		extractCountryCallingCode('', null, metadata).should.deep.equal({})
+		extractCountryCallingCode('', null, null, metadata).should.deep.equal({})
 	})
 
 	it('should correctly parse numbers starting with the same digit as the national prefix', () => {
@@ -475,6 +473,16 @@ describe('parse', () => {
 		parseNumber('61438331999', 'AU').should.deep.equal({
 			country: 'AU',
 			phone: '438331999'
+		});
+		// A case when `49` is a country calling code of a number without a leading `+`.
+		parseNumber('4930123456', 'DE').should.deep.equal({
+			country: 'DE',
+			phone: '30123456'
+		});
+		// A case when `49` is a valid area code.
+		parseNumber('4951234567890', 'DE').should.deep.equal({
+			country: 'DE',
+			phone: '4951234567890'
 		});
 	})
 })
