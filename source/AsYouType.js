@@ -35,6 +35,8 @@ import {
 	applyInternationalSeparatorStyle
 } from './format_'
 
+import { stripIDDPrefix } from './IDD'
+
 import { checkNumberLengthForType } from './getNumberType_'
 
 import parseDigits from './parseDigits'
@@ -95,7 +97,6 @@ const ELIGIBLE_FORMAT_PATTERN = new RegExp(
 const MIN_LEADING_DIGITS_LENGTH = 3
 
 const VALID_FORMATTED_PHONE_NUMBER_PART =
-	'[' + PLUS_CHARS + ']{0,1}' +
 	'[' +
 		VALID_PUNCTUATION +
 		VALID_DIGITS +
@@ -148,6 +149,7 @@ export default class AsYouType {
 	reset() {
 		this.formattedOutput = ''
 		this.international = undefined
+		this.internationalPrefix = undefined
 		this.countryCallingCode = undefined
 		this.digits = ''
 		this.nationalNumberDigits = ''
@@ -213,7 +215,7 @@ export default class AsYouType {
 		if (extractedNumber[0] === '+') {
 			// Trim the `+`.
 			extractedNumber = extractedNumber.slice('+'.length)
-			if (this.digits) {
+			if (this.digits || this.isInternational()) {
 				// If an out of position `+` is detected
 				// (or a second `+`) then just ignore it.
 			} else {
@@ -238,6 +240,26 @@ export default class AsYouType {
 	 * @return {string} [formattedNumber] Formatted national phone number (if it can be formatted at this stage). Returning `undefined` means "don't format the national phone number at this stage".
 	 */
 	inputDigits(nextDigits) {
+		// Some users input their phone number in "out-of-country"
+		// dialing format instead of using the leading `+`.
+		// https://github.com/catamphetamine/libphonenumber-js/issues/185
+		// Detect such numbers.
+		if (!this.digits) {
+			const numberWithoutIDD = stripIDDPrefix(
+				nextDigits,
+				this.defaultCountry,
+				this.defaultCallingCode,
+				this.metadata.metadata
+			)
+			if (numberWithoutIDD && numberWithoutIDD !== nextDigits) {
+				// If an IDD prefix was stripped then
+				// convert the number to international one
+				// for subsequent parsing.
+				this.internationalPrefix = nextDigits.slice(0, nextDigits.length - numberWithoutIDD.length)
+				nextDigits = numberWithoutIDD
+				this.startInternationalNumber()
+			}
+		}
 		// Append phone number digits.
 		this.digits += nextDigits
 		// Try to format the parsed input
@@ -604,16 +626,23 @@ export default class AsYouType {
 		}
 	}
 
+	getInternationalPrefix(options) {
+		return this.internationalPrefix ? (
+			options && options.spacing === false ? this.internationalPrefix : this.internationalPrefix + ' '
+		) : '+'
+	}
+
 	// Prepends `+CountryCode ` in case of an international phone number
 	getFullNumber(formattedNationalNumber) {
 		if (this.isInternational()) {
+			const prefix = this.getInternationalPrefix()
 			if (!this.countryCallingCode) {
-				return `+${this.digits}`
+				return `${prefix}${this.digits}`
 			}
 			if (!formattedNationalNumber) {
-				return `+${this.countryCallingCode}`
+				return `${prefix}${this.countryCallingCode}`
 			}
-			return `+${this.countryCallingCode} ${formattedNationalNumber}`
+			return `${prefix}${this.countryCallingCode} ${formattedNationalNumber}`
 		}
 		return formattedNationalNumber
 	}
@@ -721,7 +750,8 @@ export default class AsYouType {
 		// 'x' for the '+' sign, 'x'es for the country phone code,
 		// a spacebar and then the template for the formatted national number.
 		if (this.isInternational()) {
-			this.template = DIGIT_PLACEHOLDER +
+			this.template =
+				this.getInternationalPrefix().replace(/[\d\+]/g, DIGIT_PLACEHOLDER) +
 				repeat(DIGIT_PLACEHOLDER, this.countryCallingCode.length) +
 				' ' +
 				template
@@ -989,7 +1019,7 @@ export default class AsYouType {
 		}
 		let index = -1
 		let i = 0
-		while (i < (this.international ? 1 : 0) + this.digits.length) {
+		while (i < (this.isInternational() ? this.getInternationalPrefix({ spacing: false }).length : 0) + this.digits.length) {
 			index = this.template.indexOf(DIGIT_PLACEHOLDER, index + 1)
 			i++
 		}

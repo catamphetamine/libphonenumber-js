@@ -670,6 +670,18 @@ describe('as you type', () => {
 		// formatter2.getNumber().number.should.equal('+12842291234')
 	})
 
+	it('should work with out-of-country dialing prefix (like 00)', () => {
+		const formatter = new AsYouType('DE')
+		formatter.input('00498911196611').should.equal('00 49 89 11196611')
+		formatter.country.should.equal('DE')
+		formatter.template.should.equal('xx xx xx xxxxxxxx')
+		formatter.populatedNationalNumberTemplate.should.equal('89 11196611')
+		formatter.getTemplate().should.equal('xx xx xx xxxxxxxx')
+		formatter.getNumber().country.should.equal('DE')
+		formatter.getNumber().nationalNumber.should.equal('8911196611')
+		formatter.getNumber().number.should.equal('+498911196611')
+	})
+
 	it('shouldn\'t choose a format when there\'re too many digits for any of them', () => {
 		const formatter = new AsYouType('RU')
 		formatter.input('88005553535')
