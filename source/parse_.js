@@ -5,7 +5,6 @@
 
 import {
 	VALID_DIGITS,
-	VALID_PUNCTUATION,
 	PLUS_CHARS,
 	MIN_LENGTH_FOR_NSN,
 	MAX_LENGTH_FOR_NSN,
@@ -185,17 +184,18 @@ export default function parse(text, options, metadata) {
  * Doesn't guarantee that the extracted phone number
  * is a valid phone number (for example, doesn't validate its length).
  * @param  {string} text
+ * @param  {boolean} throwOnError — By default, it won't throw if the text is too long.
  * @return {string}
  * @example
  * // Returns "(213) 373-4253".
  * extractFormattedPhoneNumber("Call (213) 373-4253 for assistance.")
  */
-export function extractFormattedPhoneNumber(text, v2) {
+export function extractFormattedPhoneNumber(text, throwOnError) {
 	if (!text) {
 		return
 	}
 	if (text.length > MAX_INPUT_STRING_LENGTH) {
-		if (v2) {
+		if (throwOnError) {
 			throw new ParseError('TOO_LONG')
 		}
 		return

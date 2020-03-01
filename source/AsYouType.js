@@ -22,7 +22,6 @@ import { matchesEntirely } from './util'
 
 import {
 	extractCountryCallingCode,
-	extractFormattedPhoneNumber,
 	findCountryCode,
 	stripNationalPrefixAndCarrierCode,
 	stripNationalPrefixAndCarrierCodeFromCompleteNumber,
@@ -100,9 +99,32 @@ const VALID_FORMATTED_PHONE_NUMBER_PART =
 	'[' +
 		VALID_PUNCTUATION +
 		VALID_DIGITS +
-	']*'
+	']+'
 
 const VALID_FORMATTED_PHONE_NUMBER_PART_PATTERN = new RegExp('^' + VALID_FORMATTED_PHONE_NUMBER_PART + '$', 'i')
+
+const VALID_PHONE_NUMBER =
+	'(?:' +
+		'[' + PLUS_CHARS + ']' +
+		'[' +
+			VALID_PUNCTUATION +
+			VALID_DIGITS +
+		']*' +
+		'|' +
+		'[' +
+			VALID_PUNCTUATION +
+			VALID_DIGITS +
+		']+' +
+	')'
+
+const AFTER_PHONE_NUMBER_DIGITS_END_PATTERN = new RegExp(
+	'[^' +
+		VALID_PUNCTUATION +
+		VALID_DIGITS +
+	']+' +
+	'.*' +
+	'$'
+)
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
@@ -156,7 +178,6 @@ export default class AsYouType {
 		this.nationalPrefix = ''
 		this.carrierCode = ''
 		this.setCountry(this.defaultCountry, this.defaultCallingCode)
-		this.resetFormat()
 		return this
 	}
 
@@ -168,6 +189,7 @@ export default class AsYouType {
 		} else {
 			this.matchingFormats = []
 		}
+		this.resetFormat()
 	}
 
 	resetFormat() {
@@ -204,21 +226,15 @@ export default class AsYouType {
 	extractFormattedDigits(text) {
 		// Extract a formatted phone number part from text.
 		let extractedNumber = extractFormattedPhoneNumber(text) || ''
-		// Special case for a lone '+' sign
-		// because it's not extracted in such cases.
-		if (!extractedNumber) {
-			if (text && text.indexOf('+') >= 0) {
-				extractedNumber = '+'
-			}
-		}
 		// Trim a `+`.
 		if (extractedNumber[0] === '+') {
 			// Trim the `+`.
 			extractedNumber = extractedNumber.slice('+'.length)
-			if (this.digits || this.isInternational()) {
+			if (this.digits) {
 				// If an out of position `+` is detected
 				// (or a second `+`) then just ignore it.
 			} else {
+				this.formattedOutput = '+'
 				this.startInternationalNumber()
 			}
 		}
@@ -279,10 +295,7 @@ export default class AsYouType {
 			} else {
 				// Extract country calling code from the digits entered so far.
 				// There must be some digits in order to extract anything from them.
-				if (!this.digits) {
-					// Don't format the phone number.
-					return
-				}
+				//
 				// If one looks at country phone codes
 				// then they can notice that no one country phone code
 				// is ever a (leftmost) substring of another country phone code.
@@ -1102,4 +1115,32 @@ export function repeat(string, times) {
 		string += string
 	}
 	return result + string
+}
+
+/**
+ * Extracts formatted phone number from text (if there's any).
+ * @param  {string} text
+ * @return {string} [formattedPhoneNumber]
+ */
+function extractFormattedPhoneNumber(text) {
+	// Attempt to extract a possible number from the string passed in.
+	const startsAt = text.search(VALID_PHONE_NUMBER)
+	if (startsAt < 0) {
+		return
+	}
+	// Trim everything to the left of the phone number.
+	text = text.slice(startsAt)
+	// Trim the `+`.
+	let hasPlus
+	if (text[0] === '+') {
+		hasPlus = true
+		text = text.slice('+'.length)
+	}
+	// Trim everything to the right of the phone number.
+	text = text.replace(AFTER_PHONE_NUMBER_DIGITS_END_PATTERN, '')
+	// Re-add the previously trimmed `+`.
+	if (hasPlus) {
+		text = '+' + text
+	}
+	return text
 }

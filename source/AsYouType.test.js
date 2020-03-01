@@ -28,6 +28,48 @@ describe('as you type', () => {
 		formatter.populatedNationalNumberTemplate.should.equal('1 (213) 373-4253')
 	})
 
+	it('should populate international number template (digit by digit) (default country)', () => {
+		const formatter = new AsYouType('US')
+		expect(formatter.template).to.be.undefined
+		expect(formatter.populatedNationalNumberTemplate).to.be.undefined
+		formatter.input('').should.equal('')
+		expect(formatter.template).to.be.undefined
+		expect(formatter.populatedNationalNumberTemplate).to.be.undefined
+		formatter.input('+').should.equal('+')
+		expect(formatter.template).to.be.undefined
+		expect(formatter.populatedNationalNumberTemplate).to.be.undefined
+		formatter.input('1').should.equal('+1')
+		formatter.template.should.equal('xx xxx xxx xxxx')
+		// Hasn't yet started formatting the phone number using the template.
+		formatter.populatedNationalNumberTemplate.should.equal('xxx xxx xxxx')
+		// Has some national number digits, starts formatting the phone number using the template.
+		formatter.input('213')
+		formatter.populatedNationalNumberTemplate.should.equal('213 xxx xxxx')
+		formatter.input('3734253')
+		formatter.populatedNationalNumberTemplate.should.equal('213 373 4253')
+	})
+
+	it('should populate international number template (digit by digit)', () => {
+		const formatter = new AsYouType()
+		expect(formatter.template).to.be.undefined
+		expect(formatter.populatedNationalNumberTemplate).to.be.undefined
+		formatter.input('').should.equal('')
+		expect(formatter.template).to.be.undefined
+		expect(formatter.populatedNationalNumberTemplate).to.be.undefined
+		formatter.input('+').should.equal('+')
+		expect(formatter.template).to.be.undefined
+		expect(formatter.populatedNationalNumberTemplate).to.be.undefined
+		formatter.input('1').should.equal('+1')
+		formatter.template.should.equal('xx xxx xxx xxxx')
+		// Hasn't yet started formatting the phone number using the template.
+		formatter.populatedNationalNumberTemplate.should.equal('xxx xxx xxxx')
+		// Has some national number digits, starts formatting the phone number using the template.
+		formatter.input('213')
+		formatter.populatedNationalNumberTemplate.should.equal('213 xxx xxxx')
+		formatter.input('3734253')
+		formatter.populatedNationalNumberTemplate.should.equal('213 373 4253')
+	})
+
 	it('should populate national number template (attempt to format complete number)', () => {
 		const formatter = new AsYouType('US')
 		formatter.input('12133734253').should.equal('1 (213) 373-4253')
@@ -392,7 +434,7 @@ describe('as you type', () => {
 
 		formatter = new AsYouType('RU')
 
-		formatter.input('+1abc2').should.equal('')
+		formatter.input('+1abc2').should.equal('+1')
 
 		// Should reset default country when explicitly
 		// typing in an international phone number
@@ -428,7 +470,7 @@ describe('as you type', () => {
 	})
 
 	it('should not accept phone number extensions', () => {
-		new AsYouType().input('+1-213-373-4253 ext. 123').should.equal('')
+		new AsYouType().input('+1-213-373-4253 ext. 123').should.equal('+1 213 373 4253')
 	})
 
 	it('should parse non-European digits', () => {

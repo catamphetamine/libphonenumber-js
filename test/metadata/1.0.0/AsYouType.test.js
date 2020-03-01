@@ -314,7 +314,7 @@ describe('as you type', () =>
 
 		formatter = new as_you_type('RU')
 
-		formatter.input('+1abc2').should.equal('')
+		formatter.input('+1abc2').should.equal('+1')
 
 		// Should reset default country when explicitly
 		// typing in an international phone number
@@ -349,7 +349,7 @@ describe('as you type', () =>
 
 	it('should not accept phone number extensions', function()
 	{
-		new as_you_type().input('+1-213-373-4253 ext. 123').should.equal('')
+		new as_you_type().input('+1-213-373-4253 ext. 123').should.equal('+1 213 373 4253')
 	})
 
 	it('should parse non-European digits', function()
