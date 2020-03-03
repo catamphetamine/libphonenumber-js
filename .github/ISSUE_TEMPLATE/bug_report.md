@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Reporting validation/parsing/formatting/AsYouType bugs
+about: Reporting bugs
 title: ''
 labels: ''
 assignees: catamphetamine
@@ -10,6 +10,14 @@ assignees: catamphetamine
 ## Steps to reproduce
 
 Describe the clear steps to reproduce the issue.
+
+## Observed result
+
+What's the observed result?
+
+## Expected result
+
+What's the expected result?
 
 ## Google's demo link
 
