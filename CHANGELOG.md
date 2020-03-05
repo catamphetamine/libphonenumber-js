@@ -53,6 +53,11 @@ And edit the README:
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
 
+1.7.32 / 03.02.2020
+===================
+
+* `AsYouType.input()` no longer accepts "falsy" values like `null`: instead, it only accepts strings.
+
 1.7.38 / 04.02.2020
 ===================
 
