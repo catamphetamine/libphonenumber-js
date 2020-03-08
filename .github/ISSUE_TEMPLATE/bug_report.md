@@ -19,6 +19,8 @@ What's the observed result?
 
 What's the expected result?
 
+If the expected result is `.isValid()` returning `false` but it returns `true` in your code and at the same time it shows `false` on the demo page, then it means that your code uses non-`max` metadata. See the readme for more info on `min` vs `max`.
+
 ## Google's demo link
 
 If it's a validation/parsing/formatting/AsYouType bug, then post a link to [Google's `libphonenumber` demo page](https://libphonenumber.appspot.com/) illustrating the correct behaviour. If Google's demo result is the same as this library's result, then submit an issue in [Google's repo](https://github.com/google/libphonenumber#quick-links).
