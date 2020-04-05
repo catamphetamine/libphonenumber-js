@@ -55,6 +55,8 @@ export class PhoneNumber {
   formatNational(options?: FormatNumberOptionsWithoutIDD): string;
   formatInternational(options?: FormatNumberOptionsWithoutIDD): string;
   getURI(options?: FormatNumberOptionsWithoutIDD): string;
+  isNonGeographic(): boolean;
+  isEqual(phoneNumber: PhoneNumber): boolean;
 }
 
 export interface NumberFound {

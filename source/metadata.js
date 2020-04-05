@@ -13,7 +13,7 @@ const V4 = '1.7.35'
 const DEFAULT_EXT_PREFIX = ' ext. '
 
 /**
- * See: https://github.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md
+ * See: https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md
  */
 export default class Metadata {
 	constructor(metadata) {

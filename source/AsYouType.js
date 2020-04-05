@@ -170,7 +170,7 @@ export default class AsYouType {
 
 	reset() {
 		this.formattedOutput = ''
-		this.international = undefined
+		this.international = false
 		this.internationalPrefix = undefined
 		this.countryCallingCode = undefined
 		this.digits = ''
@@ -179,6 +179,55 @@ export default class AsYouType {
 		this.carrierCode = ''
 		this.setCountry(this.defaultCountry, this.defaultCallingCode)
 		return this
+	}
+
+	resetFormat() {
+		this.chosenFormat = undefined
+		this.template = undefined
+		this.populatedNationalNumberTemplate = undefined
+		this.populatedNationalNumberTemplatePosition = -1
+	}
+
+	/**
+	 * Returns `true` if the phone number is being input in international format.
+	 * In other words, returns `true` if and only if the parsed phone number starts with a `"+"`.
+	 * @return {boolean}
+	 */
+	isInternational() {
+		return this.international
+	}
+
+	/**
+	 * Returns the "country calling code" part of the phone number.
+	 * Returns `undefined` if the number is not being input in international format.
+	 * Returns "country calling code" for "non-geographic" phone numbering plans too.
+	 * @return {string} [countryCallingCode]
+	 */
+	getCountryCallingCode() {
+		return this.countryCallingCode
+	}
+
+	/**
+	 * Returns a two-letter country code of the phone number.
+	 * Returns `undefined` for "non-geographic" phone numbering plans.
+	 * Returns `undefined` if no phone number has been input yet.
+	 * @return {string} [country]
+	 */
+	getCountry() {
+		// If no digits have been input yet,
+		// then `this.country` is the `defaultCountry`.
+		// Won't return the `defaultCountry` in such case.
+		if (!this.digits) {
+			return
+		}
+		let countryCode = this.country
+		/* istanbul ignore if */
+		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
+			if (this.country === '001') {
+				countryCode = undefined
+			}
+		}
+		return countryCode
 	}
 
 	setCountry(country, callingCode) {
@@ -190,13 +239,6 @@ export default class AsYouType {
 			this.matchingFormats = []
 		}
 		this.resetFormat()
-	}
-
-	resetFormat() {
-		this.chosenFormat = undefined
-		this.template = undefined
-		this.populatedNationalNumberTemplate = undefined
-		this.populatedNationalNumberTemplatePosition = -1
 	}
 
 	/**
@@ -918,10 +960,6 @@ export default class AsYouType {
 		// 	.replace(new RegExp(DIGIT_PLACEHOLDER, 'g'), ' ')
 	}
 
-	isInternational() {
-		return this.international
-	}
-
 	getFormatFormat(format) {
 		if (this.isInternational()) {
 			return applyInternationalSeparatorStyle(format.internationalFormat())
@@ -959,14 +997,8 @@ export default class AsYouType {
 		if (!this.nationalNumberDigits) {
 			return undefined
 		}
-		let countryCode = this.country
-		/* istanbul ignore if */
-		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
-			if (this.country === '001') {
-				countryCode = undefined
-			}
-		}
-		const callingCode = this.countryCallingCode || this.defaultCallingCode
+		let countryCode = this.getCountry()
+		const callingCode = this.getCountryCallingCode() || this.defaultCallingCode
 		let nationalNumber = this.nationalNumberDigits
 		let carrierCode = this.carrierCode
 		// When an international number without a leading `+` has been autocorrected,
@@ -1006,6 +1038,32 @@ export default class AsYouType {
 		}
 		// Phone number extensions are not supported by "As You Type" formatter.
 		return phoneNumber
+	}
+
+	/**
+	 * Returns `true` if the phone number is "possible".
+	 * Is just a shortcut for `PhoneNumber.isPossible()`.
+	 * @return {boolean}
+	 */
+	isPossible() {
+		const phoneNumber = this.getNumber()
+		if (!phoneNumber) {
+			return false
+		}
+		return phoneNumber.isPossible()
+	}
+
+	/**
+	 * Returns `true` if the phone number is "valid".
+	 * Is just a shortcut for `PhoneNumber.isValid()`.
+	 * @return {boolean}
+	 */
+	isValid() {
+		const phoneNumber = this.getNumber()
+		if (!phoneNumber) {
+			return false
+		}
+		return phoneNumber.isValid()
 	}
 
 	/**

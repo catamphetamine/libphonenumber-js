@@ -31,7 +31,7 @@ export default function parseIncompletePhoneNumber(string) {
 
 /**
  * `input-format` `parse()` function.
- * https://github.com/catamphetamine/input-format
+ * https://gitlab.com/catamphetamine/input-format
  * @param  {string} character - Yet another character from raw input string.
  * @param  {string} value - The value parsed so far.
  * @param  {object} meta - Optional custom use-case-specific metadata.

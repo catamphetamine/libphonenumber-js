@@ -53,6 +53,50 @@ And edit the README:
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
 
+1.7.50 / 05.04.2020
+===================
+
+* [Added](https://github.com/catamphetamine/libphonenumber-js/issues/388#issuecomment-609036293) some utility functions to `AsYouType`:
+
+```js
+/**
+ * Returns `true` if the phone number is being input in international format.
+ * In other words, returns `true` if and only if the parsed phone number starts with a `"+"`.
+ * @return {boolean}
+ */
+isInternational()
+
+/**
+ * Returns the "country calling code" part of the phone number.
+ * Returns `undefined` if the number is not being input in international format.
+ * Returns "country calling code" for "non-geographic" phone numbering plans too.
+ * @return {string} [countryCallingCode]
+ */
+getCountryCallingCode()
+
+/**
+ * Returns a two-letter country code of the phone number.
+ * Returns `undefined` for "non-geographic" phone numbering plans.
+ * Returns `undefined` if no phone number has been input yet.
+ * @return {string} [country]
+ */
+getCountry()
+
+/**
+ * Returns `true` if the phone number is "possible".
+ * Is just a shortcut for `PhoneNumber.isPossible()`.
+ * @return {boolean}
+ */
+isPossible()
+
+/**
+ * Returns `true` if the phone number is "valid".
+ * Is just a shortcut for `PhoneNumber.isValid()`.
+ * @return {boolean}
+ */
+isValid()
+```
+
 1.7.38 / 04.02.2020
 ===================
 

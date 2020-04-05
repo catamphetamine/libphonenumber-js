@@ -48,9 +48,13 @@ npm-debug.log
 /bundle/legacy.html
 /bundle/input-format.min.js
 /bundle/input-format.min.js.map
+/bundle/input-format-react.min.js
+/bundle/input-format-react.min.js.map
 
 # intermediary metadata
 /metadata.json
 /PhoneNumberMetadata.xml
 
 /test.no.babel.runtime.js
+
+/website/

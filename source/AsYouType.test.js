@@ -748,12 +748,92 @@ describe('as you type', () => {
 		formatter2.getSeparatorAfterNationalPrefix(format2).should.equal('')
 	})
 
-	756789
-
 	it('should repeat string N times', () => {
 		repeat('a', 0).should.equal('')
 		repeat('a', 3).should.equal('aaa')
 		repeat('a', 4).should.equal('aaaa')
+	})
+
+	it('should return if the number is possible', () => {
+		// National. Russia.
+		const formatter = new AsYouType('RU')
+		formatter.isPossible().should.equal(false)
+		formatter.input('8')
+		formatter.isPossible().should.equal(false)
+		formatter.input('8005553535')
+		formatter.isPossible().should.equal(true)
+		formatter.input('5')
+		formatter.isPossible().should.equal(false)
+	})
+
+	it('should return if the number is valid', () => {
+		// National. Russia.
+		const formatter = new AsYouType('RU')
+		formatter.isValid().should.equal(false)
+		formatter.input('88005553535')
+		formatter.isValid().should.equal(true)
+		formatter.input('5')
+		formatter.isValid().should.equal(false)
+	})
+
+	it('should return if the number is international', () => {
+		// National. Russia.
+		const formatter = new AsYouType('RU')
+		formatter.isInternational().should.equal(false)
+		formatter.input('88005553535')
+		formatter.isInternational().should.equal(false)
+		// International. Russia.
+		const formatterInt = new AsYouType()
+		formatterInt.isInternational().should.equal(false)
+		formatterInt.input('+')
+		formatterInt.isInternational().should.equal(true)
+		formatterInt.input('78005553535')
+		formatterInt.isInternational().should.equal(true)
+	})
+
+	it('should return country calling code part of the number', () => {
+		// National. Russia.
+		const formatter = new AsYouType('RU')
+		expect(formatter.getCountryCallingCode()).to.be.undefined
+		formatter.input('88005553535')
+		expect(formatter.getCountryCallingCode()).to.be.undefined
+		// International. Russia.
+		const formatterInt = new AsYouType()
+		expect(formatterInt.getCountryCallingCode()).to.be.undefined
+		formatterInt.input('+')
+		expect(formatterInt.getCountryCallingCode()).to.be.undefined
+		formatterInt.input('7')
+		expect(formatterInt.getCountryCallingCode()).to.equal('7')
+		formatterInt.input('8005553535')
+		expect(formatterInt.getCountryCallingCode()).to.equal('7')
+	})
+
+	it('should return the country of the number', () => {
+		// National. Russia.
+		const formatter = new AsYouType('RU')
+		expect(formatter.getCountry()).to.be.undefined
+		formatter.input('8')
+		expect(formatter.getCountry()).to.equal('RU')
+		formatter.input('8005553535')
+		expect(formatter.getCountry()).to.equal('RU')
+		// International. Austria.
+		const formatterInt = new AsYouType()
+		expect(formatterInt.getCountry()).to.be.undefined
+		formatterInt.input('+')
+		expect(formatterInt.getCountry()).to.be.undefined
+		formatterInt.input('43')
+		expect(formatterInt.getCountry()).to.equal('AT')
+		// International. USA.
+		const formatterIntRu = new AsYouType()
+		expect(formatterIntRu.getCountry()).to.be.undefined
+		formatterIntRu.input('+')
+		expect(formatterIntRu.getCountry()).to.be.undefined
+		formatterIntRu.input('1')
+		expect(formatterIntRu.getCountry()).to.be.undefined
+		formatterIntRu.input('2133734253')
+		expect(formatterIntRu.getCountry()).to.equal('US')
+		formatterIntRu.input('1')
+		expect(formatterIntRu.getCountry()).to.be.undefined
 	})
 })
 

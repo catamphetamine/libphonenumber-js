@@ -162,7 +162,7 @@ export default function(input, version, included_countries, extended, included_p
 	}
 
 	// Parse the XML metadata.
-	// See: https://github.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md
+	// See: https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md
 	return parseStringPromisified(input).then((xml) =>
 	{
 		// https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml

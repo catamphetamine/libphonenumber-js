@@ -6,7 +6,7 @@
 
 A simpler and smaller rewrite of Google Android's [`libphonenumber`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/) library in javascript.
 
-[See Demo](https://catamphetamine.github.io/libphonenumber-js/)
+[See Demo](https://catamphetamine.gitlab.io/libphonenumber-js/)
 
 ## LibPhoneNumber
 
@@ -32,6 +32,10 @@ One part of me was curious about how all this phone number parsing and formattin
   (`.formatNumberForMobileDialing()` method is not implemented therefore there's no need to format carrier codes)
   -->
 
+## GitHub Ban
+
+On March 9th, 2020, GitHub, Inc. silently [banned](https://medium.com/@catamphetamine/how-github-blocked-me-and-all-my-libraries-c32c61f061d3) my account (and all my libraries) without any notice for an unknown reason. I opened a support ticked but they didn't answer. Because of that, I had to move all my libraries to [GitLab](https://gitlab.com/catamphetamine).
+
 ## Install
 
 via [npm](https://npmjs.org/)
@@ -46,7 +50,7 @@ via [yarn](https://yarnpkg.com)
 $ yarn add libphonenumber-js
 ```
 
-If you're not using a bundler then use a [standalone version from a CDN](https://github.com/catamphetamine/libphonenumber-js/#cdn).
+If you're not using a bundler then use a [standalone version from a CDN](https://gitlab.com/catamphetamine/libphonenumber-js/#cdn).
 
 ## "min" vs "max" vs "mobile" vs "core"
 
@@ -54,7 +58,7 @@ This library requires choosing a "metadata" set to be used, "metadata" being a l
 
 * `max` — The complete metadata set, is about `140 kilobytes` in size (`libphonenumber-js/metadata.full.json`). Choose this when you need a strict version of `isValidPhoneNumber(value)` function, or if you need to get phone number type (fixed line, mobile, etc).
 
-* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://github.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://github.com/catamphetamine/libphonenumber-js#gettype)) for most countries. Some simple phone number validation via `.isValid()` still works (basic length check, etc), it's just that it's loose compared to the "advanced" validation (not so strict). Choose this by default: when you don't need to get phone number type (fixed line, mobile, etc), or when a non-strict version of `isValidPhoneNumber(value)` function is enough.
+* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://gitlab.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://gitlab.com/catamphetamine/libphonenumber-js#gettype)) for most countries. Some simple phone number validation via `.isValid()` still works (basic length check, etc), it's just that it's loose compared to the "advanced" validation (not so strict). Choose this by default: when you don't need to get phone number type (fixed line, mobile, etc), or when a non-strict version of `isValidPhoneNumber(value)` function is enough.
 
 * `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`). Choose this when you _only_ work with mobile numbers and a strict version of `isValidPhoneNumber(value)` function is required for validating mobile numbers.
 
@@ -62,7 +66,7 @@ To use a particular metadata set import functions from the relevant sub-package:
 
 Importing functions directly from `libphonenumber-js` results in using the `min` metadata which means loose (non-strict) phone number validation via `.isValid()` and no getting phone number type via `.getType()` for most countries.
 
-Sometimes (rarely) not all countries are needed and in those cases the developers may want to [generate](https://github.com/catamphetamine/libphonenumber-js#customizing-metadata) their own "custom" metadata set. For those cases there's `libphonenumber-js/core` sub-package which doesn't come pre-wired with any default metadata and instead accepts the metadata as the last argument of each exported function.
+Sometimes (rarely) not all countries are needed and in those cases the developers may want to [generate](https://gitlab.com/catamphetamine/libphonenumber-js#customizing-metadata) their own "custom" metadata set. For those cases there's `libphonenumber-js/core` sub-package which doesn't come pre-wired with any default metadata and instead accepts the metadata as the last argument of each exported function.
 
 ## Use
 
@@ -443,7 +447,10 @@ Available `options`:
 
 * `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographic numbering plans"](#non-geographic) and they don't have a country code, so `defaultCountry` can't be specified for them.
 
- * `input(text)` — Takes any text, parses it and appends the digits to the input. Returns the formatted phone number.
+The formatter instance has the following methods:
+
+ * `input(text: string)` — Appends text to the input. Returns the formatted phone number.
+
  * `reset()` — Resets the input.
 
 ```js
@@ -486,6 +493,16 @@ asYouType.getNumber().country === 'US'
 asYouType.getNumber().number === '+12133734253'
 asYouType.getTemplate() === 'xx xxx xxx xxxx'
 ```
+
+ * `isInternational(): boolean` — Returns `true` if the phone number is being input in international format. In other words, returns `true` if and only if the parsed phone number starts with a `"+"`.
+
+ * `getCountryCallingCode(): string` — Returns the ["country calling code"](#country-calling-code) part of the phone number. Returns `undefined` if the number is not being input in international format. Returns "country calling code" for ["non-geographic"](#non-geographic) phone numbering plans too.
+
+ * `getCountry(): string` — Returns a two-letter [country code](#country-code) of the phone number. Returns `undefined` for ["non-geographic"](#non-geographic) phone numbering plans. Returns `undefined` if no phone number has been input yet.
+
+ * `isPossible(): boolean` — Returns `true` if the phone number is "possible". Is just a shortcut for [`PhoneNumber.isPossible()`](#ispossible-boolean).
+
+ * `isValid(): boolean` — Returns `true` if the phone number is "valid". Is just a shortcut for [`PhoneNumber.isValid()`](#isvalid-boolean).
 
 <details>
 <summary>Legacy API (before version <code>1.6.0</code>)</summary>
@@ -727,7 +744,7 @@ getExtPrefix('GB') === ' x'
 <!--
 ### parsePhoneNumberCharacter(nextCharacter, value)
 
-Parses next character while parsing `value` from text: discards everything except `+` and digits, and `+` is only allowed at the start of a phone number. Can be used for [`input-format`](https://github.com/catamphetamine/input-format).
+Parses next character while parsing `value` from text: discards everything except `+` and digits, and `+` is only allowed at the start of a phone number. Can be used for [`input-format`](https://gitlab.com/catamphetamine/input-format).
 
 ```js
 parsePhoneNumberCharacter('5', '880055') === '5'
@@ -739,7 +756,7 @@ parsePhoneNumberCharacter('a', '') === ''
 
 ### parseDigits(text: string): string
 
-Parses digits from string. Can be used for building a phone number extension input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
+Parses digits from string. Can be used for building a phone number extension input component (e.g. [react-phone-number-input](https://gitlab.com/catamphetamine/react-phone-number-input/)).
 
 ```js
 parseDigits('x123') === '123'
@@ -748,7 +765,7 @@ parseDigits('٤٤٢٣') === '4423'
 
 ### parseIncompletePhoneNumber(text: string): string
 
-Parses phone number characters (`+` and digits). Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
+Parses phone number characters (`+` and digits). Can be used for building a phone number input component (e.g. [react-phone-number-input](https://gitlab.com/catamphetamine/react-phone-number-input/)).
 
 ```js
 parseIncompletePhoneNumber('8 (800) 555') === '8800555'
@@ -758,7 +775,7 @@ parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤') === '+442323234'
 
 ### formatIncompletePhoneNumber(value: string, country: string?): string
 
-Formats incomplete phone number as a national one for a given `country`. If `country` is not specified then outputs the phone number in international format. This is just an alias for `new AsYouType(country, metadata).input(value)`. Can be used for building a phone number input component (e.g. [react-phone-number-input](https://github.com/catamphetamine/react-phone-number-input/)).
+Formats incomplete phone number as a national one for a given `country`. If `country` is not specified then outputs the phone number in international format. This is just an alias for `new AsYouType(country, metadata).input(value)`. Can be used for building a phone number input component (e.g. [react-phone-number-input](https://gitlab.com/catamphetamine/react-phone-number-input/)).
 
 ```js
 formatIncompletePhoneNumber('8800555', 'RU') === '8 (800) 555'
@@ -1066,14 +1083,14 @@ If it was required to validate a phone number being input by a user, then I'd pe
 
 ## React
 
-There's also a React component utilizing this library — [`react-phone-number-input`](https://github.com/catamphetamine/react-phone-number-input) (or [without country select](https://github.com/catamphetamine/react-phone-number-input#without-country-select)).
+There's also a React component utilizing this library — [`react-phone-number-input`](https://gitlab.com/catamphetamine/react-phone-number-input) (or [without country select](https://gitlab.com/catamphetamine/react-phone-number-input#without-country-select)).
 
 ## Bug reporting
 
 When reporting an issue one must also provide a link to [Google's `libphonenumber` demo page](https://libphonenumber.appspot.com/) illustrating the expected behaviour. This includes validation, parsing, formatting and "as you type" formatting. For example, for an Australian number `438 331 999` Google's demo [outputs four sections](https://libphonenumber.appspot.com/phonenumberparser?number=438331999&country=AU) — "Parsing Result", "Validation Results", "Formatting Results" and "AsYouTypeFormatter Results". In a bug report, first describe the observed `libphonenumber-js` demo result and then Google's demo result (with a link to it) which must differ from the observed `libphonenumber-js` demo result. If the observed `libphonenumber-js` demo result is the same as Google's demo result and you don't agree with Google's demo result then create an issue in [Google's repo](https://github.com/googlei18n/libphonenumber).
 
 <!--
-Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#customizing-metadata) fed with `metadata.full.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.github.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s.
+Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#customizing-metadata) fed with `metadata.full.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.gitlab.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s.
 
 There is also a possibility of this library's demo metadata being outdated, or this library's metadata lagging behind Google's (I have to update it manually from time to time due to `ssh-agent` not working properly on Windows).
 -->
@@ -1082,7 +1099,7 @@ When reporting `findPhoneNumbersInText()` bugs one should know that `findPhoneNu
 
 ## TypeScript
 
-[TypeScript support](https://github.com/catamphetamine/libphonenumber-js/blob/master/index.d.ts) for this library is entirely community-driven. I myself don't use TypeScript. Send your pull requests.
+[TypeScript support](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/index.d.ts) for this library is entirely community-driven. I myself don't use TypeScript. Send your pull requests.
 
 ## CDN
 
@@ -1103,7 +1120,7 @@ where `[version]` is an npm package version range (for example, `1.x` or `^1.7.6
 
 For those who aren't using bundlers for some reason there's a way to build a standalone version of the library
 
- * `git clone https://github.com/catamphetamine/libphonenumber-js.git`
+ * `git clone https://gitlab.com/catamphetamine/libphonenumber-js.git`
  * `npm install`
  * `npm run build`
  * See the `bundle` folder for `libphonenumber-js.min.js`
@@ -1118,7 +1135,7 @@ For those who aren't using bundlers for some reason there's a way to build a sta
 
 ## Metadata
 
-Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields. See [metadata fields description](https://github.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md).
+Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields. See [metadata fields description](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md).
 
 <!--
 Currently I have a script set up monitoring changes to `PhoneNumberMetadata.xml` in Google's repo and automatically releasing new versions of this library when metadata in Google's repo gets updated. So this library's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
@@ -1171,7 +1188,7 @@ The arguments are:
 * The first argument is the output metadata file path.
 * `--countries` argument is a comma-separated list of the countries included (if `--countries` is omitted then all countries are included).
 * `--extended` argument may be passed to include all regular expressions for precise phone number validation and getting phone number type, which will enlarge the resulting metadata size approximately twice.
-* `--types ...` argument may be passed instead of `--extended` to generate metadata that _only_ supports the selected phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [See the list of all possible phone number types](https://github.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18).
+* `--types ...` argument may be passed instead of `--extended` to generate metadata that _only_ supports the selected phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [See the list of all possible phone number types](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18).
 </details>
 
 ####
@@ -1325,7 +1342,7 @@ http://alvinalexander.com/mac-os-x/mac-osx-startup-crontab-launchd-jobs
 ```sh
 mkdir /Users/kuchumovn/work/libphonenumber-js-autoupdate
 
-git clone https://github.com/catamphetamine/libphonenumber-js.git /Users/kuchumovn/work/libphonenumber-js-autoupdate
+git clone https://gitlab.com/catamphetamine/libphonenumber-js.git /Users/kuchumovn/work/libphonenumber-js-autoupdate
 
 cd /Users/kuchumovn/work/libphonenumber-js-autoupdate
 
@@ -1333,14 +1350,14 @@ npm install
 
 chmod u+x /Users/kuchumovn/work/libphonenumber-js-autoupdate/autoupdate.sh
 
-nano ~/Library/LaunchAgents/com.github.catamphetamine.libphonenumber-js.metadata-update.plist
+nano ~/Library/LaunchAgents/com.gitlab.catamphetamine.libphonenumber-js.metadata-update.plist
 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>com.github.catamphetamine.libphonenumber-js.metadata-update</string>
+    <string>com.gitlab.catamphetamine.libphonenumber-js.metadata-update</string>
 
     <key>ProgramArguments</key>
     <array>
@@ -1364,7 +1381,7 @@ nano ~/Library/LaunchAgents/com.github.catamphetamine.libphonenumber-js.metadata
   </dict>
 </plist>
 
-launchctl load ~/Library/LaunchAgents/com.github.catamphetamine.libphonenumber-js.metadata-update.plist
+launchctl load ~/Library/LaunchAgents/com.gitlab.catamphetamine.libphonenumber-js.metadata-update.plist
 
 launchctl list | grep 'libphonenumber-js'
 ```
@@ -1418,7 +1435,7 @@ npm install [module name with version].tar.gz
 
 ## Advertisement
 
-If you're looking for an international "2 days ago" javascript solution then check out [`javascript-time-ago`](https://github.com/catamphetamine/javascript-time-ago).
+If you're looking for an international "2 days ago" javascript solution then check out [`javascript-time-ago`](https://gitlab.com/catamphetamine/javascript-time-ago).
 
 ## License
 

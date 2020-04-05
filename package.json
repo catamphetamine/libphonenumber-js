@@ -1,12 +1,12 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.7.46",
+  "version": "1.7.50",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.common.js",
   "module": "index.es6.js",
   "sideEffects": false,
   "dependencies": {
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.5",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {
@@ -60,7 +60,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/catamphetamine/libphonenumber-js.git"
+    "url": "git+https://gitlab.com/catamphetamine/libphonenumber-js.git"
   },
   "keywords": [
     "javascript",
@@ -77,9 +77,9 @@
   "author": "catamphetamine <purecatamphetamine@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/catamphetamine/libphonenumber-js/issues"
+    "url": "https://gitlab.com/catamphetamine/libphonenumber-js/issues"
   },
-  "homepage": "https://github.com/catamphetamine/libphonenumber-js#readme",
+  "homepage": "https://gitlab.com/catamphetamine/libphonenumber-js#readme",
   "bin": {
     "libphonenumber-generate-metadata": "./bin/update-metadata.js"
   }
