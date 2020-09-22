@@ -3,11 +3,21 @@
 
 'use strict'
 
-exports = module.exports = {}
+var parsePhoneNumberFromString = require('./build/parsePhoneNumberFromString').default
+
+// ES5 `require()` "default" "interoperability" hack.
+// https://github.com/babel/babel/issues/2212#issuecomment-131827986
+// An alternative approach:
+// https://www.npmjs.com/package/babel-plugin-add-module-exports
+exports = module.exports = parsePhoneNumberFromString
+exports['default'] = parsePhoneNumberFromString
 
 exports.ParseError = require('./build/ParseError').default
 exports.parsePhoneNumber = require('./build/parsePhoneNumber').default
-exports.parsePhoneNumberFromString = require('./build/parsePhoneNumberFromString').default
+
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
+exports.parsePhoneNumberFromString = parsePhoneNumberFromString
 
 // Deprecated: remove `parse()` export in 2.0.0.
 // (renamed to `parseNumber()`)

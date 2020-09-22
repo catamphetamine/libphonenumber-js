@@ -1,4 +1,4 @@
-import
+import defaultExportParse,
 {
 	ParseError,
 	parsePhoneNumber,
@@ -66,6 +66,8 @@ import examples from '../examples.mobile.json'
 
 describe(`exports`, () => {
 	it(`should export ES6`, () => {
+		defaultExportParse('+12133734253').nationalNumber.should.equal('2133734253')
+
 		expect(ParseError).to.be.a('function')
 		parsePhoneNumber('+12133734253').nationalNumber.should.equal('2133734253')
 		parsePhoneNumberFromString('+12133734253').nationalNumber.should.equal('2133734253')
@@ -131,6 +133,9 @@ describe(`exports`, () => {
 
 	it(`should export CommonJS`, () => {
 		const Library = require('../index.common')
+
+		Library('+12133734253').nationalNumber.should.equal('2133734253')
+		Library.default('+12133734253').nationalNumber.should.equal('2133734253')
 
 		expect(Library.ParseError).to.be.a('function')
 		Library.parsePhoneNumber('+12133734253').nationalNumber.should.equal('2133734253')

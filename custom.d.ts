@@ -45,8 +45,12 @@ export {
 export function parsePhoneNumber(text: string, metadata: Metadata): PhoneNumber;
 export function parsePhoneNumber(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber;
 
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
 export function parsePhoneNumberFromString(text: string, metadata: Metadata): PhoneNumber;
 export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }, metadata: Metadata): PhoneNumber;
+
+export default parsePhoneNumberFromString;
 
 export function parse(text: string, metadata: Metadata): ParsedNumber;
 export function parse(text: string, options: CountryCode | ParseNumberOptions, metadata: Metadata): ParsedNumber;

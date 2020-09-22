@@ -9,7 +9,16 @@ function call(func, _arguments) {
 	return func.apply(this, args)
 }
 
-exports = module.exports = {}
+function parsePhoneNumberFromString() {
+	return call(core.parsePhoneNumberFromString, arguments)
+}
+
+// ES5 `require()` "default" "interoperability" hack.
+// https://github.com/babel/babel/issues/2212#issuecomment-131827986
+// An alternative approach:
+// https://www.npmjs.com/package/babel-plugin-add-module-exports
+exports = module.exports = parsePhoneNumberFromString
+exports['default'] = parsePhoneNumberFromString
 
 exports.ParseError = core.ParseError
 
@@ -17,9 +26,9 @@ exports.parsePhoneNumber = function parsePhoneNumber() {
 	return call(core.parsePhoneNumber, arguments)
 }
 
-exports.parsePhoneNumberFromString = function parsePhoneNumberFromString() {
-	return call(core.parsePhoneNumberFromString, arguments)
-}
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
+exports.parsePhoneNumberFromString = parsePhoneNumberFromString
 
 exports.findNumbers = function findNumbers() {
 	return call(core.findNumbers, arguments)

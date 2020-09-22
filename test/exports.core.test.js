@@ -1,4 +1,4 @@
-import {
+import parse, {
 	ParseError,
 	parsePhoneNumber,
 	parsePhoneNumberFromString,
@@ -37,6 +37,7 @@ describe('exports/core', () => {
 
 		parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
+		parse('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 		parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 		expect(parsePhoneNumberFromString('2133734253', metadata)).to.be.undefined
 
@@ -69,6 +70,9 @@ describe('exports/core', () => {
 		const Library = require('../core/index.commonjs')
 
 		expect(Library.ParseError).to.be.a('function')
+
+		Library('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		Library.default('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
 		Library.parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 

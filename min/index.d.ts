@@ -30,8 +30,12 @@ export {
   NumberFormat
 };
 
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
 export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
 export function parsePhoneNumberFromString(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): PhoneNumber | undefined;
+
+export default parsePhoneNumberFromString;
 
 export function findNumbers(text: string, options?: CountryCode): NumberFoundLegacy[];
 export function searchNumbers(text: string, options?: CountryCode): IterableIterator<NumberFoundLegacy>;

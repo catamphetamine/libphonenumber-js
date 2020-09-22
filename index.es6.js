@@ -48,12 +48,16 @@ export function parsePhoneNumber()
 	return parsePhoneNumberCustom.apply(this, parameters)
 }
 
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
 export function parsePhoneNumberFromString()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
 	return parsePhoneNumberFromStringCustom.apply(this, parameters)
 }
+
+export default parsePhoneNumberFromString
 
 export function parseNumber()
 {

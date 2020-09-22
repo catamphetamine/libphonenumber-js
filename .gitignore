@@ -44,3 +44,6 @@ npm-debug.log
 /metadata.min.json.js
 /metadata.mobile.json.js
 /examples.mobile.json.js
+
+# code coverage
+.nyc_output

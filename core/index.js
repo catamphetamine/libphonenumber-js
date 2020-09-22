@@ -1,6 +1,9 @@
 export { default as ParseError } from '../es6/ParseError'
 export { default as parsePhoneNumber } from '../es6/parsePhoneNumber'
-export { default as parsePhoneNumberFromString } from '../es6/parsePhoneNumberFromString'
+
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
+export { default as default, default as parsePhoneNumberFromString } from '../es6/parsePhoneNumberFromString'
 
 export { default as findNumbers } from '../es6/findNumbers'
 export { default as searchNumbers } from '../es6/searchNumbers'

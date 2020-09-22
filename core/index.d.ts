@@ -35,8 +35,12 @@ export {
 export function parsePhoneNumber(text: string, metadata: Metadata): PhoneNumber;
 export function parsePhoneNumber(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber;
 
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
 export function parsePhoneNumberFromString(text: string, metadata: Metadata): PhoneNumber | undefined;
 export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber | undefined;
+
+export default parsePhoneNumberFromString;
 
 export function findNumbers(text: string, metadata: Metadata): NumberFoundLegacy[];
 export function findNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2: true }, metadata: Metadata): NumberFound[];

@@ -6,7 +6,19 @@
 var custom   = require('./custom')
 var metadata = require('./metadata.min.json')
 
-exports = module.exports = {}
+function parsePhoneNumberFromString()
+{
+	var parameters = Array.prototype.slice.call(arguments)
+	parameters.push(metadata)
+	return custom.parsePhoneNumberFromString.apply(this, parameters)
+}
+
+// ES5 `require()` "default" "interoperability" hack.
+// https://github.com/babel/babel/issues/2212#issuecomment-131827986
+// An alternative approach:
+// https://www.npmjs.com/package/babel-plugin-add-module-exports
+exports = module.exports = parsePhoneNumberFromString
+exports['default'] = parsePhoneNumberFromString
 
 exports.ParseError = custom.ParseError
 
@@ -17,12 +29,10 @@ exports.parsePhoneNumber = function parsePhoneNumber()
 	return custom.parsePhoneNumber.apply(this, parameters)
 }
 
-exports.parsePhoneNumberFromString = function parsePhoneNumberFromString()
-{
-	var parameters = Array.prototype.slice.call(arguments)
-	parameters.push(metadata)
-	return custom.parsePhoneNumberFromString.apply(this, parameters)
-}
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
+exports.parsePhoneNumberFromString = parsePhoneNumberFromString
+
 // Deprecated: remove `parse()` export in 2.0.0.
 // (renamed to `parseNumber()`)
 exports.parse = function parse()

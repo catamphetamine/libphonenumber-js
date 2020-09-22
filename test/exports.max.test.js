@@ -1,4 +1,4 @@
-import {
+import parse, {
 	ParseError,
 	parsePhoneNumber,
 	parsePhoneNumberFromString,
@@ -38,6 +38,8 @@ describe('exports/max', () => {
 		parsePhoneNumber('2133734253', 'US').nationalNumber.should.equal('2133734253')
 		parsePhoneNumber('2133734253', { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
 		parsePhoneNumber('2133734253', undefined, { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
+
+		parse('+12133734253').nationalNumber.should.equal('2133734253')
 
 		parsePhoneNumberFromString('+12133734253').nationalNumber.should.equal('2133734253')
 		expect(parsePhoneNumberFromString('2133734253')).to.be.undefined
@@ -91,6 +93,9 @@ describe('exports/max', () => {
 		Library.parsePhoneNumber('2133734253', 'US').nationalNumber.should.equal('2133734253')
 		Library.parsePhoneNumber('2133734253', { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
 		Library.parsePhoneNumber('2133734253', undefined, { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
+
+		Library('+12133734253').nationalNumber.should.equal('2133734253')
+		Library.default('+12133734253').nationalNumber.should.equal('2133734253')
 
 		Library.parsePhoneNumberFromString('+12133734253').nationalNumber.should.equal('2133734253')
 		expect(Library.parsePhoneNumberFromString('2133734253')).to.be.undefined

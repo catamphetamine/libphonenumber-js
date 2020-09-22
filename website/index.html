@@ -1,0 +1,452 @@
+<html>
+	<head>
+		<title>libphonenumber-js</title>
+
+		<!-- React 16 -->
+		<script crossorigin src="https://unpkg.com/react@16.10.2/umd/react.production.min.js"></script>
+		<script crossorigin src="https://unpkg.com/react-dom@16.10.2/umd/react-dom.production.min.js"></script>
+
+		<script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
+
+		<!-- PropTypes -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.7.2/prop-types.min.js"></script>
+
+		<script src="./lib/input-format-react.min.js"></script>
+
+		<script>
+			window.InputFormatReactInput = window.InputFormat
+		</script>
+
+		<script src="./lib/input-format.min.js"></script>
+		<script src="./libphonenumber-max.js"></script>
+
+		<meta charset="utf-8"/>
+	</head>
+
+	<style>
+		body
+		{
+			padding: 40px;
+		}
+
+		body, input, button, textarea
+		{
+			font-family: Arial, Helvetica;
+			font-size: 20px;
+		}
+
+		input[type="tel"],
+		input[type="text"]
+		{
+			padding-bottom: 4px;
+			border: none;
+			border-bottom: 1px solid #afafaf;
+			outline: none;
+		}
+
+		input[type="tel"]:focus,
+		input[type="text"]:focus
+		{
+			border-bottom-color: #0093C4;
+		}
+
+		h2
+		{
+			margin-top: 4rem;
+			margin-bottom: 2rem;
+			font-size: 2rem;
+			font-weight: normal;
+		}
+
+		.section
+		{
+			margin-top: 20px;
+		}
+
+		a
+		{
+			text-decoration: none;
+			color: #0093C4;
+		}
+
+		a:hover
+		{
+			text-decoration: underline;
+		}
+
+		a.main
+		{
+			display: block;
+			font-size: 32px;
+		}
+
+		p
+		{
+			margin-top: 10px;
+			margin-bottom: 40px;
+		}
+
+		pre
+		{
+			margin-top: 50px;
+			margin-bottom: 40px;
+			padding: 20px;
+			border: 1px solid #cfcfcf;
+			border-radius: 4px;
+			background: #fafafa;
+		}
+
+		button
+		{
+			display: block;
+			margin-top: 10px;
+
+			background : none;
+			border     : none;
+			outline    : none;
+			padding    : 0;
+
+			white-space: nowrap;
+
+			color: #0093C4;
+		}
+
+		.section__line
+		{
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+
+		.find-numbers-text, .find-numbers-highlighted
+		{
+			display: block;
+			box-sizing: border-box;
+			width: 100%;
+			line-height: 1.35em;
+		}
+
+		.find-numbers-text
+		{
+			min-height: 250px;
+			padding: 15px;
+			margin-bottom: 40px;
+		}
+
+		.find-numbers-highlighted
+		{
+			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+
+		.numbers-found li
+		{
+			margin-top: 15px;
+			margin-bottom: 15px;
+		}
+
+		mark
+		{
+			background-color: #b1d5e5;
+			border-radius: 5px;
+			padding-left: 5px;
+			padding-right: 5px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+		}
+
+		.key-value__key
+		{
+			font-weight: bolder;
+			padding-right: 0.5em;
+		}
+
+		.key-value__key:after
+		{
+			display: inline;
+			content: ':';
+			font-weight: normal;
+		}
+	</style>
+
+	<body>
+		<a target="_blank" class="main" href="https://gitlab.com/catamphetamine/libphonenumber-js"><code>libphonenumber-js</code></a>
+
+		<p>A simpler and smaller rewrite of Google Android's <a target="_blank" href="https://github.com/googlei18n/libphonenumber">libphonenumber</a> library.</p>
+
+		<!--
+		<p>This is a demo for the new API. <a href="https://catamphetamine.gitlab.io/libphonenumber-js/legacy.html">See legacy API demo</a>.</p>
+		-->
+
+		<p>
+		Note: This demo uses "max" metadata set. <a href="https://gitlab.com/catamphetamine/libphonenumber-js#min-vs-max-vs-mobile-vs-core">See readme on "min" vs "max" vs "mobile"</a>.
+		</p>
+
+		<div id="content"></div>
+
+		<script type="text/babel">
+			function KeyValue({ name, value }) {
+				return (
+					<div className="key-value section__line">
+						<span className="key-value__key">{name}</span>
+						<span className="key-value__value"><code>{value}</code></span>
+					</div>
+				)
+			}
+
+			function PhoneNumber({ children: number }) {
+				const keyValues = [
+					['Number', number.number],
+					['Country', number.country || '—'],
+					['National', number.formatNational()],
+					['International', number.formatInternational()],
+					['URI', number.getURI()],
+					['Type', number.getType() || '—'],
+					['Possible', number.isPossible() ? 'true' : 'false'],
+					['Valid', number.isValid() ? 'true' : 'false']
+				]
+				return (
+					<div className="phone-number">
+						{keyValues.map(kv => <KeyValue key={kv[0]} name={kv[0]} value={kv[1]}/>)}
+					</div>
+				)
+			}
+
+			class Content extends React.Component {
+				constructor() {
+					super()
+					this.state = {
+						parseCountry: 'US',
+						parseValue: '213-373-4253',
+						asYouTypeCountry: 'US',
+						asYouTypeValue: '', // '+12133734253',
+						findNumbersCountry: 'US',
+						findNumbersText: 'For more details call +7 (800) 555-35-35 internationally or reach the local US branch at (213) 373-4253 ext. 1234 for paid customer support.'
+					}
+				}
+
+				render()
+				{
+					const ReactInput        = InputFormatReactInput
+					const templateParser    = InputFormat.templateParser
+					const templateFormatter = InputFormat.templateFormatter
+					const parseDigit        = InputFormat.parseDigit
+
+					let asYouType
+					let parsedNumber
+					let numbersFound = []
+
+					const {
+						parseCountry,
+						parseValue,
+						asYouTypeCountry,
+						asYouTypeValue,
+						findNumbersCountry,
+						findNumbersText
+					} = this.state
+
+					parsedNumber = libphonenumber.parsePhoneNumberFromString(parseValue, parseCountry)
+
+					try {
+						asYouType = new libphonenumber.AsYouType(asYouTypeCountry)
+						asYouType.input(asYouTypeValue)
+					} catch (error) {
+						console.error(error)
+					}
+
+					try {
+						numbersFound = libphonenumber.findNumbers(findNumbersText, findNumbersCountry, { v2: true })
+					} catch (error) {
+						console.error(error)
+					}
+
+					return (
+						<div>
+							<h2>Parse</h2>
+
+							<input
+								type="text"
+								value={this.state.parseCountry}
+								onChange={event => this.setState({ parseCountry: event.target.value.toUpperCase() })}
+								style={{ width: '40px', marginRight: '10px' }}/>
+
+							<input
+								type="text"
+								value={this.state.parseValue}
+								onChange={event => this.setState({ parseValue: event.target.value })}/>
+
+							<div className="section">
+								{parsedNumber &&
+									<PhoneNumber>{parsedNumber}</PhoneNumber>
+								}
+							</div>
+
+							<h2>As you type</h2>
+
+							{/* type="tel" introduces bugs on Samsung Android phones */}
+							{/* https://github.com/catamphetamine/react-phone-number-input/issues/59 */}
+							<ReactInput
+								placeholder="Enter a phone number"
+								value={this.state.asYouTypeValue}
+								onChange={value => this.setState({ asYouTypeValue: value })}
+								parse={(character, value) => {
+									// Leading plus is allowed
+									if (character === '+') {
+										if (!value) {
+											return character
+										}
+									}
+									// Digits are allowed
+									return parseDigit(character)
+								}}
+								format={(value) => {
+									let text
+									let template
+									try {
+										const asYouType = new libphonenumber.AsYouType(this.state.asYouTypeCountry)
+										text = asYouType.input(value)
+										template = asYouType.template
+									} catch (error) {
+										if (error.message.indexOf('Unknown country') === 0) {
+											text = value
+											template = value.replace(/./g, 'x')
+										} else {
+											throw error
+										}
+									}
+									return { text, template }
+								}}/>
+
+							<div className="section">
+								<div className="section__line">
+									Default country:
+									<input
+										type="text"
+										value={this.state.asYouTypeCountry}
+										onChange={event => this.setState({ asYouTypeCountry: event.target.value.toUpperCase() })}
+										style={{ width: '40px', marginLeft: '8px' }}/>
+								</div>
+
+								<div className="section"/>
+
+								{asYouType && asYouType.getTemplate() &&
+									<KeyValue name="Template" value={asYouType.getTemplate()}/>
+								}
+
+								{asYouType && asYouType.getNumber() &&
+									<PhoneNumber>{asYouType.getNumber()}</PhoneNumber>
+								}
+							</div>
+
+							<h2>Find phone numbers</h2>
+
+							<div className="section">
+								<div className="section__line">
+									Default country:
+									<input
+										type="text"
+										value={this.state.findNumbersCountry}
+										onChange={event => this.setState({ findNumbersCountry: event.target.value.toUpperCase() })}
+										style={{ width: '40px', marginLeft: '8px' }}/>
+								</div>
+							</div>
+
+							<div className="section"/>
+
+							<textarea
+								value={this.state.findNumbersText}
+								onChange={event => this.setState({ findNumbersText: event.target.value })}
+								className="find-numbers-text"/>
+
+							{ numbersFound.length === 0 && 'No phone numbers found' }
+							{ numbersFound.length > 0 && 'Phone numbers found: ' + numbersFound.length }
+
+							{ numbersFound.length > 0 &&
+								<ContentEditable
+									html={highlight_phones(this.state.findNumbersText, numbersFound)}
+									onChange={event => this.setState({ findNumbersText: strip_marks(event.target.value) })}
+									readOnly
+									className="find-numbers-highlighted" />
+							}
+
+							{ numbersFound.length > 0 &&
+								<ul className="numbers-found">
+									{numbersFound.map((number, i) => (
+										<li key={i}>
+											<strong>Number</strong>: <code>{number.number.number}</code>,{' '}
+											<strong>Country</strong>: <code>{number.number.country}</code>,{' '}
+											<strong>Starts at</strong>: <code>{number.startsAt}</code>,{' '}
+											<strong>Ends at</strong>: <code>{number.endsAt}</code>
+										</li>
+									))}
+								</ul>
+							}
+						</div>
+					)
+				}
+			}
+
+			// https://stackoverflow.com/questions/22677931/react-js-onchange-event-for-contenteditable/27255103#27255103
+			class ContentEditable extends React.Component {
+				render() {
+					return <div id="contenteditable"
+						onInput={this.emitChange}
+						onBlur={this.emitChange}
+						className={this.props.className}
+						contentEditable={!this.props.readOnly}
+						dangerouslySetInnerHTML={{__html: this.props.html}}></div>;
+				}
+
+				getDOMNode() {
+					return ReactDOM.findDOMNode(this);
+				}
+
+				shouldComponentUpdate(nextProps) {
+					return nextProps.html !== this.getDOMNode().innerHTML;
+				}
+
+				componentDidUpdate() {
+					if ( this.props.html !== this.getDOMNode().innerHTML ) {
+						this.getDOMNode().innerHTML = this.props.html;
+					}
+				}
+
+				emitChange() {
+					var html = this.getDOMNode().innerHTML;
+					if (this.props.onChange && html !== this.lastHtml) {
+						this.props.onChange({
+							target: {
+								value: html
+							}
+						});
+					}
+					this.lastHtml = html;
+				}
+			}
+
+			ReactDOM.render
+			(
+				<Content />,
+				document.getElementById('content')
+			)
+
+			function highlight_phones(html, phones)
+			{
+				let endedAt = 0
+				return phones.reduce((result, { startsAt, endsAt }) => {
+					const previousEndsAt = endedAt
+					endedAt = endsAt
+					return result +
+						html.slice(previousEndsAt, startsAt) +
+						'<mark>' +
+						html.slice(startsAt, endsAt) +
+						'</mark>'
+				}, '') + html.slice(endedAt)
+			}
+
+			function strip_marks(html)
+			{
+				return html.replace(/<\/?mark>/g, '')
+			}
+		</script>
+	</body>
+</html>

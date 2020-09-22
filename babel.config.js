@@ -1,43 +1,20 @@
 module.exports = {
-	"env":
-	{
-		"development":
-		{
-			"presets":
-			[
-				"@babel/env"
-			],
-
-			"plugins":
-			[
-				["@babel/transform-for-of", { loose: true }],
-				"@babel/proposal-class-properties"
+	"presets": [
+		"@babel/env"
+	],
+	"plugins": [
+		["@babel/transform-for-of", { "loose": true }],
+		"@babel/proposal-class-properties"
+	],
+	"env": {
+		"es6": {
+			"presets": [
+				["@babel/env", { "modules": false }]
 			]
 		},
-		"commonjs":
-		{
-			"presets":
-			[
-				"@babel/env"
-			],
-
-			"plugins":
-			[
-				["@babel/transform-for-of", { loose: true }],
-				"@babel/proposal-class-properties"
-			]
-		},
-		"es6":
-		{
-			"presets":
-			[
-				["@babel/env", { modules: false }]
-			],
-
-			"plugins":
-			[
-				["@babel/transform-for-of", { loose: true }],
-				"@babel/proposal-class-properties"
+		"nyc": {
+			"plugins": [
+				"babel-plugin-istanbul"
 			]
 		}
 	}

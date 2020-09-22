@@ -52,9 +52,13 @@ export function parsePhoneNumber() {
 	return call(_parsePhoneNumber, arguments)
 }
 
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
 export function parsePhoneNumberFromString() {
 	return call(_parsePhoneNumberFromString, arguments)
 }
+
+export default parsePhoneNumberFromString
 
 export function findNumbers() {
 	return call(_findNumbers, arguments)
