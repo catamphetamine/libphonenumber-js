@@ -34,7 +34,7 @@ One part of me was curious about how all this phone number parsing and formattin
 
 ## GitHub
 
-On March 9th, 2020, GitHub, Inc. silently [banned](https://medium.com/@catamphetamine/how-github-blocked-me-and-all-my-libraries-c32c61f061d3) my account (and all my libraries) without any notice. I opened a support ticked but they didn't answer. Because of that, I had to move all my libraries to [GitLab](https://gitlab.com/catamphetamine).
+On March 9th, 2020, GitHub, Inc. silently [banned](https://medium.com/@catamphetamine/how-github-blocked-me-and-all-my-libraries-c32c61f061d3) my account (erasing all my repos, issues and comments) without any notice or explanation. Because of that, all source codes had to be promptly moved to [GitLab](https://gitlab.com/catamphetamine/libphonenumber-js). GitHub repo is now deprecated, and the latest source codes can be found on GitLab, which is also the place to report any issues.
 
 ## Install
 
@@ -54,19 +54,23 @@ If you're not using a bundler then use a [standalone version from a CDN](https:/
 
 ## "min" vs "max" vs "mobile" vs "core"
 
-This library requires choosing a "metadata" set to be used, "metadata" being a list of phone number parsing and formatting rules for all countries. The complete list of rules is huge, so this library provides a way to optimize bundle size by choosing between `max`, `min`, `mobile` and custom metadata:
+This library requires choosing a "metadata" set first, "metadata" being a list of phone number parsing and formatting rules for all countries. The complete list of those rules is huge, so this library provides a way to optimize bundle size by choosing between `max`, `min`, `mobile` and custom metadata:
 
-* `max` — The complete metadata set, is about `140 kilobytes` in size (`libphonenumber-js/metadata.full.json`). Choose this when you need a strict version of `isValidPhoneNumber(value)` function, or if you need to get phone number type (fixed line, mobile, etc).
+* `max` — The complete metadata set, is about `140 kilobytes` in size (`libphonenumber-js/metadata.full.json`). Choose this when you need the most strict version of `isValid()`, or if you need to detect phone number type ("fixed line", "mobile", etc).
 
-* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Doesn't contain regular expressions for advanced phone number validation ([`.isValid()`](https://gitlab.com/catamphetamine/libphonenumber-js#isvalid)) and determining phone number type ([`.getType()`](https://gitlab.com/catamphetamine/libphonenumber-js#gettype)) for most countries. Some simple phone number validation via `.isValid()` still works (basic length check, etc), it's just that it's loose compared to the "advanced" validation (not so strict). Choose this by default: when you don't need to get phone number type (fixed line, mobile, etc), or when a non-strict version of `isValidPhoneNumber(value)` function is enough.
+* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Choose this by default: when you don't need to detect phone number type ("fixed line", "mobile", etc), or when a basic version of `isValid()` is enough. The `min` metadata set doesn't contain the regular expressions for phone number digits validation (via [`.isValid()`](#isvalid)) and detecting phone number type (via [`.getType()`](#gettype)) for most countries. In this case, `.isValid()` still performs some basic phone number validation (for example, checks phone number length), but it doesn't validate phone number digits themselves the way `max` metadata validation does.
 
-* `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`). Choose this when you _only_ work with mobile numbers and a strict version of `isValidPhoneNumber(value)` function is required for validating mobile numbers.
+* `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`). Choose this when you need `max` metadata and when you _only_ work with mobile numbers.
 
-To use a particular metadata set import functions from the relevant sub-package: `libphonenumber-js/max`, `libphonenumber-js/min` or `libphonenumber-js/mobile`.
+To use a particular metadata set, simply import functions from a relevant sub-package:
 
-Importing functions directly from `libphonenumber-js` results in using the `min` metadata which means loose (non-strict) phone number validation via `.isValid()` and no getting phone number type via `.getType()` for most countries.
+* `libphonenumber-js/max`
+* `libphonenumber-js/min`
+* `libphonenumber-js/mobile`
 
-Sometimes (rarely) not all countries are needed and in those cases the developers may want to [generate](https://gitlab.com/catamphetamine/libphonenumber-js#customizing-metadata) their own "custom" metadata set. For those cases there's `libphonenumber-js/core` sub-package which doesn't come pre-wired with any default metadata and instead accepts the metadata as the last argument of each exported function.
+Importing functions directly from `libphonenumber-js` effectively results in using the `min` metadata.
+
+Sometimes (rarely) not all countries are needed, and in those cases developers may want to [generate](#customizing-metadata) their own "custom" metadata set. For those cases, there's `libphonenumber-js/core` sub-package which doesn't come pre-packaged with any default metadata set and instead accepts metadata as the last argument of each exported function.
 
 ## Use
 
@@ -84,6 +88,7 @@ if (phoneNumber) {
   phoneNumber.country === 'RU'
   phoneNumber.number === '+78005553535'
   phoneNumber.isValid() === true
+  // Note: `.getType()` requires `/max` metadata.
   phoneNumber.getType() === 'TOLL_FREE'
 }
 ```
