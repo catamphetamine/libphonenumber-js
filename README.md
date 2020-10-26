@@ -8,6 +8,8 @@ A simpler and smaller rewrite of Google Android's [`libphonenumber`](https://git
 
 [See Demo](https://catamphetamine.gitlab.io/libphonenumber-js/)
 
+If you’re trying to build a React component with it, take a look at [`react-phone-number-input`](https://www.npmjs.com/package/react-phone-number-input).
+
 ## LibPhoneNumber
 
 [`libphonenumber`](https://github.com/googlei18n/libphonenumber) is a phone number formatting and parsing library released by Google, originally developed for (and currently used in) Google's [Android](https://en.wikipedia.org/wiki/Android_(operating_system)) mobile phone operating system.
@@ -1091,7 +1093,7 @@ If it was required to validate a phone number being input by a user, then I'd pe
 
 ## React
 
-There's also a React component utilizing this library — [`react-phone-number-input`](https://gitlab.com/catamphetamine/react-phone-number-input) (or [without country select](https://gitlab.com/catamphetamine/react-phone-number-input#without-country-select)).
+If you’re trying to build a React component with this library, take a look at [`react-phone-number-input`](https://www.npmjs.com/package/react-phone-number-input).
 
 ## Bug reporting
 
