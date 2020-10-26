@@ -1,6 +1,7 @@
 import parse, {
 	ParseError,
 	parsePhoneNumber,
+	parsePhoneNumberWithError,
 	parsePhoneNumberFromString,
 
 	findNumbers,
@@ -35,7 +36,9 @@ describe('exports/core', () => {
 	it('should export ES6', () => {
 		expect(ParseError).to.be.a('function')
 
+		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 		parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		parsePhoneNumberWithError('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
 		parse('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 		parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
@@ -74,7 +77,9 @@ describe('exports/core', () => {
 		Library('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 		Library.default('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
+		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 		Library.parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		Library.parsePhoneNumberWithError('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
 		Library.parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 		expect(Library.parsePhoneNumberFromString('2133734253', metadata)).to.be.undefined

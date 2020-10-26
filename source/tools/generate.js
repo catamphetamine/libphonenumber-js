@@ -528,7 +528,7 @@ export default function(input, version, included_countries, extended, included_p
 					// specified phone number types (if configured).
 					if (included_phone_number_types)
 					{
-						if (!all_types_required && !included_phone_number_types.has(_type))
+						if (!included_phone_number_types.has(_type))
 						{
 							delete types[_type]
 						}

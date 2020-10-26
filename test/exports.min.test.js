@@ -1,6 +1,7 @@
 import parse, {
 	ParseError,
 	parsePhoneNumber,
+	parsePhoneNumberWithError,
 	parsePhoneNumberFromString,
 
 	findNumbers,
@@ -34,10 +35,16 @@ describe('exports/min', () => {
 	it('should export ES6', () => {
 		expect(ParseError).to.be.a('function')
 
+		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 		parsePhoneNumber('+12133734253').nationalNumber.should.equal('2133734253')
 		parsePhoneNumber('2133734253', 'US').nationalNumber.should.equal('2133734253')
 		parsePhoneNumber('2133734253', { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
 		parsePhoneNumber('2133734253', undefined, { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
+
+		parsePhoneNumberWithError('+12133734253').nationalNumber.should.equal('2133734253')
+		parsePhoneNumberWithError('2133734253', 'US').nationalNumber.should.equal('2133734253')
+		parsePhoneNumberWithError('2133734253', { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
+		parsePhoneNumberWithError('2133734253', undefined, { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
 
 		parse('+12133734253').nationalNumber.should.equal('2133734253')
 
@@ -90,10 +97,16 @@ describe('exports/min', () => {
 
 		expect(Library.ParseError).to.be.a('function')
 
+		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 		Library.parsePhoneNumber('+12133734253').nationalNumber.should.equal('2133734253')
 		Library.parsePhoneNumber('2133734253', 'US').nationalNumber.should.equal('2133734253')
 		Library.parsePhoneNumber('2133734253', { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
 		Library.parsePhoneNumber('2133734253', undefined, { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
+
+		Library.parsePhoneNumberWithError('+12133734253').nationalNumber.should.equal('2133734253')
+		Library.parsePhoneNumberWithError('2133734253', 'US').nationalNumber.should.equal('2133734253')
+		Library.parsePhoneNumberWithError('2133734253', { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
+		Library.parsePhoneNumberWithError('2133734253', undefined, { defaultCountry: 'US' }).nationalNumber.should.equal('2133734253')
 
 		Library('+12133734253').nationalNumber.should.equal('2133734253')
 		Library.default('+12133734253').nationalNumber.should.equal('2133734253')

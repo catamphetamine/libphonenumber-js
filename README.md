@@ -52,26 +52,6 @@ $ yarn add libphonenumber-js
 
 If you're not using a bundler then use a [standalone version from a CDN](https://gitlab.com/catamphetamine/libphonenumber-js/#cdn).
 
-## "min" vs "max" vs "mobile" vs "core"
-
-This library requires choosing a "metadata" set first, "metadata" being a list of phone number parsing and formatting rules for all countries. The complete list of those rules is huge, so this library provides a way to optimize bundle size by choosing between `max`, `min`, `mobile` and custom metadata:
-
-* `max` — The complete metadata set, is about `140 kilobytes` in size (`libphonenumber-js/metadata.full.json`). Choose this when you need the most strict version of `isValid()`, or if you need to detect phone number type ("fixed line", "mobile", etc).
-
-* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Choose this by default: when you don't need to detect phone number type ("fixed line", "mobile", etc), or when a basic version of `isValid()` is enough. The `min` metadata set doesn't contain the regular expressions for phone number digits validation (via [`.isValid()`](#isvalid)) and detecting phone number type (via [`.getType()`](#gettype)) for most countries. In this case, `.isValid()` still performs some basic phone number validation (for example, checks phone number length), but it doesn't validate phone number digits themselves the way `max` metadata validation does.
-
-* `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `105 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`). Choose this when you need `max` metadata and when you _only_ work with mobile numbers.
-
-To use a particular metadata set, simply import functions from a relevant sub-package:
-
-* `libphonenumber-js/max`
-* `libphonenumber-js/min`
-* `libphonenumber-js/mobile`
-
-Importing functions directly from `libphonenumber-js` effectively results in using the `min` metadata.
-
-Sometimes (rarely) not all countries are needed, and in those cases developers may want to [generate](#customizing-metadata) their own "custom" metadata set. For those cases, there's `libphonenumber-js/core` sub-package which doesn't come pre-packaged with any default metadata set and instead accepts metadata as the last argument of each exported function.
-
 ## Use
 
 ### Parse phone number
@@ -81,14 +61,14 @@ _(new API)_
 -->
 
 ```js
-import parsePhoneNumber from 'libphonenumber-js/min'
+import parsePhoneNumber from 'libphonenumber-js'
 
 const phoneNumber = parsePhoneNumber('Phone: 8 (800) 555 35 35.', 'RU')
 if (phoneNumber) {
   phoneNumber.country === 'RU'
   phoneNumber.number === '+78005553535'
   phoneNumber.isValid() === true
-  // Note: `.getType()` requires `/max` metadata.
+  // Note: `.getType()` requires `/max` metadata: see below for an explanation.
   phoneNumber.getType() === 'TOLL_FREE'
 }
 ```
@@ -113,7 +93,7 @@ _(new API)_
 -->
 
 ```js
-import parsePhoneNumber from 'libphonenumber-js/min'
+import parsePhoneNumber from 'libphonenumber-js'
 
 const phoneNumber = parsePhoneNumber('+12133734253')
 
@@ -147,7 +127,7 @@ formatNumber({ country: 'US', phone: '2133734253' }, 'NATIONAL')
 ### "As You Type" formatter
 
 ```js
-import { AsYouType } from 'libphonenumber-js/min'
+import { AsYouType } from 'libphonenumber-js'
 
 new AsYouType().input('+12133734')
 // Outputs: '+1 213 373 4'
@@ -163,7 +143,7 @@ _(new API)_
 -->
 
 ```js
-import { findPhoneNumbersInText } from 'libphonenumber-js/min'
+import { findPhoneNumbersInText } from 'libphonenumber-js'
 
 findPhoneNumbersInText(`
   For tech support call +7 (800) 555-35-35 internationally
@@ -193,6 +173,26 @@ findPhoneNumbersInText(`
 //   endsAt   : 110
 // }]
 ```
+
+## "min" vs "max" vs "mobile" vs "core"
+
+This library provides different "metadata" sets, "metadata" being a list of phone number parsing and formatting rules for all countries. The complete list of those rules is huge, so this library provides a way to optimize bundle size by choosing between `max`, `min`, `mobile` and "custom" metadata:
+
+* `max` — The complete metadata set, is about `140 kilobytes` in size (`libphonenumber-js/metadata.full.json`). Choose this when you need the most strict version of `isValid()`, or if you need to detect phone number type ("fixed line", "mobile", etc).
+
+* `min` — (default) The smallest metadata set, is about `75 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Choose this by default: when you don't need to detect phone number type ("fixed line", "mobile", etc), or when a basic version of `isValid()` is enough. The `min` metadata set doesn't contain the regular expressions for phone number digits validation (via [`.isValid()`](#isvalid)) and detecting phone number type (via [`.getType()`](#gettype)) for most countries. In this case, `.isValid()` still performs some basic phone number validation (for example, checks phone number length), but it doesn't validate phone number digits themselves the way `max` metadata validation does.
+
+* `mobile` — The complete metadata set for dealing with mobile numbers _only_, is about `95 kilobytes` in size (`libphonenumber-js/metadata.mobile.json`). Choose this when you need `max` metadata and when you _only_ accept mobile numbers. Other phone number types will still be parseable, but they won't be recognized as being "valid" (`.isValid()` will return `false`).
+
+To use a particular metadata set, simply import functions from a relevant sub-package:
+
+* `libphonenumber-js/max`
+* `libphonenumber-js/min`
+* `libphonenumber-js/mobile`
+
+Importing functions directly from `libphonenumber-js` effectively results in using the `min` metadata.
+
+Sometimes (rarely) not all countries are needed, and in those cases developers may want to [generate](#customizing-metadata) their own "custom" metadata set. For those cases, there's `libphonenumber-js/core` sub-package which doesn't come pre-packaged with any default metadata set and instead accepts metadata as the last argument of each exported function.
 
 ## Definitions
 
@@ -232,8 +232,8 @@ Parses a phone number from `string`.
 Can be imported both as a "default" export and as a "named" export.
 
 ```js
-import parsePhoneNumberFromString from 'libphonenumber-js/min'
-// Or: import { parsePhoneNumberFromString } from 'libphonenumber-js/min'
+import parsePhoneNumberFromString from 'libphonenumber-js'
+// Or: import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 const phoneNumber = parsePhoneNumberFromString('Call: (213) 373-42-53 ext. 1234.', 'US')
 if (phoneNumber) {
@@ -249,13 +249,13 @@ Available `options`:
 
 * `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographic numbering plans"](#non-geographic) and they don't have a country code, so `defaultCountry` can't be specified for them.
 
-If a developer wants to know the exact reason why the phone number couldn't be parsed then they can use `parsePhoneNumber()` function which throws the exact error:
+If a developer wants to know the exact reason why the phone number couldn't be parsed then they can use `parsePhoneNumberWithError()` function which throws the exact error:
 
 ```js
-import { parsePhoneNumber, ParseError } from 'libphonenumber-js/min'
+import { parsePhoneNumberWithError, ParseError } from 'libphonenumber-js'
 
 try {
-  const phoneNumber = parsePhoneNumber('Call: (213) 373-42-53 ext. 1234.', 'US')
+  const phoneNumber = parsePhoneNumberWithError('Call: (213) 373-42-53 ext. 1234.', 'US')
 } catch (error) {
   if (error instanceof ParseError) {
     // Not a phone number, non-existent country, etc.
@@ -322,7 +322,7 @@ Available `options`:
 Examples:
 
 ```js
-import parsePhoneNumber from 'libphonenumber-js/min'
+import parsePhoneNumber from 'libphonenumber-js'
 
 const phoneNumber = parsePhoneNumber('+12133734253')
 
@@ -573,7 +573,7 @@ Available `options`:
 * `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographic numbering plans"](#non-geographic) and they don't have a country code, so `defaultCountry` can't be specified for them.
 
 ```js
-import { findPhoneNumbersInText } from 'libphonenumber-js/min'
+import { findPhoneNumbersInText } from 'libphonenumber-js'
 
 findPhoneNumbersInText(`
   For tech support call +7 (800) 555-35-35 internationally
@@ -651,7 +651,7 @@ By default it processes the whole text and then outputs the phone numbers found.
 ES6 iterator:
 
 ```js
-import { searchPhoneNumbersInText } from 'libphonenumber-js/min'
+import { searchPhoneNumbersInText } from 'libphonenumber-js'
 
 const text = `
   For tech support call +7 (800) 555-35-35 internationally
@@ -670,7 +670,7 @@ async function() {
 Java-style iterator (for those still not using ES6):
 
 ```js
-import { PhoneNumberMatcher } from 'libphonenumber-js/min'
+import { PhoneNumberMatcher } from 'libphonenumber-js'
 
 const matcher = new PhoneNumberMatcher(`
   For tech support call +7 (800) 555-35-35 internationally
@@ -705,7 +705,7 @@ Returns an example phone number for a [country](#country-code). Returns an insta
 
 ```js
 import examples from 'libphonenumber-js/examples.mobile.json'
-import { getExampleNumber } from 'libphonenumber-js/min'
+import { getExampleNumber } from 'libphonenumber-js'
 
 const phoneNumber = getExampleNumber('RU', examples)
 
@@ -1143,13 +1143,31 @@ For those who aren't using bundlers for some reason there's a way to build a sta
 
 ## Metadata
 
-Metadata is generated from Google's original [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields. See [metadata fields description](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md).
+Metadata is generated from Google's [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) by transforming XML into JSON and removing unnecessary fields. See [metadata fields description](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md).
+
+### Programmatic access
+
+Metadata can be accessed programmatically by using the exported `Metadata` class.
+
+```js
+import { Metadata } from 'libphonenumber-js/core'
+import minMetadata from 'libphonenumber-js/metadata.min'
+
+const metadata = new Metadata(minMetadata)
+// Select a country.
+metadata.country('US')
+
+console.log(metadata.numberingPlan.leadingDigits())
+console.log(metadata.numberingPlan.possibleLengths())
+console.log(metadata.numberingPlan.IDDPrefix())
+console.log(metadata.numberingPlan.defaultIDDPrefix())
+```
+
+As one can see, the [`Metadata` class](https://gitlab.com/catamphetamine/libphonenumber-js/-/blob/master/source/metadata.js) is not documented much. Partially, that's because its usage is not encouraged, but it's still used, for example, in [`react-phone-number-input`](https://gitlab.com/catamphetamine/react-phone-number-input/-/blob/master/source/phoneInputHelpers.js) to get "leading digits" for a country, or to get maximum phone number length for a country.
 
 <!--
 Currently I have a script set up monitoring changes to `PhoneNumberMetadata.xml` in Google's repo and automatically releasing new versions of this library when metadata in Google's repo gets updated. So this library's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
 -->
-
-The metadata update process is automated through an "autoupdate" script (see `./autoupdate.sh` or `./autoupdate.cmd`). The script detects changes to `PhoneNumberMetadata.xml` in Google `libphonenumber`'s repo and if there are changes then it pulls the latest metadata, processes it, commits the changes to GitHub, builds a new version of the library and releases it to NPM. So this library's metadata is supposed to be up-to-date. I could set up this script to run automatically but on my Windows machine `ssh-agent` doesn't work properly so I run the "autoupdate" script manually from time to time.
 
 <!--
 In case I forget to run the "autoupdate" script for a long time anyone can request metadata update via a Pull Request here on GitHub:
@@ -1164,15 +1182,11 @@ In case I forget to run the "autoupdate" script for a long time anyone can reque
 Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Customizing metadata](#customizing-metadata) section of this document.
 -->
 
-## Customizing metadata
+### Customizing metadata
 
-This library comes prepackaged with three flavors of [metadata](#metadata):
+This library comes prepackaged with [three types of metadata](#min-vs-max-vs-mobile-vs-core).
 
-* `metadata.full.json` — contains everything, including all regular expressions for precise phone number validation and getting phone number type, but is about `140 kilobytes` in size.
-* `metadata.min.json` — (default) the minimal one, doesn't contain regular expressions for precise phone number validation and getting phone number type for most countries, is about `75 kilobytes` in size.
-* `metadata.mobile.json` — is the "full" metadata which _only_ supports mobile numbers, is about `105 kilobytes` in size.
-
-Sometimes, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 kilobytes (even when including all regular expressions for precise phone number validation and getting phone number type), then they can generate such custom metadata and pass it as the last argument to this library's "core" (used to be called "custom") functions.
+Sometimes, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 kilobytes (even when including all regular expressions for validating phone number digits and detecting phone number type), then they can generate such custom metadata and pass it as the last argument to this library's "core" functions.
 
 <details>
 <summary>See generate custom metadata instructions.</summary>
@@ -1196,7 +1210,7 @@ The arguments are:
 * The first argument is the output metadata file path.
 * `--countries` argument is a comma-separated list of the countries included (if `--countries` is omitted then all countries are included).
 * `--extended` argument may be passed to include all regular expressions for precise phone number validation and getting phone number type, which will enlarge the resulting metadata size approximately twice.
-* `--types ...` argument may be passed instead of `--extended` to generate metadata that _only_ supports the selected phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [See the list of all possible phone number types](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18).
+* `--types ...` argument may be passed instead of `--extended` to generate metadata that _only_ supports the selected phone number types (a comma-separated list, e.g. `--types mobile,fixed_line`). [See the list of all possible phone number types](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/source/tools/generate.js#L6-L18). Other phone number types will still be parseable, but they won't be recognized as being "valid" (`.isValid()` will return `false`), and also their "type" won't be detected (`.getType()` will return `undefined`).
 </details>
 
 ####
@@ -1225,7 +1239,7 @@ function call(func, _arguments) {
   return func.apply(this, args)
 }
 
-export function parsePhoneNumberFromString() {
+export default function parsePhoneNumberFromString() {
   return call(_parsePhoneNumberFromString, arguments)
 }
 
@@ -1252,9 +1266,12 @@ function call(func, _arguments) {
   return func.apply(this, args)
 }
 
-exports.parsePhoneNumberFromString = function parsePhoneNumberFromString() {
+function parsePhoneNumberFromString() {
   return call(core.parsePhoneNumberFromString, arguments)
 }
+
+exports = module.exports = parsePhoneNumberFromString
+exports['default'] = parsePhoneNumberFromString
 
 exports.findPhoneNumbersInText = function findPhoneNumbersInText() {
   return call(core.findPhoneNumbersInText, arguments)
@@ -1395,9 +1412,13 @@ launchctl list | grep 'libphonenumber-js'
 ```
 -->
 
-## Maintenance
+### Maintenance
 
-Google periodically releases new metadata with the changes described in the [release notes](https://github.com/googlei18n/libphonenumber/blob/master/release_notes.txt). Sometimes those are minor non-breaking updates, sometimes those are major-version breaking updates. The metadata should be periodically updated via `autoupdate.cmd` (Windows) and `autoupdate.sh` (Linux/macOS) scripts. Also Google sometimes (very rarely) updates their code: [`phonenumberutil.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js) (`parseNumber()`, `formatNumber()`, `isValidNumber()`, `getNumberType()`), [`asyoutypeformatter.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/asyoutypeformatter.js) (`AsYouType`), [`PhoneNumberMatcher`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) (`findPhoneNumbersInText()`). The latest sync-up was performed on Jul 29th, 2020.
+Google periodically releases new metadata with the changes described in the [release notes](https://github.com/googlei18n/libphonenumber/blob/master/release_notes.txt). Sometimes those are minor non-breaking updates, sometimes those are major-version breaking updates.
+
+Metadata update process is automated through an "autoupdate" script: see `autoupdate.cmd` (Windows) or `autoupdate.sh` (Linux/macOS). The script detects changes to `PhoneNumberMetadata.xml` in Google `libphonenumber`'s repo and if there are changes then it pulls the latest metadata, processes it, commits the changes to GitHub, builds a new version of the library and releases it to NPM. So this library's metadata is supposed to be up-to-date. I could set up this script to run automatically but on my Windows machine `ssh-agent` doesn't work properly so I run the "autoupdate" script manually from time to time.
+
+Also Google sometimes (very rarely) updates their code: [`phonenumberutil.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js) (`parseNumber()`, `formatNumber()`, `isValidNumber()`, `getNumberType()`), [`asyoutypeformatter.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/asyoutypeformatter.js) (`AsYouType`), [`PhoneNumberMatcher`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) (`findPhoneNumbersInText()`). The latest sync-up was performed on Jul 29th, 2020.
 
 ## Contributing
 

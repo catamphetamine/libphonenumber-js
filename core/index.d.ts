@@ -32,8 +32,12 @@ export {
   NumberFormat
 };
 
+// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 export function parsePhoneNumber(text: string, metadata: Metadata): PhoneNumber;
 export function parsePhoneNumber(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber;
+
+export function parsePhoneNumberWithError(text: string, metadata: Metadata): PhoneNumber;
+export function parsePhoneNumberWithError(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber;
 
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.

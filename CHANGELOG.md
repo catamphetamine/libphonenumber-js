@@ -1,4 +1,6 @@
-<!-- (breaking change) Moved `findPhoneNumbersInText()` to its own subpackage `libphonenumber-js/search`. -->
+<!-- (breaking change) Moved `findPhoneNumbersInText()` to its own subpackage: `libphonenumber-js/find`. The default export is `searchPhoneNumbersInText()` that returns an ES6 "iterator". -->
+
+<!-- Renamed source files: `parsePhoneNumber.js` -> `parsePhoneNumberWithError.js`, etc. -->
 
 <!-- (breaking change) Metadata is often updated, so it has been extracted into its own package: `libphonenumber-metadata`. -->
 
@@ -58,6 +60,16 @@ And edit the README:
 -->
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
+
+1.8.3 / 03.10.2020
+==================
+
+* (advanced) Fixed `metadata.mobile.json` and generating "custom" metadata: now it won't include non-relevant phone number types. Previously, `metadata.mobile.json` (and any other "custom"-generated metadata) included all phone number types for cases when there're several countries corresponding to the same country calling code (for example, `US` and `CA`). So, in case of `metadata.mobile.json`, for `DE` it only contained mobile phone number type, but for `US` and `CA` it contained all phone number types (this has been unnoticed until this release). Now it only contains mobile phone number types for any country, as it's supposed to be. This change didn't result in any significant "mobile" metadata size reduction: just `105 KB` -> `95 KB`.
+
+1.8.1 / 23.09.2020
+==================
+
+* Renamed `parsePhoneNumber()` named export to `parsePhoneNumberWithError()`. The older name still works.
 
 1.8.0 / 22.09.2020
 ==================

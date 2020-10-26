@@ -22,12 +22,16 @@ exports['default'] = parsePhoneNumberFromString
 
 exports.ParseError = custom.ParseError
 
-exports.parsePhoneNumber = function parsePhoneNumber()
+function parsePhoneNumberWithError()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
-	return custom.parsePhoneNumber.apply(this, parameters)
+	return custom.parsePhoneNumberWithError.apply(this, parameters)
 }
+
+// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
+exports.parsePhoneNumber = parsePhoneNumberWithError
+exports.parsePhoneNumberWithError = parsePhoneNumberWithError
 
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.

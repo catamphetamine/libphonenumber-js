@@ -22,9 +22,13 @@ exports['default'] = parsePhoneNumberFromString
 
 exports.ParseError = core.ParseError
 
-exports.parsePhoneNumber = function parsePhoneNumber() {
-	return call(core.parsePhoneNumber, arguments)
+function parsePhoneNumberWithError() {
+	return call(core.parsePhoneNumberWithError, arguments)
 }
+
+// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
+exports.parsePhoneNumber = parsePhoneNumberWithError
+exports.parsePhoneNumberWithError = parsePhoneNumberWithError
 
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.

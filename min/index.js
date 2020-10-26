@@ -4,7 +4,7 @@
 import metadata from '../metadata.min.json.js'
 
 import {
-	parsePhoneNumber as _parsePhoneNumber,
+	parsePhoneNumberWithError as _parsePhoneNumberWithError,
 	parsePhoneNumberFromString as _parsePhoneNumberFromString,
 
 	findNumbers as _findNumbers,
@@ -48,9 +48,12 @@ function call(func, _arguments) {
 	return func.apply(this, args)
 }
 
-export function parsePhoneNumber() {
-	return call(_parsePhoneNumber, arguments)
+export function parsePhoneNumberWithError() {
+	return call(_parsePhoneNumberWithError, arguments)
 }
+
+// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
+export var parsePhoneNumber = parsePhoneNumberWithError
 
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.

@@ -2,6 +2,7 @@ import defaultExportParse,
 {
 	ParseError,
 	parsePhoneNumber,
+	parsePhoneNumberWithError,
 	parsePhoneNumberFromString,
 
 	// Deprecated: `format()` was renamed to `formatNumber()`.
@@ -69,7 +70,11 @@ describe(`exports`, () => {
 		defaultExportParse('+12133734253').nationalNumber.should.equal('2133734253')
 
 		expect(ParseError).to.be.a('function')
+
+		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 		parsePhoneNumber('+12133734253').nationalNumber.should.equal('2133734253')
+		parsePhoneNumberWithError('+12133734253').nationalNumber.should.equal('2133734253')
+
 		parsePhoneNumberFromString('+12133734253').nationalNumber.should.equal('2133734253')
 
 		// Deprecated: `parse()` was renamed to `parseNumber()`.
@@ -138,7 +143,11 @@ describe(`exports`, () => {
 		Library.default('+12133734253').nationalNumber.should.equal('2133734253')
 
 		expect(Library.ParseError).to.be.a('function')
+
+		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 		Library.parsePhoneNumber('+12133734253').nationalNumber.should.equal('2133734253')
+		Library.parsePhoneNumberWithError('+12133734253').nationalNumber.should.equal('2133734253')
+
 		Library.parsePhoneNumberFromString('+12133734253').nationalNumber.should.equal('2133734253')
 
 		// Deprecated: `parse()` was renamed to `parseNumber()`.
@@ -190,7 +199,11 @@ describe(`exports`, () => {
 		const Library = require('../custom')
 
 		expect(Library.ParseError).to.be.a('function')
+
+		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 		Library.parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		Library.parsePhoneNumberWithError('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+
 		Library.parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 
 		// Deprecated: `parse()` was renamed to `parseNumber()`.

@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.8.0",
+  "version": "1.8.5",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.common.js",
   "module": "index.es6.js",
@@ -24,7 +24,7 @@
     "cross-env": "^5.2.0",
     "istanbul": "^1.1.0-alpha.1",
     "json-loader": "^0.5.4",
-    "mocha": "^5.0.5",
+    "mocha": "^8.1.3",
     "npm-run-all": "^1.4.0",
     "nyc": "^15.0.1",
     "rimraf": "^2.5.0",

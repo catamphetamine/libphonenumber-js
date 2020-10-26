@@ -10,7 +10,10 @@ exports = module.exports = parsePhoneNumberFromString
 exports['default'] = parsePhoneNumberFromString
 
 exports.ParseError = require('../build/ParseError').default
-exports.parsePhoneNumber = require('../build/parsePhoneNumber').default
+var parsePhoneNumberWithError = require('../build/parsePhoneNumber').default
+// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
+exports.parsePhoneNumberWithError = parsePhoneNumberWithError
+exports.parsePhoneNumber = parsePhoneNumberWithError
 
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.

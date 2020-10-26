@@ -6,7 +6,7 @@
 // https://github.com/catamphetamine/libphonenumber-js/issues/239
 import metadata from './metadata.min.json.js'
 
-import parsePhoneNumberCustom from './es6/parsePhoneNumber'
+import parsePhoneNumberWithErrorCustom from './es6/parsePhoneNumber'
 import parsePhoneNumberFromStringCustom from './es6/parsePhoneNumberFromString'
 
 import parseNumberCustom from './es6/parse'
@@ -41,12 +41,15 @@ export { default as parseIncompletePhoneNumber, parsePhoneNumberCharacter } from
 export { DIGITS, default as parseDigits } from './es6/parseDigits'
 export { default as ParseError } from './es6/ParseError'
 
-export function parsePhoneNumber()
+export function parsePhoneNumberWithError()
 {
 	var parameters = Array.prototype.slice.call(arguments)
 	parameters.push(metadata)
-	return parsePhoneNumberCustom.apply(this, parameters)
+	return parsePhoneNumberWithErrorCustom.apply(this, parameters)
 }
+
+// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
+export var parsePhoneNumber = parsePhoneNumberWithError
 
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.
