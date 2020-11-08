@@ -1,6 +1,6 @@
 import metadata from '../metadata.full'
 import Metadata from '../../../../source/metadata'
-import { checkNumberLengthForType } from '../../../../source/getNumberType_'
+import { checkNumberLengthForType } from '../../../../source/checkNumberLength'
 import _getNumberType from '../../../../source/getNumberType'
 
 function getNumberType(...parameters) {

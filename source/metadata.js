@@ -12,6 +12,8 @@ const V4 = '1.7.35'
 
 const DEFAULT_EXT_PREFIX = ' ext. '
 
+const CALLING_CODE_REG_EXP = /^\d+$/
+
 /**
  * See: https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md
  */
@@ -72,6 +74,11 @@ export default class Metadata {
 	}
 
 	selectNumberingPlan(countryCode, callingCode) {
+		// Supports just passing `callingCode` as the first argument.
+		if (countryCode && CALLING_CODE_REG_EXP.test(countryCode)) {
+			callingCode = countryCode
+			countryCode = null
+		}
 		if (countryCode && countryCode !== '001') {
 			if (!this.hasCountry(countryCode)) {
 				throw new Error(`Unknown country: ${countryCode}`)
@@ -200,7 +207,7 @@ export default class Metadata {
 
 	// Deprecated.
 	chooseCountryByCountryCallingCode(callingCode) {
-		this.selectNumberingPlan(null, callingCode)
+		return this.selectNumberingPlan(callingCode)
 	}
 
 	hasSelectedNumberingPlan() {
@@ -374,13 +381,12 @@ class Format {
 		return this.nationalPrefixFormattingRule() &&
 			// Check that national prefix formatting rule is not a "dummy" one.
 			!FIRST_GROUP_ONLY_PREFIX_PATTERN.test(this.nationalPrefixFormattingRule())
-			// Previously, `FIRST_GROUP_ONLY_PREFIX_PATTERN` check was instead done via:
-			// // Check that national prefix formatting rule is not a "dummy" one.
-			// this.nationalPrefixFormattingRule() !== '$1' &&
-			// // Check that national prefix formatting rule actually has national prefix digit(s).
-			// // Filters out cases like "($1)".
-			// // Is used in place of `libphonenumber`'s `FIRST_GROUP_ONLY_PREFIX_PATTERN_` regexp.
-			// /\d/.test(this.nationalPrefixFormattingRule().replace('$1', ''))
+			// In compressed metadata, `this.nationalPrefixFormattingRule()` is `0`
+			// when `national_prefix_formatting_rule` is not present.
+			// So, `true` or `false` are returned explicitly here, so that
+			// `0` number isn't returned.
+			? true
+			: false
 	}
 
 	internationalFormat() {
@@ -501,10 +507,23 @@ export function isSupportedCountry(country, metadata) {
 }
 
 function setVersion(metadata) {
-	this.v1 = !metadata.version
-	this.v2 = metadata.version !== undefined && compare(metadata.version, V3) === -1
-	this.v3 = metadata.version !== undefined && compare(metadata.version, V4) === -1
-	this.v4 = metadata.version !== undefined // && compare(metadata.version, V5) === -1
+	const { version } = metadata
+	if (typeof version === 'number') {
+		this.v1 = version === 1
+		this.v2 = version === 2
+		this.v3 = version === 3
+		this.v4 = version === 4
+	} else {
+		if (!version) {
+			this.v1 = true
+		} else if (compare(version, V3) === -1) {
+			this.v2 = true
+		} else if (compare(version, V4) === -1) {
+			this.v3 = true
+		} else {
+			this.v4 = true
+		}
+	}
 }
 
 // const ISO_COUNTRY_CODE = /^[A-Z]{2}$/

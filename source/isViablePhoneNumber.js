@@ -5,7 +5,7 @@ import {
 	PLUS_CHARS
 } from './constants'
 
-import { EXTN_PATTERNS_FOR_PARSING } from './extension'
+import { createExtensionPattern } from './extension'
 
 //  Regular expression of viable phone numbers. This is location independent.
 //  Checks we have at least three leading digits, and only valid punctuation,
@@ -36,7 +36,7 @@ const MIN_LENGTH_PHONE_NUMBER_PATTERN = '[' + VALID_DIGITS + ']{' + MIN_LENGTH_F
 // And this is the second reg-exp:
 // (see MIN_LENGTH_PHONE_NUMBER_PATTERN for a full description of this reg-exp)
 //
-const VALID_PHONE_NUMBER =
+export const VALID_PHONE_NUMBER =
 	'[' + PLUS_CHARS + ']{0,1}' +
 	'(?:' +
 		'[' + VALID_PUNCTUATION + ']*' +
@@ -47,10 +47,14 @@ const VALID_PHONE_NUMBER =
 		VALID_DIGITS +
 	']*'
 
+export const VALID_PHONE_NUMBER_WITH_EXTENSION =
+	VALID_PHONE_NUMBER +
+	// Phone number extensions
+	'(?:' + createExtensionPattern() + ')?'
+
 // The combined regular expression for valid phone numbers:
 //
-const VALID_PHONE_NUMBER_PATTERN = new RegExp
-(
+const VALID_PHONE_NUMBER_PATTERN = new RegExp(
 	// Either a short two-digit-only phone number
 	'^' +
 		MIN_LENGTH_PHONE_NUMBER_PATTERN +
@@ -58,12 +62,9 @@ const VALID_PHONE_NUMBER_PATTERN = new RegExp
 	'|' +
 	// Or a longer fully parsed phone number (min 3 characters)
 	'^' +
-		VALID_PHONE_NUMBER +
-		// Phone number extensions
-		'(?:' + EXTN_PATTERNS_FOR_PARSING + ')?' +
+		VALID_PHONE_NUMBER_WITH_EXTENSION +
 	'$'
-,
-'i')
+, 'i')
 
 // Checks to see if the string of characters could possibly be a phone number at
 // all. At the moment, checks to see that the string begins with at least 2

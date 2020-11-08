@@ -5,7 +5,7 @@
 
 import { VALID_PUNCTUATION } from './constants'
 import { matchesEntirely } from './util'
-import Metadata from './metadata'
+import Metadata, { getCountryCallingCode } from './metadata'
 import { getIDDPrefix } from './IDD'
 import { formatRFC3966 } from './RFC3966'
 
@@ -44,7 +44,7 @@ export default function formatNumber(input, format, options, metadata) {
 		metadata.country(input.country)
 	}
 	else if (input.countryCallingCode) {
-		metadata.chooseCountryByCountryCallingCode(input.countryCallingCode)
+		metadata.selectNumberingPlan(input.countryCallingCode)
 	}
 	else return input.phone || ''
 
@@ -63,7 +63,7 @@ export default function formatNumber(input, format, options, metadata) {
 			if (!nationalNumber) {
 				return ''
 			}
-			number = formatNationalNumber(nationalNumber, 'NATIONAL', metadata, options)
+			number = formatNationalNumber(nationalNumber, input.carrierCode, 'NATIONAL', metadata, options)
 			return addExtension(number, input.ext, metadata, options.formatExtension)
 
 		case 'INTERNATIONAL':
@@ -72,7 +72,7 @@ export default function formatNumber(input, format, options, metadata) {
 			if (!nationalNumber) {
 				return `+${countryCallingCode}`
 			}
-			number = formatNationalNumber(nationalNumber, 'INTERNATIONAL', metadata, options)
+			number = formatNationalNumber(nationalNumber, null, 'INTERNATIONAL', metadata, options)
 			number = `+${countryCallingCode} ${number}`
 			return addExtension(number, input.ext, metadata, options.formatExtension)
 
@@ -86,31 +86,23 @@ export default function formatNumber(input, format, options, metadata) {
 				ext: input.ext
 			})
 
+		// For reference, here's Google's IDD formatter:
+		// https://github.com/google/libphonenumber/blob/32719cf74e68796788d1ca45abc85dcdc63ba5b9/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberUtil.java#L1546
+		// Not saying that this IDD formatter replicates it 1:1, but it seems to work.
+		// Who would even need to format phone numbers in IDD format anyway?
 		case 'IDD':
 			if (!options.fromCountry) {
 				return
 				// throw new Error('`fromCountry` option not passed for IDD-prefixed formatting.')
 			}
-			const IDDPrefix = getIDDPrefix(options.fromCountry, undefined, metadata.metadata)
-			if (!IDDPrefix) {
-				return
-			}
-			if (options.humanReadable) {
-				const formattedForSameCountryCallingCode = countryCallingCode && formatIDDSameCountryCallingCodeNumber(
-					nationalNumber,
-					metadata.countryCallingCode(),
-					options.fromCountry,
-					metadata,
-					options
-				)
-				if (formattedForSameCountryCallingCode) {
-					number = formattedForSameCountryCallingCode
-				} else {
-					number = `${IDDPrefix} ${countryCallingCode} ${formatNationalNumber(nationalNumber, 'INTERNATIONAL', metadata, options)}`
-				}
-				return addExtension(number, input.ext, metadata, options.formatExtension)
-			}
-			return `${IDDPrefix}${countryCallingCode}${nationalNumber}`
+			const formattedNumber = formatIDD(
+				nationalNumber,
+				input.carrierCode,
+				countryCallingCode,
+				options.fromCountry,
+				metadata
+			)
+			return addExtension(formattedNumber, input.ext, metadata, options.formatExtension)
 
 		default:
 			throw new Error(`Unknown "format" argument passed to "formatNumber()": "${format}"`)
@@ -119,32 +111,50 @@ export default function formatNumber(input, format, options, metadata) {
 
 // This was originally set to $1 but there are some countries for which the
 // first group is not used in the national pattern (e.g. Argentina) so the $1
-// group does not match correctly.  Therefore, we use \d, so that the first
+// group does not match correctly. Therefore, we use `\d`, so that the first
 // group actually used in the pattern will be matched.
 export const FIRST_GROUP_PATTERN = /(\$\d)/
 
 export function formatNationalNumberUsingFormat(
 	number,
 	format,
-	useInternationalSeparator,
-	useNationalPrefixFormattingRule,
-	metadata
+	{
+		useInternationalFormat,
+		withNationalPrefix,
+		carrierCode,
+		metadata
+	}
 ) {
 	const formattedNumber = number.replace(
 		new RegExp(format.pattern()),
-		useInternationalSeparator ?
-			format.internationalFormat() :
-			useNationalPrefixFormattingRule && format.nationalPrefixFormattingRule() ?
-				format.format().replace(FIRST_GROUP_PATTERN, format.nationalPrefixFormattingRule()) :
-				format.format()
+		useInternationalFormat
+			? format.internationalFormat()
+			: (
+				// This library doesn't use `domestic_carrier_code_formatting_rule`,
+				// because that one is only used when formatting phone numbers
+				// for dialing from a mobile phone, and this is not a dialing library.
+				// carrierCode && format.domesticCarrierCodeFormattingRule()
+				// 	// First, replace the $CC in the formatting rule with the desired carrier code.
+				// 	// Then, replace the $FG in the formatting rule with the first group
+				// 	// and the carrier code combined in the appropriate way.
+				// 	? format.format().replace(FIRST_GROUP_PATTERN, format.domesticCarrierCodeFormattingRule().replace('$CC', carrierCode))
+				// 	: (
+				// 		withNationalPrefix && format.nationalPrefixFormattingRule()
+				// 			? format.format().replace(FIRST_GROUP_PATTERN, format.nationalPrefixFormattingRule())
+				// 			: format.format()
+				// 	)
+				withNationalPrefix && format.nationalPrefixFormattingRule()
+					? format.format().replace(FIRST_GROUP_PATTERN, format.nationalPrefixFormattingRule())
+					: format.format()
+			)
 	)
-	if (useInternationalSeparator) {
+	if (useInternationalFormat) {
 		return applyInternationalSeparatorStyle(formattedNumber)
 	}
 	return formattedNumber
 }
 
-function formatNationalNumber(number, formatAs, metadata, options) {
+function formatNationalNumber(number, carrierCode, formatAs, metadata, options) {
 	const format = chooseFormatForNumber(metadata.formats(), number)
 	if (!format) {
 		return number
@@ -152,9 +162,12 @@ function formatNationalNumber(number, formatAs, metadata, options) {
 	return formatNationalNumberUsingFormat(
 		number,
 		format,
-		formatAs === 'INTERNATIONAL',
-		format.nationalPrefixIsOptionalWhenFormattingInNationalFormat() && options.nationalPrefix === false ? false : true,
-		metadata
+		{
+			useInternationalFormat: formatAs === 'INTERNATIONAL',
+			withNationalPrefix: format.nationalPrefixIsOptionalWhenFormattingInNationalFormat() && (options && options.nationalPrefix === false) ? false : true,
+			carrierCode,
+			metadata
+		}
 	)
 }
 
@@ -214,21 +227,21 @@ function addExtension(formattedNumber, ext, metadata, formatExtension) {
 	return ext ? formatExtension(formattedNumber, ext, metadata) : formattedNumber
 }
 
-function formatIDDSameCountryCallingCodeNumber(
-	number,
-	toCountryCallingCode,
+function formatIDD(
+	nationalNumber,
+	carrierCode,
+	countryCallingCode,
 	fromCountry,
-	toCountryMetadata,
-	options
+	metadata
 ) {
-	const fromCountryMetadata = new Metadata(toCountryMetadata.metadata)
-	fromCountryMetadata.country(fromCountry)
-	// If calling within the same country calling code.
-	if (toCountryCallingCode === fromCountryMetadata.countryCallingCode()) {
+	const fromCountryCallingCode = getCountryCallingCode(fromCountry, metadata.metadata)
+	// When calling within the same country calling code.
+	if (fromCountryCallingCode === countryCallingCode) {
+		const formattedNumber = formatNationalNumber(nationalNumber, carrierCode, 'NATIONAL', metadata)
 		// For NANPA regions, return the national format for these regions
 		// but prefix it with the country calling code.
-		if (toCountryCallingCode === '1') {
-			return toCountryCallingCode + ' ' + formatNationalNumber(number, 'NATIONAL', toCountryMetadata, options)
+		if (countryCallingCode === '1') {
+			return countryCallingCode + ' ' + formattedNumber
 		}
 		// If regions share a country calling code, the country calling code need
 		// not be dialled. This also applies when dialling within a region, so this
@@ -239,6 +252,10 @@ function formatIDDSameCountryCallingCodeNumber(
 		// country calling code. Details here:
 		// http://www.petitfute.com/voyage/225-info-pratiques-reunion
 		//
-		return formatNationalNumber(number, 'NATIONAL', toCountryMetadata, options)
+		return formattedNumber
+	}
+	const IDDPrefix = getIDDPrefix(fromCountry, undefined, metadata.metadata)
+	if (IDDPrefix) {
+		return `${IDDPrefix} ${countryCallingCode} ${formatNationalNumber(nationalNumber, null, 'INTERNATIONAL', metadata)}`
 	}
 }

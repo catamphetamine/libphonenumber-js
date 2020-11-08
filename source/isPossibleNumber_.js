@@ -1,8 +1,7 @@
 import Metadata from './metadata'
-import { checkNumberLengthForType } from './getNumberType_'
+import checkNumberLength from './checkNumberLength'
 
-export default function isPossiblePhoneNumber(input, options, metadata)
-{
+export default function isPossiblePhoneNumber(input, options, metadata) {
 	/* istanbul ignore if */
 	if (options === undefined) {
 		options = {}
@@ -14,7 +13,7 @@ export default function isPossiblePhoneNumber(input, options, metadata)
 		if (!input.countryCallingCode) {
 			throw new Error('Invalid phone number object passed')
 		}
-		metadata.chooseCountryByCountryCallingCode(input.countryCallingCode)
+		metadata.selectNumberingPlan(input.countryCallingCode)
 	} else {
 		if (!input.phone) {
 			return false
@@ -28,12 +27,12 @@ export default function isPossiblePhoneNumber(input, options, metadata)
 			if (!input.countryCallingCode) {
 				throw new Error('Invalid phone number object passed')
 			}
-			metadata.chooseCountryByCountryCallingCode(input.countryCallingCode)
+			metadata.selectNumberingPlan(input.countryCallingCode)
 		}
 	}
 
 	if (metadata.possibleLengths()) {
-		return isPossibleNumber(input.phone || input.nationalNumber, undefined, metadata)
+		return isPossibleNumber(input.phone || input.nationalNumber, metadata)
 	} else {
 		// There was a bug between `1.7.35` and `1.7.37` where "possible_lengths"
 		// were missing for "non-geographical" numbering plans.
@@ -51,10 +50,12 @@ export default function isPossiblePhoneNumber(input, options, metadata)
 	}
 }
 
-export function isPossibleNumber(nationalNumber, isInternational, metadata) {
-	switch (checkNumberLengthForType(nationalNumber, undefined, metadata)) {
+export function isPossibleNumber(nationalNumber, metadata) { //, isInternational) {
+	switch (checkNumberLength(nationalNumber, metadata)) {
 		case 'IS_POSSIBLE':
 			return true
+		// This library ignores "local-only" phone numbers (for simplicity).
+		// See the readme for more info on what are "local-only" phone numbers.
 		// case 'IS_POSSIBLE_LOCAL_ONLY':
 		// 	return !isInternational
 		default:

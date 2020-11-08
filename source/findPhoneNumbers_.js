@@ -9,24 +9,12 @@ import {
 } from './constants'
 
 import { EXTN_PATTERNS_FOR_PARSING } from './extension'
-
 import parse from './parse_'
+import { VALID_PHONE_NUMBER_WITH_EXTENSION } from './isViablePhoneNumber'
 
 import parsePreCandidate from './findNumbers/parsePreCandidate'
 import isValidPreCandidate from './findNumbers/isValidPreCandidate'
 import isValidCandidate from './findNumbers/isValidCandidate'
-
-// Copy-pasted from `./parse.js`.
-const VALID_PHONE_NUMBER =
-	'[' + PLUS_CHARS + ']{0,1}' +
-	'(?:' +
-		'[' + VALID_PUNCTUATION + ']*' +
-		'[' + VALID_DIGITS + ']' +
-	'){3,}' +
-	'[' +
-		VALID_PUNCTUATION +
-		VALID_DIGITS +
-	']*'
 
 const WHITESPACE_IN_THE_BEGINNING_PATTERN = new RegExp('^[' + WHITESPACE + ']+')
 const PUNCTUATION_IN_THE_END_PATTERN = new RegExp('[' + VALID_PUNCTUATION + ']+$')
@@ -37,13 +25,11 @@ const PUNCTUATION_IN_THE_END_PATTERN = new RegExp('[' + VALID_PUNCTUATION + ']+$
 
 const VALID_PRECEDING_CHARACTER_PATTERN = /[^a-zA-Z0-9]/
 
-export default function findPhoneNumbers(text, options, metadata)
-{
+export default function findPhoneNumbers(text, options, metadata) {
 	/* istanbul ignore if */
 	if (options === undefined) {
 		options = {}
 	}
-
 	const search = new PhoneNumberSearch(text, options, metadata)
 	const phones = []
 	while (search.hasNext()) {
@@ -55,15 +41,12 @@ export default function findPhoneNumbers(text, options, metadata)
 /**
  * @return ES6 `for ... of` iterator.
  */
-export function searchPhoneNumbers(text, options, metadata)
-{
+export function searchPhoneNumbers(text, options, metadata) {
 	/* istanbul ignore if */
 	if (options === undefined) {
 		options = {}
 	}
-
 	const search = new PhoneNumberSearch(text, options, metadata)
-
 	return  {
 		[Symbol.iterator]() {
 			return {
@@ -88,39 +71,27 @@ export function searchPhoneNumbers(text, options, metadata)
  * @param  {string} text - Input.
  * @return {object} `{ ?number, ?startsAt, ?endsAt }`.
  */
-export class PhoneNumberSearch
-{
+export class PhoneNumberSearch {
 	// Iteration tristate.
 	state = 'NOT_READY'
 
-	constructor(text, options, metadata)
-	{
+	constructor(text, options, metadata) {
 		this.text = text
 		// If assigning the `{}` default value is moved to the arguments above,
 		// code coverage would decrease for some weird reason.
 		this.options = options || {}
 		this.metadata = metadata
 
-		this.regexp = new RegExp
-		(
-			VALID_PHONE_NUMBER +
-			// Phone number extensions
-			'(?:' + EXTN_PATTERNS_FOR_PARSING + ')?',
-			'ig'
-		)
-
-		// this.searching_from = 0
+		this.regexp = new RegExp(VALID_PHONE_NUMBER_WITH_EXTENSION, 'ig')
 	}
 
-	find()
-	{
+	find() {
 		const matches = this.regexp.exec(this.text)
-
 		if (!matches) {
 			return
 		}
 
-		let number   = matches[0]
+		let number = matches[0]
 		let startsAt = matches.index
 
 		number = number.replace(WHITESPACE_IN_THE_BEGINNING_PATTERN, '')
@@ -133,7 +104,6 @@ export class PhoneNumberSearch
 		number = parsePreCandidate(number)
 
 		const result = this.parseCandidate(number, startsAt)
-
 		if (result) {
 			return result
 		}
@@ -143,8 +113,7 @@ export class PhoneNumberSearch
 		return this.find()
 	}
 
-	parseCandidate(number, startsAt)
-	{
+	parseCandidate(number, startsAt) {
 		if (!isValidPreCandidate(number, startsAt, this.text)) {
 			return
 		}
@@ -153,8 +122,7 @@ export class PhoneNumberSearch
 		// due to being part of something else (e.g. a UUID).
 		// https://github.com/catamphetamine/libphonenumber-js/issues/213
 		// Copy-pasted from Google's `PhoneNumberMatcher.js` (`.parseAndValidate()`).
-		if (!isValidCandidate(number, startsAt, this.text, this.options.extended ? 'POSSIBLE' : 'VALID'))
-		{
+		if (!isValidCandidate(number, startsAt, this.text, this.options.extended ? 'POSSIBLE' : 'VALID')) {
 			return
 		}
 
@@ -171,44 +139,32 @@ export class PhoneNumberSearch
 		// this.searching_from = matches.lastIndex
 
 		const result = parse(number, this.options, this.metadata)
-
 		if (!result.phone) {
 			return
 		}
 
 		result.startsAt = startsAt
-		result.endsAt   = startsAt + number.length
-
+		result.endsAt = startsAt + number.length
 		return result
 	}
 
-	hasNext()
-	{
-		if (this.state === 'NOT_READY')
-		{
+	hasNext() {
+		if (this.state === 'NOT_READY') {
 			this.last_match = this.find()
-
-			if (this.last_match)
-			{
+			if (this.last_match) {
 				this.state = 'READY'
-			}
-			else
-			{
+			} else {
 				this.state = 'DONE'
 			}
 		}
-
 		return this.state === 'READY'
 	}
 
-	next()
-	{
+	next() {
 		// Check the state and find the next match as a side-effect if necessary.
-		if (!this.hasNext())
-		{
+		if (!this.hasNext()) {
 			throw new Error('No next element')
 		}
-
 		// Don't retain that memory any longer than necessary.
 		const result = this.last_match
 		this.last_match = null

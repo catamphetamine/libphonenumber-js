@@ -159,6 +159,9 @@ describe('parse', () =>
 		})
 
 		// Not a valid extension
-		parse('2134567890 ext. 1234567890', 'US').should.deep.equal({})
+		parse('2134567890 ext. abc', 'US').should.deep.equal({
+			country : 'US',
+			phone   : '2134567890'
+		})
 	})
 })

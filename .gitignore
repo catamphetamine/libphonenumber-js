@@ -1,6 +1,3 @@
-# testing package
-/libphonenumber-js-*.tgz
-
 # test coverage folder
 /coverage/
 
@@ -10,9 +7,6 @@
 
 # npm errors
 npm-debug.log
-
-# github pages
-/gh-pages/
 
 # for OS X users
 .DS_Store

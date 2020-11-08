@@ -30,6 +30,27 @@ describe('metadata', () => {
 		new Metadata(metadata).getNumberingPlanMetadata('999')
 	})
 
+	it('should support deprecated methods', () => {
+		new Metadata(metadata).country('US').nationalPrefixForParsing().should.equal('1')
+		new Metadata(metadata).chooseCountryByCountryCallingCode('1').nationalPrefixForParsing().should.equal('1')
+	})
+
+	it('should tell if a national prefix is mandatory when formatting a national number', () => {
+		const meta = new Metadata(metadata)
+		// No "national_prefix_formatting_rule".
+		// "national_prefix_is_optional_when_formatting": true
+		meta.country('US')
+		meta.numberingPlan.formats()[0].nationalPrefixIsMandatoryWhenFormattingInNationalFormat().should.equal(false)
+		// "national_prefix_formatting_rule": "8 ($1)"
+		// "national_prefix_is_optional_when_formatting": true
+		meta.country('RU')
+		meta.numberingPlan.formats()[0].nationalPrefixIsMandatoryWhenFormattingInNationalFormat().should.equal(false)
+		// "national_prefix": "0"
+		// "national_prefix_formatting_rule": "0 $1"
+		meta.country('FR')
+		meta.numberingPlan.formats()[0].nationalPrefixIsMandatoryWhenFormattingInNationalFormat().should.equal(true)
+	})
+
 	it('should validate metadata', () => {
 		let thrower = () => validateMetadata()
 		thrower.should.throw('`metadata` argument not passed')

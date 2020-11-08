@@ -61,7 +61,7 @@ exports.parseDigits   = require('./build/parseDigits').default
 // Not used anymore.
 //
 exports.DIGITS            = require('./build/parseDigits').DIGITS
-exports.DIGIT_PLACEHOLDER = require('./build/AsYouType').DIGIT_PLACEHOLDER
+exports.DIGIT_PLACEHOLDER = require('./build/AsYouTypeFormatter').DIGIT_PLACEHOLDER
 
 exports.getCountries = require('./build/getCountries').default
 exports.getCountryCallingCode = require('./build/getCountryCallingCode').default

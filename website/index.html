@@ -304,7 +304,7 @@
 									try {
 										const asYouType = new libphonenumber.AsYouType(this.state.asYouTypeCountry)
 										text = asYouType.input(value)
-										template = asYouType.template
+										template = asYouType.getTemplate()
 									} catch (error) {
 										if (error.message.indexOf('Unknown country') === 0) {
 											text = value

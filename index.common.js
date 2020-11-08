@@ -204,10 +204,6 @@ exports.formatRFC3966 = function()
 
 // Deprecated: `DIGITS` were used by `react-phone-number-input`.
 // Replaced by `parseDigits()`.
-//
-// Deprecated: `DIGIT_PLACEHOLDER` was used by `react-phone-number-input`.
-// Not used anymore.
-//
 exports.DIGITS = custom.DIGITS
 exports.DIGIT_PLACEHOLDER = custom.DIGIT_PLACEHOLDER
 

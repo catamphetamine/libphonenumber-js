@@ -245,14 +245,8 @@ export { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNum
 export { default as getNumberTypeCustom } from './es6/getNumberType'
 export { default as getCountryCallingCodeCustom } from './es6/getCountryCallingCode'
 
-export
-{
-	default as AsYouTypeCustom,
-	// Deprecated: `DIGIT_PLACEHOLDER` was used by `react-phone-number-input`.
-	// Seems to be not used anymore.
-	DIGIT_PLACEHOLDER
-}
-from './es6/AsYouType'
+export { default as AsYouTypeCustom } from './es6/AsYouType'
+export { DIGIT_PLACEHOLDER } from './es6/AsYouTypeFormatter'
 
 export function getCountries()
 {

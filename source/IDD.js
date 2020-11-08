@@ -38,10 +38,11 @@ export function stripIDDPrefix(number, country, callingCode, metadata) {
 	}
 	// Strip IDD prefix.
 	number = number.slice(number.match(IDDPrefixPattern)[0].length)
-	// Some kind of a weird edge case.
-	// No explanation from Google given.
+	// If there're any digits after an IDD prefix,
+	// then those digits are a country calling code.
+	// Since no country code starts with a `0`,
+	// the code below validates that the next digit (if present) is not `0`.
 	const matchedGroups = number.match(CAPTURING_DIGIT_PATTERN)
-	/* istanbul ignore next */
 	if (matchedGroups && matchedGroups[1] != null && matchedGroups[1].length > 0) {
 		if (matchedGroups[1] === '0') {
 			return

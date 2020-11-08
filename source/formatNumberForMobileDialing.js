@@ -6,7 +6,8 @@
 
 import Metadata from './metadata'
 import format from './format_'
-import get_number_type, { checkNumberLengthForType } from './getNumberType_'
+import getNumberType from './getNumberType_'
+import checkNumberLength from './checkNumberLength'
 import getCountryCallingCode from './getCountryCallingCode'
 
 const REGION_CODE_FOR_NON_GEO_ENTITY = '001'
@@ -29,87 +30,70 @@ const COLOMBIA_MOBILE_TO_FIXED_LINE_PREFIX = '3'
  *     formatting symbols, such as spaces and dashes.
  * @return {string}
  */
-export default function(number, from_country, with_formatting, metadata)
-{
+export default function(number, from_country, with_formatting, metadata) {
 	metadata = new Metadata(metadata)
 
 	// Validate `from_country`.
-	if (!metadata.hasCountry(from_country))
-	{
+	if (!metadata.hasCountry(from_country)) {
 		throw new Error(`Unknown country: ${from_country}`)
 	}
 
 	// Not using the extension, as that part cannot normally be dialed
 	// together with the main number.
-	number =
-	{
-		phone   : number.phone,
-		country : number.country
+	number = {
+		phone: number.phone,
+		country: number.country
 	}
 
-	const number_type = get_number_type(number, undefined, metadata.metadata)
+	const number_type = getNumberType(number, undefined, metadata.metadata)
 	const is_valid_number = number_type === number
 
 	let formatted_number
 
-	if (country === from_country)
-	{
+	if (country === from_country) {
 		const is_fixed_line_or_mobile =
 			number_type === 'FIXED_LINE' ||
 			number_type === 'MOBILE' ||
 			number_type === 'FIXED_LINE_OR_MOBILE'
 
 		// Carrier codes may be needed in some countries. We handle this here.
-		if (country === 'CO' && number_type === 'FIXED_LINE')
-		{
-			formatted_number = formatNationalNumberWithCarrierCode
-			(
+		if (country === 'CO' && number_type === 'FIXED_LINE') {
+			formatted_number = formatNationalNumberWithCarrierCode(
 				number,
 				COLOMBIA_MOBILE_TO_FIXED_LINE_PREFIX
 			)
 		}
-		else if (country == 'BR' && is_fixed_line_or_mobile)
-		{
+		else if (country == 'BR' && is_fixed_line_or_mobile) {
 			formatted_number =
-				// Historically, we set this to an empty string when parsing with raw
-				// input if none was found in the input string. However, this doesn't
-				// result in a number we can dial. For this reason, we treat the empty
-				// string the same as if it isn't set at all.
-				getPreferredDomesticCarrierCodeOrDefault(number).length > 0 ?
-				formatNationalNumberWithPreferredCarrierCode(number, '') :
+				carrierCode ?
+				formatNationalNumberWithPreferredCarrierCode(number) :
 				// Brazilian fixed line and mobile numbers need to be dialed with a
 				// carrier code when called within Brazil. Without that, most of the
 				// carriers won't connect the call. Because of that, we return an
 				// empty string here.
 				''
-		}
-		else if (getCountryCallingCode(country, metadata.metadata) === '1')
-		{
+		} else if (getCountryCallingCode(country, metadata.metadata) === '1') {
 			// For NANPA countries, we output international format for numbers that
 			// can be dialed internationally, since that always works, except for
 			// numbers which might potentially be short numbers, which are always
 			// dialled in national format.
 
-			// Select country for `checkNumberLengthForType()`.
+			// Select country for `checkNumberLength()`.
 			metadata.country(country)
 
 			if (can_be_internationally_dialled(number) &&
-				checkNumberLengthForType(number.phone, undefined, metadata) !== 'TOO_SHORT')
-			{
+				checkNumberLength(number.phone, metadata) !== 'TOO_SHORT') {
 				formatted_number = format(number, 'INTERNATIONAL', metadata.metadata)
 			}
-			else
-			{
+			else {
 				formatted_number = format(number, 'NATIONAL', metadata.metadata)
 			}
 		}
-		else
-		{
+		else {
 			// For non-geographic countries, Mexican and Chilean fixed line and
 			// mobile numbers, we output international format for numbers that can be
 			// dialed internationally, as that always works.
-			if
-			(
+			if (
 				(
 					country === REGION_CODE_FOR_NON_GEO_ENTITY
 					||
@@ -137,18 +121,15 @@ export default function(number, from_country, with_formatting, metadata)
 				)
 				&&
 				can_be_internationally_dialled(number)
-			)
-			{
+			) {
 				formatted_number = format(number, 'INTERNATIONAL')
 			}
-			else
-			{
+			else {
 				formatted_number = format(number, 'NATIONAL')
 			}
 		}
 	}
-	else if (is_valid_number && can_be_internationally_dialled(number))
-	{
+	else if (is_valid_number && can_be_internationally_dialled(number)) {
 		// We assume that short numbers are not diallable from outside their region,
 		// so if a number is not a valid regular length phone number, we treat it as
 		// if it cannot be internationally dialled.
@@ -157,16 +138,14 @@ export default function(number, from_country, with_formatting, metadata)
 			format(number, 'E.164', metadata.metadata)
 	}
 
-	if (!with_formatting)
-	{
+	if (!with_formatting) {
 		return diallable_chars(formatted_number)
 	}
 
 	return formatted_number
 }
 
-function can_be_internationally_dialled(number)
-{
+function can_be_internationally_dialled(number) {
 	return true
 }
 
@@ -175,8 +154,7 @@ function can_be_internationally_dialled(number)
  * any of the characters in this map must not be removed from a number when
  * dialling, otherwise the call will not reach the intended destination.
  */
-const DIALLABLE_CHARACTERS =
-{
+const DIALLABLE_CHARACTERS = {
 	'0': '0',
 	'1': '1',
 	'2': '2',
@@ -192,16 +170,13 @@ const DIALLABLE_CHARACTERS =
 	'#': '#'
 }
 
-function diallable_chars(formatted_number)
-{
+function diallable_chars(formatted_number) {
 	let result = ''
 
 	let i = 0
-	while (i < formatted_number.length)
-	{
+	while (i < formatted_number.length) {
 		const character = formatted_number[i]
-		if (DIALLABLE_CHARACTERS[character])
-		{
+		if (DIALLABLE_CHARACTERS[character]) {
 			result += character
 		}
 		i++
@@ -210,17 +185,37 @@ function diallable_chars(formatted_number)
 	return result
 }
 
-function getPreferredDomesticCarrierCodeOrDefault()
-{
+function getPreferredDomesticCarrierCodeOrDefault() {
 	throw new Error('carrier codes are not part of this library')
 }
 
-function formatNationalNumberWithCarrierCode()
-{
+function formatNationalNumberWithCarrierCode() {
 	throw new Error('carrier codes are not part of this library')
 }
 
-function formatNationalNumberWithPreferredCarrierCode()
-{
-	throw new Error('carrier codes are not part of this library')
+/**
+ * Formats a phone number in national format for dialing using the carrier as
+ * specified in the preferred_domestic_carrier_code field of the PhoneNumber
+ * object passed in. If that is missing, use the {@code fallbackCarrierCode}
+ * passed in instead. If there is no {@code preferred_domestic_carrier_code},
+ * and the {@code fallbackCarrierCode} contains an empty string, return the
+ * number in national format without any carrier code.
+ *
+ * <p>Use {@link #formatNationalNumberWithCarrierCode} instead if the carrier
+ * code passed in should take precedence over the number's
+ * {@code preferred_domestic_carrier_code} when formatting.
+ *
+ * @param {i18n.phonenumbers.PhoneNumber} number the phone number to be
+ *     formatted.
+ * @param {string} fallbackCarrierCode the carrier selection code to be used, if
+ *     none is found in the phone number itself.
+ * @return {string} the formatted phone number in national format for dialing
+ *     using the number's preferred_domestic_carrier_code, or the
+ *     {@code fallbackCarrierCode} passed in if none is found.
+ */
+function formatNationalNumberWithPreferredCarrierCode(number) {
+	return formatNationalNumberWithCarrierCode(
+		number,
+		carrierCode
+	);
 }

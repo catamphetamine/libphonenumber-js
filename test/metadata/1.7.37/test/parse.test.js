@@ -267,7 +267,10 @@ describe('parse', () => {
 		})
 
 		// Not a valid extension
-		parseNumber('2134567890 ext. 1234567890', 'US').should.deep.equal({})
+		parseNumber('2134567890 ext. abc', 'US').should.deep.equal({
+			country : 'US',
+			phone   : '2134567890'
+		})
 	})
 
 	it('should parse RFC 3966 phone numbers', () => {

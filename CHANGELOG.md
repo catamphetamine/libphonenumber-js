@@ -1,3 +1,5 @@
+<!-- Maybe rename `metadata.full.json` -> `metadata.max.json`. -->
+
 <!-- (breaking change) Moved `findPhoneNumbersInText()` to its own subpackage: `libphonenumber-js/find`. The default export is `searchPhoneNumbersInText()` that returns an ES6 "iterator". -->
 
 <!-- Renamed source files: `parsePhoneNumber.js` -> `parsePhoneNumberWithError.js`, etc. -->
@@ -60,6 +62,38 @@ And edit the README:
 -->
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
+
+1.9.2 / 08.11.2020
+==================
+
+* Metadata `version` is now an integer instead of a semver version. Semver versions of previously generated metadata are automatically converted into an integer version.
+
+1.9.1 / 08.11.2020
+==================
+
+* Merged the latest Google's [patch](https://github.com/google/libphonenumber/commit/55b2646ec9393f4d3d6661b9c82ef9e258e8b829) on parsing phone number extensions.
+
+1.9.0 / 08.11.2020
+==================
+
+* Refactored `AsYouType` formatter.
+
+* (could be a breaking change for some) Some people might have used some of the _undocumented_ `AsYouType` instance properties like `.countryCallingCode`, `.nationalNumber`, etc: those have been moved to a new `.state` object. The `.state` object is also not part of the public API, so developers shouldn't use it: use the documented getter methods instead. The `.country` property of `AsYouType` instance still stays: not because it hasn't been moved (it has been and is emulated), but because it has been part of an official (now legacy) API of `AsYouType` formatter.
+
+* (misc) Renamed `asYouType` instance method `getCountryCallingCode()` to `getCountryCode()`. The older name still works.
+
+* (could be a _build-time_ breaking change for custom metadata) For those who were generating custom metadata, the `libphonenumber-generate-metadata` console command has been moved to a separate package called `libphonenumber-metadata-generator`. The applications that're using it should do `npm install libphonenumber-metadata-generator --save-dev` and then use the new `libphonenumber-metadata-generator` command instead of the old one (only the name changed). [See instructions](https://gitlab.com/catamphetamine/libphonenumber-metadata-generator).
+
+1.8.6 / 05.11.2020
+==================
+
+* Refactored `AsYouType` formatter.
+
+* [Fixed](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/23) `AsYouType` formatter not formatting numbers in some cases like, for example, certain types of Argentinian mobile numbers.
+
+<!-- * Found out that all previous `metadata` was missing `domestic_carrier_code_formatting_rule` that is used in a few countries (like Argentina) when formatting phone numbers containing "carrier codes". It has been added now. -->
+
+* `humanReadable` option of `"IDD"` formatting has been removed: now it's always `true`. The rationale is that Google's `formatOutOfCountryCallingNumber()` original function always formats in "human readable" format.
 
 1.8.3 / 03.10.2020
 ==================

@@ -3,7 +3,7 @@
 .gitattributes
 
 # Babel
-.babelrc
+babel.config.js
 
 # testing package
 /libphonenumber-js-*.tgz
