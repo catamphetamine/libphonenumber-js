@@ -492,7 +492,9 @@ The formatter instance also provides the following getters:
 
  * `getNumber(): PhoneNumber` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) digits have been entered so far, or if no `defaultCountry`/`defaultCallingCode` has been set and the user enters a phone number not in international format.
 
- * `getTemplate(): string` — Returns the template used to format the output. Digits (and the `+` sign, if present) are denoted by `x`-es.
+ * `getChars(): string` — Returns the phone number characters entered by the user: digits and a `+` sign (if present). Returns an empty string if no phone number characters have been input.
+
+ * `getTemplate(): string` — Returns the template used to format the phone number characters (digits and a `+` sign, if present), which are denoted by `x`-es. Returns an empty string if no phone number characters have been input.
 
 ```js
 // National phone number input example.
@@ -501,18 +503,22 @@ const asYouType = new AsYouType('US')
 
 asYouType.input('2') === '2'
 asYouType.getNumber().number === '+12'
+asYouType.getChars() === '2'
 asYouType.getTemplate() === 'x'
 
 asYouType.input('1') === '21'
 asYouType.getNumber().number === '+121'
+asYouType.getChars() === '21'
 asYouType.getTemplate() === 'xx'
 
 asYouType.input('3') === '(213)'
 asYouType.getNumber().number === '+1213'
+asYouType.getChars() === '213'
 asYouType.getTemplate() === '(xxx)'
 
 asYouType.input('3734253') === '(213) 373-4253'
 asYouType.getNumber().number === '+12133734253'
+asYouType.getChars() === '2133734253'
 asYouType.getTemplate() === '(xxx) xxx-xxxx'
 
 // International phone number input example.
@@ -521,6 +527,7 @@ const asYouType = new AsYouType()
 asYouType.input('+1-213-373-4253') === '+1 213 373 4253'
 asYouType.getNumber().country === 'US'
 asYouType.getNumber().number === '+12133734253'
+asYouType.getChars() === '+12133734253'
 asYouType.getTemplate() === 'xx xxx xxx xxxx'
 ```
 

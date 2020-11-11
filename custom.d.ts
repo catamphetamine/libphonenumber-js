@@ -148,5 +148,6 @@ export class AsYouType {
   country: CountryCode | undefined;
   getNumber(): PhoneNumber | undefined;
   getNationalNumber(): string;
-  getTemplate(): string | undefined;
+  getChars(): string;
+  getTemplate(): string;
 }

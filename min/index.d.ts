@@ -73,5 +73,6 @@ export class AsYouType {
   input(text: string): string;
   reset(): void;
   getNumber(): PhoneNumber | undefined;
-  getTemplate(): string | undefined;
+  getChars(): string;
+  getTemplate(): string;
 }

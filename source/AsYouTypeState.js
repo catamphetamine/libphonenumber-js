@@ -7,6 +7,7 @@ export default class AsYouTypeState {
 	reset(defaultCountry, defaultCallingCode) {
 		this.international = false
 		this.IDDPrefix = undefined
+		this.missingPlus = undefined
 		this.callingCode = undefined
 		this.digits = ''
 		this.resetNationalSignificantNumber()

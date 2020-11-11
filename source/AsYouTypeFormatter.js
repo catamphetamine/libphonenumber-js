@@ -412,10 +412,14 @@ export default class AsYouTypeFormatter {
 		return ''
 	}
 
-	getInternationalPrefixBeforeCountryCallingCode(IDDPrefix, options) {
-		return IDDPrefix ? (
-			options && options.spacing === false ? IDDPrefix : IDDPrefix + ' '
-		) : '+'
+	getInternationalPrefixBeforeCountryCallingCode({ IDDPrefix, missingPlus }, options) {
+		if (IDDPrefix) {
+			return options && options.spacing === false ? IDDPrefix : IDDPrefix + ' '
+		}
+		if (missingPlus) {
+			return ''
+		}
+		return '+'
 	}
 
 	getTemplate(state) {
@@ -427,7 +431,7 @@ export default class AsYouTypeFormatter {
 		// so trim all non-populated digits.
 		let index = -1
 		let i = 0
-		const internationalPrefix = state.international ? this.getInternationalPrefixBeforeCountryCallingCode(state.IDDPrefix, { spacing: false }) : ''
+		const internationalPrefix = state.international ? this.getInternationalPrefixBeforeCountryCallingCode(state, { spacing: false }) : ''
 		while (i < internationalPrefix.length + state.getDigitsWithoutInternationalPrefix().length) {
 			index = this.template.indexOf(DIGIT_PLACEHOLDER, index + 1)
 			i++
@@ -435,11 +439,7 @@ export default class AsYouTypeFormatter {
 		return cutAndStripNonPairedParens(this.template, index + 1)
 	}
 
-	setNationalNumberTemplate(template, {
-		international,
-		IDDPrefix,
-		callingCode
-	}) {
+	setNationalNumberTemplate(template, state) {
 		this.nationalNumberTemplate = template
 		this.populatedNationalNumberTemplate = template
 		// With a new formatting template, the matched position
@@ -450,10 +450,10 @@ export default class AsYouTypeFormatter {
 		// if the phone number being input is international:
 		// 'x' for the '+' sign, 'x'es for the country phone code,
 		// a spacebar and then the template for the formatted national number.
-		if (international) {
+		if (state.international) {
 			this.template =
-				this.getInternationalPrefixBeforeCountryCallingCode(IDDPrefix).replace(/[\d\+]/g, DIGIT_PLACEHOLDER) +
-				repeat(DIGIT_PLACEHOLDER, callingCode.length) +
+				this.getInternationalPrefixBeforeCountryCallingCode(state).replace(/[\d\+]/g, DIGIT_PLACEHOLDER) +
+				repeat(DIGIT_PLACEHOLDER, state.callingCode.length) +
 				' ' +
 				template
 		} else {

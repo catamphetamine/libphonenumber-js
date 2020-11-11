@@ -2,7 +2,7 @@ import Metadata from './metadata'
 import PhoneNumber from './PhoneNumber'
 import AsYouTypeState from './AsYouTypeState'
 import AsYouTypeFormatter, { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter'
-import AsYouTypeParser, { extractFormattedDigitsAndPlus, autoCorrectInternationalNumberWithoutPlus } from './AsYouTypeParser'
+import AsYouTypeParser, { extractFormattedDigitsAndPlus } from './AsYouTypeParser'
 import { findCountryCode } from './parse_'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
@@ -72,6 +72,7 @@ export default class AsYouType {
 			if (formattedNationalNumber === undefined) {
 				// See if another national (significant) number could be re-extracted.
 				if (this.parser.reExtractNationalSignificantNumber(this.state)) {
+					this.determineTheCountryIfNeeded()
 					// If it could, then re-try formatting the new national (significant) number.
 					const nationalDigits = this.state.getNationalDigits()
 					if (nationalDigits) {
@@ -196,7 +197,7 @@ export default class AsYouType {
 	// Prepends `+CountryCode ` in case of an international phone number
 	getFullNumber(formattedNationalNumber) {
 		if (this.isInternational()) {
-			const prefix = (text) => this.formatter.getInternationalPrefixBeforeCountryCallingCode(this.state.IDDPrefix, {
+			const prefix = (text) => this.formatter.getInternationalPrefixBeforeCountryCallingCode(this.state, {
 				spacing: text ? true : false
 			}) + text
 			const { callingCode } = this.state
@@ -283,25 +284,6 @@ export default class AsYouType {
 		}
 		const countryCode = this.getCountry()
 		const callingCode = this.getCountryCallingCode() || this.defaultCallingCode
-		// Google's AsYouType formatter supports sort of an "autocorrection" feature
-		// when it "autocorrects" numbers that have been input for a country
-		// with that country's calling code.
-		// Such "autocorrection" feature looks weird, but different people have been requesting it:
-		// https://github.com/catamphetamine/libphonenumber-js/issues/376
-		// https://github.com/catamphetamine/libphonenumber-js/issues/375
-		// https://github.com/catamphetamine/libphonenumber-js/issues/316
-		if (!this.isInternational() && nationalSignificantNumber === this.state.digits) {
-			const autoCorrected = autoCorrectInternationalNumberWithoutPlus(
-				this.state.digits,
-				countryCode,
-				callingCode,
-				this.metadata
-			)
-			if (autoCorrected) {
-				nationalSignificantNumber = autoCorrected.nationalNumber
-				carrierCode = autoCorrected.carrierCode
-			}
-		}
 		const phoneNumber = new PhoneNumber(
 			countryCode || callingCode,
 			nationalSignificantNumber,
@@ -347,6 +329,14 @@ export default class AsYouType {
 	 */
 	getNationalNumber() {
 		return this.state.nationalSignificantNumber
+	}
+
+	/**
+	 * Returns the phone number characters entered by the user.
+	 * @return {string}
+	 */
+	getChars() {
+		return (this.state.international ? '+' : '') + this.state.digits
 	}
 
 	/**

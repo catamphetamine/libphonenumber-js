@@ -343,6 +343,18 @@ export default class AsYouTypeParser {
 		// will be a suitable `format` when there're 3 leading digits.
 		//
 		if (this.extractIDDPrefix(state)) {
+			this.extractCallingCodeAndNationalSignificantNumber(state)
+			return true
+		}
+		// Google's AsYouType formatter supports sort of an "autocorrection" feature
+		// when it "autocorrects" numbers that have been input for a country
+		// with that country's calling code.
+		// Such "autocorrection" feature looks weird, but different people have been requesting it:
+		// https://github.com/catamphetamine/libphonenumber-js/issues/376
+		// https://github.com/catamphetamine/libphonenumber-js/issues/375
+		// https://github.com/catamphetamine/libphonenumber-js/issues/316
+		if (this.fixMissingPlus(state)) {
+			this.extractCallingCodeAndNationalSignificantNumber(state)
 			return true
 		}
 	}
@@ -375,14 +387,51 @@ export default class AsYouTypeParser {
 			state.update({
 				IDDPrefix: digits.slice(0, digits.length - numberWithoutIDD.length)
 			})
-			state.startInternationalNumber()
-			// If a national (significant) number has been extracted before, reset it.
-			if (nationalSignificantNumber) {
-				state.resetNationalSignificantNumber()
-				this.onNationalSignificantNumberChange()
-				this.hasExtractedNationalSignificantNumber = undefined
-			}
+			this.startInternationalNumber(state)
 			return true
+		}
+	}
+
+	fixMissingPlus(state) {
+		if (!state.international) {
+			const {
+				countryCallingCode: newCallingCode,
+				number
+			} = extractCountryCallingCodeFromInternationalNumberWithoutPlusSign(
+				state.digits,
+				this.defaultCountry,
+				this.defaultCallingCode,
+				this.metadata.metadata
+			)
+			if (newCallingCode) {
+				state.update({
+					missingPlus: true
+				})
+				this.startInternationalNumber(state)
+				return true
+			}
+		}
+	}
+
+	startInternationalNumber(state) {
+		state.startInternationalNumber()
+		// If a national (significant) number has been extracted before, reset it.
+		if (state.nationalSignificantNumber) {
+			state.resetNationalSignificantNumber()
+			this.onNationalSignificantNumberChange()
+			this.hasExtractedNationalSignificantNumber = undefined
+		}
+	}
+
+	extractCallingCodeAndNationalSignificantNumber(state) {
+		if (this.extractCountryCallingCode(state)) {
+			// `this.extractCallingCode()` is currently called when the number
+			// couldn't be formatted during the standard procedure.
+			// Normally, the national prefix would be re-extracted
+			// for an international number if such number couldn't be formatted,
+			// but since it's already not able to be formatted,
+			// there won't be yet another retry, so also extract national prefix here.
+			this.extractNationalSignificantNumber(state.getNationalDigits(), state.update)
 		}
 	}
 }
@@ -444,31 +493,4 @@ export function extractFormattedDigitsAndPlus(text) {
 		formattedDigits = ''
 	}
 	return [formattedDigits, hasPlus]
-}
-
-export function autoCorrectInternationalNumberWithoutPlus(
-	digits,
-	countryCode,
-	callingCode,
-	metadata
-) {
-	// Google's AsYouType formatter supports sort of an "autocorrection" feature
-	// when it "autocorrects" numbers that have been input for a country
-	// with that country's calling code.
-	// Such "autocorrection" feature looks weird, but different people have been requesting it:
-	// https://github.com/catamphetamine/libphonenumber-js/issues/376
-	// https://github.com/catamphetamine/libphonenumber-js/issues/375
-	// https://github.com/catamphetamine/libphonenumber-js/issues/316
-	const {
-		countryCallingCode: newCallingCode,
-		number
-	} = extractCountryCallingCodeFromInternationalNumberWithoutPlusSign(
-		digits,
-		countryCode,
-		callingCode,
-		metadata.metadata
-	)
-	if (newCallingCode) {
-		return extractNationalNumber(number, metadata)
-	}
 }
