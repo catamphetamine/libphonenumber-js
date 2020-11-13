@@ -63,6 +63,11 @@ And edit the README:
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
 
+1.9.4 / 13.11.2020
+==================
+
+* Refactored the main ES6 export in order to support "tree shaking".
+
 1.9.3 / 11.11.2020
 ==================
 

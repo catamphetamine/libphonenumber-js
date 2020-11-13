@@ -1,116 +1,36 @@
-// Importing from `.json.js` a workaround for a bug in web browsers' "native"
-// ES6 importing system which is uncapable of importing "*.json" files.
-// https://github.com/catamphetamine/libphonenumber-js/issues/239
-import metadata from '../metadata.mobile.json.js'
+// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
+export { parsePhoneNumberWithError, parsePhoneNumberWithError as parsePhoneNumber } from './exports/parsePhoneNumberWithError'
+// `parsePhoneNumberFromString()` named export is now considered legacy:
+// it has been promoted to a default export due to being too verbose.
+export { parsePhoneNumberFromString, parsePhoneNumberFromString as default } from './exports/parsePhoneNumberFromString'
 
-import {
-	parsePhoneNumberWithError as _parsePhoneNumberWithError,
-	parsePhoneNumberFromString as _parsePhoneNumberFromString,
+// Deprecated.
+export { findNumbers } from './exports/findNumbers'
+// Deprecated.
+export { searchNumbers } from './exports/searchNumbers'
 
-	findNumbers as _findNumbers,
-	searchNumbers as _searchNumbers,
-	findPhoneNumbersInText as _findPhoneNumbersInText,
-	searchPhoneNumbersInText as _searchPhoneNumbersInText,
-	PhoneNumberMatcher as _PhoneNumberMatcher,
+export { findPhoneNumbersInText } from './exports/findPhoneNumbersInText'
+export { searchPhoneNumbersInText } from './exports/searchPhoneNumbersInText'
+export { PhoneNumberMatcher } from './exports/PhoneNumberMatcher'
 
-	AsYouType as _AsYouType,
+export { AsYouType } from './exports/AsYouType'
 
-	isSupportedCountry as _isSupportedCountry,
-	getCountries as _getCountries,
-	getCountryCallingCode as _getCountryCallingCode,
-	getExtPrefix as _getExtPrefix,
+export { isSupportedCountry } from './exports/isSupportedCountry'
+export { getCountries } from './exports/getCountries'
+export { getCountryCallingCode } from './exports/getCountryCallingCode'
+export { getExtPrefix } from './exports/getExtPrefix'
 
-	getExampleNumber as _getExampleNumber,
+export { Metadata } from './exports/Metadata'
+export { getExampleNumber } from './exports/getExampleNumber'
 
-	formatIncompletePhoneNumber as _formatIncompletePhoneNumber,
-	parseIncompletePhoneNumber,
-	parsePhoneNumberCharacter,
-	parseDigits,
-
-	parseRFC3966,
-	formatRFC3966
-} from '../core/index'
+export { formatIncompletePhoneNumber } from './exports/formatIncompletePhoneNumber'
 
 export {
 	ParseError,
-
 	parseIncompletePhoneNumber,
 	parsePhoneNumberCharacter,
 	parseDigits,
-
 	parseRFC3966,
-	formatRFC3966
+	formatRFC3966,
+	DIGIT_PLACEHOLDER
 } from '../core/index'
-
-function call(func, _arguments) {
-	var args = Array.prototype.slice.call(_arguments)
-	args.push(metadata)
-	return func.apply(this, args)
-}
-
-export function parsePhoneNumberWithError() {
-	return call(_parsePhoneNumberWithError, arguments)
-}
-
-// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
-export var parsePhoneNumber = parsePhoneNumberWithError
-
-// `parsePhoneNumberFromString()` named export is now considered legacy:
-// it has been promoted to a default export due to being too verbose.
-export function parsePhoneNumberFromString() {
-	return call(_parsePhoneNumberFromString, arguments)
-}
-
-export default parsePhoneNumberFromString
-
-export function findNumbers() {
-	return call(_findNumbers, arguments)
-}
-
-export function searchNumbers() {
-	return call(_searchNumbers, arguments)
-}
-
-export function findPhoneNumbersInText() {
-	return call(_findPhoneNumbersInText, arguments)
-}
-
-export function searchPhoneNumbersInText() {
-	return call(_searchPhoneNumbersInText, arguments)
-}
-
-export function PhoneNumberMatcher(text, options) {
-	return _PhoneNumberMatcher.call(this, text, options, metadata)
-}
-PhoneNumberMatcher.prototype = Object.create(_PhoneNumberMatcher.prototype, {})
-PhoneNumberMatcher.prototype.constructor = PhoneNumberMatcher
-
-export function AsYouType(country) {
-	return _AsYouType.call(this, country, metadata)
-}
-AsYouType.prototype = Object.create(_AsYouType.prototype, {})
-AsYouType.prototype.constructor = AsYouType
-
-export function isSupportedCountry() {
-	return call(_isSupportedCountry, arguments)
-}
-
-export function getCountries() {
-	return call(_getCountries, arguments)
-}
-
-export function getCountryCallingCode() {
-	return call(_getCountryCallingCode, arguments)
-}
-
-export function getExtPrefix(country) {
-	return call(_getExtPrefix, arguments)
-}
-
-export function getExampleNumber() {
-	return call(_getExampleNumber, arguments)
-}
-
-export function formatIncompletePhoneNumber() {
-	return call(_formatIncompletePhoneNumber, arguments)
-}

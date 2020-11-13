@@ -86,6 +86,7 @@ describe('exports/mobile', () => {
 		parsePhoneNumberCharacter('+').should.equal('+')
 		parseDigits('+123').should.equal('123')
 
+		new Metadata().getCountryCodeForCallingCode('1').should.equal('US')
 		getExampleNumber('RU', examples).nationalNumber.should.equal('9123456789')
 
 		parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })

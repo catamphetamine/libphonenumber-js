@@ -1,7 +1,7 @@
 import metadata from '../metadata.full'
 import Metadata from '../../../../source/metadata'
 import get_number_type_custom from '../../../../source/getNumberType'
-import { checkNumberLengthForType } from '../../../../source/checkNumberLength'
+import { checkNumberLengthForType } from '../../../../source/helpers/checkNumberLength'
 
 function get_number_type(...parameters)
 {

@@ -1,13 +1,8 @@
-import parseDigits from './parseDigits'
-
-import {
-	extractNationalNumber,
-	extractNationalNumberFromPossiblyIncompleteNumber,
-	extractCountryCallingCode,
-	extractCountryCallingCodeFromInternationalNumberWithoutPlusSign
-} from './parse_'
-
-import { stripIDDPrefix } from './IDD'
+import extractCountryCallingCode from './helpers/extractCountryCallingCode'
+import extractCountryCallingCodeFromInternationalNumberWithoutPlusSign from './helpers/extractCountryCallingCodeFromInternationalNumberWithoutPlusSign'
+import extractNationalNumberFromPossiblyIncompleteNumber from './helpers/extractNationalNumberFromPossiblyIncompleteNumber'
+import stripIddPrefix from './helpers/stripIddPrefix'
+import parseDigits from './helpers/parseDigits'
 
 import {
 	VALID_DIGITS,
@@ -113,7 +108,7 @@ export default class AsYouTypeParser {
 		// An IDD prefix is extracted here, and then every time when
 		// there's a new digit and the number couldn't be formatted.
 		if (hasReceivedThreeLeadingDigits) {
-			this.extractIDDPrefix(state)
+			this.extractIddPrefix(state)
 		}
 
 		if (this.isWaitingForCountryCallingCode(state)) {
@@ -342,7 +337,7 @@ export default class AsYouTypeParser {
 		// but it's not a big deal, and in most cases there
 		// will be a suitable `format` when there're 3 leading digits.
 		//
-		if (this.extractIDDPrefix(state)) {
+		if (this.extractIddPrefix(state)) {
 			this.extractCallingCodeAndNationalSignificantNumber(state)
 			return true
 		}
@@ -359,7 +354,7 @@ export default class AsYouTypeParser {
 		}
 	}
 
-	extractIDDPrefix(state) {
+	extractIddPrefix(state) {
 		// An IDD prefix can't be present in a number written with a `+`.
 		// Also, don't re-extract an IDD prefix if has already been extracted.
 		const {
@@ -375,7 +370,7 @@ export default class AsYouTypeParser {
 		// dialing format instead of using the leading `+`.
 		// https://github.com/catamphetamine/libphonenumber-js/issues/185
 		// Detect such numbers.
-		const numberWithoutIDD = stripIDDPrefix(
+		const numberWithoutIDD = stripIddPrefix(
 			digits,
 			this.defaultCountry,
 			this.defaultCallingCode,

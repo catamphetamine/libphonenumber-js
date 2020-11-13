@@ -1,5 +1,5 @@
-import isViablePhoneNumber from './isViablePhoneNumber'
-import _getNumberType from './getNumberType_'
+import isViablePhoneNumber from './helpers/isViablePhoneNumber'
+import _getNumberType from './helpers/getNumberType'
 import parse from './parse_'
 
 // Finds out national phone number type (fixed line, mobile, etc)

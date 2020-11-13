@@ -1,7 +1,6 @@
 import metadata from '../metadata.min.json'
 import _parseNumber from './parse'
-import Metadata from './Metadata'
-import { extractCountryCallingCode, extractNationalNumberFromPossiblyIncompleteNumber } from './parse_'
+import Metadata from './metadata'
 
 function parseNumber(...parameters) {
 	parameters.push(metadata)
@@ -440,20 +439,6 @@ describe('parse', () => {
 		})
 	})
 
-	it('should extract country calling code from a number', () => {
-		extractCountryCallingCode('+78005553535', null, null, metadata).should.deep.equal({
-			countryCallingCode: '7',
-			number: '8005553535'
-		})
-
-		extractCountryCallingCode('+7800', null, null, metadata).should.deep.equal({
-			countryCallingCode: '7',
-			number: '800'
-		})
-
-		extractCountryCallingCode('', null, null, metadata).should.deep.equal({})
-	})
-
 	it('should correctly parse numbers starting with the same digit as the national prefix', () => {
 		// https://github.com/catamphetamine/libphonenumber-js/issues/373
 		// `BY`'s `national_prefix` is `8`.
@@ -535,17 +520,5 @@ describe('parse', () => {
 		parseNumber('+11234567890-6#', { v2: true }).ext.should.equal('6')
 		// Extension too long.
 		expect(() => parseNumber('+1123-456-7890 7777777#', { v2: true })).to.throw('NOT_A_NUMBER')
-	})
-})
-
-describe('extractNationalNumberFromPossiblyIncompleteNumber', () => {
-	it('should parse a carrier code when there is no national prefix transform rule', () => {
-		const meta = new Metadata(metadata)
-		meta.country('AU')
-		extractNationalNumberFromPossiblyIncompleteNumber('18311800123', meta).should.deep.equal({
-			nationalPrefix: undefined,
-			carrierCode: '1831',
-			nationalNumber: '1800123'
-		})
 	})
 })

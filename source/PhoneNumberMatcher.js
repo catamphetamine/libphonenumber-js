@@ -12,7 +12,7 @@ import {
   VALID_PUNCTUATION
 } from './constants'
 
-import { EXTN_PATTERNS_FOR_MATCHING } from './extension'
+import createExtensionPattern from './helpers/extension/createExtensionPattern'
 
 import RegExpCache from './findNumbers/RegExpCache'
 
@@ -37,6 +37,8 @@ import isValidCandidate, { LEAD_CLASS } from './findNumbers/isValidCandidate'
 import { isSupportedCountry } from './metadata'
 
 import parseNumber from './parse_'
+
+const EXTN_PATTERNS_FOR_MATCHING = createExtensionPattern('matching')
 
 /**
  * Patterns used to extract phone numbers from a larger phone-number-like pattern. These are

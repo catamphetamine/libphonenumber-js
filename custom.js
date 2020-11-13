@@ -52,7 +52,7 @@ exports.AsYouType = require('./build/AsYouType').default
 exports.formatIncompletePhoneNumber = require('./build/formatIncompletePhoneNumber').default
 exports.parseIncompletePhoneNumber  = require('./build/parseIncompletePhoneNumber').default
 exports.parsePhoneNumberCharacter   = require('./build/parseIncompletePhoneNumber').parsePhoneNumberCharacter
-exports.parseDigits   = require('./build/parseDigits').default
+exports.parseDigits   = require('./build/helpers/parseDigits').default
 
 // Deprecated: `DIGITS` were used by `react-phone-number-input`.
 // Replaced by `parseDigits()`.
@@ -60,7 +60,7 @@ exports.parseDigits   = require('./build/parseDigits').default
 // Deprecated: `DIGIT_PLACEHOLDER` was used by `react-phone-number-input`.
 // Not used anymore.
 //
-exports.DIGITS            = require('./build/parseDigits').DIGITS
+exports.DIGITS            = require('./build/helpers/parseDigits').DIGITS
 exports.DIGIT_PLACEHOLDER = require('./build/AsYouTypeFormatter').DIGIT_PLACEHOLDER
 
 exports.getCountries = require('./build/getCountries').default
@@ -72,7 +72,7 @@ exports.Metadata = require('./build/metadata').default
 exports.isSupportedCountry = require('./build/metadata').isSupportedCountry
 exports.getExtPrefix = require('./build/metadata').getExtPrefix
 
-exports.parseRFC3966 = require('./build/RFC3966').parseRFC3966
-exports.formatRFC3966 = require('./build/RFC3966').formatRFC3966
+exports.parseRFC3966 = require('./build/helpers/RFC3966').parseRFC3966
+exports.formatRFC3966 = require('./build/helpers/RFC3966').formatRFC3966
 
 // exports['default'] = ...

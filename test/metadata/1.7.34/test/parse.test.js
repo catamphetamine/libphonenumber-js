@@ -1,6 +1,5 @@
 import metadata from '../metadata.min.json'
 import _parseNumber from '../../../../source/parse'
-import { extractCountryCallingCode } from '../../../../source/parse_'
 
 function parseNumber(...parameters) {
 	parameters.push(metadata)
@@ -382,19 +381,5 @@ describe('parse', () => {
 
 	it('should parse non-geographic numbering plan phone numbers', () => {
 		parseNumber('+870773111632').should.deep.equal({})
-	})
-
-	it('should extract country calling code from a number', () => {
-		extractCountryCallingCode('+78005553535', null, null, metadata).should.deep.equal({
-			countryCallingCode: '7',
-			number: '8005553535'
-		})
-
-		extractCountryCallingCode('+7800', null, null, metadata).should.deep.equal({
-			countryCallingCode: '7',
-			number: '800'
-		})
-
-		extractCountryCallingCode('', null, null, metadata).should.deep.equal({})
 	})
 })

@@ -1,6 +1,6 @@
 import Metadata from './metadata'
-import { matchesEntirely } from './util'
-import getNumberType from './getNumberType_'
+import matchesEntirely from './helpers/matchesEntirely'
+import getNumberType from './helpers/getNumberType'
 
 /**
  * Checks if a given phone number is valid.

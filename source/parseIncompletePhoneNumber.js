@@ -1,4 +1,4 @@
-import { parseDigit } from './parseDigits'
+import { parseDigit } from './helpers/parseDigits'
 
 /**
  * Parses phone number characters from a string.
@@ -30,19 +30,22 @@ export default function parseIncompletePhoneNumber(string) {
 }
 
 /**
- * `input-format` `parse()` function.
- * https://gitlab.com/catamphetamine/input-format
+ * Parses next character while parsing phone number digits (including a `+`)
+ * from text: discards everything except `+` and digits, and `+` is only allowed
+ * at the start of a phone number.
+ * For example, is used in `react-phone-number-input` where it uses
+ * [`input-format`](https://gitlab.com/catamphetamine/input-format).
  * @param  {string} character - Yet another character from raw input string.
- * @param  {string} value - The value parsed so far.
+ * @param  {string?} prevParsedCharacters - Previous parsed characters.
  * @param  {object} meta - Optional custom use-case-specific metadata.
  * @return {string?} The parsed character.
  */
-export function parsePhoneNumberCharacter(character, value) {
+export function parsePhoneNumberCharacter(character, prevParsedCharacters) {
 	// Only allow a leading `+`.
 	if (character === '+') {
 		// If this `+` is not the first parsed character
 		// then discard it.
-		if (value) {
+		if (prevParsedCharacters) {
 			return
 		}
 		return '+'

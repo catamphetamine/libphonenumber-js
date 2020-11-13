@@ -1,5 +1,5 @@
 import isValidNumber from '../validate_'
-import parseDigits from '../parseDigits'
+import parseDigits from '../helpers/parseDigits'
 
 import {
 	startsWith,

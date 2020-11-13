@@ -110,7 +110,7 @@ describe(`exports`, () => {
 		expect(getCountries().indexOf('KZ') > 0).to.be.true
 		getCountryCallingCode('KZ').should.equal('7')
 
-		new Metadata({ countries: {}, country_calling_codes: {} })
+		new Metadata(metadata).getCountryCodeForCallingCode('1').should.equal('US')
 		isSupportedCountry('US', metadata).should.equal(true)
 		getExtPrefix('US', metadata).should.equal(' ext. ')
 		parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })

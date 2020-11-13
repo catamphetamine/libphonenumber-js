@@ -6,8 +6,8 @@
 
 import Metadata from './metadata'
 import format from './format_'
-import getNumberType from './getNumberType_'
-import checkNumberLength from './checkNumberLength'
+import getNumberType from './helpers/getNumberType'
+import checkNumberLength from './helpers/checkNumberLength'
 import getCountryCallingCode from './getCountryCallingCode'
 
 const REGION_CODE_FOR_NON_GEO_ENTITY = '001'

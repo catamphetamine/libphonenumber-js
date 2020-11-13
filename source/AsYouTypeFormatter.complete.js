@@ -1,6 +1,6 @@
-import checkNumberLength from './checkNumberLength'
-import parseDigits from './parseDigits'
-import { formatNationalNumberUsingFormat } from './format_'
+import checkNumberLength from './helpers/checkNumberLength'
+import parseDigits from './helpers/parseDigits'
+import formatNationalNumberUsingFormat from './helpers/formatNationalNumberUsingFormat'
 
 export default function formatCompleteNumber(state, format, {
 	metadata,

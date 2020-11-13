@@ -8,13 +8,30 @@ import {
 	WHITESPACE
 } from './constants'
 
-import { EXTN_PATTERNS_FOR_PARSING } from './extension'
 import parse from './parse_'
-import { VALID_PHONE_NUMBER_WITH_EXTENSION } from './isViablePhoneNumber'
+import { VALID_PHONE_NUMBER_WITH_EXTENSION } from './helpers/isViablePhoneNumber'
+import createExtensionPattern from './helpers/extension/createExtensionPattern'
 
 import parsePreCandidate from './findNumbers/parsePreCandidate'
 import isValidPreCandidate from './findNumbers/isValidPreCandidate'
 import isValidCandidate from './findNumbers/isValidCandidate'
+
+/**
+ * Regexp of all possible ways to write extensions, for use when parsing. This
+ * will be run as a case-insensitive regexp match. Wide character versions are
+ * also provided after each ASCII version. There are three regular expressions
+ * here. The first covers RFC 3966 format, where the extension is added using
+ * ';ext='. The second more generic one starts with optional white space and
+ * ends with an optional full stop (.), followed by zero or more spaces/tabs
+ * /commas and then the numbers themselves. The other one covers the special
+ * case of American numbers where the extension is written with a hash at the
+ * end, such as '- 503#'. Note that the only capturing groups should be around
+ * the digits that you want to capture as part of the extension, or else parsing
+ * will fail! We allow two options for representing the accented o - the
+ * character itself, and one in the unicode decomposed form with the combining
+ * acute accent.
+ */
+export const EXTN_PATTERNS_FOR_PARSING = createExtensionPattern('parsing')
 
 const WHITESPACE_IN_THE_BEGINNING_PATTERN = new RegExp('^[' + WHITESPACE + ']+')
 const PUNCTUATION_IN_THE_END_PATTERN = new RegExp('[' + VALID_PUNCTUATION + ']+$')

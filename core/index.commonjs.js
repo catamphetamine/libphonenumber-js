@@ -38,7 +38,7 @@ exports.getExampleNumber = require('../build/getExampleNumber').default
 exports.formatIncompletePhoneNumber = require('../build/formatIncompletePhoneNumber').default
 exports.parseIncompletePhoneNumber = require('../build/parseIncompletePhoneNumber').default
 exports.parsePhoneNumberCharacter = require('../build/parseIncompletePhoneNumber').parsePhoneNumberCharacter
-exports.parseDigits = require('../build/parseDigits').default
+exports.parseDigits = require('../build/helpers/parseDigits').default
 
-exports.parseRFC3966 = require('../build/RFC3966').parseRFC3966
-exports.formatRFC3966 = require('../build/RFC3966').formatRFC3966
+exports.parseRFC3966 = require('../build/helpers/RFC3966').parseRFC3966
+exports.formatRFC3966 = require('../build/helpers/RFC3966').formatRFC3966

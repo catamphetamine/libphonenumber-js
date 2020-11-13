@@ -1,5 +1,3 @@
-import parseDigits from './parseDigits'
-
 import {
 	DIGIT_PLACEHOLDER,
 	countOccurences,
@@ -10,20 +8,15 @@ import {
 	populateTemplateWithDigits
 } from './AsYouTypeFormatter.util'
 
-export {
-	DIGIT_PLACEHOLDER
-} from './AsYouTypeFormatter.util'
+import formatCompleteNumber, {
+	canFormatCompleteNumber
+} from './AsYouTypeFormatter.complete'
 
-import formatCompleteNumber, { canFormatCompleteNumber } from './AsYouTypeFormatter.complete'
-
-import {
-	FIRST_GROUP_PATTERN,
-	applyInternationalSeparatorStyle
-} from './format_'
-
-import {
-	VALID_PUNCTUATION
-} from './constants'
+import parseDigits from './helpers/parseDigits'
+export { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter.util'
+import { FIRST_GROUP_PATTERN } from './helpers/formatNationalNumberUsingFormat'
+import { VALID_PUNCTUATION } from './constants'
+import applyInternationalSeparatorStyle from './helpers/applyInternationalSeparatorStyle'
 
 // Used in phone number format template creation.
 // Could be any digit, I guess.

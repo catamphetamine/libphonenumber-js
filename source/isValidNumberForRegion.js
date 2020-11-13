@@ -1,4 +1,4 @@
-import isViablePhoneNumber from './isViablePhoneNumber'
+import isViablePhoneNumber from './helpers/isViablePhoneNumber'
 import parseNumber from './parse_'
 import _isValidNumberForRegion from './isValidNumberForRegion_'
 

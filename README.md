@@ -774,15 +774,33 @@ getExtPrefix('GB') === ' x'
 ```
 
 <!--
-### parsePhoneNumberCharacter(nextCharacter, value)
+### parsePhoneNumberCharacter(nextCharacter, prevParsedCharacters)
 
-Parses next character while parsing `value` from text: discards everything except `+` and digits, and `+` is only allowed at the start of a phone number. Can be used for [`input-format`](https://gitlab.com/catamphetamine/input-format).
+Parses next character while parsing phone number digits (including a `+`) from text: discards everything except `+` and digits, and `+` is only allowed at the start of a phone number.
+
+For example, is used in [`input-format`](https://gitlab.com/catamphetamine/input-format).
 
 ```js
-parsePhoneNumberCharacter('5', '880055') === '5'
-parsePhoneNumberCharacter('+', '') === '+'
-parsePhoneNumberCharacter('+', '+7800') === ''
-parsePhoneNumberCharacter('a', '') === ''
+// Suppose a user inputs "+1 (213) 373-42-53".
+
+parsePhoneNumberCharacter('+', undefined) === '+'
+parsePhoneNumberCharacter('1', '+') === '1'
+parsePhoneNumberCharacter(' ', '+1') === undefined
+parsePhoneNumberCharacter('(', '+1') === undefined
+parsePhoneNumberCharacter('2', '+1') === '2'
+parsePhoneNumberCharacter('1', '+12') === '1'
+parsePhoneNumberCharacter('3', '+121') === '3'
+parsePhoneNumberCharacter(')', '+1213') === undefined
+parsePhoneNumberCharacter(' ', '+1213') === undefined
+parsePhoneNumberCharacter('3', '+1213') === '3'
+parsePhoneNumberCharacter('7', '+12133') === '7'
+parsePhoneNumberCharacter('3', '+121337') === '3'
+parsePhoneNumberCharacter('-', '+121337') === undefined
+parsePhoneNumberCharacter('4', '+1213373') === '4'
+parsePhoneNumberCharacter('2', '+12133734') === '2'
+parsePhoneNumberCharacter('-', '+12133734') === undefined
+parsePhoneNumberCharacter('5', '+121337342') === '5'
+parsePhoneNumberCharacter('3', '+1213373425') === '3'
 ```
 -->
 

@@ -1,4 +1,5 @@
 import {
+  Metadata,
   PhoneNumber,
   E164Number,
   CountryCallingCode,
@@ -16,6 +17,7 @@ import {
 // They say this re-export is required.
 // https://github.com/catamphetamine/libphonenumber-js/pull/290#issuecomment-453281180
 export {
+  Metadata,
   PhoneNumber,
   E164Number,
   CountryCallingCode,

@@ -1,5 +1,5 @@
 import Metadata from './metadata'
-import checkNumberLength from './checkNumberLength'
+import checkNumberLength from './helpers/checkNumberLength'
 
 export default function isPossiblePhoneNumber(input, options, metadata) {
 	/* istanbul ignore if */

@@ -52,7 +52,7 @@ describe('exports/core', () => {
 
 		new AsYouType('US', metadata).input('+12133734253', metadata).should.equal('+1 213 373 4253')
 
-		new Metadata(metadata)
+		new Metadata(metadata).getCountryCodeForCallingCode('1').should.equal('US')
 		isSupportedCountry('KZ', metadata).should.equal(true)
 		expect(getCountries(metadata).indexOf('KZ') > 0).to.be.true
 		getCountryCallingCode('KZ', metadata).should.equal('7')

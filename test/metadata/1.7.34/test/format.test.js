@@ -1,5 +1,4 @@
 import metadata from '../metadata.min.json'
-import { applyInternationalSeparatorStyle } from '../../../../source/format_'
 import _formatNumber from '../../../../source/format'
 
 function formatNumber(...parameters) {
@@ -114,11 +113,6 @@ describe('format', () => {
 
 		// No such country.
 		expect(() => formatNumber({ phone: '123', country: 'USA' }, 'NATIONAL')).to.throw('Unknown country')
-	})
-
-	it('should change Google\'s international format style', () => {
-		applyInternationalSeparatorStyle('(xxx) xxx-xx-xx').should.equal('xxx xxx xx xx')
-		applyInternationalSeparatorStyle('(xxx)xxx').should.equal('xxx xxx')
 	})
 
 	it('should format phone number extensions', () => {

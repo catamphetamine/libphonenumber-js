@@ -3,11 +3,11 @@
 //
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
-import { VALID_PUNCTUATION } from './constants'
-import { matchesEntirely } from './util'
+import matchesEntirely from './helpers/matchesEntirely'
+import formatNationalNumberUsingFormat from './helpers/formatNationalNumberUsingFormat'
 import Metadata, { getCountryCallingCode } from './metadata'
-import { getIDDPrefix } from './IDD'
-import { formatRFC3966 } from './RFC3966'
+import getIddPrefix from './helpers/getIddPrefix'
+import { formatRFC3966 } from './helpers/RFC3966'
 
 const DEFAULT_OPTIONS = {
 	formatExtension: (formattedNumber, extension, metadata) => `${formattedNumber}${metadata.ext()}${extension}`
@@ -109,51 +109,6 @@ export default function formatNumber(input, format, options, metadata) {
 	}
 }
 
-// This was originally set to $1 but there are some countries for which the
-// first group is not used in the national pattern (e.g. Argentina) so the $1
-// group does not match correctly. Therefore, we use `\d`, so that the first
-// group actually used in the pattern will be matched.
-export const FIRST_GROUP_PATTERN = /(\$\d)/
-
-export function formatNationalNumberUsingFormat(
-	number,
-	format,
-	{
-		useInternationalFormat,
-		withNationalPrefix,
-		carrierCode,
-		metadata
-	}
-) {
-	const formattedNumber = number.replace(
-		new RegExp(format.pattern()),
-		useInternationalFormat
-			? format.internationalFormat()
-			: (
-				// This library doesn't use `domestic_carrier_code_formatting_rule`,
-				// because that one is only used when formatting phone numbers
-				// for dialing from a mobile phone, and this is not a dialing library.
-				// carrierCode && format.domesticCarrierCodeFormattingRule()
-				// 	// First, replace the $CC in the formatting rule with the desired carrier code.
-				// 	// Then, replace the $FG in the formatting rule with the first group
-				// 	// and the carrier code combined in the appropriate way.
-				// 	? format.format().replace(FIRST_GROUP_PATTERN, format.domesticCarrierCodeFormattingRule().replace('$CC', carrierCode))
-				// 	: (
-				// 		withNationalPrefix && format.nationalPrefixFormattingRule()
-				// 			? format.format().replace(FIRST_GROUP_PATTERN, format.nationalPrefixFormattingRule())
-				// 			: format.format()
-				// 	)
-				withNationalPrefix && format.nationalPrefixFormattingRule()
-					? format.format().replace(FIRST_GROUP_PATTERN, format.nationalPrefixFormattingRule())
-					: format.format()
-			)
-	)
-	if (useInternationalFormat) {
-		return applyInternationalSeparatorStyle(formattedNumber)
-	}
-	return formattedNumber
-}
-
 function formatNationalNumber(number, carrierCode, formatAs, metadata, options) {
 	const format = chooseFormatForNumber(metadata.formats(), number)
 	if (!format) {
@@ -189,40 +144,6 @@ function chooseFormatForNumber(availableFormats, nationalNnumber) {
 	}
 }
 
-// Removes brackets and replaces dashes with spaces.
-//
-// E.g. "(999) 111-22-33" -> "999 111 22 33"
-//
-// For some reason Google's metadata contains `<intlFormat/>`s with brackets and dashes.
-// Meanwhile, there's no single opinion about using punctuation in international phone numbers.
-//
-// For example, Google's `<intlFormat/>` for USA is `+1 213-373-4253`.
-// And here's a quote from WikiPedia's "North American Numbering Plan" page:
-// https://en.wikipedia.org/wiki/North_American_Numbering_Plan
-//
-// "The country calling code for all countries participating in the NANP is 1.
-// In international format, an NANP number should be listed as +1 301 555 01 00,
-// where 301 is an area code (Maryland)."
-//
-// I personally prefer the international format without any punctuation.
-// For example, brackets are remnants of the old age, meaning that the
-// phone number part in brackets (so called "area code") can be omitted
-// if dialing within the same "area".
-// And hyphens were clearly introduced for splitting local numbers into memorizable groups.
-// For example, remembering "5553535" is difficult but "555-35-35" is much simpler.
-// Imagine a man taking a bus from home to work and seeing an ad with a phone number.
-// He has a couple of seconds to memorize that number until it passes by.
-// If it were spaces instead of hyphens the man wouldn't necessarily get it,
-// but with hyphens instead of spaces the grouping is more explicit.
-// I personally think that hyphens introduce visual clutter,
-// so I prefer replacing them with spaces in international numbers.
-// In the modern age all output is done on displays where spaces are clearly distinguishable
-// so hyphens can be safely replaced with spaces without losing any legibility.
-//
-export function applyInternationalSeparatorStyle(local) {
-	return local.replace(new RegExp(`[${VALID_PUNCTUATION}]+`, 'g'), ' ').trim()
-}
-
 function addExtension(formattedNumber, ext, metadata, formatExtension) {
 	return ext ? formatExtension(formattedNumber, ext, metadata) : formattedNumber
 }
@@ -254,8 +175,8 @@ function formatIDD(
 		//
 		return formattedNumber
 	}
-	const IDDPrefix = getIDDPrefix(fromCountry, undefined, metadata.metadata)
-	if (IDDPrefix) {
-		return `${IDDPrefix} ${countryCallingCode} ${formatNationalNumber(nationalNumber, null, 'INTERNATIONAL', metadata)}`
+	const iddPrefix = getIddPrefix(fromCountry, undefined, metadata.metadata)
+	if (iddPrefix) {
+		return `${iddPrefix} ${countryCallingCode} ${formatNationalNumber(nationalNumber, null, 'INTERNATIONAL', metadata)}`
 	}
 }

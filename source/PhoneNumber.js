@@ -2,7 +2,7 @@ import Metadata from './metadata'
 import isPossibleNumber from './isPossibleNumber_'
 import isValidNumber from './validate_'
 import isValidNumberForRegion from './isValidNumberForRegion_'
-import getNumberType from './getNumberType_'
+import getNumberType from './helpers/getNumberType'
 import formatNumber from './format_'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
