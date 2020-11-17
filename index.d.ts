@@ -1,7 +1,3 @@
-// The default export is currently a legacy one.
-// (containing legacy functions along with the new API).
-// `/min`, `/max`, `/mobile` sub-packages are for the new API only.
-
 import {
   Metadata,
   PhoneNumber,

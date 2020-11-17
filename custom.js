@@ -1,5 +1,4 @@
-// Deprecated.
-// Use `libphonenumber-js/min` or `libphonenumber-js/max` or `libphonenumber-js/core` instead.
+// The `/custom` export has been long deprecated: use `/core` export instead.
 
 'use strict'
 

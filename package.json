@@ -47,6 +47,7 @@
     "metadata:generate:mobile:js": "babel-node -- runnable/json-to-js ./metadata.mobile.json",
     "metadata:generate:mobile:examples:js": "babel-node -- runnable/json-to-js ./examples.mobile.json",
     "metadata:download": "babel-node runnable/download https://raw.githubusercontent.com/googlei18n/libphonenumber/master/resources/PhoneNumberMetadata.xml PhoneNumberMetadata.xml",
+    "generate-country-codes": "babel-node -- runnable/generate-country-codes",
     "test": "mocha --require @babel/register --colors --bail --reporter spec --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
     "test-coverage": "istanbul cover -x \"build/**\" -x \"es6/**\" -x \"*.test.js\" -x \"source/findNumbers/Leniency.js\" -x \"source/findNumbers/RegExpCache.js\" -x \"source/findNumbers/LRUCache.js\" -x \"source/PhoneNumberMatcher.js\" -x \"source/tools/semver-compare.js\" node_modules/mocha/bin/_mocha -- --require @babel/register --colors --reporter dot --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
     "test-coverage--nyc-is-very-slow-and-is-not-used": "cross-env NODE_ENV=nyc nyc mocha --require @babel/register --bail --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\"",
@@ -57,7 +58,7 @@
     "build:modules": "cross-env BABEL_ENV=es6 babel ./source --out-dir ./es6 --source-maps --ignore test.js",
     "build:bundle": "rollup --config rollup.config.js",
     "build": "npm-run-all clean build:commonjs build:modules build:bundle",
-    "prepublish": "npm run metadata:generate && crlf --set=LF metadata.*.json && npm-run-all build test"
+    "prepublish": "npm run metadata:generate && npm run generate-country-codes && crlf --set=LF metadata.*.json && npm-run-all build test"
   },
   "repository": {
     "type": "git",

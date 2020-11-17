@@ -89,6 +89,7 @@ exports.formatIncompletePhoneNumber = function formatIncompletePhoneNumber() {
 exports.parseIncompletePhoneNumber = core.parseIncompletePhoneNumber
 exports.parsePhoneNumberCharacter = core.parsePhoneNumberCharacter
 exports.parseDigits = core.parseDigits
+exports.DIGIT_PLACEHOLDER = core.DIGIT_PLACEHOLDER
 
 exports.parseRFC3966 = core.parseRFC3966
 exports.formatRFC3966 = core.formatRFC3966

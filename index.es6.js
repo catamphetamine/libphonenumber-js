@@ -22,7 +22,7 @@ export { getCountries } from './min/exports/getCountries'
 export { getCountryCallingCode, getCountryCallingCode as getPhoneCode } from './min/exports/getCountryCallingCode'
 export { getExtPrefix } from './min/exports/getExtPrefix'
 
-// export { Metadata } from './min/exports/Metadata'
+export { Metadata } from './min/exports/Metadata'
 export { getExampleNumber } from './min/exports/getExampleNumber'
 
 export { formatIncompletePhoneNumber } from './min/exports/formatIncompletePhoneNumber'
@@ -46,9 +46,6 @@ export { isValidNumberForRegion } from './index.es6.exports/isValidNumberForRegi
 export { findPhoneNumbers } from './index.es6.exports/findPhoneNumbers'
 export { searchPhoneNumbers } from './index.es6.exports/searchPhoneNumbers'
 export { PhoneNumberSearch } from './index.es6.exports/PhoneNumberSearch'
-
-// Deprecated: exporting `/core` metadata from non-`/core`.
-export { default as Metadata } from './es6/metadata'
 
 // Deprecated DIGITS export.
 // (it was used in `react-phone-number-input`)

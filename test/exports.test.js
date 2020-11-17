@@ -12,10 +12,12 @@ import defaultExportParse,
 	parse,
 	parseNumber,
 	getNumberType,
-	getExampleNumber,
 	isPossibleNumber,
 	isValidNumber,
 	isValidNumberForRegion,
+
+	Metadata,
+	getExampleNumber,
 
 	// Deprecated
 	findPhoneNumbers,
@@ -51,7 +53,6 @@ import defaultExportParse,
 	parsePhoneNumberCharacter,
 	parseDigits,
 
-	Metadata,
 	isSupportedCountry,
 	getExtPrefix,
 	parseRFC3966,
@@ -84,10 +85,12 @@ describe(`exports`, () => {
 		format('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		formatNumber('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
-		getExampleNumber('RU', examples).nationalNumber.should.equal('9123456789')
 		isPossibleNumber('+12133734253', 'US').should.equal(true)
 		isValidNumber('+12133734253', 'US').should.equal(true)
 		isValidNumberForRegion('+12133734253', 'US').should.equal(true)
+
+		new Metadata().getCountryCodeForCallingCode('1').should.equal('US')
+		getExampleNumber('RU', examples).nationalNumber.should.equal('9123456789')
 
 		// Deprecated.
 		findPhoneNumbers('+12133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
@@ -110,7 +113,6 @@ describe(`exports`, () => {
 		expect(getCountries().indexOf('KZ') > 0).to.be.true
 		getCountryCallingCode('KZ').should.equal('7')
 
-		new Metadata(metadata).getCountryCodeForCallingCode('1').should.equal('US')
 		isSupportedCountry('US', metadata).should.equal(true)
 		getExtPrefix('US', metadata).should.equal(' ext. ')
 		parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })
@@ -157,10 +159,12 @@ describe(`exports`, () => {
 		Library.format('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		Library.formatNumber('2133734253', 'US', 'E.164').should.equal('+12133734253')
 		Library.getNumberType('2133734253', 'US').should.equal('FIXED_LINE_OR_MOBILE')
-		Library.getExampleNumber('RU', examples).nationalNumber.should.equal('9123456789')
 		Library.isPossibleNumber('+12133734253', 'US').should.equal(true)
 		Library.isValidNumber('+12133734253', 'US').should.equal(true)
 		Library.isValidNumberForRegion('+12133734253', 'US').should.equal(true)
+
+		new Library.Metadata().getCountryCodeForCallingCode('1').should.equal('US')
+		Library.getExampleNumber('RU', examples).nationalNumber.should.equal('9123456789')
 
 		// Deprecated.
 		Library.findPhoneNumbers('+12133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
@@ -231,7 +235,6 @@ describe(`exports`, () => {
 		Library.getPhoneCode('KZ', metadata).should.equal('7')
 		Library.getCountryCallingCode('KZ', metadata).should.equal('7')
 		new Library.AsYouType('US', metadata).input('+12133734253').should.equal('+1 213 373 4253')
-		new Library.Metadata({ countries: {}, country_calling_codes: {} })
 		Library.isSupportedCountry('US', metadata).should.equal(true)
 		Library.getExtPrefix('US', metadata).should.equal(' ext. ')
 		Library.parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })

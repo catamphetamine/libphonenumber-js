@@ -82,6 +82,12 @@ exports.getExampleNumber = function getExampleNumber() {
 	return call(core.getExampleNumber, arguments)
 }
 
+exports.Metadata = function Metadata() {
+	return core.Metadata.call(this, metadata)
+}
+exports.Metadata.prototype = Object.create(core.Metadata.prototype, {})
+exports.Metadata.prototype.constructor = exports.Metadata
+
 exports.formatIncompletePhoneNumber = function formatIncompletePhoneNumber() {
 	return call(core.formatIncompletePhoneNumber, arguments)
 }
@@ -89,6 +95,7 @@ exports.formatIncompletePhoneNumber = function formatIncompletePhoneNumber() {
 exports.parseIncompletePhoneNumber = core.parseIncompletePhoneNumber
 exports.parsePhoneNumberCharacter = core.parsePhoneNumberCharacter
 exports.parseDigits = core.parseDigits
+exports.DIGIT_PLACEHOLDER = core.DIGIT_PLACEHOLDER
 
 exports.parseRFC3966 = core.parseRFC3966
 exports.formatRFC3966 = core.formatRFC3966

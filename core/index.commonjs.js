@@ -36,9 +36,11 @@ exports.getExtPrefix = require('../build/metadata').getExtPrefix
 exports.getExampleNumber = require('../build/getExampleNumber').default
 
 exports.formatIncompletePhoneNumber = require('../build/formatIncompletePhoneNumber').default
+
 exports.parseIncompletePhoneNumber = require('../build/parseIncompletePhoneNumber').default
 exports.parsePhoneNumberCharacter = require('../build/parseIncompletePhoneNumber').parsePhoneNumberCharacter
 exports.parseDigits = require('../build/helpers/parseDigits').default
+exports.DIGIT_PLACEHOLDER = require('../build/AsYouTypeFormatter').DIGIT_PLACEHOLDER
 
 exports.parseRFC3966 = require('../build/helpers/RFC3966').parseRFC3966
 exports.formatRFC3966 = require('../build/helpers/RFC3966').formatRFC3966
