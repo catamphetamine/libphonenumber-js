@@ -146,3 +146,10 @@ export class AsYouType {
   getChars(): string;
   getTemplate(): string;
 }
+
+// The exported `Metadata` name is already used for exporting the "raw" JSON metadata type.
+// Then, `Metadata` class has become exported, but its name is already taken, so TypeScript users seem to be unable to use the `Metadata` class.
+// If someone knows a solution then they could propose it in an issue.
+// export class Metadata {
+//   ...
+// }

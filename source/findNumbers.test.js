@@ -1,5 +1,5 @@
 import findNumbers from './findNumbers'
-import metadata from '../metadata.min.json'
+import metadata from '../metadata.full.json'
 
 describe('findNumbers', () => {
 	it('should find numbers', () => {
@@ -187,5 +187,18 @@ describe('findNumbers', () => {
 		// Not a phone number (part of a UUID).
 		// Shouldn't parse by default.
 		findNumbers('The UUID is CA801c26f98cd16e231354125ad046e40b.', 'FR', metadata).should.deep.equal([])
+	})
+
+	// https://gitlab.com/catamphetamine/libphonenumber-js/-/merge_requests/4
+	it('should return correct `startsAt` and `endsAt` when matching "inner" candidates in a could-be-a-candidate substring', () => {
+		findNumbers('39945926 77200596 16533084', 'ID', metadata)
+			.should
+			.deep
+			.equal([{
+				country: 'ID',
+				phone: '77200596',
+				startsAt: 9,
+				endsAt: 17
+			}])
 	})
 })

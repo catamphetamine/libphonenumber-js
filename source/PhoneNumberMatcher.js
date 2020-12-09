@@ -211,21 +211,18 @@ export default class PhoneNumberMatcher
    * @param index  the search index to start searching at
    * @return  the phone number match found, null if none can be found
    */
-	find() // (index)
-	{
+	find() {
 		// // Reset the regular expression.
 		// this.PATTERN.lastIndex = index
 
 		let matches
-		while ((this.maxTries > 0) && (matches = this.PATTERN.exec(this.text)) !== null)
-		{
+		while ((this.maxTries > 0) && (matches = this.PATTERN.exec(this.text)) !== null) {
 			let candidate = matches[0]
 			const offset = matches.index
 
 			candidate = parsePreCandidate(candidate)
 
-			if (isValidPreCandidate(candidate, offset, this.text))
-			{
+			if (isValidPreCandidate(candidate, offset, this.text)) {
 				const match =
 					// Try to come up with a valid match given the entire candidate.
 					this.parseAndVerify(candidate, offset, this.text)
@@ -258,28 +255,24 @@ export default class PhoneNumberMatcher
 	}
 
   /**
-   * Attempts to extract a match from `candidate`
-   * if the whole candidate does not qualify as a match.
+   * Attempts to extract a match from `substring`
+   * if the substring itself does not qualify as a match.
    */
-  extractInnerMatch(candidate, offset, text)
-  {
-    for (const innerMatchPattern of INNER_MATCHES)
-    {
+  extractInnerMatch(substring, offset, text) {
+    for (const innerMatchPattern of INNER_MATCHES) {
       let isFirstMatch = true
-      let matches
-      const possibleInnerMatch = new RegExp(innerMatchPattern, 'g')
-      while ((matches = possibleInnerMatch.exec(candidate)) !== null && this.maxTries > 0)
-      {
-        if (isFirstMatch)
-        {
+      let candidateMatch
+      const innerMatchRegExp = new RegExp(innerMatchPattern, 'g')
+      while (this.maxTries > 0 && (candidateMatch = innerMatchRegExp.exec(substring)) !== null) {
+        if (isFirstMatch) {
           // We should handle any group before this one too.
-          const group = trimAfterFirstMatch
-          (
+          const candidate = trimAfterFirstMatch(
             UNWANTED_END_CHAR_PATTERN,
-            candidate.slice(0, matches.index)
+            substring.slice(0, candidateMatch.index)
           )
 
-          const match = this.parseAndVerify(group, offset, text)
+          const match = this.parseAndVerify(candidate, offset, text)
+
           if (match) {
             return match
           }
@@ -288,16 +281,16 @@ export default class PhoneNumberMatcher
           isFirstMatch = false
         }
 
-        const group = trimAfterFirstMatch
-        (
-        	UNWANTED_END_CHAR_PATTERN,
-        	matches[1]
-        )
+        const candidate = trimAfterFirstMatch(UNWANTED_END_CHAR_PATTERN, candidateMatch[1])
 
         // Java code does `groupMatcher.start(1)` here,
-        // but there's no way in javascript to get a group match start index,
-        // therefore using the overall match start index `matches.index`.
-        const match = this.parseAndVerify(group, offset + matches.index, text)
+        // but there's no way in javascript to get a `candidate` start index,
+        // therefore resort to using this kind of an approximation.
+        // (`groupMatcher` is called `candidateInSubstringMatch` in this javascript port)
+        // https://stackoverflow.com/questions/15934353/get-index-of-each-capture-in-a-javascript-regex
+        const candidateIndexGuess = substring.indexOf(candidate, candidateMatch.index)
+
+        const match = this.parseAndVerify(candidate, offset + candidateIndexGuess, text)
         if (match) {
           return match
         }
@@ -316,8 +309,7 @@ export default class PhoneNumberMatcher
    * @param offset  the offset of {@code candidate} within {@link #text}
    * @return  the parsed and validated phone number match, or null
    */
-  parseAndVerify(candidate, offset, text)
-  {
+  parseAndVerify(candidate, offset, text) {
     if (!isValidCandidate(candidate, offset, text, this.options.leniency)) {
       return
   	}
@@ -335,8 +327,7 @@ export default class PhoneNumberMatcher
       return
     }
 
-    if (this.leniency(number, candidate, this.metadata, this.regExpCache))
-    {
+    if (this.leniency(number, candidate, this.metadata, this.regExpCache)) {
       // // We used parseAndKeepRawInput to create this number,
       // // but for now we don't return the extra values parsed.
       // // TODO: stop clearing all values here and switch all users over

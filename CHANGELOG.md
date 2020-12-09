@@ -1,3 +1,9 @@
+<!--
+The exported `Metadata` name is already used for exporting the "raw" JSON metadata type.
+Then, `Metadata` class has become exported, but its name is already taken, so TypeScript users seem to be unable to use the `Metadata` class.
+If someone knows a solution then they could propose it in an issue.
+-->
+
 <!-- Maybe rename `metadata.full.json` -> `metadata.max.json`. -->
 
 <!-- (breaking change) Moved `findPhoneNumbersInText()` to its own subpackage: `libphonenumber-js/find`. The default export is `searchPhoneNumbersInText()` that returns an ES6 "iterator". -->
@@ -62,6 +68,11 @@ And edit the README:
 -->
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
+
+1.9.5 / 01.12.2020
+==================
+
+* Fixed the [issue](https://gitlab.com/catamphetamine/libphonenumber-js/-/merge_requests/4) with `findPhoneNumbersInText()` returning incorrect `startAt` and `endsAt` positions in some cases.
 
 1.9.4 / 13.11.2020
 ==================
