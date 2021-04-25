@@ -10,15 +10,15 @@ import {
 	PLUS_CHARS
 } from './constants'
 
-const VALID_FORMATTED_PHONE_NUMBER_PART =
+const VALID_FORMATTED_PHONE_NUMBER_DIGITS_PART =
 	'[' +
 		VALID_PUNCTUATION +
 		VALID_DIGITS +
 	']+'
 
-const VALID_FORMATTED_PHONE_NUMBER_PART_PATTERN = new RegExp('^' + VALID_FORMATTED_PHONE_NUMBER_PART + '$', 'i')
+const VALID_FORMATTED_PHONE_NUMBER_DIGITS_PART_PATTERN = new RegExp('^' + VALID_FORMATTED_PHONE_NUMBER_DIGITS_PART + '$', 'i')
 
-const VALID_PHONE_NUMBER =
+const VALID_FORMATTED_PHONE_NUMBER_PART =
 	'(?:' +
 		'[' + PLUS_CHARS + ']' +
 		'[' +
@@ -438,7 +438,7 @@ export default class AsYouTypeParser {
  */
 function extractFormattedPhoneNumber(text) {
 	// Attempt to extract a possible number from the string passed in.
-	const startsAt = text.search(VALID_PHONE_NUMBER)
+	const startsAt = text.search(VALID_FORMATTED_PHONE_NUMBER_PART)
 	if (startsAt < 0) {
 		return
 	}
@@ -484,7 +484,7 @@ export function extractFormattedDigitsAndPlus(text) {
 	// If the extracted phone number part
 	// can possibly be a part of some valid phone number
 	// then parse phone number characters from a formatted phone number.
-	if (!VALID_FORMATTED_PHONE_NUMBER_PART_PATTERN.test(formattedDigits)) {
+	if (!VALID_FORMATTED_PHONE_NUMBER_DIGITS_PART_PATTERN.test(formattedDigits)) {
 		formattedDigits = ''
 	}
 	return [formattedDigits, hasPlus]

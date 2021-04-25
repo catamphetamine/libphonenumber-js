@@ -1,3 +1,5 @@
+<!-- (breaking change) `parsePhoneNumberFromString()`: `extract: false` is now the default mode: non-phone-number characters aren't now trimmed on the left and on the right sides of a phone number. For example, `(213) 373-4253` is parsed as a valid phone number, but `Call: (213) 373-4253` is not, because `Call: ` doesn't automatically get trimmed now. For the old behavior, pass `extract: true` option. -->
+
 <!--
 The exported `Metadata` name is already used for exporting the "raw" JSON metadata type.
 Then, `Metadata` class has become exported, but its name is already taken, so TypeScript users seem to be unable to use the `Metadata` class.
@@ -68,6 +70,13 @@ And edit the README:
 -->
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
+
+1.9.11 / 10.02.2021
+==================
+
+* [Added](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/29) `extract: false` option on `parsePhoneNumberFromString()`: it enables a bit "stricter" parsing in a way that it attempts to parse the entire text as a phone number rather than extracting a phone number from text. For example, with `extract: false` option, `"(213) 373-4253"` is parsed as a valid phone number, but `"Call: (213) 373-4253"` is not, because the `"Call: "` part doesn't automatically get trimmed in this case. If there's version `2.x`, I guess `extract: false` will be the default behavior because it looks more appropriate than the default "extract" behavior of Google's `libphonenumber`.
+
+* Added `isPossiblePhoneNumber()` and `isValidPhoneNumber()` functions, which are basically shortucts to `parsePhoneNumberFromString(text, { extract: false })` and then `.isValid()`/`.isPossible()`.
 
 1.9.5 / 01.12.2020
 ==================

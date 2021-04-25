@@ -52,7 +52,7 @@ export function parsePhoneNumberWithError(text: string, defaultCountry: CountryC
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.
 export function parsePhoneNumberFromString(text: string, metadata: Metadata): PhoneNumber;
-export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }, metadata: Metadata): PhoneNumber;
+export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extract?: boolean }, metadata: Metadata): PhoneNumber;
 
 export default parsePhoneNumberFromString;
 
@@ -150,6 +150,11 @@ export class AsYouType {
   getNationalNumber(): string;
   getChars(): string;
   getTemplate(): string;
+  getCallingCode(): string | undefined;
+  getCountry(): CountryCode | undefined;
+  isInternational(): boolean;
+  isPossible(): boolean;
+  isValid(): boolean;
 }
 
 // The exported `Metadata` name is already used for exporting the "raw" JSON metadata type.

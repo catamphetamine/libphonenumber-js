@@ -52,4 +52,21 @@ describe('parsePhoneNumberFromString', () => {
 		const phoneNumber2 = parsePhoneNumberFromString('+8707731116321')
 		phoneNumber2.isPossible().should.equal(false)
 	})
+
+	it('should support `extract: false` flag', () => {
+		const testCorrectness = (number, expectedResult) => {
+			const result = expect(parsePhoneNumberFromString(number, { extract: false, defaultCountry: 'US' }))
+			if (expectedResult) {
+				result.to.not.be.undefined
+			} else {
+				result.to.be.undefined
+			}
+		}
+		testCorrectness('Call: (213) 373-4253', false)
+		testCorrectness('(213) 373-4253x', false)
+		testCorrectness('(213) 373-4253', true)
+		testCorrectness('- (213) 373-4253 -', true)
+		testCorrectness('+1 (213) 373-4253', true)
+		testCorrectness(' +1 (213) 373-4253', false)
+	})
 })

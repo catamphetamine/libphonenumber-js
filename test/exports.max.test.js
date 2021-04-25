@@ -4,6 +4,9 @@ import parse, {
 	parsePhoneNumberWithError,
 	parsePhoneNumberFromString,
 
+	isValidPhoneNumber,
+	isPossiblePhoneNumber,
+
 	findNumbers,
 	searchNumbers,
 	findPhoneNumbersInText,
@@ -54,6 +57,9 @@ describe('exports/max', () => {
 		// Test "max" metadata.
 		parsePhoneNumber('9150000000', 'RU').getType().should.equal('MOBILE')
 		parsePhoneNumber('51234567', 'EE').getType().should.equal('MOBILE')
+
+		isValidPhoneNumber('+12133734253').should.equal(true)
+		isPossiblePhoneNumber('+12133734253').should.equal(true)
 
 		findNumbers('+12133734253').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		findNumbers('2133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 10 }])
@@ -113,6 +119,9 @@ describe('exports/max', () => {
 
 		Library.parsePhoneNumberFromString('+12133734253').nationalNumber.should.equal('2133734253')
 		expect(Library.parsePhoneNumberFromString('2133734253')).to.be.undefined
+
+		Library.isValidPhoneNumber('+12133734253').should.equal(true)
+		Library.isPossiblePhoneNumber('+12133734253').should.equal(true)
 
 		Library.findNumbers('+12133734253').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.findNumbers('2133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 10 }])

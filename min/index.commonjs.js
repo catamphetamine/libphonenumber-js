@@ -34,6 +34,14 @@ exports.parsePhoneNumberWithError = parsePhoneNumberWithError
 // it has been promoted to a default export due to being too verbose.
 exports.parsePhoneNumberFromString = parsePhoneNumberFromString
 
+exports.isValidPhoneNumber = function isValidPhoneNumber() {
+	return call(core.isValidPhoneNumber, arguments)
+}
+
+exports.isPossiblePhoneNumber = function isPossiblePhoneNumber() {
+	return call(core.isPossiblePhoneNumber, arguments)
+}
+
 exports.findNumbers = function findNumbers() {
 	return call(core.findNumbers, arguments)
 }

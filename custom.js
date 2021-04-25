@@ -31,9 +31,11 @@ exports.format             = require('./build/format').default
 exports.formatNumber       = require('./build/format').default
 exports.getNumberType      = require('./build/getNumberType').default
 exports.getExampleNumber   = require('./build/getExampleNumber').default
-exports.isPossibleNumber   = require('./build/isPossibleNumber').default
 exports.isValidNumber      = require('./build/validate').default
 exports.isValidNumberForRegion = require('./build/isValidNumberForRegion').default
+
+// Deprecated.
+exports.isPossibleNumber   = require('./build/isPossibleNumber').default
 
 exports.findNumbers        = require('./build/findNumbers').default
 exports.searchNumbers      = require('./build/searchNumbers').default

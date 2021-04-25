@@ -4,6 +4,9 @@ export { parsePhoneNumberWithError, parsePhoneNumberWithError as parsePhoneNumbe
 // it has been promoted to a default export due to being too verbose.
 export { parsePhoneNumberFromString, parsePhoneNumberFromString as default } from './min/exports/parsePhoneNumberFromString'
 
+export { isValidPhoneNumber } from './min/exports/isValidPhoneNumber'
+export { isPossiblePhoneNumber } from './min/exports/isPossiblePhoneNumber'
+
 // Deprecated.
 export { findNumbers } from './min/exports/findNumbers'
 // Deprecated.

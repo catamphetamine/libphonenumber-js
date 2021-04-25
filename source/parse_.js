@@ -40,22 +40,7 @@ const AFTER_PHONE_NUMBER_END_PATTERN = new RegExp('[^' + VALID_DIGITS + '#' + ']
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
-// `options`:
-//  {
-//    country:
-//    {
-//      restrict - (a two-letter country code)
-//                 the phone number must be in this country
-//
-//      default - (a two-letter country code)
-//                default country to use for phone number parsing and validation
-//                (if no country code could be derived from the phone number)
-//    }
-//  }
-//
-// Returns `{ country, number }`
-//
-// Example use cases:
+// Examples:
 //
 // ```js
 // parse('8 (800) 555-35-35', 'RU')
@@ -82,7 +67,7 @@ export default function parse(text, options, metadata) {
 	}
 
 	// Parse the phone number.
-	const { number: formattedPhoneNumber, ext } = parseInput(text, options.v2)
+	const { number: formattedPhoneNumber, ext } = parseInput(text, options.v2, options.extract)
 
 	// If the phone number is not viable then return nothing.
 	if (!formattedPhoneNumber) {
@@ -190,13 +175,14 @@ export default function parse(text, options, metadata) {
  * Doesn't guarantee that the extracted phone number
  * is a valid phone number (for example, doesn't validate its length).
  * @param  {string} text
- * @param  {boolean} throwOnError — By default, it won't throw if the text is too long.
+ * @param  {boolean} [extract] — If `false`, then will parse the entire `text` as a phone number.
+ * @param  {boolean} [throwOnError] — By default, it won't throw if the text is too long.
  * @return {string}
  * @example
  * // Returns "(213) 373-4253".
  * extractFormattedPhoneNumber("Call (213) 373-4253 for assistance.")
  */
-export function extractFormattedPhoneNumber(text, throwOnError) {
+function extractFormattedPhoneNumber(text, extract, throwOnError) {
 	if (!text) {
 		return
 	}
@@ -205,6 +191,9 @@ export function extractFormattedPhoneNumber(text, throwOnError) {
 			throw new ParseError('TOO_LONG')
 		}
 		return
+	}
+	if (extract === false) {
+		return text
 	}
 	// Attempt to extract a possible number from the string passed in
 	const startsAt = text.search(PHONE_NUMBER_START_PATTERN)
@@ -220,14 +209,16 @@ export function extractFormattedPhoneNumber(text, throwOnError) {
 
 /**
  * @param  {string} text - Input.
+ * @param  {boolean} v2 - Legacy API functions don't pass `v2: true` flag.
+ * @param  {boolean} [extract] - Whether to extract a phone number from `text`, or attempt to parse the entire text as a phone number.
  * @return {object} `{ ?number, ?ext }`.
  */
-function parseInput(text, v2) {
+function parseInput(text, v2, extract) {
 	// Parse RFC 3966 phone number URI.
 	if (text && text.indexOf('tel:') === 0) {
 		return parseRFC3966(text)
 	}
-	let number = extractFormattedPhoneNumber(text, v2)
+	let number = extractFormattedPhoneNumber(text, extract, v2)
 	// If the phone number is not viable, then abort.
 	if (!number || !isViablePhoneNumber(number)) {
 		return {}

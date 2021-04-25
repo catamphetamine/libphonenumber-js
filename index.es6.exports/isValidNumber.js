@@ -1,3 +1,5 @@
+// Deprecated.
+
 import { withMetadata } from '../min/metadata'
 
 import _isValidNumber from '../es6/validate'

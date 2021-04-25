@@ -4,6 +4,9 @@ import parse, {
 	parsePhoneNumberWithError,
 	parsePhoneNumberFromString,
 
+	isValidPhoneNumber,
+	isPossiblePhoneNumber,
+
 	findNumbers,
 	searchNumbers,
 	findPhoneNumbersInText,
@@ -44,6 +47,9 @@ describe('exports/core', () => {
 		parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 		expect(parsePhoneNumberFromString('2133734253', metadata)).to.be.undefined
 
+		isValidPhoneNumber('+12133734253', metadata).should.equal(true)
+		isPossiblePhoneNumber('+12133734253', metadata).should.equal(true)
+
 		findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')
 		findPhoneNumbersInText('+12133734253', metadata)[0].number.number.should.equal('+12133734253')
@@ -83,6 +89,9 @@ describe('exports/core', () => {
 
 		Library.parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
 		expect(Library.parsePhoneNumberFromString('2133734253', metadata)).to.be.undefined
+
+		Library.isValidPhoneNumber('+12133734253', metadata).should.equal(true)
+		Library.isPossiblePhoneNumber('+12133734253', metadata).should.equal(true)
 
 		Library.findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')

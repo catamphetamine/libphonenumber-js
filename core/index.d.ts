@@ -42,9 +42,15 @@ export function parsePhoneNumberWithError(text: string, defaultCountry: CountryC
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.
 export function parsePhoneNumberFromString(text: string, metadata: Metadata): PhoneNumber | undefined;
-export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode, metadata: Metadata): PhoneNumber | undefined;
+export function parsePhoneNumberFromString(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extract?: boolean }, metadata: Metadata): PhoneNumber | undefined;
 
 export default parsePhoneNumberFromString;
+
+export function isValidPhoneNumber(text: string, metadata: Metadata): boolean;
+export function isValidPhoneNumber(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }, metadata: Metadata): boolean;
+
+export function isPossiblePhoneNumber(text: string, metadata: Metadata): boolean;
+export function isPossiblePhoneNumber(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }, metadata: Metadata): boolean;
 
 export function findNumbers(text: string, metadata: Metadata): NumberFoundLegacy[];
 export function findNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2: true }, metadata: Metadata): NumberFound[];
@@ -85,6 +91,11 @@ export class AsYouType {
   getNumber(): PhoneNumber | undefined;
   getChars(): string;
   getTemplate(): string;
+  getCallingCode(): string | undefined;
+  getCountry(): CountryCode | undefined;
+  isInternational(): boolean;
+  isPossible(): boolean;
+  isValid(): boolean;
 }
 
 // The exported `Metadata` name is already used for exporting the "raw" JSON metadata type.

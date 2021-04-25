@@ -6,6 +6,9 @@ export { default as parsePhoneNumberWithError, default as parsePhoneNumber } fro
 // it has been promoted to a default export due to being too verbose.
 export { default as default, default as parsePhoneNumberFromString } from '../es6/parsePhoneNumberFromString'
 
+export { default as isValidPhoneNumber } from '../es6/isValidPhoneNumber'
+export { default as isPossiblePhoneNumber } from '../es6/isPossiblePhoneNumber'
+
 // Deprecated.
 export { default as findNumbers } from '../es6/findNumbers'
 // Deprecated.

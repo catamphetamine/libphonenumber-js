@@ -19,6 +19,9 @@ exports.parsePhoneNumber = parsePhoneNumberWithError
 // it has been promoted to a default export due to being too verbose.
 exports.parsePhoneNumberFromString = parsePhoneNumberFromString
 
+exports.isValidPhoneNumber = require('../build/isValidPhoneNumber').default
+exports.isPossiblePhoneNumber = require('../build/isPossiblePhoneNumber').default
+
 exports.findNumbers = require('../build/findNumbers').default
 exports.searchNumbers = require('../build/searchNumbers').default
 exports.findPhoneNumbersInText = require('../build/findPhoneNumbersInText').default
