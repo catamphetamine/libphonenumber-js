@@ -40,7 +40,7 @@ One part of me was curious about how all this phone number parsing and formattin
 
     * "Two-in-one" phone numbers with "combined" extensions like `(530) 583-6985 x302/x2303` that in fact represent two separate phone numbers, because the library can only return a single phone number when parsing a string.
 
-    * Overall, doesn't support formatting non-"conventional" numbers like numbers with the "area code" omitted. When dialing phone numbers within the same "area", people sometimes skip the "area code", and dial, for example, `456-789` instead of `(123) 456-789`. Google's `libphonenumber` supports formatting such numbers (with "area code" omitted) because it is used for dialing on the Android phone operating system. Because `libphonenumber-js` isn't a phone operating system and it's not used for dialing, it doesn't format such "shortened" phone numbers.
+    * Overall, doesn't support formatting non-"conventional" numbers like numbers with the "area code" omitted or "alternative" "short" numbers like [Australian `13`-smart numbers](https://github.com/catamphetamine/libphonenumber-js/issues/400). For example, when dialing phone numbers within the same "area", people sometimes skip the "area code", and dial, say, `456-789` instead of `(123) 456-789`. Google's `libphonenumber` supports formatting such numbers (with "area code" omitted) because it is used for dialing on the Android phone operating system. Because `libphonenumber-js` isn't a phone operating system and is not used for actual dialing — only for inputting internationally-dialable personal phone numbers — it doesn't format such "short" phone numbers because it doesn't need to support those.
 
     * Any other "miscellaneous" cases that're considered irrelevant for the task.
 
