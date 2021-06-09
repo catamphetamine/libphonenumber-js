@@ -10,5 +10,5 @@ module.exports = function()
 
 	console.log(exec('git add .'))
 
-	console.log(exec('git commit -m "Phone number medatada update"'))
+	console.log(exec('git commit -m "Updated metadata"'))
 }

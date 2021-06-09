@@ -1502,7 +1502,13 @@ Google periodically releases new metadata with the changes described in the [rel
 
 Metadata update process is automated through an "autoupdate" script: see `autoupdate.cmd` (Windows) or `autoupdate.sh` (Linux/macOS). The script detects changes to `PhoneNumberMetadata.xml` in Google `libphonenumber`'s repo and if there are changes then it pulls the latest metadata, processes it, commits the changes to GitHub, builds a new version of the library and releases it to NPM. So this library's metadata is supposed to be up-to-date. I could set up this script to run automatically but on my Windows machine `ssh-agent` doesn't work properly so I run the "autoupdate" script manually from time to time.
 
-Also Google sometimes (very rarely) updates their code: [`phonenumberutil.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js) (`parseNumber()`, `formatNumber()`, `isValidNumber()`, `getNumberType()`), [`AsYouTypeFormatter.java`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/AsYouTypeFormatter.java) (`AsYouType`), [`PhoneNumberMatcher`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) (`findPhoneNumbersInText()`). The latest sync-up was performed on Jan 28th, 2021.
+Also Google sometimes (very rarely) updates their code:
+
+* [`phonenumberutil.js`](https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js) — `parseNumber()`, `formatNumber()`, `isValidNumber()`, `getNumberType()`
+* [`AsYouTypeFormatter.java`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/AsYouTypeFormatter.java) — `AsYouType`
+* [`PhoneNumberMatcher.java`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) — `findPhoneNumbersInText()`
+
+The latest sync-up was on June 7th, 2021.
 
 ## Contributing
 
@@ -1552,4 +1558,9 @@ If you're looking for an international "2 days ago" javascript solution then che
 
 ## License
 
-[MIT](LICENSE)
+Google's `libphonenumber` is [licensed](https://github.com/google/libphonenumber/blob/master/LICENSE) under Apache 2.
+
+[Apache 2](https://en.wikipedia.org/wiki/Apache_License#Licensing_conditions) does not require a derivative work of the software, or modifications to the original, to be distributed using the same license. Hence, this library is licensed under [MIT](LICENSE), which is [compatible](https://www.quora.com/Is-the-MIT-license-compatible-with-the-Apache-License-Version-2-APLv2) with Apache 2.
+
+The Apache license is terminated if the user sues anyone over patent infringement related to the software covered by the license. This condition is added in order to prevent patent litigations.
+

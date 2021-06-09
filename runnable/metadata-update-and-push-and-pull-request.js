@@ -34,7 +34,7 @@ if (update_metadata())
 	console.log('========================================')
 	console.log()
 
-	console.log(exec('hub pull-request -m "Phone number medatada update" -b catamphetamine/libphonenumber-js:master -h update-metadata'))
+	console.log(exec('hub pull-request -m "Updated metadata" -b catamphetamine/libphonenumber-js:master -h update-metadata'))
 
 	console.log()
 	console.log('========================================')

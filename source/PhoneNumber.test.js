@@ -5,6 +5,7 @@ describe('PhoneNumber', () => {
 	it('should validate constructor arguments', () => {
 		expect(() => new PhoneNumber()).to.throw('`countryCallingCode` not passed')
 		expect(() => new PhoneNumber('7')).to.throw('`nationalNumber` not passed')
+		expect(() => new PhoneNumber('7', '8005553535')).to.throw('`metadata` not passed')
 	})
 
 	it('should accept country code argument', () => {

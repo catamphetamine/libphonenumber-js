@@ -15,6 +15,9 @@ export default class PhoneNumber {
 		if (!nationalNumber) {
 			throw new TypeError('`nationalNumber` not passed')
 		}
+		if (!metadata) {
+			throw new TypeError('`metadata` not passed')
+		}
 		const _metadata = new Metadata(metadata)
 		// If country code is passed then derive `countryCallingCode` from it.
 		// Also store the country code as `.country`.

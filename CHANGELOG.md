@@ -71,6 +71,13 @@ And edit the README:
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
 
+This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
+
+1.9.20 / 07.06.2021
+==================
+
+* [Changed](https://github.com/google/libphonenumber/commit/c6277266fba8223cfc610cfb1e999deb9f876d65) formatting numbers in `IDD` format to always use the preferred IDD prefix (if defined), not just in cases when a country has multiple IDD prefixes. This means that it will output `8~10` as the prefix instead of `810` for some regions (like Uzbekistan) that have this tilde in their IDD prefix (the tilde designates that the user should wait before continuing to dial).
+
 1.9.11 / 10.02.2021
 ==================
 
