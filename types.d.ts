@@ -91,3 +91,7 @@ export interface NumberFoundLegacy {
 export class ParseError {
   message: string;
 }
+
+// The rationale for having a separate type for the result "enum" instead of just a `string`:
+// https://github.com/catamphetamine/libphonenumber-js/issues/170#issuecomment-363156068
+export type ValidatePhoneNumberLengthResult = 'INVALID_COUNTRY' | 'NOT_A_NUMBER' | 'TOO_SHORT' | 'TOO_LONG' | 'INVALID_LENGTH';

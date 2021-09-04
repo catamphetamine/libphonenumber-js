@@ -21,6 +21,7 @@ exports.parsePhoneNumberFromString = parsePhoneNumberFromString
 
 exports.isValidPhoneNumber = require('../build/isValidPhoneNumber').default
 exports.isPossiblePhoneNumber = require('../build/isPossiblePhoneNumber').default
+exports.validatePhoneNumberLength = require('../build/validatePhoneNumberLength').default
 
 exports.findNumbers = require('../build/findNumbers').default
 exports.searchNumbers = require('../build/searchNumbers').default

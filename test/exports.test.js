@@ -7,6 +7,7 @@ import defaultExportParse,
 
 	isValidPhoneNumber,
 	isPossiblePhoneNumber,
+	validatePhoneNumberLength,
 
 	// Deprecated: `format()` was renamed to `formatNumber()`.
 	format,
@@ -83,6 +84,7 @@ describe(`exports`, () => {
 
 		isValidPhoneNumber('+12133734253').should.equal(true)
 		isPossiblePhoneNumber('+12133734253').should.equal(true)
+		expect(validatePhoneNumberLength('+12133734253')).to.be.undefined
 
 		// Deprecated: `parse()` was renamed to `parseNumber()`.
 		parse('+12133734253').should.deep.equal({ country: 'US', phone: '2133734253' })
@@ -171,6 +173,7 @@ describe(`exports`, () => {
 
 		Library.isValidPhoneNumber('+12133734253').should.equal(true)
 		Library.isPossiblePhoneNumber('+12133734253').should.equal(true)
+		expect(Library.validatePhoneNumberLength('+12133734253')).to.be.undefined
 
 		new Library.Metadata().getCountryCodeForCallingCode('1').should.equal('US')
 		Library.getExampleNumber('RU', examples).nationalNumber.should.equal('9123456789')

@@ -90,6 +90,55 @@ If you're not using a bundler then use a [standalone version from a CDN](https:/
 
 ## Use
 
+<!--
+### Importing
+
+When using [Babel](https://babeljs.io/) or [`esm`](npmjs.com/package/esm) or [rollup.js](https://rollupjs.org/) or any other `import` transpiler:
+
+```js
+import parsePhoneNumber, {
+  isPossiblePhoneNumber,
+  isValidPhoneNumber,
+  AsYouType,
+  findPhoneNumbersInText
+} from 'libphonenumber-js'
+```
+
+When using Node.js 14 and not using any of the above:
+
+```js
+import parsePhoneNumber from 'libphonenumber-js'
+
+// or
+
+import libphonenumber from 'libphonenumber-js'
+
+const {
+  default: parsePhoneNumber,
+  isPossiblePhoneNumber,
+  isValidPhoneNumber,
+  AsYouType,
+  findPhoneNumbersInText
+} = libphonenumber
+```
+
+When using Node.js < 14 and not using any of the above:
+
+```js
+const libphonenumber = require('libphonenumber-js')
+
+const {
+  default: parsePhoneNumber,
+  isPossiblePhoneNumber,
+  isValidPhoneNumber,
+  AsYouType,
+  findPhoneNumbersInText
+} = libphonenumber
+```
+
+https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/42
+-->
+
 ### Parse phone number
 
 <!--
@@ -125,13 +174,22 @@ parseNumber('Phone: 8 (800) 555 35 35.', 'RU')
 ### Validate phone number
 
 ```js
-import { isPossiblePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js'
+import {
+  isPossiblePhoneNumber,
+  isValidPhoneNumber,
+  validatePhoneNumberLength
+} from 'libphonenumber-js'
 
 isPossiblePhoneNumber('8 (800) 555-35-35', 'RU') === true
 isValidPhoneNumber('8 (800) 555-35-35', 'RU') === true
+
+validatePhoneNumberLength('8 (800) 555', 'RU') === 'TOO_SHORT'
+validatePhoneNumberLength('8 (800) 555-35-35', 'RU') === undefined
 ```
 
 `isPossiblePhoneNumber()` only validates phone number length, while `isValidPhoneNumber()` validates both phone number length and the actual phone number digits.
+
+`validatePhoneNumberLength()` is just a more detailed version of `isPossiblePhoneNumber()` — if the phone number length is invalid, it returns the actual reason: `TOO_SHORT`, `TOO_LONG`, etc.
 
 ### Format phone number
 
@@ -330,13 +388,17 @@ try {
 <details>
 <summary>Possible errors</summary>
 
-* `INVALID_COUNTRY` — When `defaultCountry` doesn't exist (`parsePhoneNumber('(111) 222-3333', 'XX')`) or isn't supported by this library, or when parsing non-international number without a `defaultCountry` (`parsePhoneNumber('(111) 222-3333')`), or when international number country calling code doesn't exist (`parsePhoneNumber('+9991112223333')`).
+* `NOT_A_NUMBER` — When the supplied string is not a phone number. For example, when there are no digits: `"abcde"`, `"+"`.
 
-* `NOT_A_NUMBER` — When no phone number was found. For example, when there are no digits (`"abcde"`) or when there's not enough digits (`parsePhoneNumber('2', 'US')`, `parsePhoneNumber('+1')`).
+* `INVALID_COUNTRY`
 
-* `TOO_LONG` — When national (significant) number is too long (17 digits max) or when the string being parsed is too long (250 characters max).
+  * When `defaultCountry` doesn't exist (or isn't supported by this library yet): `parsePhoneNumber('(111) 222-3333', 'XX')`.
+  * When parsing a non-international number without a `defaultCountry`: `parsePhoneNumber('(111) 222-3333')`.
+  * When an international number's country calling code doesn't exist: `parsePhoneNumber('+9991112223333')`.
 
-* `TOO_SHORT` — When national (significant) number is too short (for ex. 1 digit).
+* `TOO_SHORT` — When the number is too short. For example, just 1 or 2 digits: `"1"`, `"+12"`.
+
+* `TOO_LONG` — When the national (significant) number is too long (17 digits max) or when the string being parsed is too long (250 characters max).
 </details>
 
 #### Strictness
@@ -545,6 +607,43 @@ isValidPhoneNumber('+12133734253') === true
 This function is just a shortcut for a two-step process of ["strictly"](#strictness) parsing a phone number and then calling `.isValid()`.
 
 See ["Using phone number validation feature"](#using-phone-number-validation-feature) for choosing between `isPossible()` and `isValid()`.
+
+### `validatePhoneNumberLength(input: string): string?`
+
+Checks if `input` phone number length is valid. If it is, then nothing is returned. Otherwise, a rejection reason is returned.
+
+<details>
+<summary>Possible rejection reasons</summary>
+
+* `NOT_A_NUMBER` — When the supplied string is not a phone number. For example, when there are no digits: `"abcde"`, `"+"`.
+
+* `INVALID_COUNTRY`
+
+  * When `defaultCountry` doesn't exist (or isn't supported by this library yet): `parsePhoneNumber('(111) 222-3333', 'XX')`.
+  * When parsing a non-international number without a `defaultCountry`: `parsePhoneNumber('(111) 222-3333')`.
+  * When an international number's country calling code doesn't exist: `parsePhoneNumber('+9991112223333')`.
+
+* `TOO_SHORT` — When the number is too short. For example, just 1 or 2 digits: `"1"`, `"+12"`.
+
+* `TOO_LONG` — When the national (significant) number is too long (17 digits max) or when the string being parsed is too long (250 characters max).
+
+* `INVALID_LENGTH` — When the national (significant) number is neither too short, nor too long, but somewhere in between and its length is still invalid.
+</details>
+
+######
+
+```js
+validatePhoneNumberLength('abcde') === 'NOT_A_NUMBER'
+validatePhoneNumberLength('444 1 44') === 'INVALID_COUNTRY'
+validatePhoneNumberLength('444 1 44', 'TR') === 'TOO_SHORT'
+validatePhoneNumberLength('444 1 444', 'TR') === undefined
+validatePhoneNumberLength('444 1 4444', 'TR') === 'INVALID_LENGTH'
+validatePhoneNumberLength('444 1 44444', 'TR') === 'INVALID_LENGTH'
+validatePhoneNumberLength('444 1 444444', 'TR') === undefined
+validatePhoneNumberLength('444 1 4444444444', 'TR') === 'TOO_LONG'
+```
+
+This function is just a more detailed version of `isPossiblePhoneNumber()` for those who've [asked](https://github.com/catamphetamine/libphonenumber-js/issues/406) for a more specific rejection reason.
 
 ### `class` AsYouType([options or defaultCountry])
 

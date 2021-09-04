@@ -47,6 +47,25 @@ export const VALID_PHONE_NUMBER =
 		VALID_DIGITS +
 	']*'
 
+// This regular expression isn't present in Google's `libphonenumber`
+// and is only used to determine whether the phone number being input
+// is too short for it to even consider it a "valid" number.
+// This is just a way to differentiate between a really invalid phone
+// number like "abcde" and a valid phone number that a user has just
+// started inputting, like "+1" or "1": both these cases would be
+// considered `NOT_A_NUMBER` by Google's `libphonenumber`, but this
+// library can provide a more detailed error message — whether it's
+// really "not a number", or is it just a start of a valid phone number.
+const VALID_PHONE_NUMBER_START_REG_EXP = new RegExp(
+	'^' +
+	'[' + PLUS_CHARS + ']{0,1}' +
+	'(?:' +
+		'[' + VALID_PUNCTUATION + ']*' +
+		'[' + VALID_DIGITS + ']' +
+	'){1,2}' +
+	'$'
+, 'i')
+
 export const VALID_PHONE_NUMBER_WITH_EXTENSION =
 	VALID_PHONE_NUMBER +
 	// Phone number extensions
@@ -76,4 +95,14 @@ const VALID_PHONE_NUMBER_PATTERN = new RegExp(
 export default function isViablePhoneNumber(number) {
 	return number.length >= MIN_LENGTH_FOR_NSN &&
 		VALID_PHONE_NUMBER_PATTERN.test(number)
+}
+
+// This is just a way to differentiate between a really invalid phone
+// number like "abcde" and a valid phone number that a user has just
+// started inputting, like "+1" or "1": both these cases would be
+// considered `NOT_A_NUMBER` by Google's `libphonenumber`, but this
+// library can provide a more detailed error message — whether it's
+// really "not a number", or is it just a start of a valid phone number.
+export function isViablePhoneNumberStart(number) {
+	return VALID_PHONE_NUMBER_START_REG_EXP.test(number)
 }

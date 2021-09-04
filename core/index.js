@@ -8,6 +8,7 @@ export { default as default, default as parsePhoneNumberFromString } from '../es
 
 export { default as isValidPhoneNumber } from '../es6/isValidPhoneNumber'
 export { default as isPossiblePhoneNumber } from '../es6/isPossiblePhoneNumber'
+export { default as validatePhoneNumberLength } from '../es6/validatePhoneNumberLength'
 
 // Deprecated.
 export { default as findNumbers } from '../es6/findNumbers'

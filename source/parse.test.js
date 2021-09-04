@@ -119,10 +119,10 @@ describe('parse', () => {
 		})
 
 		// Too long.
-		parseNumber('+7 (800) 55-35-35-555', { extended: true }).should.deep.equal({
+		parseNumber('+1 213 37342530', { extended: true }).should.deep.equal({
 			country            : undefined,
-			countryCallingCode : '7',
-			phone              : '00553535555',
+			countryCallingCode : '1',
+			phone              : '21337342530',
 			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,

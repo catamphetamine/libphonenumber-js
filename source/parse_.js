@@ -12,7 +12,7 @@ import {
 
 import ParseError from './ParseError'
 import Metadata from './metadata'
-import isViablePhoneNumber from './helpers/isViablePhoneNumber'
+import isViablePhoneNumber, { isViablePhoneNumberStart } from './helpers/isViablePhoneNumber'
 import extractExtension from './helpers/extension/extractExtension'
 import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
 import getCountryCallingCode from './getCountryCallingCode'
@@ -67,11 +67,14 @@ export default function parse(text, options, metadata) {
 	}
 
 	// Parse the phone number.
-	const { number: formattedPhoneNumber, ext } = parseInput(text, options.v2, options.extract)
+	const { number: formattedPhoneNumber, ext, error } = parseInput(text, options.v2, options.extract)
 
 	// If the phone number is not viable then return nothing.
 	if (!formattedPhoneNumber) {
 		if (options.v2) {
+			if (error === 'TOO_SHORT') {
+				throw new ParseError('TOO_SHORT')
+			}
 			throw new ParseError('NOT_A_NUMBER')
 		}
 		return {}
@@ -220,7 +223,13 @@ function parseInput(text, v2, extract) {
 	}
 	let number = extractFormattedPhoneNumber(text, extract, v2)
 	// If the phone number is not viable, then abort.
-	if (!number || !isViablePhoneNumber(number)) {
+	if (!number) {
+		return {}
+	}
+	if (!isViablePhoneNumber(number)) {
+		if (isViablePhoneNumberStart(number)) {
+			return { error: 'TOO_SHORT' }
+		}
 		return {}
 	}
 	// Attempt to parse extension first, since it doesn't require region-specific

@@ -11,7 +11,8 @@ import {
   NumberFoundLegacy,
   NumberFound,
   NumberType,
-  NumberFormat
+  NumberFormat,
+  ValidatePhoneNumberLengthResult
 } from '../types';
 
 // They say this re-export is required.
@@ -29,7 +30,8 @@ export {
   NumberFoundLegacy,
   NumberFound,
   NumberType,
-  NumberFormat
+  NumberFormat,
+  ValidatePhoneNumberLengthResult
 };
 
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
@@ -45,6 +47,7 @@ export default parsePhoneNumberFromString;
 
 export function isValidPhoneNumber(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): boolean;
 export function isPossiblePhoneNumber(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): boolean;
+export function validatePhoneNumberLength(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): ValidatePhoneNumberLengthResult | undefined;
 
 export function findNumbers(text: string, options?: CountryCode): NumberFoundLegacy[];
 export function searchNumbers(text: string, options?: CountryCode): IterableIterator<NumberFoundLegacy>;

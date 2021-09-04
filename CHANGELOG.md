@@ -73,6 +73,22 @@ And edit the README:
 
 This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
 
+1.9.26 / 05.09.2021
+==================
+
+* [Added](https://github.com/catamphetamine/libphonenumber-js/issues/406) `validatePhoneNumberLength()` function: same as `isPossiblePhoneNumber()` but tells the actual reason why a phone number is not possible: `TOO_SHORT`, `TOO_LONG`, `INVALID_LENGTH`, etc.
+
+```js
+validatePhoneNumberLength('abcde') === 'NOT_A_NUMBER'
+validatePhoneNumberLength('444 1 44') === 'INVALID_COUNTRY'
+validatePhoneNumberLength('444 1 44', 'TR') === 'TOO_SHORT'
+validatePhoneNumberLength('444 1 444', 'TR') === undefined
+validatePhoneNumberLength('444 1 4444', 'TR') === 'INVALID_LENGTH'
+validatePhoneNumberLength('444 1 44444', 'TR') === 'INVALID_LENGTH'
+validatePhoneNumberLength('444 1 444444', 'TR') === undefined
+validatePhoneNumberLength('444 1 4444444444', 'TR') === 'TOO_LONG'
+```
+
 1.9.20 / 07.06.2021
 ==================
 

@@ -26,6 +26,10 @@ exports.ParseError = min.ParseError
 exports.parsePhoneNumber = min.parsePhoneNumberWithError
 exports.parsePhoneNumberWithError = min.parsePhoneNumberWithError
 
+exports.isValidPhoneNumber = min.isValidPhoneNumber
+exports.isPossiblePhoneNumber = min.isPossiblePhoneNumber
+exports.validatePhoneNumberLength = min.validatePhoneNumberLength
+
 // `parse()` and `parseNumber()` functions are deprecated.
 var parse_ = require('./build/parse').default
 exports.parse = function parse() {

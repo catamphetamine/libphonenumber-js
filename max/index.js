@@ -6,6 +6,7 @@ export { parsePhoneNumberFromString, parsePhoneNumberFromString as default } fro
 
 export { isValidPhoneNumber } from './exports/isValidPhoneNumber'
 export { isPossiblePhoneNumber } from './exports/isPossiblePhoneNumber'
+export { validatePhoneNumberLength } from './exports/validatePhoneNumberLength'
 
 // Deprecated.
 export { findNumbers } from './exports/findNumbers'

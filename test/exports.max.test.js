@@ -6,6 +6,7 @@ import parse, {
 
 	isValidPhoneNumber,
 	isPossiblePhoneNumber,
+	validatePhoneNumberLength,
 
 	findNumbers,
 	searchNumbers,
@@ -60,6 +61,7 @@ describe('exports/max', () => {
 
 		isValidPhoneNumber('+12133734253').should.equal(true)
 		isPossiblePhoneNumber('+12133734253').should.equal(true)
+		expect(validatePhoneNumberLength('+12133734253')).to.be.undefined
 
 		findNumbers('+12133734253').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		findNumbers('2133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 10 }])
@@ -122,6 +124,7 @@ describe('exports/max', () => {
 
 		Library.isValidPhoneNumber('+12133734253').should.equal(true)
 		Library.isPossiblePhoneNumber('+12133734253').should.equal(true)
+		expect(Library.validatePhoneNumberLength('+12133734253')).to.be.undefined
 
 		Library.findNumbers('+12133734253').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
 		Library.findNumbers('2133734253', 'US').should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 10 }])

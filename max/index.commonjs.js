@@ -42,6 +42,10 @@ exports.isPossiblePhoneNumber = function isPossiblePhoneNumber() {
 	return call(core.isPossiblePhoneNumber, arguments)
 }
 
+exports.validatePhoneNumberLength = function validatePhoneNumberLength() {
+	return call(core.validatePhoneNumberLength, arguments)
+}
+
 exports.findNumbers = function findNumbers() {
 	return call(core.findNumbers, arguments)
 }

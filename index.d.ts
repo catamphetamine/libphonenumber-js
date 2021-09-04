@@ -11,7 +11,8 @@ import {
   NumberFoundLegacy,
   NumberFound,
   NumberType,
-  NumberFormat
+  NumberFormat,
+  ValidatePhoneNumberLengthResult
 } from './types';
 
 export {
@@ -27,7 +28,8 @@ export {
   NumberFoundLegacy,
   NumberFound,
   NumberFormat,
-  NumberType
+  NumberType,
+  ValidatePhoneNumberLengthResult
 };
 
 type FormatExtension = (number: string, extension: string, metadata: Metadata) => string
@@ -71,6 +73,7 @@ export default parsePhoneNumberFromString;
 
 export function isValidPhoneNumber(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): boolean;
 export function isPossiblePhoneNumber(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): boolean;
+export function validatePhoneNumberLength(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): ValidatePhoneNumberLengthResult | undefined;
 
 // `parse()` and `parseCustom` are deprecated.
 // Use `fparseNumber()` and `parseNumberCustom()` instead.
