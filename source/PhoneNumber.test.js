@@ -34,4 +34,11 @@ describe('PhoneNumber', () => {
 		new PhoneNumber('7', '8005553535', metadata).isNonGeographic().should.equal(false)
 		new PhoneNumber('870', '773111632', metadata).isNonGeographic().should.equal(true)
 	})
+
+	it('should allow setting extension', () => {
+		const phoneNumber = new PhoneNumber('1', '2133734253', metadata)
+		phoneNumber.setExt('1234')
+		phoneNumber.ext.should.equal('1234')
+		phoneNumber.formatNational().should.equal('(213) 373-4253 ext. 1234')
+	})
 })

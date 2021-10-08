@@ -16,7 +16,7 @@ Country calling code, duplicated here for easy lookup of country calling code by
 
 ### `idd_prefix`
 
-[International Direct Dialing prefix](https://wikitravel.org/en/International_dialling_prefix) when calling out of this country. "IDD prefixes" are used to call from one country to another. "IDD prefixes" originated when telephony was still analogue and analogue phones didn't have a `+` input. Nowadays, mobile phone users dial international numbers using a `+` rather than an "IDD prefix", but the mobile phone operating system replaces the `+` with an "IDD prefix" under the hood. For example, to call a Russian number `+7 800 555 35 35` from US the dialled digits would be `01178005553535` where `011` is an "IDD prefix".
+[International Direct Dialing prefix](https://wikitravel.org/en/International_dialling_prefix) when calling out of this country. "IDD prefixes" are defined for every country and are used to call from one country to another. "IDD prefixes" originated when telephony was still analogue and analogue phones didn't have a `+` input. Nowadays, mobile phone users dial international numbers using a `+` rather than an "IDD prefix", but the mobile phone operating system replaces the `+` with an "IDD prefix" under the hood. For example, to call a Russian number `+7 800 555 35 35` from US the dialled digits would be `01178005553535` where `011` is an "IDD prefix".
 
 ### `default_idd_prefix`
 
@@ -28,9 +28,17 @@ Localized `" ext. "` prefix for this country. For example, in Russia it's `" д�
 
 ### `leading_digits`
 
-When several countries share the same country calling code, these "leading digits" are the means of determining which one of these countries does a phone number belong to. For example, Antigua and Barbuda have `leading_digits: "268"` and share `1` country calling code with USA, so if an international phone number starts with `+1268` then it belongs to Antigua and Barbuda.
+National (significant) number "leading digits" pattern. It's only defined for about 20% of the countries, most of which are countries sharing the same "country calling code". At the same time, two countries sharing the same "country calling code" doesn't necessarily imply that the "secondary" country has a `leading_digits` pattern defined.
 
-`leading_digits` does not contain all the prefixes valid for a country: for example, `800` numbers are valid for all [NANPA](https://en.wikipedia.org/wiki/North_American_Numbering_Plan) countries and are hence not listed here. `leading_digits` regular expression is used merely as a short-cut for working out which country a phone number comes from.
+For example, USA and Canada share the same `1` country calling code, but neither of them have a `leading_digits` pattern defined. On the other hand, Antigua and Barbuda also shares the same `1` country calling code, and its `leading_digits` pattern is `"268"`, so if an international phone number starts with `+1268` then it's certain that it belongs to Antigua and Barbuda, so "leading digits" are, in some cases, a means of determining which one of the countries sharing the same country calling code does a phone number belong to.
+
+While in most cases a `leading_digits` pattern is a sequence of digits like `"268"` for Antigua and Barbuda, in some cases it's a pattern like `"8001|8[024]9"` for Dominican Republic.
+
+Overall, `leading_digits` patterns are only used as a performance speed-up trick when determining which country a phone number belongs to, which is still simpler than looking for a match against precise phone number patterns of every country sharing a given country calling code.
+
+For that reason, matching a `leading_digits` pattern is a sufficient but not necessary condition for a phone number to belong to the country: if a `leading_digits` pattern exists and a phone number matches it that it's certain that the phone number belongs to the country, and no other country. But, if there's no `leading_digits` pattern, or if the phone number doesn't match it, then one can't say that the phone number doesn't belong to the country.
+
+For example, "toll free" numbers starting with `800` are valid for all countries having `1` country calling code, so it doesn't make sense to include `800` in their `leading_digits` patterns. But, at the same time, those "toll free" numbers could be thought of as an unrelated edge case that can be ignored if the application only deals with human phone numbers. But, at the same time, it doesn't necessarily mean that there're no other exceptions. So I'd say that `leading_digits` has a meaning of "most likely" rather than "necessarily".
 
 ### `national_number_pattern`
 
@@ -72,11 +80,11 @@ Whatever national prefix has been extracted, it's not used anywhere: instead, `n
 
 Regular expressions for all possible phone number types for this country: fixed line, mobile, toll free, premium rate, [etc](https://github.com/catamphetamine/libphonenumber-js#gettype).
 
-#### `pattern`
+#### `type` `pattern`
 
 A regular expression for a national (significant) number matching the type.
 
-#### `possible_lengths`
+#### `type` `possible_lengths`
 
 Possible lengths of a national (significant) number matching the type. Is always present.
 
@@ -92,41 +100,41 @@ Possible lengths of a national (significant) number for this numbering plan. Thi
 
 Describes all possible phone number formats for this country. May be missing if phone numbers aren't formatted for this country (there're many such countries, usually small islands).
 
-#### `pattern`
+#### `format` `pattern`
 
 A regular expression for a phone number supported by this format.
 
 For example, in `US` there's only one possible phone number format, and it's `pattern` is `(\d{3})(\d{3})(\d{4})`, meaning that the national (significant) number must be `3 + 3 + 4 = 10` digits long (for example, `2133734253`), and is divided into three groups of digits for formatting (in this case, `213`, `373` and `4253`).
 
-#### `format`
+#### `format` `format`
 
 Defines how the aforementioned groups of digits are combined when formatting a phone number.
 
 For example, in `US` there's only one possible phone number format, and it's `format` is `($1) $2-$3`, so `2133734253` national (significant) number is formatted as `(213) 373-4253`.
 
-#### `international_format`
+#### `format` `international_format`
 
 Parentheses arond "area code" only make sense when formatting a national phone number, so international phone numbers don't use them, hence the explicit `international_format` in addition to the national `format`.
 
 For example, in `US` there's only one possible phone number format, and it's `format` is `($1) $2-$3`, while its `international_format` is `$1-$2-$3`, meaning that `2133734253` national (significant) number is formatted as `+1 213 373-4253` when formatted for international dialing.
 
-#### `national_prefix_formatting_rule`
+#### `format` `national_prefix_formatting_rule`
 
 `national_prefix_formatting_rule` is sometimes used to define how national prefix changes how a phone number should be formatted. For example, in Russia (national prefix `8`), all `format`s have `national_prefix_formatting_rule` `8 ($1)`, meaning that a `88005553535` phone number is first stripped of `8` national prefix into a `8005553535` national (significant) number, then the national (significant) number is first parsed using `format.pattern` `(\d{3})(\d{3})(\d{2})(\d{2})` and then formatted using `format.format` `$1 $2-$3-$4` while also replacing `$1` in that `format.format` with `format.national_prefix_formatting_rule` which is `8 ($1)`, so the resulting `format.format` becomes `8 ($1) $2-$3-$4`, and so the formatted number is `8 (800) 555-35-35`. Have the phone number been input without the `8` national prefix, the `national_prefix_formatting_rule` wouldn't be applied, and `format.format` would stay `$1 $2-$3-$4`, and the formatted phone number would be `800 555-35-35`.
 
 In some cases (for example, in Argentina), `format.format` may exclude `$1`, so in those cases `national_prefix_formatting_rule` being `0$1` would actually mean `0$2`, because there's no `$1` "capturing group" in `format.format`, but there is `$2` "capturing group" there.
 
-#### `national_prefix_is_optional_when_formatting`
+#### `format` `national_prefix_is_optional_when_formatting`
 
 This field specifies whether the national prefix can be omitted when formatting a number in national format. For example, a UK (`GB`) number would be formatted by `libphonenumber` as `020 XXXX XXXX`. Have they seen this number commonly being written without the leading `0` (like `(20) XXXX XXXX`), they would have updated the metadata with `national_prefix_is_optional_when_formatting` being `true` for that `format`, so that such number, when formatted, wouldn't have `national_prefix_formatting_rule` applied to it. Otherwise, if `national_prefix_is_optional_when_formatting` is not set to `true`, `national_prefix_formatting_rule` is always applied (when present).
 
-#### `domestic_carrier_code_formatting_rule`
+#### `format` `domestic_carrier_code_formatting_rule`
 
 Specifies how a carrier code (`$CC`) together with the first group (`$FG`) in a national significant number should be formatted, if carrier codes are used when formatting the number for dialing. For example, if a `format`'s `format` is `$1 $2-$3` and `domestic_carrier_code_formatting_rule` is `$NP $CC ($FG)`, then a national number, when having a carrier code, is formatted as `national-prefix carrier-code ($1) $2-$3`.
 
 For example, Google's `libphonenumber` has `formatNumberForMobileDialing()` function that returns a number formatted in such a way that it can be dialed from a mobile phone within a specific country, and it adds ["carrier codes"](https://www.bandwidth.com/glossary/carrier-identification-code-cic/) when dialing within certain countries (Brazil — when dialing from a mobile phone to any number, Colombia — when dialing from a mobile phone to a fixed line number). Since `libphonenumber-js` is not a dialing library, it doesn't provide such a function and doesn't use "carrier codes" when formatting phone numbers, so this property is ignored in this library.
 
-#### `leading_digits_patterns`
+#### `format` `leading_digits_patterns`
 
 "Leading digits" patterns are used in `AsYouType` formatter to choose a format suitable for the phone number being input: if a phone number's "leading digits" match those of a format, then that format is used to format the phone number being input. Each subsequent leading digits pattern in `leading_digits_patterns` array requires one more leading digit.
 

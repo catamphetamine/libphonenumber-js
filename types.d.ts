@@ -20,12 +20,23 @@ export type Countries = {
   //   possible_lengths: number[],
   //   ...
   // }
+  //
+  // `in` operator docs:
+  // https://www.typescriptlang.org/docs/handbook/advanced-types.html#mapped-types
+  // `country in CountryCode` means "for each and every CountryCode".
   [country in CountryCode]: any[];
 };
 
-export type Metadata = {
+export type MetadataJson = {
   country_calling_codes: CountryCallingCodes;
   countries: Countries;
+};
+
+export type Examples = {
+  // `in` operator docs:
+  // https://www.typescriptlang.org/docs/handbook/advanced-types.html#mapped-types
+  // `country in CountryCode` means "for each and every CountryCode".
+  [country in CountryCode]: NationalNumber;
 };
 
 // 'National' and 'International' formats are deprecated.
@@ -40,7 +51,7 @@ export interface Extension extends String { }
 export interface CarrierCode extends String { }
 export interface CountryCallingCode extends String { }
 
-type FormatExtension = (formattedNumber: string, extension: Extension, metadata: Metadata) => string
+type FormatExtension = (formattedNumber: string, extension: Extension, metadata: MetadataJson) => string
 
 type FormatNumberOptionsWithoutIDD = {
   v2?: boolean;
@@ -56,13 +67,14 @@ type FormatNumberOptions = {
 };
 
 export class PhoneNumber {
-  constructor(countryCallingCodeOrCountry: CountryCallingCode | CountryCode, nationalNumber: NationalNumber, metadata: Metadata);
+  constructor(countryCallingCodeOrCountry: CountryCallingCode | CountryCode, nationalNumber: NationalNumber, metadata: MetadataJson);
   countryCallingCode: CountryCallingCode;
   country?: CountryCode;
   nationalNumber: NationalNumber;
   number: E164Number;
   carrierCode?: CarrierCode;
   ext?: Extension;
+  setExt(ext: Extension): void;
   isPossible(): boolean;
   isValid(): boolean;
   getType(): NumberType;
@@ -75,21 +87,28 @@ export class PhoneNumber {
 }
 
 export interface NumberFound {
-  number: PhoneNumber,
-  startsAt: number,
-  endsAt: number
+  number: PhoneNumber;
+  startsAt: number;
+  endsAt: number;
 }
 
 export interface NumberFoundLegacy {
-  country: CountryCode,
-  phone: NationalNumber,
-  ext?: Extension,
-  startsAt: number,
-  endsAt: number
+  country: CountryCode;
+  phone: NationalNumber;
+  ext?: Extension;
+  startsAt: number;
+  endsAt: number;
 }
 
 export class ParseError {
   message: string;
+}
+
+export interface NumberingPlan {
+  leadingDigits(): string | undefined;
+  possibleLengths(): number[];
+  IDDPrefix(): string;
+  defaultIDDPrefix(): string | undefined;
 }
 
 // The rationale for having a separate type for the result "enum" instead of just a `string`:

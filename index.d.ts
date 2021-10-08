@@ -1,5 +1,6 @@
 import {
-  Metadata,
+  MetadataJson,
+  Examples,
   PhoneNumber,
   E164Number,
   CountryCallingCode,
@@ -12,11 +13,13 @@ import {
   NumberFound,
   NumberType,
   NumberFormat,
+  NumberingPlan,
   ValidatePhoneNumberLengthResult
 } from './types';
 
 export {
-  Metadata,
+  MetadataJson,
+  Examples,
   PhoneNumber,
   E164Number,
   CountryCallingCode,
@@ -29,10 +32,11 @@ export {
   NumberFound,
   NumberFormat,
   NumberType,
+  NumberingPlan,
   ValidatePhoneNumberLengthResult
 };
 
-type FormatExtension = (number: string, extension: string, metadata: Metadata) => string
+type FormatExtension = (number: string, extension: string, metadata: MetadataJson) => string
 
 type FormatNumberOptionsWithoutIDD = {
   v2?: boolean;
@@ -43,7 +47,7 @@ export type FormatNumberOptions = {
   v2?: boolean;
   fromCountry?: CountryCode;
   humanReadable?: boolean;
-  formatExtension?: FormatExtension
+  formatExtension?: FormatExtension;
 };
 
 // Legacy.
@@ -53,12 +57,12 @@ export type ParseNumberOptions = {
 };
 
 export interface ParsedNumber {
-  countryCallingCode?: CountryCallingCode,
-  country: CountryCode,
-  phone: NationalNumber,
-  ext?: Extension,
-  possible?: boolean,
-  valid?: boolean
+  countryCallingCode?: CountryCallingCode;
+  country: CountryCode;
+  phone: NationalNumber;
+  ext?: Extension;
+  possible?: boolean;
+  valid?: boolean;
 }
 
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
@@ -94,7 +98,7 @@ export function formatNumber(phone: NationalNumber, country: CountryCode, format
 export function getNumberType(parsedNumber: ParsedNumber): NumberType;
 export function getNumberType(phone: NationalNumber, country?: CountryCode): NumberType;
 
-export function getExampleNumber(country: CountryCode, examples: { [country in CountryCode]: NationalNumber }): PhoneNumber | undefined;
+export function getExampleNumber(country: CountryCode, examples: Examples): PhoneNumber | undefined;
 
 export function isPossibleNumber(parsedNumber: ParsedNumber): boolean;
 export function isPossibleNumber(phone: NationalNumber, country?: CountryCode): boolean;
@@ -158,9 +162,8 @@ export class AsYouType {
   isValid(): boolean;
 }
 
-// The exported `Metadata` name is already used for exporting the "raw" JSON metadata type.
-// Then, `Metadata` class has become exported, but its name is already taken, so TypeScript users seem to be unable to use the `Metadata` class.
-// If someone knows a solution then they could propose it in an issue.
-// export class Metadata {
-//   ...
-// }
+export class Metadata {
+  constructor();
+  selectNumberingPlan(country: CountryCode): void;
+  numberingPlan?: NumberingPlan;
+}

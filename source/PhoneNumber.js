@@ -39,6 +39,10 @@ export default class PhoneNumber {
 		this.metadata = metadata
 	}
 
+	setExt(ext) {
+		this.ext = ext
+	}
+
 	isPossible() {
 		return isPossibleNumber(this, { v2: true }, this.metadata)
 	}

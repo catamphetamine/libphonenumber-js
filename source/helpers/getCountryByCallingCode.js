@@ -28,7 +28,10 @@ function selectCountryFromList(possibleCountries, nationalPhoneNumber, metadata)
 	metadata = new Metadata(metadata)
 	for (const country of possibleCountries) {
 		metadata.country(country)
-		// Leading digits check would be the simplest one
+		// Leading digits check would be the simplest and fastest one.
+		// Leading digits patterns are only defined for about 20% of all countries.
+		// https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md#leading_digits
+		// Matching "leading digits" is a sufficient but not necessary condition.
 		if (metadata.leadingDigits()) {
 			if (nationalPhoneNumber &&
 				nationalPhoneNumber.search(metadata.leadingDigits()) === 0) {

@@ -1,11 +1,5 @@
 <!-- (breaking change) `parsePhoneNumberFromString()`: `extract: false` is now the default mode: non-phone-number characters aren't now trimmed on the left and on the right sides of a phone number. For example, `(213) 373-4253` is parsed as a valid phone number, but `Call: (213) 373-4253` is not, because `Call: ` doesn't automatically get trimmed now. For the old behavior, pass `extract: true` option. -->
 
-<!--
-The exported `Metadata` name is already used for exporting the "raw" JSON metadata type.
-Then, `Metadata` class has become exported, but its name is already taken, so TypeScript users seem to be unable to use the `Metadata` class.
-If someone knows a solution then they could propose it in an issue.
--->
-
 <!-- Maybe rename `metadata.full.json` -> `metadata.max.json`. -->
 
 <!-- (breaking change) Moved `findPhoneNumbersInText()` to its own subpackage: `libphonenumber-js/find`. The default export is `searchPhoneNumbersInText()` that returns an ES6 "iterator". -->
@@ -72,6 +66,18 @@ And edit the README:
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
 
 This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
+
+1.9.36 / 05.10.2021
+==================
+
+* Added a [`setExt(ext: string)`](https://gitlab.com/catamphetamine/libphonenumber-js/#setextext-string) function of a `PhoneNumber` class instance. It could be useful when formatting phone numbers stored as two separate fields: the phone number itself and the extension part.
+
+1.9.27 / 09.09.2021
+==================
+
+* [Added](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/45) TypeScript "typings" on the exported `Metadata` class. Also rewrote `Metadata` class API [docs](https://gitlab.com/catamphetamine/libphonenumber-js#metadata) and the description of [`leading_digits`](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md#leading_digits) metadata property.
+
+* TypeScript `Metadata` exported type was renamed to `MetadataJson` so that the `Metadata` class type could be exported as `Metadata`.
 
 1.9.26 / 05.09.2021
 ==================

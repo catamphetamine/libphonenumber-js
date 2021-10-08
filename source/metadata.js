@@ -236,11 +236,13 @@ class NumberingPlan {
 		return this.globalMetadataObject.getNumberingPlanMetadata(this.callingCode())
 	}
 
+	// Is always present.
 	IDDPrefix() {
 		if (this.v1 || this.v2) return
 		return this.metadata[1]
 	}
 
+	// Is only present when a country supports multiple IDD prefixes.
 	defaultIDDPrefix() {
 		if (this.v1 || this.v2) return
 		return this.metadata[12]
@@ -251,6 +253,7 @@ class NumberingPlan {
 		return this.metadata[2]
 	}
 
+	// Is always present.
 	possibleLengths() {
 		if (this.v1) return
 		return this.metadata[this.v2 ? 2 : 3]

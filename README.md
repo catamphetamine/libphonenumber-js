@@ -342,17 +342,17 @@ Such phone numbering plans are called "non-geographic", and their phone numbers 
 
 ## API
 
-### parsePhoneNumberFromString(string, [options or defaultCountry]): PhoneNumber
+### parsePhoneNumber(string, [options or defaultCountry]): PhoneNumber
 
 Parses a phone number from `string`.
 
-Can be imported both as a "default" export and as a "named" export.
+Can be imported both as a "default" export and as a "named" export `parsePhoneNumberFromString`.
 
 ```js
-import parsePhoneNumberFromString from 'libphonenumber-js'
-// Or: import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import parsePhoneNumber from 'libphonenumber-js'
+// Or: import { parsePhoneNumberFromString as parsePhoneNumber } from 'libphonenumber-js'
 
-const phoneNumber = parsePhoneNumberFromString('(213) 373-42-53 ext. 1234', 'US')
+const phoneNumber = parsePhoneNumber('(213) 373-42-53 ext. 1234', 'US')
 if (phoneNumber) {
   console.log(phoneNumber.formatNational())
 }
@@ -437,6 +437,24 @@ const phoneNumber = new PhoneNumber('RU', '8005553535', metadata)
 * `carrierCode: string?` — The ["carrier code"](https://www.voip-info.org/carrier-identification-codes/), if any. Example: `"15"`. "Carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
 
 `PhoneNumber` class instance provides the following methods:
+
+#### `setExt(ext: string)`
+
+Sets a [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)) of a phone number. Could be useful when formatting phone numbers stored as two separate fields: the phone number itself and the extension part.
+
+```js
+const phone = "+12133734253"
+const phoneExt = "1234"
+
+const phoneNumber = parsePhoneNumber(phone)
+if (phoneNumber) {
+  if (phoneExt) {
+    phoneNumber.setExt(phoneExt)
+  }
+  // Returns "(213) 373-4253 ext. 1234"
+  return phoneNumber.formatNational()
+}
+```
 
 #### `format(format: string, [options]): string`
 
@@ -1315,7 +1333,11 @@ When reporting `findPhoneNumbersInText()` bugs one should know that `findPhoneNu
 
 ## TypeScript
 
-[TypeScript support](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/index.d.ts) for this library is entirely community-driven. I myself don't use TypeScript. Send your pull requests.
+This library comes with TypeScript "typings". If you happen to find any bugs in those, create an issue.
+
+<!--
+https://codesandbox.io/s/damp-fast-26c7z?file=/src/index.ts
+-->
 
 ## CDN
 
@@ -1357,21 +1379,57 @@ Metadata is generated from Google's [`PhoneNumberMetadata.xml`](https://github.c
 
 Metadata can be accessed programmatically by using the exported `Metadata` class.
 
+First, create a `Metadata` class instance:
+
 ```js
-import { Metadata } from 'libphonenumber-js/core'
-import minMetadata from 'libphonenumber-js/metadata.min'
+import { Metadata } from 'libphonenumber-js'
 
-const metadata = new Metadata(minMetadata)
-// Select a country.
-metadata.country('US')
-
-console.log(metadata.numberingPlan.leadingDigits())
-console.log(metadata.numberingPlan.possibleLengths())
-console.log(metadata.numberingPlan.IDDPrefix())
-console.log(metadata.numberingPlan.defaultIDDPrefix())
+const metadata = new Metadata()
 ```
 
-As one can see, the [`Metadata` class](https://gitlab.com/catamphetamine/libphonenumber-js/-/blob/master/source/metadata.js) is not documented much. Partially, that's because its usage is not encouraged, but it's still used, for example, in [`react-phone-number-input`](https://gitlab.com/catamphetamine/react-phone-number-input/-/blob/master/source/phoneInputHelpers.js) to get "leading digits" for a country, or to get maximum phone number length for a country.
+Then, select a ["numbering plan"](https://en.wikipedia.org/wiki/Telephone_numbering_plan) (a country):
+
+```js
+metadata.selectNumberingPlan('US')
+```
+
+After that, the following methods of `metadata.numberingPlan` can be called:
+
+* `leadingDigits(): string?` — Returns ["leading digits"](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md#leading_digits) pattern.
+
+* `possibleLengths(): number[]` — Returns a list of [possible lengths](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md#possible_lengths) of a national (significant) number.
+
+* `IDDPrefix(): string` — Returns an [International Direct Dialing](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md#idd_prefix) prefix.
+
+* `defaultIDDPrefix(): string?` — Returns a [default International Direct Dialing](https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md#default_idd_prefix) prefix when there're multiple ones available.
+
+Example:
+
+```js
+import { Metadata } from 'libphonenumber-js'
+
+const metadata = new Metadata()
+metadata.selectNumberingPlan('US')
+
+metadata.numberingPlan.leadingDigits() === undefined
+metadata.numberingPlan.possibleLengths() === [10]
+metadata.numberingPlan.IDDPrefix() === '011'
+metadata.numberingPlan.defaultIDDPrefix() === undefined
+```
+
+Using with custom metadata:
+
+```js
+import { Metadata } from 'libphonenumber-js/core'
+
+import min from 'libphonenumber-js/metadata.min.json'
+// import max from 'libphonenumber-js/metadata.full.json'
+// import mobile from 'libphonenumber-js/metadata.mobile.json'
+
+const metadata = new Metadata(min)
+```
+
+As one can see, the [`Metadata` class](https://gitlab.com/catamphetamine/libphonenumber-js/-/blob/master/source/metadata.js) is not documented much. Partially, that's because its usage is not necessarily encouraged, but it's still used, for example, in [`react-phone-number-input`](https://gitlab.com/catamphetamine/react-phone-number-input/-/blob/master/source/helpers/phoneInputHelpers.js) to get "leading digits" for a country, or to get maximum phone number length for a country. Stick to the methods documented above, don't call any other methods. If you think there's a need to call any other methods, create a discussion issue.
 
 <!--
 Currently I have a script set up monitoring changes to `PhoneNumberMetadata.xml` in Google's repo and automatically releasing new versions of this library when metadata in Google's repo gets updated. So this library's metadata is supposed to be up-to-date. Still, in case the automatic metadata update script malfunctions some day, anyone can request metadata update via a Pull Request here on GitHub:
@@ -1408,8 +1466,7 @@ Pass the `metadata` argument as the last one to the "core" functions.
 In ES6 that would be:
 
 ```js
-import {
-  parsePhoneNumberFromString as _parsePhoneNumberFromString,
+import _parsePhoneNumber, {
   findPhoneNumbersInText as _findPhoneNumbersInText,
   AsYouType as _AsYouType
 } from 'libphonenumber-js/core'
@@ -1422,8 +1479,8 @@ function call(func, _arguments) {
   return func.apply(this, args)
 }
 
-export default function parsePhoneNumberFromString() {
-  return call(_parsePhoneNumberFromString, arguments)
+export default function parsePhoneNumber() {
+  return call(_parsePhoneNumber, arguments)
 }
 
 export function findPhoneNumbersInText() {
@@ -1449,12 +1506,12 @@ function call(func, _arguments) {
   return func.apply(this, args)
 }
 
-function parsePhoneNumberFromString() {
-  return call(core.parsePhoneNumberFromString, arguments)
+function parsePhoneNumber() {
+  return call(core.default, arguments)
 }
 
-exports = module.exports = parsePhoneNumberFromString
-exports['default'] = parsePhoneNumberFromString
+exports = module.exports = parsePhoneNumber
+exports['default'] = parsePhoneNumber
 
 exports.findPhoneNumbersInText = function findPhoneNumbersInText() {
   return call(core.findPhoneNumbersInText, arguments)
