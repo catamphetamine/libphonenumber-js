@@ -455,14 +455,16 @@ describe('as you type', () => {
 		formatter.reset()
 		formatter.input('+1-1')
 
-		phoneNumber = formatter.getNumber()
-		expect(phoneNumber).to.not.be.undefined
-
-		formatter.input('1')
-		phoneNumber = formatter.getNumber()
-		expect(phoneNumber.country).to.be.undefined
-		phoneNumber.countryCallingCode.should.equal('1')
-		phoneNumber.number.should.equal('+111')
+		// Before leading digits < 3 matching was implemented:
+		//
+		// phoneNumber = formatter.getNumber()
+		// expect(phoneNumber).to.not.be.undefined
+		//
+		// formatter.input('1')
+		// phoneNumber = formatter.getNumber()
+		// expect(phoneNumber.country).to.be.undefined
+		// phoneNumber.countryCallingCode.should.equal('1')
+		// phoneNumber.number.should.equal('+111')
 	})
 
 	it('should work with Argentina numbers', () => {

@@ -12,6 +12,8 @@ import formatCompleteNumber, {
 	canFormatCompleteNumber
 } from './AsYouTypeFormatter.complete'
 
+import PatternMatcher from './AsYouTypeFormatter.PatternMatcher'
+
 import parseDigits from './helpers/parseDigits'
 export { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter.util'
 import { FIRST_GROUP_PATTERN } from './helpers/formatNationalNumberUsingFormat'
@@ -127,6 +129,12 @@ export default class AsYouTypeFormatter {
 		}
 	}
 
+	/**
+	 * Formats an updated phone number.
+	 * @param  {string} nextDigits — Additional phone number digits.
+	 * @param  {object} state — `AsYouType` state.
+	 * @return {[string]} Returns undefined if the updated phone number can't be formatted using any of the available formats.
+	 */
 	format(nextDigits, state) {
 		// See if the phone number digits can be formatted as a complete phone number.
 		// If not, use the results from `formatNationalNumberWithNextDigits()`,
@@ -268,28 +276,69 @@ export default class AsYouTypeFormatter {
 
 	formatMatches(format, leadingDigits, leadingDigitsPatternIndex) {
 		const leadingDigitsPatternsCount = format.leadingDigitsPatterns().length
+
 		// If this format is not restricted to a certain
 		// leading digits pattern then it fits.
 		if (leadingDigitsPatternsCount === 0) {
 			return true
 		}
-		// Start excluding any non-matching formats only when the
+
+		// Start narrowing down the list of possible formats based on the leading digits.
+		// (only previously matched formats take part in the narrowing down process)
+
+		// `leading_digits_patterns` start with 3 digits min
+		// and then go up from there one digit at a time.
+		leadingDigitsPatternIndex = Math.min(leadingDigitsPatternIndex, leadingDigitsPatternsCount - 1)
+		const leadingDigitsPattern = format.leadingDigitsPatterns()[leadingDigitsPatternIndex]
+
+		// Google imposes a requirement on the leading digits
+		// to be minimum 3 digits long in order to be eligible
+		// for checking those with a leading digits pattern.
+		//
+		// Since `leading_digits_patterns` start with 3 digits min,
+		// Google's original `libphonenumber` library only starts
+		// excluding any non-matching formats only when the
 		// national number entered so far is at least 3 digits long,
 		// otherwise format matching would give false negatives.
+		//
 		// For example, when the digits entered so far are `2`
 		// and the leading digits pattern is `21` –
 		// it's quite obvious in this case that the format could be the one
 		// but due to the absence of further digits it would give false negative.
+		//
+		// Also, `leading_digits_patterns` doesn't always correspond to a single
+		// digits count. For example, `60|8` pattern would already match `8`
+		// but the `60` part would require having at least two leading digits,
+		// so the whole pattern would require inputting two digits first in order to
+		// decide on whether it matches the input, even when the input is "80".
+		//
+		// This library — `libphonenumber-js` — allows filtering by `leading_digits_patterns`
+		// even when there's only 1 or 2 digits of the national (significant) number.
+		// To do that, it uses a non-strict pattern matcher written specifically for that.
+		//
 		if (leadingDigits.length < MIN_LEADING_DIGITS_LENGTH) {
-			return true
+			// Before leading digits < 3 matching was implemented:
+			// return true
+			//
+			// After leading digits < 3 matching was implemented:
+			try {
+				return new PatternMatcher(leadingDigitsPattern).match(leadingDigits, { allowOverflow: true }) !== undefined
+			} catch (error) {
+				// There's a slight possibility that there could be some undiscovered bug
+				// in the pattern matcher code. Since the "leading digits < 3 matching"
+				// feature is not "essential" for operation, it can fall back to the old way
+				// in case of any issues rather than halting the application's execution.
+				console.error(error)
+				return true
+			}
 		}
-		// If at least `MIN_LEADING_DIGITS_LENGTH` digits of a national number are available
-		// then format matching starts narrowing down the list of possible formats
-		// (only previously matched formats are considered for next digits).
-		leadingDigitsPatternIndex = Math.min(leadingDigitsPatternIndex, leadingDigitsPatternsCount - 1)
-		const leadingDigitsPattern = format.leadingDigitsPatterns()[leadingDigitsPatternIndex]
-		// Brackets are required for `^` to be applied to
-		// all or-ed (`|`) parts, not just the first one.
+
+		// If at least `MIN_LEADING_DIGITS_LENGTH` digits of a national number are
+		// available then use the usual regular expression matching.
+		//
+		// The whole pattern is wrapped in round brackets (`()`) because
+		// the pattern can use "or" operator (`|`) at the top level of the pattern.
+		//
 		return new RegExp(`^(${leadingDigitsPattern})`).test(leadingDigits)
 	}
 

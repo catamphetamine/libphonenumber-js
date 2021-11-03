@@ -585,14 +585,27 @@ describe('AsYouType', () => {
 		formatter.reset()
 		formatter.input('+1-1')
 
-		phoneNumber = formatter.getNumber()
-		expect(phoneNumber).to.not.be.undefined
+		// Before leading digits < 3 matching was implemented:
+		//
+		// phoneNumber = formatter.getNumber()
+		// expect(phoneNumber).to.not.be.undefined
+		//
+		// formatter.input('1')
+		// phoneNumber = formatter.getNumber()
+		// expect(phoneNumber.country).to.be.undefined
+		// phoneNumber.countryCallingCode.should.equal('1')
+		// phoneNumber.number.should.equal('+111')
 
+		// After leading digits < 3 matching was implemented:
+		//
+		phoneNumber = formatter.getNumber()
+		expect(phoneNumber).to.be.undefined
+		//
 		formatter.input('1')
 		phoneNumber = formatter.getNumber()
 		expect(phoneNumber.country).to.be.undefined
 		phoneNumber.countryCallingCode.should.equal('1')
-		phoneNumber.number.should.equal('+111')
+		phoneNumber.number.should.equal('+11')
 	})
 
 	it('should work with countries that add digits to national (significant) number', () => {
@@ -687,6 +700,16 @@ describe('AsYouType', () => {
 		// expect(formatter.nationalPrefix).to.be.undefined
 		formatter.isPossible().should.equal(true)
 		formatter.isValid().should.equal(true)
+	})
+
+	// https://gitlab.com/catamphetamine/react-phone-number-input/-/issues/93
+	it('should format Indonesian numbers', () => {
+		const formatter = new AsYouType('ID')
+		formatter.getChars().should.equal('')
+		// Before leading digits < 3 matching was implemented:
+		// formatter.input('081').should.equal('(081)')
+		// After leading digits < 3 matching was implemented:
+		formatter.input('081').should.equal('081')
 	})
 
 	it('should prepend `complexPrefixBeforeNationalSignificantNumber` (not a complete number)', () => {

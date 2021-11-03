@@ -67,6 +67,11 @@ And edit the README:
 
 This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
 
+1.9.40 / 02.11.2021
+==================
+
+* Improved [format selection](https://gitlab.com/catamphetamine/react-phone-number-input/-/issues/93) in `AsYouType` formatter: previously it chose the first one before there were at least 3 national (significant) number digits, now it starts filtering out formats right from the start of the national (significant) number.
+
 1.9.36 / 05.10.2021
 ==================
 
