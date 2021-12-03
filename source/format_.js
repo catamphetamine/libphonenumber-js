@@ -119,7 +119,7 @@ function formatNationalNumber(number, carrierCode, formatAs, metadata, options) 
 		format,
 		{
 			useInternationalFormat: formatAs === 'INTERNATIONAL',
-			withNationalPrefix: format.nationalPrefixIsOptionalWhenFormattingInNationalFormat() && (options && options.nationalPrefix === false) ? false : true,
+			withNationalPrefix: format.nationalPrefixIsOptionalWhenFormattingInNationalFormat() || (options && options.nationalPrefix === false) ? false : true,
 			carrierCode,
 			metadata
 		}
