@@ -1,4 +1,4 @@
-import metadata from '../metadata.min'
+import metadata from '../metadata.min.json'
 import PhoneNumber from './PhoneNumber'
 
 describe('PhoneNumber', () => {

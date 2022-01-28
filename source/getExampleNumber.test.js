@@ -1,5 +1,5 @@
-import examples from '../examples.mobile'
-import metadata from '../metadata.min'
+import examples from '../examples.mobile.json'
+import metadata from '../metadata.min.json'
 import getExampleNumber from './getExampleNumber'
 
 describe('getExampleNumber', () => {

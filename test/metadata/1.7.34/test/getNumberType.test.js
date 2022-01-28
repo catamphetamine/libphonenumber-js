@@ -1,4 +1,4 @@
-import metadata from '../metadata.full'
+import metadata from '../metadata.max.json'
 import Metadata from '../../../../source/metadata'
 import { checkNumberLengthForType } from '../../../../source/helpers/checkNumberLength'
 import _getNumberType from '../../../../source/getNumberType'

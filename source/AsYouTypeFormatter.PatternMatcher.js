@@ -1,7 +1,6 @@
 export default class PatternMatcher {
 	constructor(pattern) {
 		this.matchTree = new PatternParser().parse(pattern)
-		// console.log(JSON.stringify(this.matchTree, null, 2))
 	}
 
 	match(string, { allowOverflow } = {}) {
@@ -24,6 +23,7 @@ export default class PatternMatcher {
 function match(characters, tree, last) {
 	if (typeof tree === 'string') {
 		if (last) {
+			// `tree` is always a single character.
 			if (characters.length > tree.length) {
 				return {
 					overflow: true
@@ -32,12 +32,20 @@ function match(characters, tree, last) {
 		}
 		const characterString = characters.join('')
 		if (tree.indexOf(characterString) === 0) {
+			// `tree` is always a single character.
+			// If `tree.indexOf(characterString) === 0`
+			// then `characters.length === tree.length`.
+			/* istanbul ignore else */
 			if (characters.length === tree.length) {
 				return {
 					match: true,
 					matchedChars: characters
 				}
 			}
+			// `tree` is always a single character.
+			// If `tree.indexOf(characterString) === 0`
+			// then `characters.length === tree.length`.
+			/* istanbul ignore next */
 			return {
 				partialMatch: true,
 				// matchedChars: characters
@@ -58,10 +66,11 @@ function match(characters, tree, last) {
 		while (i < tree.length) {
 			const subtree = tree[i]
 			const result = match(restCharacters, subtree, last && (i === tree.length - 1))
-			if (!result || result.overflow) {
+			if (!result) {
+				return
+			} else if (result.overflow) {
 				return result
-			}
-			if (result.match) {
+			} else if (result.match) {
 				// Continue with the next subtree with the rest of the characters.
 				restCharacters = restCharacters.slice(result.matchedChars.length)
 				if (restCharacters.length === 0) {
@@ -77,16 +86,22 @@ function match(characters, tree, last) {
 						}
 					}
 				}
-			} else if (result.partialMatch) {
-				return {
-					partialMatch: true,
-					// matchedChars: characters
-				}
 			} else {
-				throw new Error(`Unsupported match result:\n${JSON.stringify(result, null, 2)}`)
+				/* istanbul ignore else */
+				if (result.partialMatch) {
+					return {
+						partialMatch: true,
+						// matchedChars: characters
+					}
+				} else {
+					throw new Error(`Unsupported match result:\n${JSON.stringify(result, null, 2)}`)
+				}
 			}
 			i++
 		}
+		// If `last` then overflow has already been checked
+		// by the last element of the `tree` array.
+		/* istanbul ignore if */
 		if (last) {
 			return {
 				overflow: true
@@ -111,8 +126,13 @@ function match(characters, tree, last) {
 							match: true,
 							matchedChars: result.matchedChars
 						}
-					} else if (result.partialMatch) {
-						partialMatch = true
+					} else {
+						/* istanbul ignore else */
+						if (result.partialMatch) {
+							partialMatch = true
+						} else {
+							throw new Error(`Unsupported match result:\n${JSON.stringify(result, null, 2)}`)
+						}
 					}
 				}
 			}
@@ -148,6 +168,7 @@ function match(characters, tree, last) {
 			// No character matches.
 			return
 
+		/* istanbul ignore next */
 		default:
 			throw new Error(`Unsupported instruction tree: ${tree}`)
 	}
@@ -177,6 +198,8 @@ const OPERATOR = new RegExp(
 	')'
 )
 
+const ILLEGAL_CHARACTER_REGEXP = /[\(\)\[\]\?\:\|]/
+
 class PatternParser {
 	parse(pattern) {
 		this.context = [{
@@ -199,6 +222,7 @@ class PatternParser {
 			}]
 		}
 
+		/* istanbul ignore if */
 		if (instructions.length === 0) {
 			throw new Error('Pattern is required')
 		}
@@ -220,11 +244,14 @@ class PatternParser {
 
 	parsePattern(pattern) {
 		if (!pattern) {
-			throw new Error('Empty pattern passed')
+			throw new Error('Pattern is required')
 		}
 
 		const match = pattern.match(OPERATOR)
 		if (!match) {
+			if (ILLEGAL_CHARACTER_REGEXP.test(pattern)) {
+				throw new Error(`Illegal characters found in a pattern: ${pattern}`)
+			}
 			this.getContext().instructions = this.getContext().instructions.concat(
 				pattern.split('')
 			)
@@ -277,6 +304,8 @@ class PatternParser {
 				}
 				// The top-level is an implicit "or" group, if required.
 				if (!this.getContext().branches) {
+					// `branches` are not defined only for the root implicit "or" operator.
+					/* istanbul ignore else */
 					if (this.context.length === 1) {
 						this.getContext().branches = []
 					} else {
@@ -309,6 +338,7 @@ class PatternParser {
 				})
 				break
 
+			/* istanbul ignore next */
 			default:
 				throw new Error(`Unknown operator: ${operator}`)
 		}

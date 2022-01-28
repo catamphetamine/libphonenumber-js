@@ -283,7 +283,7 @@ findPhoneNumbersInText(`
 
 This library provides different "metadata" sets, "metadata" being a list of phone number parsing and formatting rules for all countries. The complete list of those rules is huge, so this library provides a way to optimize bundle size by choosing between `max`, `min`, `mobile` and "custom" metadata:
 
-* `max` — The complete metadata set, is about `145 kilobytes` in size (`libphonenumber-js/metadata.full.json`). Choose this when you need the most strict version of `isValid()`, or if you need to detect phone number type ("fixed line", "mobile", etc).
+* `max` — The complete metadata set, is about `145 kilobytes` in size (`libphonenumber-js/metadata.max.json`). Choose this when you need the most strict version of `isValid()`, or if you need to detect phone number type ("fixed line", "mobile", etc).
 
 * `min` — (default) The smallest metadata set, is about `80 kilobytes` in size (`libphonenumber-js/metadata.min.json`). Choose this by default: when you don't need to detect phone number type ("fixed line", "mobile", etc), or when a basic version of `isValid()` is enough. The `min` metadata set doesn't contain the regular expressions for phone number digits validation (via [`.isValid()`](#isvalid)) and detecting phone number type (via [`.getType()`](#gettype)) for most countries. In this case, `.isValid()` still performs some basic phone number validation (for example, checks phone number length), but it doesn't validate phone number digits themselves the way `max` metadata validation does.
 
@@ -686,7 +686,9 @@ new AsYouType('US').input('2133734') === '(213) 373-4'
 
 The formatter instance also provides the following getters:
 
- * `getNumber(): PhoneNumber` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) digits have been entered so far, or if no `defaultCountry`/`defaultCallingCode` has been set and the user enters a phone number not in international format.
+ * `getNumber(): PhoneNumber?` — Returns the [`PhoneNumber`](#phonenumber). Will return `undefined` if no [national (significant) number](#national-significant-number) digits have been entered so far, or if no `defaultCountry`/`defaultCallingCode` has been set and the user enters a phone number not in international format.
+
+ * `getNumberValue(): string?` — Returns the phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format. For example, for country `"US"` and input `"(222) 333-4444"` it will return `"+12223334444"`. Will return `undefined` if no digits have been input, or when inputting a phone number in national format and no default country or default "country calling code" have been set.
 
  * `getChars(): string` — Returns the phone number characters entered by the user: digits and a `+` sign (if present). Returns an empty string if no phone number characters have been input.
 
@@ -729,7 +731,7 @@ asYouType.getTemplate() === 'xx xxx xxx xxxx'
 
  * `isInternational(): boolean` — Returns `true` if the phone number is being input in international format. In other words, returns `true` if and only if the parsed phone number starts with a `"+"`.
 
- * `getCallingCode(): string?` — Returns the ["country calling code"](#country-calling-code) part of the phone number. Returns `undefined` if the number is not being input in international format. Returns "country calling code" for ["non-geographic"](#non-geographic) phone numbering plans too.
+ * `getCallingCode(): string?` — Returns the ["country calling code"](#country-calling-code) part of the phone number. Returns `undefined` if the number is not being input in international format, or if no valid "country calling code" has been entered. Supports ["non-geographic"](#non-geographic) phone numbering plans: even though those aren't technically "countries", they have their own "country calling codes" too.
 
  * `getCountry(): string?` — Returns a two-letter [country code](#country-code) of the phone number. Returns `undefined` for ["non-geographic"](#non-geographic) phone numbering plans. Returns `undefined` if no phone number has been input yet.
 
@@ -1285,7 +1287,7 @@ The difference between using `parseNumber()` and `isValidNumber()` for phone num
 
 This is how it is implemented in the original Google's [`libphonenumber`](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-): `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone numbers precisely (provided the precise regular expressions are included in metadata).
 
-The precise regular expressions aren't included in the default metadata because that would cause the default metadata to grow twice in its size: the complete ("full") metadata size is about 145 kilobytes while the reduced ("default") metadata size is about 77 kilobytes. Hence in the default configuration `isValidNumber()` performs absolutely the same "lite" validation as `parseNumber()`. For enabling extensive phone number validation the simplest way is to import functions from `libphonenumber-js/custom` module and supply them with `libphonenumber-js/metadata.full.json`. For generating custom metadata see the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
+The precise regular expressions aren't included in the default metadata because that would cause the default metadata to grow twice in its size: the complete ("full") metadata size is about 145 kilobytes while the reduced ("default") metadata size is about 77 kilobytes. Hence in the default configuration `isValidNumber()` performs absolutely the same "lite" validation as `parseNumber()`. For enabling extensive phone number validation the simplest way is to import functions from `libphonenumber-js/custom` module and supply them with `libphonenumber-js/metadata.max.json`. For generating custom metadata see the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
 </details>
 
 ####
@@ -1319,12 +1321,18 @@ Whenever there's a "business requirement" to validate a phone number that's bein
 
 If you’re trying to build a React component with this library, take a look at [`react-phone-number-input`](https://www.npmjs.com/package/react-phone-number-input).
 
+<!--
+## Node ES Modules
+
+This package currently [doesn't provide](https://gitlab.com/catamphetamine/libphonenumber-js/-/tree/master/exports) Node 14+ ES Modules exports, but that shouldn't be an issue because Node.js seems to [support](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/42) importing from "legacy" packages just fine.
+-->
+
 ## Bug reporting
 
 When reporting an issue one must also provide a link to [Google's `libphonenumber` demo page](https://libphonenumber.appspot.com/) illustrating the expected behaviour. This includes validation, parsing, formatting and "as you type" formatting. For example, for an Australian number `438 331 999` Google's demo [outputs four sections](https://libphonenumber.appspot.com/phonenumberparser?number=438331999&country=AU) — "Parsing Result", "Validation Results", "Formatting Results" and "AsYouTypeFormatter Results". In a bug report, first describe the observed `libphonenumber-js` demo result and then Google's demo result (with a link to it) which must differ from the observed `libphonenumber-js` demo result. If the observed `libphonenumber-js` demo result is the same as Google's demo result and you don't agree with Google's demo result then create an issue in [Google's repo](https://github.com/googlei18n/libphonenumber).
 
 <!--
-Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#customizing-metadata) fed with `metadata.full.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.gitlab.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s.
+Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#customizing-metadata) fed with `metadata.max.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.gitlab.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s.
 
 There is also a possibility of this library's demo metadata being outdated, or this library's metadata lagging behind Google's (I have to update it manually from time to time due to `ssh-agent` not working properly on Windows).
 -->
@@ -1423,7 +1431,7 @@ Using with custom metadata:
 import { Metadata } from 'libphonenumber-js/core'
 
 import min from 'libphonenumber-js/metadata.min.json'
-// import max from 'libphonenumber-js/metadata.full.json'
+// import max from 'libphonenumber-js/metadata.max.json'
 // import mobile from 'libphonenumber-js/metadata.mobile.json'
 
 const metadata = new Metadata(min)
@@ -1471,7 +1479,7 @@ import _parsePhoneNumber, {
   AsYouType as _AsYouType
 } from 'libphonenumber-js/core'
 
-import metadata from 'libphonenumber-js/metadata.full.json'
+import metadata from 'libphonenumber-js/metadata.max.json'
 
 function call(func, _arguments) {
   var args = Array.prototype.slice.call(_arguments)
@@ -1498,7 +1506,7 @@ And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) 
 
 ```js
 var core = require('libphonenumber-js/core')
-var metadata = require('libphonenumber-js/metadata.full.json')
+var metadata = require('libphonenumber-js/metadata.max.json')
 
 function call(func, _arguments) {
   var args = Array.prototype.slice.call(_arguments)
@@ -1545,7 +1553,7 @@ import {
   AsYouType
 } from 'libphonenumber-js/custom'
 
-import metadata from 'libphonenumber-js/metadata.full.json'
+import metadata from 'libphonenumber-js/metadata.max.json'
 
 parseNumber('+78005553535', metadata)
 formatNumber({ phone: '8005553535', country: 'RU' }, metadata)
@@ -1558,7 +1566,7 @@ And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) 
 
 ```js
 var custom = require('libphonenumber-js/custom')
-var metadata = require('libphonenumber-js/metadata.full.json')
+var metadata = require('libphonenumber-js/metadata.max.json')
 
 exports.parseNumber = function parseNumber() {
   var parameters = Array.prototype.slice.call(arguments)

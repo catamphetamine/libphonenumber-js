@@ -85,6 +85,7 @@ export class AsYouType {
   input(text: string): string;
   reset(): void;
   getNumber(): PhoneNumber | undefined;
+  getNumberValue(): E164Number | undefined;
   getChars(): string;
   getTemplate(): string;
   getCallingCode(): string | undefined;

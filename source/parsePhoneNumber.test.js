@@ -1,6 +1,6 @@
 import _parsePhoneNumber from './parsePhoneNumber'
 import metadata from '../metadata.min.json'
-import metadataFull from '../metadata.full.json'
+import metadataFull from '../metadata.max.json'
 
 function parsePhoneNumber(...parameters) {
 	parameters.push(metadata)

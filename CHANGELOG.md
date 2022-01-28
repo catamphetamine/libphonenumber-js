@@ -67,6 +67,16 @@ And edit the README:
 
 This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
 
+1.9.45 / xx.01.2022
+==================
+
+* Added `AsYouType.getNumberValue()` function. The function will be [used](https://gitlab.com/catamphetamine/react-phone-number-input/-/issues/113) in `react-phone-number-input` component. Returns the phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format. For example, for country `"US"` and input `"(222) 333-4444"` it will return `"+12223334444"`. Will return `undefined` if no digits have been input, or when inputting a phone number in national format and no default country or default "country calling code" have been set.
+
+1.9.42 / 05.11.2021
+==================
+
+* Added a better called alias for `metadata.full.json` — `metadata.max.json`.
+
 1.9.40 / 02.11.2021
 ==================
 

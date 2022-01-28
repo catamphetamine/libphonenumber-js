@@ -1,0 +1,1 @@
+export * from '../../metadata.max.json.js'

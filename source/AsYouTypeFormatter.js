@@ -323,7 +323,7 @@ export default class AsYouTypeFormatter {
 			// After leading digits < 3 matching was implemented:
 			try {
 				return new PatternMatcher(leadingDigitsPattern).match(leadingDigits, { allowOverflow: true }) !== undefined
-			} catch (error) {
+			} catch (error) /* istanbul ignore next */ {
 				// There's a slight possibility that there could be some undiscovered bug
 				// in the pattern matcher code. Since the "leading digits < 3 matching"
 				// feature is not "essential" for operation, it can fall back to the old way

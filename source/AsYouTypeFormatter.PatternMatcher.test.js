@@ -1,6 +1,43 @@
 import PatternMatcher from './AsYouTypeFormatter.PatternMatcher'
 
 describe('AsYouTypeFormatter.PatternMatcher', function() {
+	it('should throw when no pattern is passed', function() {
+		expect(() => new PatternMatcher()).to.throw('Pattern is required')
+	})
+
+	it('should throw when no string is passed', function() {
+		const matcher = new PatternMatcher('1')
+		expect(() => matcher.match()).to.throw('String is required')
+	})
+
+	it('should throw on illegal characters', function() {
+		expect(() => new PatternMatcher('4(5|6)7')).to.throw('Illegal characters')
+	})
+
+	it('should throw on an illegal ] operator', function() {
+		expect(() => new PatternMatcher('4]7')).to.throw('"]" operator must be preceded by "[" operator')
+	})
+
+	it('should throw on an illegal - operator in a one-of set', function() {
+		expect(() => new PatternMatcher('[-5]')).to.throw('Couldn\'t parse a one-of set pattern: -5')
+	})
+
+	it('should throw on a non-finalized context', function() {
+		expect(() => new PatternMatcher('4(?:5|7')).to.throw('Non-finalized contexts left when pattern parse ended')
+	})
+
+	it('should throw on an illegal (|) operator', function() {
+		expect(() => new PatternMatcher('4(?:5|)7')).to.throw('No instructions found after "|" operator in an "or" group')
+	})
+
+	it('should throw on an illegal ) operator', function() {
+		expect(() => new PatternMatcher('4[56)]7')).to.throw('")" operator must be preceded by "(?:" operator')
+	})
+
+	it('should throw on an illegal | operator', function() {
+		expect(() => new PatternMatcher('4[5|6]7')).to.throw('operator can only be used inside "or" groups')
+	})
+
 	it('should match a one-digit pattern', function() {
 		const matcher = new PatternMatcher('4')
 

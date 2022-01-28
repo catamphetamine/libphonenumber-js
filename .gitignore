@@ -30,12 +30,14 @@ npm-debug.log
 /metadata.json
 /metadata.full.json
 /metadata.min.json
+/metadata.max.json
 /metadata.mobile.json
 /examples.mobile.json
 
 # metadata.js
 /metadata.full.json.js
 /metadata.min.json.js
+/metadata.max.json.js
 /metadata.mobile.json.js
 /examples.mobile.json.js
 

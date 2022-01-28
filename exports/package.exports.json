@@ -1,0 +1,55 @@
+{
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./exports/min/index.d.ts",
+      "import": "./exports/min/index.js",
+      "require": "./exports/min/index.cjs"
+    },
+    "./min": {
+      "types": "./exports/min/index.d.ts",
+      "import": "./exports/min/index.js",
+      "require": "./exports/min/index.cjs"
+    },
+    "./max": {
+      "types": "./exports/min/index.d.ts",
+      "import": "./exports/max/index.js",
+      "require": "./exports/max/index.cjs"
+    },
+    "./mobile": {
+      "types": "./exports/min/index.d.ts",
+      "import": "./exports/mobile/index.js",
+      "require": "./exports/mobile/index.cjs"
+    },
+    "./core": {
+      "types": "./exports/core/index.d.ts",
+      "import": "./exports/core/index.js",
+      "require": "./exports/core/index.cjs"
+    },
+    "./metadata.min.json": {
+      "types": "./exports/metadata.min.json/index.d.ts",
+      "import": "./exports/metadata.min.json/index.js",
+      "require": "./exports/metadata.min.json/index.cjs"
+    },
+    "./metadata.full.json": {
+      "types": "./exports/metadata.max.json/index.d.ts",
+      "import": "./exports/metadata.max.json/index.js",
+      "require": "./exports/metadata.max.json/index.cjs"
+    },
+    "./metadata.max.json": {
+      "types": "./exports/metadata.max.json/index.d.ts",
+      "import": "./exports/metadata.max.json/index.js",
+      "require": "./exports/metadata.max.json/index.cjs"
+    },
+    "./metadata.mobile.json": {
+      "types": "./exports/metadata.mobile.json/index.d.ts",
+      "import": "./exports/metadata.mobile.json/index.js",
+      "require": "./exports/metadata.mobile.json/index.cjs"
+    },
+    "./examples.mobile.json": {
+      "types": "./exports/examples.mobile.json/index.d.ts",
+      "import": "./exports/examples.mobile.json/index.js",
+      "require": "./exports/examples.mobile.json/index.cjs"
+    }
+  }
+}

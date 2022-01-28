@@ -1,5 +1,5 @@
 import findNumbers from './findNumbers'
-import metadata from '../metadata.full.json'
+import metadata from '../metadata.max.json'
 
 describe('findNumbers', () => {
 	it('should find numbers', () => {

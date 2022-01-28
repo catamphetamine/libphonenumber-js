@@ -1,6 +1,6 @@
 'use strict'
 
-var metadata = require('../metadata.full.json')
+var metadata = require('../metadata.max.json')
 var core = require('../core/index.commonjs')
 
 function call(func, _arguments) {

@@ -152,6 +152,7 @@ export class AsYouType {
   reset(): void;
   country: CountryCode | undefined;
   getNumber(): PhoneNumber | undefined;
+  getNumberValue(): E164Number | undefined;
   getNationalNumber(): string;
   getChars(): string;
   getTemplate(): string;

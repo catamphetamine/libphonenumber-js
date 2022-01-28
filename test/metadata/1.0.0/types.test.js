@@ -1,4 +1,4 @@
-import metadata from './metadata.full'
+import metadata from './metadata.max.json'
 import get_number_type_custom from '../../../source/getNumberType'
 
 function get_number_type(...parameters)

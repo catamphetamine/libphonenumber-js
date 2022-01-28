@@ -132,13 +132,23 @@ export default class AsYouType {
 	}
 
 	/**
-	 * Returns the "country calling code" part of the phone number.
-	 * Returns `undefined` if the number is not being input in international format.
-	 * Returns "country calling code" for "non-geographic" phone numbering plans too.
+	 * Returns the "calling code" part of the phone number when it's being input
+	 * in an international format.
+	 * If no valid calling code has been entered so far, returns `undefined`.
 	 * @return {string} [callingCode]
 	 */
 	getCallingCode() {
-		return this.state.callingCode
+		 // If the number is being input in national format and some "default calling code"
+		 // has been passed to `AsYouType` constructor, then `this.state.callingCode`
+		 // is equal to that "default calling code".
+		 //
+		 // If the number is being input in national format and no "default calling code"
+		 // has been passed to `AsYouType` constructor, then returns `undefined`,
+		 // even if a "default country" has been passed to `AsYouType` constructor.
+		 //
+		if (this.isInternational()) {
+			return this.state.callingCode
+		}
 	}
 
 	// A legacy alias.
@@ -153,23 +163,29 @@ export default class AsYouType {
 	 * @return {string} [country]
 	 */
 	getCountry() {
-		const { digits, country } = this.state
-		// If no digits have been input yet,
-		// then `this.country` is the `defaultCountry`.
-		// Won't return the `defaultCountry` in such case.
-		if (!digits) {
-			return
+		const { digits } = this.state
+		// Return `undefined` if no digits have been input yet.
+		if (digits) {
+			return this._getCountry()
 		}
-		let countryCode = country
+	}
+
+	/**
+	 * Returns a two-letter country code of the phone number.
+	 * Returns `undefined` for "non-geographic" phone numbering plans.
+	 * @return {string} [country]
+	 */
+	_getCountry() {
+		const { country } = this.state
 		/* istanbul ignore if */
 		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
 			// `AsYouType.getCountry()` returns `undefined`
 			// for "non-geographic" phone numbering plans.
-			if (countryCode === '001') {
-				countryCode = undefined
+			if (country === '001') {
+				return
 			}
 		}
-		return countryCode
+		return country
 	}
 
 	determineTheCountryIfNeeded() {
@@ -260,32 +276,78 @@ export default class AsYouType {
 	}
 
 	/**
+	 * Returns a E.164 phone number value for the user's input.
+	 *
+	 * For example, for country `"US"` and input `"(222) 333-4444"`
+	 * it will return `"+12223334444"`.
+	 *
+	 * For international phone number input, it will also auto-correct
+	 * some minor errors such as using a national prefix when writing
+	 * an international phone number. For example, if the user inputs
+	 * `"+44 0 7400 000000"` then it will return an auto-corrected
+	 * `"+447400000000"` phone number value.
+	 *
+	 * Will return `undefined` if no digits have been input,
+	 * or when inputting a phone number in national format and no
+	 * default country or default "country calling code" have been set.
+	 *
+	 * @return {string} [value]
+	 */
+	getNumberValue() {
+		const {
+			digits,
+			callingCode,
+			country,
+			nationalSignificantNumber
+		} = this.state
+
+	 	// Will return `undefined` if no digits have been input.
+		if (!digits) {
+			return
+		}
+
+		if (this.isInternational()) {
+			if (callingCode) {
+				return '+' + callingCode + nationalSignificantNumber
+			} else {
+				return '+' + digits
+			}
+		} else {
+			if (country || callingCode) {
+				const callingCode_ = country ? this.metadata.countryCallingCode() : callingCode
+				return '+' + callingCode_ + nationalSignificantNumber
+			}
+		}
+	}
+
+	/**
 	 * Returns an instance of `PhoneNumber` class.
 	 * Will return `undefined` if no national (significant) number
 	 * digits have been entered so far, or if no `defaultCountry` has been
 	 * set and the user enters a phone number not in international format.
 	 */
 	getNumber() {
-		let {
+		const {
 			nationalSignificantNumber,
-			carrierCode
+			carrierCode,
+			callingCode
 		} = this.state
-		if (this.isInternational()) {
-			if (!this.state.callingCode) {
-				return
-			}
-		} else {
-			if (!this.state.country && !this.defaultCallingCode) {
-				return
-			}
-		}
+
+		// `this._getCountry()` is basically same as `this.state.country`
+		// with the only change that it return `undefined` in case of a
+		// "non-geographic" numbering plan instead of `"001"` "internal use" value.
+		const country = this._getCountry()
+
 		if (!nationalSignificantNumber) {
 			return
 		}
-		const countryCode = this.getCountry()
-		const callingCode = this.getCountryCallingCode() || this.defaultCallingCode
+
+		if (!country && !callingCode) {
+			return
+		}
+
 		const phoneNumber = new PhoneNumber(
-			countryCode || callingCode,
+			country || callingCode,
 			nationalSignificantNumber,
 			this.metadata.metadata
 		)
