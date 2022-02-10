@@ -67,6 +67,11 @@ And edit the README:
 
 This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
 
+1.9.48 / 06.02.2022
+==================
+
+* Merged a [pull request](https://gitlab.com/catamphetamine/libphonenumber-js/-/merge_requests/8) that [changed the declaration](https://github.com/catamphetamine/libphonenumber-js/issues/170#issuecomment-1030821520) of basic "string" types like `E164Number`, `NationalNumber`, `Extension`, etc.
+
 1.9.45 / xx.01.2022
 ==================
 

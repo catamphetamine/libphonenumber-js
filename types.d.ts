@@ -43,13 +43,13 @@ export type Examples = {
 export type NumberFormat = 'NATIONAL' | 'National' | 'INTERNATIONAL' | 'International' | 'E.164' | 'RFC3966' | 'IDD';
 export type NumberType = undefined | 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST' | 'VOIP' | 'PERSONAL_NUMBER' | 'PAGER' | 'UAN' | 'VOICEMAIL' | 'FIXED_LINE_OR_MOBILE' | 'FIXED_LINE' | 'MOBILE';
 
-// The rationale for the specific data types instead of just using `string`.
-// https://github.com/catamphetamine/libphonenumber-js/issues/170#issuecomment-363156068
-export interface E164Number extends String { }
-export interface NationalNumber extends String { }
-export interface Extension extends String { }
-export interface CarrierCode extends String { }
-export interface CountryCallingCode extends String { }
+type Tagged<A, T> = A & { __tag?: T };
+
+type E164Number = Tagged<string, "E164Number">;
+type NationalNumber = Tagged<string, "NationalNumber">;
+type Extension = Tagged<string, "Extension">;
+type CarrierCode = Tagged<string, "CarrierCode">;
+type CountryCallingCode = Tagged<string, "CountryCallingCode">;
 
 type FormatExtension = (formattedNumber: string, extension: Extension, metadata: MetadataJson) => string
 
