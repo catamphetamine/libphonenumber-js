@@ -1672,7 +1672,7 @@ Also Google sometimes (very rarely) updates their code:
 * [`AsYouTypeFormatter.java`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/AsYouTypeFormatter.java) — `AsYouType`
 * [`PhoneNumberMatcher.java`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) — `findPhoneNumbersInText()`
 
-The latest sync-up was on June 7th, 2021.
+The latest sync-up was on April 24th, 2022.
 
 ## Contributing
 

@@ -497,8 +497,8 @@ describe('as you type', () => {
 		// Mobile.
 		// `1` is prepended before area code to mobile numbers in international format.
 		asYouType.reset()
-		asYouType.input('+521331234567').should.equal('+52 13 3123 4567')
-		asYouType.getTemplate().should.equal('xxx xx xxxx xxxx')
+		asYouType.input('+521331234567').should.equal('+52 133 1234 567')
+		asYouType.getTemplate().should.equal('xxx xxx xxxx xxx')
 		// Google's `libphonenumber` seems to not able to format this type of number.
 		// https://issuetracker.google.com/issues/147938979
 		asYouType.input('8').should.equal('+52 133 1234 5678')

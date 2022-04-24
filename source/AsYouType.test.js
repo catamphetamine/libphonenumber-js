@@ -760,8 +760,8 @@ describe('AsYouType', () => {
 		// Mobile.
 		// `1` is prepended before area code to mobile numbers in international format.
 		asYouType.reset()
-		asYouType.input('+521331234567').should.equal('+52 13 3123 4567')
-		asYouType.getTemplate().should.equal('xxx xx xxxx xxxx')
+		asYouType.input('+521331234567').should.equal('+52 133 1234 567')
+		asYouType.getTemplate().should.equal('xxx xxx xxxx xxx')
 		// Google's `libphonenumber` seems to not able to format this type of number.
 		// https://issuetracker.google.com/issues/147938979
 		asYouType.input('8').should.equal('+52 133 1234 5678')
@@ -1313,6 +1313,22 @@ describe('AsYouType.getNumberValue()', () => {
 		expect(formatter.getNumberValue()).to.be.undefined
 		formatter.input('4')
 		expect(formatter.getNumberValue()).to.be.undefined
+	})
+
+	it('should not drop any input digits', () => {
+		// Test "+529011234567" number, proactively ensuring that no formatting is applied,
+		// where a format is chosen that would otherwise have led to some digits being dropped.
+		const formatter = new AsYouType('MX')
+		formatter.input('9').should.equal('9')
+		formatter.input('0').should.equal('90')
+		formatter.input('1').should.equal('901')
+		formatter.input('1').should.equal('901 1')
+		formatter.input('2').should.equal('901 12')
+		formatter.input('3').should.equal('901 123')
+		formatter.input('4').should.equal('901 123 4')
+		formatter.input('5').should.equal('901 123 45')
+		formatter.input('6').should.equal('901 123 456')
+		formatter.input('7').should.equal('901 123 4567')
 	})
 })
 

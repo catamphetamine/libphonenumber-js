@@ -39,8 +39,7 @@ export type Examples = {
   [country in CountryCode]: NationalNumber;
 };
 
-// 'National' and 'International' formats are deprecated.
-export type NumberFormat = 'NATIONAL' | 'National' | 'INTERNATIONAL' | 'International' | 'E.164' | 'RFC3966' | 'IDD';
+export type NumberFormat = 'NATIONAL' | 'INTERNATIONAL' | 'E.164' | 'RFC3966' | 'IDD';
 export type NumberType = undefined | 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST' | 'VOIP' | 'PERSONAL_NUMBER' | 'PAGER' | 'UAN' | 'VOICEMAIL' | 'FIXED_LINE_OR_MOBILE' | 'FIXED_LINE' | 'MOBILE';
 
 type Tagged<A, T> = A & { __tag?: T };

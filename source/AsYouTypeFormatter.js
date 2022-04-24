@@ -87,9 +87,13 @@ const CREATE_STANDALONE_DIGIT_PATTERN = SUPPORT_LEGACY_FORMATTING_PATTERNS && ((
 // `libphonenumber` code.
 //
 const NON_ALTERING_FORMAT_REG_EXP = new RegExp(
-	'^' +
 	'[' + VALID_PUNCTUATION + ']*' +
-	'(\\$\\d[' + VALID_PUNCTUATION + ']*)+' +
+	// Google developers say:
+	// "We require that the first matching group is present in the
+	//  output pattern to ensure no data is lost while formatting."
+	'\\$1' +
+	'[' + VALID_PUNCTUATION + ']*' +
+	'(\\$\\d[' + VALID_PUNCTUATION + ']*)*' +
 	'$'
 )
 

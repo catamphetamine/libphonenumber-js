@@ -69,4 +69,12 @@ describe('parsePhoneNumberFromString', () => {
 		testCorrectness('+1 (213) 373-4253', true)
 		testCorrectness(' +1 (213) 373-4253', false)
 	})
+
+	it('should not prematurely strip a possible national prefix from Chinese numbers', () => {
+		// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/57
+		const phoneNumber = parsePhoneNumberFromString('+86123456789')
+		phoneNumber.isPossible().should.equal(true)
+		phoneNumber.isValid().should.equal(false)
+		phoneNumber.nationalNumber.should.equal('123456789')
+	})
 })

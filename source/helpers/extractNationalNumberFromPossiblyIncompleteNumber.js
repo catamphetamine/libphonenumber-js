@@ -9,7 +9,7 @@
  * it will return `{ number: "3402345678" }`, because `340` area code is prepended.
  * @param {string} number — National number digits.
  * @param {object} metadata — Metadata with country selected.
- * @return {object} `{ nationalNumber: string, nationalPrefix: string? carrierCode: string? }`.
+ * @return {object} `{ nationalNumber: string, nationalPrefix: string? carrierCode: string? }`. Even if a national prefix was extracted, it's not necessarily present in the returned object, so don't rely on its presence in the returned object in order to find out whether a national prefix has been extracted or not.
  */
 export default function extractNationalNumberFromPossiblyIncompleteNumber(number, metadata) {
 	if (number && metadata.numberingPlan.nationalPrefixForParsing()) {
