@@ -80,7 +80,7 @@ export function isPossiblePhoneNumber(text: string, defaultCountry?: CountryCode
 export function validatePhoneNumberLength(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): ValidatePhoneNumberLengthResult | undefined;
 
 // `parse()` and `parseCustom` are deprecated.
-// Use `fparseNumber()` and `parseNumberCustom()` instead.
+// Use `parseNumber()` and `parseNumberCustom()` instead.
 export function parse(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber;
 
 export function parseNumber(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber | {};

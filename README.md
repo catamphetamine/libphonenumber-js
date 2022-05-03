@@ -1329,7 +1329,33 @@ This package currently [doesn't provide](https://gitlab.com/catamphetamine/libph
 
 ## Bug reporting
 
-When reporting an issue one must also provide a link to [Google's `libphonenumber` demo page](https://libphonenumber.appspot.com/) illustrating the expected behaviour. This includes validation, parsing, formatting and "as you type" formatting. For example, for an Australian number `438 331 999` Google's demo [outputs four sections](https://libphonenumber.appspot.com/phonenumberparser?number=438331999&country=AU) — "Parsing Result", "Validation Results", "Formatting Results" and "AsYouTypeFormatter Results". In a bug report, first describe the observed `libphonenumber-js` demo result and then Google's demo result (with a link to it) which must differ from the observed `libphonenumber-js` demo result. If the observed `libphonenumber-js` demo result is the same as Google's demo result and you don't agree with Google's demo result then create an issue in [Google's repo](https://github.com/googlei18n/libphonenumber).
+This library is a simpler rewrite of Google's [`libphonenumber`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/) library. Basically, it mimicks Google's library behavior. Hence, as long as this library's [demo page](https://catamphetamine.gitlab.io/libphonenumber-js/) and Google's library [demo page](https://libphonenumber.appspot.com/) exhibit the same behavior, it's not considered a bug.
+
+When reporting issues with:
+
+* Parsing
+* Validation
+* Formatting
+* "As You Type" formatting
+
+one must provide two links:
+
+* A link to the [demo page](https://catamphetamine.gitlab.io/libphonenumber-js/) illustrating the supposedly incorrect behavior.
+* A link to [Google's `libphonenumber` demo page](https://libphonenumber.appspot.com/) illustrating the expected behavior.
+
+Google's demo page [outputs four sections](https://libphonenumber.appspot.com/phonenumberparser?number=438331999&country=AU):
+* "Parsing Result"
+* "Validation Results"
+* "Formatting Results"
+* "AsYouTypeFormatter Results"
+
+Choose the relevant section of those four corresponding to the type of the bug you're reporting.
+
+In a bug report:
+
+* First, describe the observed `libphonenumber-js` demo result (and provide a link to it).
+* Second, describe the observed Google's demo result (and provide a link to it).
+* The described observed result of Google's demo must be different from the described observed result of `libphonenumber-js` demo, otherwise it's not considered a bug. If you don't agree with Google's demo result then create an issue in [Google's repo](https://github.com/google/libphonenumber/blob/master/CONTRIBUTING.md) instead. If they fix it in their library, I'll port the fix to this library.
 
 <!--
 Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#customizing-metadata) fed with `metadata.max.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.gitlab.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s.
@@ -1337,7 +1363,7 @@ Phone number validation bugs should **only** be reported if they appear when usi
 There is also a possibility of this library's demo metadata being outdated, or this library's metadata lagging behind Google's (I have to update it manually from time to time due to `ssh-agent` not working properly on Windows).
 -->
 
-When reporting `findPhoneNumbersInText()` bugs one should know that `findPhoneNumbersInText()` code was ported from [Google's Java code](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java). I didn't write it myself, I just ported it. Therefore, it is unlikely that anyone other than Google will be fixing such bugs.
+<!-- When reporting `findPhoneNumbersInText()` bugs, one should know that `findPhoneNumbersInText()` code was ported from [Google's Java code](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java). I didn't write it myself, I just ported it. Therefore, it is unlikely that anyone other than Google would fix any bugs. -->
 
 ## TypeScript
 

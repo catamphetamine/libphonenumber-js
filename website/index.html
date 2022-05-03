@@ -214,14 +214,27 @@
 			class Content extends React.Component {
 				constructor() {
 					super()
+					const { query } = parseLocationUrl(window.location.href)
 					this.state = {
-						parseCountry: 'US',
-						parseValue: '213-373-4253',
-						asYouTypeCountry: 'US',
-						asYouTypeValue: '', // '+12133734253',
-						findNumbersCountry: 'US',
-						findNumbersText: 'For more details call +7 (800) 555-35-35 internationally or reach the local US branch at (213) 373-4253 ext. 1234 for paid customer support.'
+						parseCountry: query.parseCountry || 'US',
+						parseValue: query.parseValue || '213-373-4253',
+						asYouTypeCountry: query.asYouTypeCountry || 'US',
+						asYouTypeValue: query.asYouTypeValue || '', // '+12133734253',
+						findNumbersCountry: query.findNumbersCountry || 'US',
+						findNumbersText: query.findNumbersText || 'For more details call +7 (800) 555-35-35 internationally or reach the local US branch at (213) 373-4253 ext. 1234 for paid customer support.'
 					}
+				}
+
+				// Update the URL.
+				componentDidUpdate() {
+					const createUrl = () => {
+						const location = parseLocationUrl(window.location.href)
+						return getLocationUrl({
+							...location,
+							query: this.state
+						})
+					}
+					window.history.replaceState({}, '', createUrl())
 				}
 
 				render()
@@ -261,12 +274,12 @@
 
 					return (
 						<div>
-							<h2>Parse</h2>
+							<h2 id="parse">Parse</h2>
 
 							<input
 								type="text"
 								value={this.state.parseCountry}
-								onChange={event => this.setState({ parseCountry: event.target.value.toUpperCase() })}
+								onChange={event => this.setState({ parseCountry: event.target.value.toUpperCase().trim() })}
 								style={{ width: '40px', marginRight: '10px' }}/>
 
 							<input
@@ -280,7 +293,7 @@
 								}
 							</div>
 
-							<h2>As you type</h2>
+							<h2 id="as-you-type">As you type</h2>
 
 							{/* type="tel" introduces bugs on Samsung Android phones */}
 							{/* https://github.com/catamphetamine/react-phone-number-input/issues/59 */}
@@ -322,7 +335,7 @@
 									<input
 										type="text"
 										value={this.state.asYouTypeCountry}
-										onChange={event => this.setState({ asYouTypeCountry: event.target.value.toUpperCase() })}
+										onChange={event => this.setState({ asYouTypeCountry: event.target.value.toUpperCase().trim() })}
 										style={{ width: '40px', marginLeft: '8px' }}/>
 								</div>
 
@@ -337,7 +350,7 @@
 								}
 							</div>
 
-							<h2>Find phone numbers</h2>
+							<h2 id="find-numbers">Find phone numbers</h2>
 
 							<div className="section">
 								<div className="section__line">
@@ -345,7 +358,7 @@
 									<input
 										type="text"
 										value={this.state.findNumbersCountry}
-										onChange={event => this.setState({ findNumbersCountry: event.target.value.toUpperCase() })}
+										onChange={event => this.setState({ findNumbersCountry: event.target.value.toUpperCase().trim() })}
 										style={{ width: '40px', marginLeft: '8px' }}/>
 								</div>
 							</div>
@@ -446,6 +459,104 @@
 			function strip_marks(html)
 			{
 				return html.replace(/<\/?mark>/g, '')
+			}
+
+			function parseLocationUrl(url) {
+			  let origin;
+			  let pathname;
+
+			  if (url[0] === '/') {
+			    origin = '';
+			    pathname = url;
+			  } else {
+			    const pathnameStartsAt = url.indexOf('/', url.indexOf('//') + '//'.length);
+
+			    if (pathnameStartsAt > 0) {
+			      origin = url.slice(0, pathnameStartsAt);
+			      pathname = url.slice(pathnameStartsAt);
+			    } else {
+			      origin = url;
+			      pathname = '/';
+			    }
+			  }
+
+			  let search = '';
+			  let hash = '';
+
+			  const searchIndex = pathname.indexOf('?');
+			  if (searchIndex >= 0) {
+			    search = pathname.slice(searchIndex);
+			    pathname = pathname.slice(0, searchIndex);
+			  }
+
+			  const hashIndex = search.indexOf('#');
+			  if (hashIndex >= 0) {
+			    hash = search.slice(hashIndex);
+			    search = search.slice(0, hashIndex);
+			  }
+
+			  const query = parseSearch(search || '?');
+
+			  return {
+			    origin,
+			    pathname,
+			    // search,
+			    query,
+			    hash
+			  };
+			}
+
+			function parseSearch(search) {
+			  search = search.slice('?'.length);
+			  // Return so that it doesn't return `{ '': undefined }`.
+			  if (search.length === 0) {
+			    return {};
+			  }
+			  const query = {};
+			  for (const part of search.split('&')) {
+			    let [key, value] = part.split('=');
+			    if (value) {
+			      key = decodeURIComponent(key);
+			      value = decodeURIComponent(value);
+			      query[key] = value;
+			    }
+			  }
+			  return query;
+			}
+
+			function getLocationUrl(location) {
+			  if (location.hasOwnProperty('search')) {
+			    throw new Error('A `location` argument having a `search` property was passed to `getLocationUrl()`. Instead of passing a `location` having a `search` string, pass a `location` having a `query` object.');
+			  }
+
+			  const origin = location.origin || '';
+			  const pathname = location.pathname;
+			  // `query` has higher priority than `search`.
+			  const search = stringifyLocationQuery(location.query || {});
+			  const hash = location.hash || '';
+
+			  return `${origin}${pathname}${search}${hash}`;
+			}
+
+			function stringifyLocationQuery(query) {
+			  let result = '';
+			  for (const key in query) {
+			    if (!isEmpty(query[key])) {
+			      if (result) {
+			        result += '&';
+			      } else {
+			        result += '?';
+			      }
+			      result += encodeURIComponent(key);
+			      result += '=';
+			      result += encodeURIComponent(query[key]);
+			    }
+			  }
+			  return result;
+			}
+
+			function isEmpty(value) {
+			  return value === undefined || value === null || value === '';
 			}
 		</script>
 	</body>
