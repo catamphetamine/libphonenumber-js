@@ -3,7 +3,7 @@
 // This file is deprecated.
 // It's only for backwards compatibility with Node.js versions < 14.
 
-var min = require('./min/index.commonjs.js')
+var min = require('./min/index.cjs')
 var metadata = require('./metadata.min.json')
 
 function withMetadata(func, _arguments) {
