@@ -1,5 +1,5 @@
-import Metadata from '../metadata'
-import matchesEntirely from './matchesEntirely'
+import Metadata from '../metadata.js'
+import matchesEntirely from './matchesEntirely.js'
 
 const NON_FIXED_LINE_PHONE_TYPES = [
 	'MOBILE',
@@ -50,9 +50,13 @@ export default function getNumberType(input, options, metadata)
 			return 'FIXED_LINE_OR_MOBILE'
 		}
 
-		// v1 metadata.
-		// Legacy.
-		// Deprecated.
+		// `MOBILE` type pattern isn't included if it matched `FIXED_LINE` one.
+		// For example, for "US" country.
+		// Old metadata (< `1.0.18`) had a specific "types" data structure
+		// that happened to be `undefined` for `MOBILE` in that case.
+		// Newer metadata (>= `1.0.18`) has another data structure that is
+		// not `undefined` for `MOBILE` in that case (it's just an empty array).
+		// So this `if` is just for backwards compatibility with old metadata.
 		if (!metadata.type('MOBILE')) {
 			return 'FIXED_LINE_OR_MOBILE'
 		}

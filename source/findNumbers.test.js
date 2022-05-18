@@ -1,4 +1,4 @@
-import findNumbers from './findNumbers'
+import findNumbers from './findNumbers.js'
 import metadata from '../metadata.max.json'
 
 describe('findNumbers', () => {

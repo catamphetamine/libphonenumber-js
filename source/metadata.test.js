@@ -1,6 +1,10 @@
 import metadata from '../metadata.min.json'
+import metadataV1 from '../test/metadata/1.0.0/metadata.min.json'
+import metadataV2 from '../test/metadata/1.1.11/metadata.min.json'
+import metadataV3 from '../test/metadata/1.7.34/metadata.min.json'
+import metadataV4 from '../test/metadata/1.7.37/metadata.min.json'
 
-import Metadata, { validateMetadata, getExtPrefix, isSupportedCountry } from './metadata'
+import Metadata, { validateMetadata, getExtPrefix, isSupportedCountry } from './metadata.js'
 
 describe('metadata', () => {
 	it('should return undefined for non-defined types', () => {
@@ -74,6 +78,83 @@ describe('metadata', () => {
 		thrower.should.throw('Got an object of shape')
 
 		validateMetadata({ country_calling_codes: {}, countries: {}, b: 3 })
+	})
+
+	it('should work around `nonGeographical` typo in metadata generated from `1.7.35` to `1.7.37`', function() {
+		const meta = new Metadata(metadataV4)
+		meta.selectNumberingPlan('888')
+		type(meta.nonGeographic()).should.equal('object')
+	})
+
+	it('should work around `nonGeographic` metadata not existing before `1.7.35`', function() {
+		const meta = new Metadata(metadataV3)
+		type(meta.getNumberingPlanMetadata('800')).should.equal('object')
+		type(meta.getNumberingPlanMetadata('000')).should.equal('undefined')
+	})
+
+	it('should work with metadata from version `1.1.11`', function() {
+		const meta = new Metadata(metadataV2)
+
+		meta.selectNumberingPlan('US')
+		meta.numberingPlan.possibleLengths().should.deep.equal([10])
+		meta.numberingPlan.formats().length.should.equal(1)
+		meta.numberingPlan.nationalPrefix().should.equal('1')
+		meta.numberingPlan.nationalPrefixForParsing().should.equal('1')
+		meta.numberingPlan.type('MOBILE').pattern().should.equal('')
+
+		meta.selectNumberingPlan('AG')
+		meta.numberingPlan.leadingDigits().should.equal('268')
+		// Should've been "268$1" but apparently there was a bug in metadata generator
+		// and no national prefix transform rules were written.
+		expect(meta.numberingPlan.nationalPrefixTransformRule()).to.be.null
+
+		meta.selectNumberingPlan('AF')
+		meta.numberingPlan.formats()[0].nationalPrefixFormattingRule().should.equal('0$1')
+
+		meta.selectNumberingPlan('RU')
+		meta.numberingPlan.formats()[0].nationalPrefixIsOptionalWhenFormattingInNationalFormat().should.equal(true)
+	})
+
+	it('should work with metadata from version `1.0.0`', function() {
+		const meta = new Metadata(metadataV1)
+
+		meta.selectNumberingPlan('US')
+		meta.numberingPlan.formats().length.should.equal(1)
+		meta.numberingPlan.nationalPrefix().should.equal('1')
+		meta.numberingPlan.nationalPrefixForParsing().should.equal('1')
+		type(meta.numberingPlan.type('MOBILE')).should.equal('undefined')
+
+		meta.selectNumberingPlan('AG')
+		meta.numberingPlan.leadingDigits().should.equal('268')
+		// Should've been "268$1" but apparently there was a bug in metadata generator
+		// and no national prefix transform rules were written.
+		expect(meta.numberingPlan.nationalPrefixTransformRule()).to.be.null
+
+		meta.selectNumberingPlan('AF')
+		meta.numberingPlan.formats()[0].nationalPrefixFormattingRule().should.equal('0$1')
+
+		meta.selectNumberingPlan('RU')
+		meta.numberingPlan.formats()[0].nationalPrefixIsOptionalWhenFormattingInNationalFormat().should.equal(true)
+	})
+
+	it('should work around "ext" data not present in metadata from version `1.0.0`', function() {
+		const meta = new Metadata(metadataV1)
+		meta.selectNumberingPlan('GB')
+		meta.ext().should.equal(' ext. ')
+
+		const metaNew = new Metadata(metadata)
+		metaNew.selectNumberingPlan('GB')
+		metaNew.ext().should.equal(' x')
+	})
+
+	it('should work around "default IDD prefix" data not present in metadata from version `1.0.0`', function() {
+		const meta = new Metadata(metadataV1)
+		meta.selectNumberingPlan('AU')
+		type(meta.defaultIDDPrefix()).should.equal('undefined')
+
+		const metaNew = new Metadata(metadata)
+		metaNew.selectNumberingPlan('AU')
+		metaNew.defaultIDDPrefix().should.equal('0011')
 	})
 })
 

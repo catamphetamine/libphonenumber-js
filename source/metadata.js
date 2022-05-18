@@ -1,4 +1,4 @@
-import compare from './tools/semver-compare'
+import compare from './tools/semver-compare.js'
 
 // Added "possibleLengths" and renamed
 // "country_phone_code_to_countries" to "country_calling_codes".
@@ -36,6 +36,7 @@ export default class Metadata {
 		if (this.v1 || this.v2 || this.v3) return
 		// `nonGeographical` was a typo.
 		// It's present in metadata generated from `1.7.35` to `1.7.37`.
+		// The test case could be found by searching for "nonGeographical".
 		return this.metadata.nonGeographic || this.metadata.nonGeographical
 	}
 
@@ -133,6 +134,10 @@ export default class Metadata {
 			}
 		} else {
 			// A hacky workaround for old custom metadata (generated before V4).
+			// In that metadata, there was no concept of "non-geographic" metadata
+			// so metadata for `001` country code was stored along with other countries.
+			// The test case can be found by searching for:
+			// "should work around `nonGeographic` metadata not existing".
 			const countryCodes = this.countryCallingCodes()[callingCode]
 			if (countryCodes && countryCodes.length === 1 && countryCodes[0] === '001') {
 				return this.metadata.countries['001']
@@ -253,7 +258,7 @@ class NumberingPlan {
 		return this.metadata[2]
 	}
 
-	// Is always present.
+	// "possible length" data is always present in Google's metadata.
 	possibleLengths() {
 		if (this.v1) return
 		return this.metadata[this.v2 ? 2 : 3]

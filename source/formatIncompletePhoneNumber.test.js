@@ -1,4 +1,4 @@
-import formatIncompletePhoneNumber from './formatIncompletePhoneNumber'
+import formatIncompletePhoneNumber from './formatIncompletePhoneNumber.js'
 
 import metadata from '../metadata.min.json'
 

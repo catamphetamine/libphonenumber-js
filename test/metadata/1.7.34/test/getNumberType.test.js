@@ -1,7 +1,7 @@
 import metadata from '../metadata.max.json'
-import Metadata from '../../../../source/metadata'
-import { checkNumberLengthForType } from '../../../../source/helpers/checkNumberLength'
-import _getNumberType from '../../../../source/getNumberType'
+import Metadata from '../../../../source/metadata.js'
+import { checkNumberLengthForType } from '../../../../source/helpers/checkNumberLength.js'
+import _getNumberType from '../../../../source/getNumberType.js'
 
 function getNumberType(...parameters) {
 	parameters.push(metadata)

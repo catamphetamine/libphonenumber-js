@@ -1,1 +1,0 @@
-export * from '../../metadata.mobile.json.js'

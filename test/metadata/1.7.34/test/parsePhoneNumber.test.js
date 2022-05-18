@@ -1,4 +1,4 @@
-import _parsePhoneNumber from '../../../../source/parsePhoneNumber'
+import _parsePhoneNumber from '../../../../source/parsePhoneNumber.js'
 import metadata from '../metadata.min.json'
 import metadataFull from '../metadata.max.json'
 

@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import _isValidNumber from './validate'
+import _isValidNumber from './validate.js'
 
 function isValidNumber(...parameters) {
 	parameters.push(metadata)

@@ -1,4 +1,4 @@
-import isViablePhoneNumber from './isViablePhoneNumber'
+import isViablePhoneNumber from './isViablePhoneNumber.js'
 
 // https://www.ietf.org/rfc/rfc3966.txt
 

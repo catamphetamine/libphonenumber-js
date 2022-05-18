@@ -1,4 +1,4 @@
-import PhoneNumber from './PhoneNumber'
+import PhoneNumber from './PhoneNumber.js'
 
 export default function getExampleNumber(country, examples, metadata) {
 	if (examples[country]) {

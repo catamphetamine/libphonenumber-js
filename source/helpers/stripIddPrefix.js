@@ -1,5 +1,5 @@
-import Metadata from '../metadata'
-import { VALID_DIGITS } from '../constants'
+import Metadata from '../metadata.js'
+import { VALID_DIGITS } from '../constants.js'
 
 const CAPTURING_DIGIT_PATTERN = new RegExp('([' + VALID_DIGITS + '])')
 

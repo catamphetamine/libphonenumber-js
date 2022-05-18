@@ -1,6 +1,6 @@
-var exec = require('./exec')
+import exec from './exec.js'
 
-module.exports = function()
+export default function()
 {
 	var metadata_changed = exec('git ls-files --modified PhoneNumberMetadata.xml')
 

@@ -1,5 +1,5 @@
-import { normalizeArguments } from './getNumberType'
-import _isPossibleNumber from './isPossibleNumber_'
+import { normalizeArguments } from './getNumberType.js'
+import _isPossibleNumber from './isPossibleNumber_.js'
 
 /**
  * Checks if a given phone number is possible.

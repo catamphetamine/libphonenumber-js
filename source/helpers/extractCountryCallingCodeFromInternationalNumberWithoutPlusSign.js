@@ -1,8 +1,8 @@
-import Metadata from '../metadata'
-import matchesEntirely from './matchesEntirely'
-import extractNationalNumber from './extractNationalNumber'
-import checkNumberLength from './checkNumberLength'
-import getCountryCallingCode from '../getCountryCallingCode'
+import Metadata from '../metadata.js'
+import matchesEntirely from './matchesEntirely.js'
+import extractNationalNumber from './extractNationalNumber.js'
+import checkNumberLength from './checkNumberLength.js'
+import getCountryCallingCode from '../getCountryCallingCode.js'
 
 /**
  * Sometimes some people incorrectly input international phone numbers

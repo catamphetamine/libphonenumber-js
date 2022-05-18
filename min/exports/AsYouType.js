@@ -1,5 +1,5 @@
-import metadata from '../metadata'
-import { AsYouType as _AsYouType } from '../../core/index'
+import metadata from '../metadata.js'
+import { AsYouType as _AsYouType } from '../../core/index.js'
 
 export function AsYouType(country) {
 	return _AsYouType.call(this, country, metadata)

@@ -1,6 +1,9 @@
 'use strict'
 
-var min = require('./min/index.commonjs')
+// This file is deprecated.
+// It's only for backwards compatibility with Node.js versions < 14.
+
+var min = require('./min/index.commonjs.js')
 var metadata = require('./metadata.min.json')
 
 function withMetadata(func, _arguments) {
@@ -31,39 +34,39 @@ exports.isPossiblePhoneNumber = min.isPossiblePhoneNumber
 exports.validatePhoneNumberLength = min.validatePhoneNumberLength
 
 // `parse()` and `parseNumber()` functions are deprecated.
-var parse_ = require('./build/parse').default
+var parse_ = require('./build/parse.js').default
 exports.parse = function parse() {
 	return withMetadata(parse_, arguments)
 }
 exports.parseNumber = exports.parse
 
 // `format()` and `formatNumber()` functions are deprecated.
-var format_ = require('./build/format').default
+var format_ = require('./build/format.js').default
 exports.format = function format() {
 	return withMetadata(format_, arguments)
 }
 exports.formatNumber = exports.format
 
 // Deprecated.
-var getNumberType_ = require('./build/getNumberType').default
+var getNumberType_ = require('./build/getNumberType.js').default
 exports.getNumberType = function getNumberType() {
 	return withMetadata(getNumberType_, arguments)
 }
 
 // Deprecated.
-var isPossibleNumber_ = require('./build/isPossibleNumber').default
+var isPossibleNumber_ = require('./build/isPossibleNumber.js').default
 exports.isPossibleNumber = function isPossibleNumber() {
 	return withMetadata(isPossibleNumber_, arguments)
 }
 
 // Deprecated.
-var isValidNumber_ = require('./build/validate').default
+var isValidNumber_ = require('./build/validate.js').default
 exports.isValidNumber = function isValidNumber() {
 	return withMetadata(isValidNumber_, arguments)
 }
 
 // Deprecated.
-var isValidNumberForRegion_ = require('./build/isValidNumberForRegion').default
+var isValidNumberForRegion_ = require('./build/isValidNumberForRegion.js').default
 exports.isValidNumberForRegion = function isValidNumberForRegion() {
 	return withMetadata(isValidNumberForRegion_, arguments)
 }
@@ -72,19 +75,19 @@ exports.getExampleNumber = min.getExampleNumber
 exports.Metadata = min.Metadata
 
 // Deprecated.
-var findPhoneNumbers_ = require('./build/findPhoneNumbers').default
+var findPhoneNumbers_ = require('./build/findPhoneNumbers.js').default
 exports.findPhoneNumbers = function findPhoneNumbers() {
 	return withMetadata(findPhoneNumbers_, arguments)
 }
 
 // Deprecated.
-var searchPhoneNumbers_ = require('./build/findPhoneNumbers').searchPhoneNumbers
+var searchPhoneNumbers_ = require('./build/findPhoneNumbers.js').searchPhoneNumbers
 exports.searchPhoneNumbers = function searchPhoneNumbers() {
 	return withMetadata(searchPhoneNumbers_, arguments)
 }
 
 // Deprecated.
-var PhoneNumberSearch_ = require('./build/findPhoneNumbers_').PhoneNumberSearch
+var PhoneNumberSearch_ = require('./build/findPhoneNumbers_.js').PhoneNumberSearch
 exports.PhoneNumberSearch = function PhoneNumberSearch(text, options) {
 	return PhoneNumberSearch_.call(this, text, options, metadata)
 }
@@ -112,7 +115,7 @@ exports.formatRFC3966 = min.formatRFC3966
 
 // Deprecated: `DIGITS` were used by `react-phone-number-input`.
 // Replaced by `parseDigits()`.
-exports.DIGITS = require('./build/helpers/parseDigits').DIGITS
+exports.DIGITS = require('./build/helpers/parseDigits.js').DIGITS
 exports.DIGIT_PLACEHOLDER = min.DIGIT_PLACEHOLDER
 
 // `getPhoneCode` name is deprecated

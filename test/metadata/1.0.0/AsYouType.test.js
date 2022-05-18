@@ -1,5 +1,5 @@
 import metadata from './metadata.min.json'
-import as_you_type_custom, { repeat } from '../../../source/AsYouType'
+import as_you_type_custom from '../../../source/AsYouType.js'
 
 class as_you_type extends as_you_type_custom
 {

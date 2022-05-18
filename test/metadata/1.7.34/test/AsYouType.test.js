@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import AsYouType_, { closeNonPairedParens, stripNonPairedParens, repeat } from '../../../../source/AsYouType'
+import AsYouType_ from '../../../../source/AsYouType.js'
 
 class AsYouType extends AsYouType_ {
 	constructor(country_code) {

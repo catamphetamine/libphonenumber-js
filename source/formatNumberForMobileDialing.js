@@ -4,11 +4,11 @@
 // Carriers codes aren't part of this library.
 // Send a PR if you want to add them.
 
-import Metadata from './metadata'
-import format from './format_'
-import getNumberType from './helpers/getNumberType'
-import checkNumberLength from './helpers/checkNumberLength'
-import getCountryCallingCode from './getCountryCallingCode'
+import Metadata from './metadata.js'
+import format from './format_.js'
+import getNumberType from './helpers/getNumberType.js'
+import checkNumberLength from './helpers/checkNumberLength.js'
+import getCountryCallingCode from './getCountryCallingCode.js'
 
 const REGION_CODE_FOR_NON_GEO_ENTITY = '001'
 

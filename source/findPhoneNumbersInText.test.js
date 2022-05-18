@@ -1,4 +1,4 @@
-import findPhoneNumbersInText from './findPhoneNumbersInText'
+import findPhoneNumbersInText from './findPhoneNumbersInText.js'
 import metadata from '../metadata.min.json'
 
 describe('findPhoneNumbersInText', () => {

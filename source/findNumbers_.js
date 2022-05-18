@@ -1,4 +1,4 @@
-import PhoneNumberMatcher from './PhoneNumberMatcher'
+import PhoneNumberMatcher from './PhoneNumberMatcher.js'
 
 export default function findNumbers(text, options, metadata) {
 	const matcher = new PhoneNumberMatcher(text, options, metadata)

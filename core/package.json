@@ -2,7 +2,15 @@
   "private": true,
   "name": "libphonenumber-js-core",
   "version": "1.0.0",
-  "main": "index.commonjs.js",
+  "main": "index.cjs",
   "module": "index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  },
   "sideEffects": false
 }

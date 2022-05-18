@@ -1,12 +1,12 @@
 // Copy-pasted from `PhoneNumberMatcher.js`.
 
-import { PLUS_CHARS } from '../constants'
-import { limit } from './util'
+import { PLUS_CHARS } from '../constants.js'
+import { limit } from './util.js'
 
 import {
 	isLatinLetter,
 	isInvalidPunctuationSymbol
-} from './utf-8'
+} from './utf-8.js'
 
 const OPENING_PARENS = '(\\[\uFF08\uFF3B'
 const CLOSING_PARENS = ')\\]\uFF09\uFF3D'

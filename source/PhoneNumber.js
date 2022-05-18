@@ -1,9 +1,9 @@
-import Metadata from './metadata'
-import isPossibleNumber from './isPossibleNumber_'
-import isValidNumber from './validate_'
-import isValidNumberForRegion from './isValidNumberForRegion_'
-import getNumberType from './helpers/getNumberType'
-import formatNumber from './format_'
+import Metadata from './metadata.js'
+import isPossibleNumber from './isPossibleNumber_.js'
+import isValidNumber from './validate_.js'
+import isValidNumberForRegion from './isValidNumberForRegion_.js'
+import getNumberType from './helpers/getNumberType.js'
+import formatNumber from './format_.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 

@@ -1,4 +1,4 @@
-import mergeArrays from './mergeArrays'
+import mergeArrays from './mergeArrays.js'
 
 export default function checkNumberLength(nationalNumber, metadata) {
 	return checkNumberLengthForType(nationalNumber, undefined, metadata)

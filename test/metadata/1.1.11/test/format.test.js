@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import formatter from '../../../../source/format'
+import formatter from '../../../../source/format.js'
 
 function format(...parameters)
 {

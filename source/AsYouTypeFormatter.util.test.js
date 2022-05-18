@@ -1,4 +1,4 @@
-import { closeNonPairedParens, stripNonPairedParens, repeat } from './AsYouTypeFormatter.util'
+import { closeNonPairedParens, stripNonPairedParens, repeat } from './AsYouTypeFormatter.util.js'
 
 describe('closeNonPairedParens', () => {
 	it('should close non-paired braces', () => {

@@ -1,14 +1,14 @@
-import extractCountryCallingCode from './helpers/extractCountryCallingCode'
-import extractCountryCallingCodeFromInternationalNumberWithoutPlusSign from './helpers/extractCountryCallingCodeFromInternationalNumberWithoutPlusSign'
-import extractNationalNumberFromPossiblyIncompleteNumber from './helpers/extractNationalNumberFromPossiblyIncompleteNumber'
-import stripIddPrefix from './helpers/stripIddPrefix'
-import parseDigits from './helpers/parseDigits'
+import extractCountryCallingCode from './helpers/extractCountryCallingCode.js'
+import extractCountryCallingCodeFromInternationalNumberWithoutPlusSign from './helpers/extractCountryCallingCodeFromInternationalNumberWithoutPlusSign.js'
+import extractNationalNumberFromPossiblyIncompleteNumber from './helpers/extractNationalNumberFromPossiblyIncompleteNumber.js'
+import stripIddPrefix from './helpers/stripIddPrefix.js'
+import parseDigits from './helpers/parseDigits.js'
 
 import {
 	VALID_DIGITS,
 	VALID_PUNCTUATION,
 	PLUS_CHARS
-} from './constants'
+} from './constants.js'
 
 const VALID_FORMATTED_PHONE_NUMBER_DIGITS_PART =
 	'[' +
@@ -126,7 +126,10 @@ export default class AsYouTypeParser {
 		// (but that is done later, not here)
 		if (!state.international) {
 			if (!this.hasExtractedNationalSignificantNumber) {
-				this.extractNationalSignificantNumber(state.getNationalDigits(), state.update)
+				this.extractNationalSignificantNumber(
+					state.getNationalDigits(),
+					(stateUpdate) => state.update(stateUpdate)
+				)
 			}
 		}
 	}
@@ -319,7 +322,7 @@ export default class AsYouTypeParser {
 		if (this.extractAnotherNationalSignificantNumber(
 			state.getNationalDigits(),
 			state.nationalSignificantNumber,
-			state.update
+			(stateUpdate) => state.update(stateUpdate)
 		)) {
 			return true
 		}
@@ -426,7 +429,10 @@ export default class AsYouTypeParser {
 			// for an international number if such number couldn't be formatted,
 			// but since it's already not able to be formatted,
 			// there won't be yet another retry, so also extract national prefix here.
-			this.extractNationalSignificantNumber(state.getNationalDigits(), state.update)
+			this.extractNationalSignificantNumber(
+				state.getNationalDigits(),
+				(stateUpdate) => state.update(stateUpdate)
+			)
 		}
 	}
 }

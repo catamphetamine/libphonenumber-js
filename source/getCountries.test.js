@@ -1,6 +1,6 @@
 import metadata from '../metadata.min.json'
 
-import getCountries from './getCountries'
+import getCountries from './getCountries.js'
 
 describe('getCountries', () => {
 	it('should get countries list', () => {

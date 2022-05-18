@@ -31,7 +31,9 @@ import parse, {
 
 	parseRFC3966,
 	formatRFC3966
-} from '../max/index'
+} from '../max/index.js'
+
+import Library from '../max/index.cjs'
 
 import examples from '../examples.mobile.json'
 
@@ -101,8 +103,6 @@ describe('exports/max', () => {
 	})
 
 	it('should export CommonJS', () => {
-		const Library = require('../max/index.commonjs')
-
 		expect(Library.ParseError).to.be.a('function')
 
 		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.

@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import PhoneNumber from './PhoneNumber'
+import PhoneNumber from './PhoneNumber.js'
 
 describe('PhoneNumber', () => {
 	it('should validate constructor arguments', () => {

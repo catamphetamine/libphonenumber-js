@@ -1,4 +1,4 @@
-import isValidNumber from './validate_'
+import isValidNumber from './validate_.js'
 
 /**
  * Checks if a given phone number is valid within a given region.

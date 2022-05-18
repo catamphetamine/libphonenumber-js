@@ -1,6 +1,6 @@
-import { withMetadata } from '../min/metadata'
+import { withMetadata } from '../min/metadata.js'
 
-import _isValidNumberForRegion from '../es6/isValidNumberForRegion'
+import _isValidNumberForRegion from '../es6/isValidNumberForRegion.js'
 
 export function isValidNumberForRegion() {
 	return withMetadata(_isValidNumberForRegion, arguments)

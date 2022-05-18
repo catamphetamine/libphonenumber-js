@@ -1,4 +1,4 @@
-import { parseDigit } from './helpers/parseDigits'
+import { parseDigit } from './helpers/parseDigits.js'
 
 /**
  * Parses phone number characters from a string.

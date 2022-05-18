@@ -1,4 +1,4 @@
-import findNumbers from '../../../../source/findNumbers'
+import findNumbers from '../../../../source/findNumbers.js'
 import metadata from '../metadata.min.json'
 
 describe('findNumbers', () => {

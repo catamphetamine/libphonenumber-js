@@ -1,6 +1,6 @@
 import metadata from '../metadata.min.json'
-import _parseNumber from './parse'
-import Metadata from './metadata'
+import _parseNumber from './parse.js'
+import Metadata from './metadata.js'
 
 function parseNumber(...parameters) {
 	parameters.push(metadata)

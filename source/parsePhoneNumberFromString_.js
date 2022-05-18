@@ -1,6 +1,6 @@
-import parsePhoneNumber from './parsePhoneNumber_'
-import ParseError from './ParseError'
-import { isSupportedCountry } from './metadata'
+import parsePhoneNumber from './parsePhoneNumber_.js'
+import ParseError from './ParseError.js'
+import { isSupportedCountry } from './metadata.js'
 
 export default function parsePhoneNumberFromString(text, options, metadata) {
 	// Validate `defaultCountry`.

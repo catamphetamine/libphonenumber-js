@@ -1,5 +1,5 @@
-import { withMetadata } from '../metadata'
-import { formatIncompletePhoneNumber as _formatIncompletePhoneNumber } from '../../core/index'
+import { withMetadata } from '../metadata.js'
+import { formatIncompletePhoneNumber as _formatIncompletePhoneNumber } from '../../core/index.js'
 
 export function formatIncompletePhoneNumber() {
 	return withMetadata(_formatIncompletePhoneNumber, arguments)

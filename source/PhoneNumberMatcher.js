@@ -4,22 +4,22 @@
  * Date: 08.03.2018.
  */
 
-import PhoneNumber from './PhoneNumber'
+import PhoneNumber from './PhoneNumber.js'
 
 import {
   MAX_LENGTH_FOR_NSN,
   MAX_LENGTH_COUNTRY_CODE,
   VALID_PUNCTUATION
-} from './constants'
+} from './constants.js'
 
-import createExtensionPattern from './helpers/extension/createExtensionPattern'
+import createExtensionPattern from './helpers/extension/createExtensionPattern.js'
 
-import RegExpCache from './findNumbers/RegExpCache'
+import RegExpCache from './findNumbers/RegExpCache.js'
 
 import {
 	limit,
 	trimAfterFirstMatch
-} from './findNumbers/util'
+} from './findNumbers/util.js'
 
 import {
 	_pL,
@@ -27,16 +27,16 @@ import {
 	pZ,
 	PZ,
 	pNd
-} from './findNumbers/utf-8'
+} from './findNumbers/utf-8.js'
 
-import Leniency from './findNumbers/Leniency'
-import parsePreCandidate from './findNumbers/parsePreCandidate'
-import isValidPreCandidate from './findNumbers/isValidPreCandidate'
-import isValidCandidate, { LEAD_CLASS } from './findNumbers/isValidCandidate'
+import Leniency from './findNumbers/Leniency.js'
+import parsePreCandidate from './findNumbers/parsePreCandidate.js'
+import isValidPreCandidate from './findNumbers/isValidPreCandidate.js'
+import isValidCandidate, { LEAD_CLASS } from './findNumbers/isValidCandidate.js'
 
-import { isSupportedCountry } from './metadata'
+import { isSupportedCountry } from './metadata.js'
 
-import parseNumber from './parse_'
+import parseNumber from './parse_.js'
 
 const EXTN_PATTERNS_FOR_MATCHING = createExtensionPattern('matching')
 
@@ -142,18 +142,6 @@ const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1
  */
 export default class PhoneNumberMatcher
 {
-  /** The iteration tristate. */
-  state = 'NOT_READY'
-
-  /** The next index to start searching at. Undefined in {@link State#DONE}. */
-  searchIndex = 0
-
-  // A cache for frequently used country-specific regular expressions. Set to 32 to cover ~2-3
-  // countries being used for the same doc with ~10 patterns for each country. Some pages will have
-  // a lot more countries in use, but typically fewer numbers for each so expanding the cache for
-  // that use-case won't have a lot of benefit.
-  regExpCache = new RegExpCache(32)
-
   /**
    * Creates a new instance. See the factory methods in {@link PhoneNumberUtil} on how to obtain a
    * new instance.
@@ -202,6 +190,19 @@ export default class PhoneNumberMatcher
 		this.maxTries = options.maxTries
 
 		this.PATTERN = new RegExp(PATTERN, 'ig')
+
+
+    /** The iteration tristate. */
+    this.state = 'NOT_READY'
+
+    /** The next index to start searching at. Undefined in {@link State#DONE}. */
+    this.searchIndex = 0
+
+    // A cache for frequently used country-specific regular expressions. Set to 32 to cover ~2-3
+    // countries being used for the same doc with ~10 patterns for each country. Some pages will have
+    // a lot more countries in use, but typically fewer numbers for each so expanding the cache for
+    // that use-case won't have a lot of benefit.
+    this.regExpCache = new RegExpCache(32)
   }
 
   /**

@@ -6,19 +6,19 @@ import {
 	closeNonPairedParens,
 	stripNonPairedParens,
 	populateTemplateWithDigits
-} from './AsYouTypeFormatter.util'
+} from './AsYouTypeFormatter.util.js'
 
 import formatCompleteNumber, {
 	canFormatCompleteNumber
-} from './AsYouTypeFormatter.complete'
+} from './AsYouTypeFormatter.complete.js'
 
-import PatternMatcher from './AsYouTypeFormatter.PatternMatcher'
+import PatternMatcher from './AsYouTypeFormatter.PatternMatcher.js'
 
-import parseDigits from './helpers/parseDigits'
-export { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter.util'
-import { FIRST_GROUP_PATTERN } from './helpers/formatNationalNumberUsingFormat'
-import { VALID_PUNCTUATION } from './constants'
-import applyInternationalSeparatorStyle from './helpers/applyInternationalSeparatorStyle'
+import parseDigits from './helpers/parseDigits.js'
+export { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter.util.js'
+import { FIRST_GROUP_PATTERN } from './helpers/formatNationalNumberUsingFormat.js'
+import { VALID_PUNCTUATION } from './constants.js'
+import applyInternationalSeparatorStyle from './helpers/applyInternationalSeparatorStyle.js'
 
 // Used in phone number format template creation.
 // Could be any digit, I guess.
@@ -161,11 +161,11 @@ export default class AsYouTypeFormatter {
 					format,
 					{
 						metadata: this.metadata,
-						shouldTryNationalPrefixFormattingRule: format => this.shouldTryNationalPrefixFormattingRule(format, {
+						shouldTryNationalPrefixFormattingRule: (format) => this.shouldTryNationalPrefixFormattingRule(format, {
 							international: state.international,
 							nationalPrefix: state.nationalPrefix
 						}),
-						getSeparatorAfterNationalPrefix: this.getSeparatorAfterNationalPrefix
+						getSeparatorAfterNationalPrefix: (format) => this.getSeparatorAfterNationalPrefix(format)
 					}
 				)
 				if (formattedCompleteNumber) {
@@ -283,6 +283,7 @@ export default class AsYouTypeFormatter {
 
 		// If this format is not restricted to a certain
 		// leading digits pattern then it fits.
+		// The test case could be found by searching for "leadingDigitsPatternsCount === 0".
 		if (leadingDigitsPatternsCount === 0) {
 			return true
 		}
@@ -353,6 +354,19 @@ export default class AsYouTypeFormatter {
 	chooseFormat(state) {
 		// When there are multiple available formats, the formatter uses the first
 		// format where a formatting template could be created.
+		//
+		// For some weird reason, `istanbul` says "else path not taken"
+		// for the `for of` line below. Supposedly that means that
+		// the loop doesn't ever go over the last element in the list.
+		// That's true because there always is `this.chosenFormat`
+		// when `this.matchingFormats` is non-empty.
+		// And, for some weird reason, it doesn't think that the case
+		// with empty `this.matchingFormats` qualifies for a valid "else" path.
+		// So simply muting this `istanbul` warning.
+		// It doesn't skip the contents of the `for of` loop,
+		// it just skips the `for of` line.
+		//
+		/* istanbul ignore next */
 		for (const format of this.matchingFormats.slice()) {
 			// If this format is currently being used
 			// and is still suitable, then stick to it.
@@ -434,7 +448,7 @@ export default class AsYouTypeFormatter {
 		}
 	}
 
-	getSeparatorAfterNationalPrefix = (format) => {
+	getSeparatorAfterNationalPrefix(format) {
 		// `US` metadata doesn't have a `national_prefix_formatting_rule`,
 		// so the `if` condition below doesn't apply to `US`,
 		// but in reality there shoudl be a separator
@@ -683,7 +697,7 @@ export default class AsYouTypeFormatter {
 		// 	.replace(new RegExp(DIGIT_PLACEHOLDER, 'g'), ' ')
 	}
 
-	shouldTryNationalPrefixFormattingRule = (format, { international, nationalPrefix }) => {
+	shouldTryNationalPrefixFormattingRule(format, { international, nationalPrefix }) {
 		if (format.nationalPrefixFormattingRule()) {
 			// In some countries, `national_prefix_formatting_rule` is `($1)`,
 			// so it applies even if the user hasn't input a national prefix.

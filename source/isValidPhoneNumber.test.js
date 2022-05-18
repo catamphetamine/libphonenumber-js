@@ -1,4 +1,4 @@
-import _isValidPhoneNumber from './isValidPhoneNumber'
+import _isValidPhoneNumber from './isValidPhoneNumber.js'
 import metadata from '../metadata.min.json'
 
 function isValidPhoneNumber(...parameters) {

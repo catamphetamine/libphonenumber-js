@@ -3,11 +3,11 @@
 //
 // https://github.com/googlei18n/libphonenumber/commits/master/javascript/i18n/phonenumbers/phonenumberutil.js
 
-import matchesEntirely from './helpers/matchesEntirely'
-import formatNationalNumberUsingFormat from './helpers/formatNationalNumberUsingFormat'
-import Metadata, { getCountryCallingCode } from './metadata'
-import getIddPrefix from './helpers/getIddPrefix'
-import { formatRFC3966 } from './helpers/RFC3966'
+import matchesEntirely from './helpers/matchesEntirely.js'
+import formatNationalNumberUsingFormat from './helpers/formatNationalNumberUsingFormat.js'
+import Metadata, { getCountryCallingCode } from './metadata.js'
+import getIddPrefix from './helpers/getIddPrefix.js'
+import { formatRFC3966 } from './helpers/RFC3966.js'
 
 const DEFAULT_OPTIONS = {
 	formatExtension: (formattedNumber, extension, metadata) => `${formattedNumber}${metadata.ext()}${extension}`
@@ -128,7 +128,9 @@ function formatNationalNumber(number, carrierCode, formatAs, metadata, options) 
 
 function chooseFormatForNumber(availableFormats, nationalNnumber) {
 	for (const format of availableFormats) {
-		// Validate leading digits
+		// Validate leading digits.
+		// The test case for "else path" could be found by searching for
+		// "format.leadingDigitsPatterns().length === 0".
 		if (format.leadingDigitsPatterns().length > 0) {
 			// The last leading_digits_pattern is used here, as it is the most detailed
 			const lastLeadingDigitsPattern = format.leadingDigitsPatterns()[format.leadingDigitsPatterns().length - 1]

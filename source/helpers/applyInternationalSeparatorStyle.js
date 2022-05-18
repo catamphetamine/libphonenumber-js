@@ -1,4 +1,4 @@
-import { VALID_PUNCTUATION } from '../constants'
+import { VALID_PUNCTUATION } from '../constants.js'
 
 // Removes brackets and replaces dashes with spaces.
 //

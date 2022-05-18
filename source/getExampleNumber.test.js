@@ -1,6 +1,6 @@
 import examples from '../examples.mobile.json'
 import metadata from '../metadata.min.json'
-import getExampleNumber from './getExampleNumber'
+import getExampleNumber from './getExampleNumber.js'
 
 describe('getExampleNumber', () => {
 	it('should get an example number', () => {

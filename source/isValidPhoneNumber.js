@@ -1,5 +1,5 @@
-import { normalizeArguments } from './parsePhoneNumber'
-import parsePhoneNumberFromString from './parsePhoneNumberFromString_'
+import { normalizeArguments } from './parsePhoneNumber.js'
+import parsePhoneNumberFromString from './parsePhoneNumberFromString_.js'
 
 export default function isValidPhoneNumber() {
 	let { text, options, metadata } = normalizeArguments(arguments)

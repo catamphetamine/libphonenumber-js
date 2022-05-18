@@ -1,4 +1,4 @@
-import PhoneNumberMatcher from './PhoneNumberMatcher'
+import PhoneNumberMatcher from './PhoneNumberMatcher.js'
 import metadata from '../metadata.min.json'
 
 function test(text, defaultCountry, expectedNumbers) {

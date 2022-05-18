@@ -1,5 +1,5 @@
-import _formatNumber from './format_'
-import parse from './parse_'
+import _formatNumber from './format_.js'
+import parse from './parse_.js'
 
 export default function formatNumber()
 {

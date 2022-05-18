@@ -1,4 +1,4 @@
-import AsYouType from './AsYouType'
+import AsYouType from './AsYouType.js'
 
 /**
  * Formats a (possibly incomplete) phone number.

@@ -1,4 +1,4 @@
-import matchesEntirely from './matchesEntirely'
+import matchesEntirely from './matchesEntirely.js'
 
 describe('matchesEntirely', () => {
 	it('should work in edge cases', () => {

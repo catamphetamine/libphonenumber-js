@@ -1,6 +1,6 @@
 import metadata from '../metadata.min.json'
 
-import Metadata, { validateMetadata } from '../../../../source/metadata'
+import Metadata, { validateMetadata } from '../../../../source/metadata.js'
 
 describe('metadata', () =>
 {

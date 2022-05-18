@@ -1,6 +1,6 @@
-import isViablePhoneNumber from './helpers/isViablePhoneNumber'
-import parseNumber from './parse_'
-import _isValidNumberForRegion from './isValidNumberForRegion_'
+import isViablePhoneNumber from './helpers/isViablePhoneNumber.js'
+import parseNumber from './parse_.js'
+import _isValidNumberForRegion from './isValidNumberForRegion_.js'
 
 export default function isValidNumberForRegion(number, country, metadata) {
 	if (typeof number !== 'string') {

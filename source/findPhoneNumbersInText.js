@@ -1,4 +1,4 @@
-import findNumbers from './findNumbers'
+import findNumbers from './findNumbers.js'
 
 export default function findPhoneNumbersInText(text, defaultCountry, options, metadata) {
 	const args = getArguments(defaultCountry, options, metadata)

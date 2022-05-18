@@ -6,15 +6,15 @@ import {
 	VALID_PUNCTUATION,
 	VALID_DIGITS,
 	WHITESPACE
-} from './constants'
+} from './constants.js'
 
-import parse from './parse_'
-import { VALID_PHONE_NUMBER_WITH_EXTENSION } from './helpers/isViablePhoneNumber'
-import createExtensionPattern from './helpers/extension/createExtensionPattern'
+import parse from './parse_.js'
+import { VALID_PHONE_NUMBER_WITH_EXTENSION } from './helpers/isViablePhoneNumber.js'
+import createExtensionPattern from './helpers/extension/createExtensionPattern.js'
 
-import parsePreCandidate from './findNumbers/parsePreCandidate'
-import isValidPreCandidate from './findNumbers/isValidPreCandidate'
-import isValidCandidate from './findNumbers/isValidCandidate'
+import parsePreCandidate from './findNumbers/parsePreCandidate.js'
+import isValidPreCandidate from './findNumbers/isValidPreCandidate.js'
+import isValidCandidate from './findNumbers/isValidCandidate.js'
 
 /**
  * Regexp of all possible ways to write extensions, for use when parsing. This
@@ -89,15 +89,15 @@ export function searchPhoneNumbers(text, options, metadata) {
  * @return {object} `{ ?number, ?startsAt, ?endsAt }`.
  */
 export class PhoneNumberSearch {
-	// Iteration tristate.
-	state = 'NOT_READY'
-
 	constructor(text, options, metadata) {
 		this.text = text
 		// If assigning the `{}` default value is moved to the arguments above,
 		// code coverage would decrease for some weird reason.
 		this.options = options || {}
 		this.metadata = metadata
+
+		// Iteration tristate.
+		this.state = 'NOT_READY'
 
 		this.regexp = new RegExp(VALID_PHONE_NUMBER_WITH_EXTENSION, 'ig')
 	}

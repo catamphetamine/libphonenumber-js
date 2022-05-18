@@ -1,8 +1,8 @@
-import { normalizeArguments } from './parsePhoneNumber'
-import parsePhoneNumber from './parsePhoneNumber_'
-import ParseError from './ParseError'
-import Metadata from './metadata'
-import checkNumberLength from './helpers/checkNumberLength'
+import { normalizeArguments } from './parsePhoneNumber.js'
+import parsePhoneNumber from './parsePhoneNumber_.js'
+import ParseError from './ParseError.js'
+import Metadata from './metadata.js'
+import checkNumberLength from './helpers/checkNumberLength.js'
 
 export default function validatePhoneNumberLength() {
 	let { text, options, metadata } = normalizeArguments(arguments)

@@ -1,4 +1,4 @@
-import parseIncompletePhoneNumber, { parsePhoneNumberCharacter } from './parseIncompletePhoneNumber'
+import parseIncompletePhoneNumber, { parsePhoneNumberCharacter } from './parseIncompletePhoneNumber.js'
 
 describe('parseIncompletePhoneNumber', () => {
 	it('should parse phone number character', () => {

@@ -1,6 +1,6 @@
 import metadata from '../metadata.max.json'
-import Metadata from './metadata'
-import _getNumberType from './getNumberType'
+import Metadata from './metadata.js'
+import _getNumberType from './getNumberType.js'
 
 function getNumberType(...parameters) {
 	parameters.push(metadata)

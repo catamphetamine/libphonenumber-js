@@ -1,5 +1,5 @@
-import _parseNumber from './parse_'
-import { normalizeArguments } from './parsePhoneNumber'
+import _parseNumber from './parse_.js'
+import { normalizeArguments } from './parsePhoneNumber.js'
 
 // `options`:
 //  {

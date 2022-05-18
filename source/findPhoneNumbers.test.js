@@ -1,8 +1,8 @@
 // This is a legacy function.
 // Use `findNumbers()` instead.
 
-import findNumbers, { searchPhoneNumbers } from './findPhoneNumbers'
-import { PhoneNumberSearch } from './findPhoneNumbers_'
+import findNumbers, { searchPhoneNumbers } from './findPhoneNumbers.js'
+import { PhoneNumberSearch } from './findPhoneNumbers_.js'
 import metadata from '../metadata.min.json'
 
 describe('findPhoneNumbers', () => {

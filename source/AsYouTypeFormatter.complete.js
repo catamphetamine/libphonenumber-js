@@ -1,6 +1,6 @@
-import checkNumberLength from './helpers/checkNumberLength'
-import parseDigits from './helpers/parseDigits'
-import formatNationalNumberUsingFormat from './helpers/formatNationalNumberUsingFormat'
+import checkNumberLength from './helpers/checkNumberLength.js'
+import parseDigits from './helpers/parseDigits.js'
+import formatNationalNumberUsingFormat from './helpers/formatNationalNumberUsingFormat.js'
 
 export default function formatCompleteNumber(state, format, {
 	metadata,

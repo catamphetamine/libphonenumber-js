@@ -1,4 +1,4 @@
-import parseDigits from './parseDigits'
+import parseDigits from './parseDigits.js'
 
 describe('parseDigits', () => {
 	it('should parse digits', () => {

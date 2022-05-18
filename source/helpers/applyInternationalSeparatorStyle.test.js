@@ -1,4 +1,4 @@
-import applyInternationalSeparatorStyle from './applyInternationalSeparatorStyle'
+import applyInternationalSeparatorStyle from './applyInternationalSeparatorStyle.js'
 
 describe('applyInternationalSeparatorStyle', () => {
 	it('should change Google\'s international format style', () => {

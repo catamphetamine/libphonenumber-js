@@ -22,7 +22,7 @@ export default class AsYouTypeState {
 		this.complexPrefixBeforeNationalSignificantNumber = undefined
 	}
 
-	update = (properties) => {
+	update(properties) {
 		for (const key of Object.keys(properties)) {
 			this[key] = properties[key]
 		}

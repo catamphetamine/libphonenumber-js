@@ -1,6 +1,6 @@
 import metadata from '../metadata.min.json'
 
-import getCountryCallingCode from '../../../../source/getCountryCallingCode'
+import getCountryCallingCode from '../../../../source/getCountryCallingCode.js'
 
 describe('getCountryCallingCode', () =>
 {

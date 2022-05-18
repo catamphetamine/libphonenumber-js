@@ -1,7 +1,7 @@
-import stripIddPrefix from './stripIddPrefix'
-import extractCountryCallingCodeFromInternationalNumberWithoutPlusSign from './extractCountryCallingCodeFromInternationalNumberWithoutPlusSign'
-import Metadata from '../metadata'
-import { MAX_LENGTH_COUNTRY_CODE } from '../constants'
+import stripIddPrefix from './stripIddPrefix.js'
+import extractCountryCallingCodeFromInternationalNumberWithoutPlusSign from './extractCountryCallingCodeFromInternationalNumberWithoutPlusSign.js'
+import Metadata from '../metadata.js'
+import { MAX_LENGTH_COUNTRY_CODE } from '../constants.js'
 
 /**
  * Converts a phone number digits (possibly with a `+`)

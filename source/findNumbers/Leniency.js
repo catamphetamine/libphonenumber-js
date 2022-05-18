@@ -1,10 +1,10 @@
-import isValidNumber from '../validate_'
-import parseDigits from '../helpers/parseDigits'
+import isValidNumber from '../validate_.js'
+import parseDigits from '../helpers/parseDigits.js'
 
 import {
 	startsWith,
 	endsWith
-} from './util'
+} from './util.js'
 
 /**
  * Leniency when finding potential phone numbers in text segments

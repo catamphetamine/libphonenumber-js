@@ -1,4 +1,4 @@
-import PatternMatcher from './AsYouTypeFormatter.PatternMatcher'
+import PatternMatcher from './AsYouTypeFormatter.PatternMatcher.js'
 
 describe('AsYouTypeFormatter.PatternMatcher', function() {
 	it('should throw when no pattern is passed', function() {

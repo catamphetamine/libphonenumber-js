@@ -1,33 +1,33 @@
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
-export { parsePhoneNumberWithError, parsePhoneNumberWithError as parsePhoneNumber } from './exports/parsePhoneNumberWithError'
+export { parsePhoneNumberWithError, parsePhoneNumberWithError as parsePhoneNumber } from './exports/parsePhoneNumberWithError.js'
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.
-export { parsePhoneNumberFromString, parsePhoneNumberFromString as default } from './exports/parsePhoneNumberFromString'
+export { parsePhoneNumberFromString, parsePhoneNumberFromString as default } from './exports/parsePhoneNumberFromString.js'
 
-export { isValidPhoneNumber } from './exports/isValidPhoneNumber'
-export { isPossiblePhoneNumber } from './exports/isPossiblePhoneNumber'
-export { validatePhoneNumberLength } from './exports/validatePhoneNumberLength'
+export { isValidPhoneNumber } from './exports/isValidPhoneNumber.js'
+export { isPossiblePhoneNumber } from './exports/isPossiblePhoneNumber.js'
+export { validatePhoneNumberLength } from './exports/validatePhoneNumberLength.js'
 
 // Deprecated.
-export { findNumbers } from './exports/findNumbers'
+export { findNumbers } from './exports/findNumbers.js'
 // Deprecated.
-export { searchNumbers } from './exports/searchNumbers'
+export { searchNumbers } from './exports/searchNumbers.js'
 
-export { findPhoneNumbersInText } from './exports/findPhoneNumbersInText'
-export { searchPhoneNumbersInText } from './exports/searchPhoneNumbersInText'
-export { PhoneNumberMatcher } from './exports/PhoneNumberMatcher'
+export { findPhoneNumbersInText } from './exports/findPhoneNumbersInText.js'
+export { searchPhoneNumbersInText } from './exports/searchPhoneNumbersInText.js'
+export { PhoneNumberMatcher } from './exports/PhoneNumberMatcher.js'
 
-export { AsYouType } from './exports/AsYouType'
+export { AsYouType } from './exports/AsYouType.js'
 
-export { isSupportedCountry } from './exports/isSupportedCountry'
-export { getCountries } from './exports/getCountries'
-export { getCountryCallingCode } from './exports/getCountryCallingCode'
-export { getExtPrefix } from './exports/getExtPrefix'
+export { isSupportedCountry } from './exports/isSupportedCountry.js'
+export { getCountries } from './exports/getCountries.js'
+export { getCountryCallingCode } from './exports/getCountryCallingCode.js'
+export { getExtPrefix } from './exports/getExtPrefix.js'
 
-export { Metadata } from './exports/Metadata'
-export { getExampleNumber } from './exports/getExampleNumber'
+export { Metadata } from './exports/Metadata.js'
+export { getExampleNumber } from './exports/getExampleNumber.js'
 
-export { formatIncompletePhoneNumber } from './exports/formatIncompletePhoneNumber'
+export { formatIncompletePhoneNumber } from './exports/formatIncompletePhoneNumber.js'
 
 export {
 	ParseError,
@@ -37,4 +37,4 @@ export {
 	parseRFC3966,
 	formatRFC3966,
 	DIGIT_PLACEHOLDER
-} from '../core/index'
+} from '../core/index.js'

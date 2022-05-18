@@ -1,4 +1,4 @@
-import stripIddPrefix from './stripIddPrefix'
+import stripIddPrefix from './stripIddPrefix.js'
 
 import metadata from '../../metadata.min.json'
 

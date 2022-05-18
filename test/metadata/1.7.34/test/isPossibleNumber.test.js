@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import _isPossibleNumber from '../../../../source/isPossibleNumber'
+import _isPossibleNumber from '../../../../source/isPossibleNumber.js'
 
 function isPossibleNumber(...parameters) {
 	parameters.push(metadata)

@@ -1,11 +1,9 @@
-import
-{
+import {
 	limit,
 	trimAfterFirstMatch,
 	startsWith,
 	endsWith
-}
-from './util'
+} from './util.js'
 
 describe('findNumbers/util', () =>
 {

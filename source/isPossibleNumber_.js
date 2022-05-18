@@ -1,5 +1,5 @@
-import Metadata from './metadata'
-import checkNumberLength from './helpers/checkNumberLength'
+import Metadata from './metadata.js'
+import checkNumberLength from './helpers/checkNumberLength.js'
 
 export default function isPossiblePhoneNumber(input, options, metadata) {
 	/* istanbul ignore if */
@@ -31,6 +31,7 @@ export default function isPossiblePhoneNumber(input, options, metadata) {
 		}
 	}
 
+	// Old metadata (< 1.0.18) had no "possible length" data.
 	if (metadata.possibleLengths()) {
 		return isPossibleNumber(input.phone || input.nationalNumber, metadata)
 	} else {

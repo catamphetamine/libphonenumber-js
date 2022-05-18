@@ -1,6 +1,6 @@
-var update_metadata = require('./modules/update-metadata')
-var commit          = require('./modules/commit')
-var exec            = require('./modules/exec')
+import update_metadata from './modules/update-metadata.js'
+import commit from './modules/commit.js'
+import exec from './modules/exec.js'
 
 if (update_metadata())
 {

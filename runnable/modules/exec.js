@@ -1,6 +1,6 @@
-var child_process = require('child_process')
+import child_process from 'child_process'
 
-module.exports = function exec(command)
+export default function exec(command)
 {
 	return child_process.execSync(command).toString().trim()
 }

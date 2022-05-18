@@ -1,4 +1,4 @@
-var exec = require('./modules/exec')
+import exec from './modules/exec.js'
 
 let metadata_branch_exists = false
 

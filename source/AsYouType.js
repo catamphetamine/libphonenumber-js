@@ -1,9 +1,9 @@
-import Metadata from './metadata'
-import PhoneNumber from './PhoneNumber'
-import AsYouTypeState from './AsYouTypeState'
-import AsYouTypeFormatter, { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter'
-import AsYouTypeParser, { extractFormattedDigitsAndPlus } from './AsYouTypeParser'
-import getCountryByCallingCode from './helpers/getCountryByCallingCode'
+import Metadata from './metadata.js'
+import PhoneNumber from './PhoneNumber.js'
+import AsYouTypeState from './AsYouTypeState.js'
+import AsYouTypeFormatter, { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter.js'
+import AsYouTypeParser, { extractFormattedDigitsAndPlus } from './AsYouTypeParser.js'
+import getCountryByCallingCode from './helpers/getCountryByCallingCode.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 

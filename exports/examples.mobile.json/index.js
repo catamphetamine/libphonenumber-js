@@ -1,1 +1,0 @@
-export * from '../../examples.mobile.json.js'

@@ -1,6 +1,6 @@
-var exec = require('./exec')
+import exec from './exec.js'
 
-module.exports = function()
+export default function()
 {
 	console.log()
 	console.log('========================================')

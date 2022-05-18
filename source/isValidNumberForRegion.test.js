@@ -1,6 +1,6 @@
 import metadata from '../metadata.min.json'
-import isValidNumberForRegionCustom from './isValidNumberForRegion'
-import _isValidNumberForRegion from './isValidNumberForRegion_'
+import isValidNumberForRegionCustom from './isValidNumberForRegion.js'
+import _isValidNumberForRegion from './isValidNumberForRegion_.js'
 
 function isValidNumberForRegion(...parameters) {
 	parameters.push(metadata)

@@ -1,5 +1,6 @@
-import _isPossiblePhoneNumber from './isPossiblePhoneNumber'
+import _isPossiblePhoneNumber from './isPossiblePhoneNumber.js'
 import metadata from '../metadata.min.json'
+import oldMetadata from '../test/metadata/1.0.0/metadata.min.json'
 
 function isPossiblePhoneNumber(...parameters) {
 	parameters.push(metadata)
@@ -16,5 +17,11 @@ describe('isPossiblePhoneNumber', () => {
 		isPossiblePhoneNumber('+7 1 (800) 555 35 35').should.equal(false)
 		isPossiblePhoneNumber(' +7 (800) 555 35 35').should.equal(false)
 		isPossiblePhoneNumber(' ').should.equal(false)
+	})
+
+	it('should detect whether a phone number is possible when using old metadata', () => {
+		expect(() => _isPossiblePhoneNumber('8 (800) 555 35 35', 'RU', oldMetadata))
+			.to.throw('Missing "possibleLengths" in metadata.')
+		_isPossiblePhoneNumber('+888 123 456 78901', oldMetadata).should.equal(true)
 	})
 })

@@ -1,4 +1,4 @@
-import searchNumbers from './searchNumbers'
+import searchNumbers from './searchNumbers.js'
 import metadata from '../metadata.min.json'
 
 describe('searchNumbers', () => {

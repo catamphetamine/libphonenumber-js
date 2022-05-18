@@ -2,8 +2,16 @@
   "private": true,
   "name": "libphonenumber-js-max",
   "version": "1.0.0",
-  "main": "index.commonjs.js",
+  "main": "index.cjs",
   "module": "index.js",
   "types": "../min/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "../min/index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  },
   "sideEffects": false
 }

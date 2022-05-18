@@ -67,6 +67,11 @@ And edit the README:
 
 This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
 
+1.10.0 / 18.05.2022
+==================
+
+* Migrated the library to use ["ES Modules" export](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/42). This shouldn't break anyone's code and it makes it more modern since people asked about this feature.
+
 1.9.48 / 06.02.2022
 ==================
 

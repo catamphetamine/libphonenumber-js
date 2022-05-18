@@ -1,5 +1,5 @@
-import Metadata from '../metadata'
-import getNumberType from './getNumberType'
+import Metadata from '../metadata.js'
+import getNumberType from './getNumberType.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 

@@ -1,4 +1,4 @@
-import _validatePhoneNumberLength from './validatePhoneNumberLength'
+import _validatePhoneNumberLength from './validatePhoneNumberLength.js'
 import metadata from '../metadata.min.json'
 
 function validatePhoneNumberLength(...parameters) {

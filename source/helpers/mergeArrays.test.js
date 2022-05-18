@@ -1,4 +1,4 @@
-import mergeArrays from './mergeArrays'
+import mergeArrays from './mergeArrays.js'
 
 describe('mergeArrays', () => {
 	it('should merge arrays', () => {

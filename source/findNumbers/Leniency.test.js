@@ -1,14 +1,8 @@
 /*
-import
-{
-	containsMoreThanOneSlashInNationalNumber
-}
-from './Leniency'
+import { containsMoreThanOneSlashInNationalNumber } from './Leniency.js'
 
-describe('Leniency', () =>
-{
-	it('testContainsMoreThanOneSlashInNationalNumber', () =>
-	{
+describe('Leniency', () => {
+	it('testContainsMoreThanOneSlashInNationalNumber', () => {
 		// A date should return true.
 		number.setCountryCode(1)
 		number.setCountryCodeSource(CountryCodeSource.FROM_DEFAULT_COUNTRY)

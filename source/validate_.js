@@ -1,6 +1,6 @@
-import Metadata from './metadata'
-import matchesEntirely from './helpers/matchesEntirely'
-import getNumberType from './helpers/getNumberType'
+import Metadata from './metadata.js'
+import matchesEntirely from './helpers/matchesEntirely.js'
+import getNumberType from './helpers/getNumberType.js'
 
 /**
  * Checks if a given phone number is valid.

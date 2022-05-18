@@ -1,6 +1,8 @@
+import Metadata from '../metadata.js'
 import metadata from '../../metadata.max.json'
-import Metadata from '../metadata'
-import { checkNumberLengthForType } from './checkNumberLength'
+import oldMetadata from '../../test/metadata/1.0.0/metadata.min.json'
+
+import { checkNumberLengthForType } from './checkNumberLength.js'
 
 describe('checkNumberLength', () => {
 	it('should check phone number length', () => {
@@ -22,6 +24,12 @@ describe('checkNumberLength', () => {
 		checkNumberLength('8123', 'FIXED_LINE_OR_MOBILE', 'TA').should.equal('IS_POSSIBLE')
 		// No "possible lengths" for "mobile".
 		checkNumberLength('81234567', 'FIXED_LINE_OR_MOBILE', 'SZ').should.equal('IS_POSSIBLE')
+	})
+
+	it('should work for old metadata', function() {
+		const _oldMetadata = new Metadata(oldMetadata)
+		_oldMetadata.country('RU')
+		checkNumberLengthForType('8005553535', 'FIXED_LINE', _oldMetadata).should.equal('IS_POSSIBLE')
 	})
 })
 

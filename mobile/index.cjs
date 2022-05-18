@@ -1,7 +1,7 @@
 'use strict'
 
-var metadata = require('../metadata.min.json')
-var core = require('../core/index.commonjs')
+var metadata = require('../metadata.mobile.json')
+var core = require('../core/index.cjs')
 
 function call(func, _arguments) {
 	var args = Array.prototype.slice.call(_arguments)
@@ -93,12 +93,6 @@ exports.getExtPrefix = function getExtPrefix(country) {
 exports.getExampleNumber = function getExampleNumber() {
 	return call(core.getExampleNumber, arguments)
 }
-
-exports.Metadata = function Metadata() {
-	return core.Metadata.call(this, metadata)
-}
-exports.Metadata.prototype = Object.create(core.Metadata.prototype, {})
-exports.Metadata.prototype.constructor = exports.Metadata
 
 exports.formatIncompletePhoneNumber = function formatIncompletePhoneNumber() {
 	return call(core.formatIncompletePhoneNumber, arguments)

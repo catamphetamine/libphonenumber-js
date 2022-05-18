@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import AsYouType_ from './AsYouType'
+import AsYouType_ from './AsYouType.js'
 
 class AsYouType extends AsYouType_ {
 	constructor(country_code) {
@@ -1329,6 +1329,13 @@ describe('AsYouType.getNumberValue()', () => {
 		formatter.input('5').should.equal('901 123 45')
 		formatter.input('6').should.equal('901 123 456')
 		formatter.input('7').should.equal('901 123 4567')
+	})
+
+	it('should work for formats with no leading digits (`leadingDigitsPatternsCount === 0`)', function() {
+		const formatter = new AsYouType({
+			defaultCallingCode: 888
+		})
+		formatter.input('1').should.equal('1')
 	})
 })
 

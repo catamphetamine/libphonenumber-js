@@ -1,4 +1,4 @@
-import semverCompare from './semver-compare'
+import semverCompare from './semver-compare.js'
 
 describe('semver-compare', () => {
 	it('should compare versions', () => {

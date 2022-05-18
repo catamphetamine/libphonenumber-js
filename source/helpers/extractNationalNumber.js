@@ -1,6 +1,6 @@
-import extractNationalNumberFromPossiblyIncompleteNumber from './extractNationalNumberFromPossiblyIncompleteNumber'
-import matchesEntirely from './matchesEntirely'
-import checkNumberLength from './checkNumberLength'
+import extractNationalNumberFromPossiblyIncompleteNumber from './extractNationalNumberFromPossiblyIncompleteNumber.js'
+import matchesEntirely from './matchesEntirely.js'
+import checkNumberLength from './checkNumberLength.js'
 
 /**
  * Strips national prefix and carrier code from a complete phone number.

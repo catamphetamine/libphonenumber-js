@@ -1,4 +1,4 @@
-import { trimAfterFirstMatch } from './util'
+import { trimAfterFirstMatch } from './util.js'
 
 // Regular expression of characters typically used to start a second phone number for the purposes
 // of parsing. This allows us to strip off parts of the number that are actually the start of

@@ -1,4 +1,4 @@
-import { parseRFC3966, formatRFC3966 } from './RFC3966'
+import { parseRFC3966, formatRFC3966 } from './RFC3966.js'
 
 describe('RFC3966', () => {
 	it('should format', () => {

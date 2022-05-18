@@ -1,6 +1,6 @@
-import Metadata from '../metadata'
+import Metadata from '../metadata.js'
 import metadata from '../../metadata.min.json'
-import extractNationalNumberFromPossiblyIncompleteNumber from './extractNationalNumberFromPossiblyIncompleteNumber'
+import extractNationalNumberFromPossiblyIncompleteNumber from './extractNationalNumberFromPossiblyIncompleteNumber.js'
 
 describe('extractNationalNumberFromPossiblyIncompleteNumber', () => {
 	it('should parse a carrier code when there is no national prefix transform rule', () => {

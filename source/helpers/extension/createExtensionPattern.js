@@ -1,4 +1,4 @@
-import { VALID_DIGITS } from '../../constants'
+import { VALID_DIGITS } from '../../constants.js'
 
 // The RFC 3966 format for extensions.
 const RFC3966_EXTN_PREFIX = ';ext='

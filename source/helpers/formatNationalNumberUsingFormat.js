@@ -1,4 +1,4 @@
-import applyInternationalSeparatorStyle from './applyInternationalSeparatorStyle'
+import applyInternationalSeparatorStyle from './applyInternationalSeparatorStyle.js'
 
 // This was originally set to $1 but there are some countries for which the
 // first group is not used in the national pattern (e.g. Argentina) so the $1

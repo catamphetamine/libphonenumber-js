@@ -3,9 +3,9 @@ import {
 	VALID_DIGITS,
 	VALID_PUNCTUATION,
 	PLUS_CHARS
-} from '../constants'
+} from '../constants.js'
 
-import createExtensionPattern from './extension/createExtensionPattern'
+import createExtensionPattern from './extension/createExtensionPattern.js'
 
 //  Regular expression of viable phone numbers. This is location independent.
 //  Checks we have at least three leading digits, and only valid punctuation,

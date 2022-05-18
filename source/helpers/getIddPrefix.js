@@ -1,4 +1,4 @@
-import Metadata from '../metadata'
+import Metadata from '../metadata.js'
 
 /**
  * Pattern that makes it easy to distinguish whether a region has a single

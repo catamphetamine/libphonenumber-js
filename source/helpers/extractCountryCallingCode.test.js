@@ -1,4 +1,4 @@
-import extractCountryCallingCode from './extractCountryCallingCode'
+import extractCountryCallingCode from './extractCountryCallingCode.js'
 import metadata from '../../metadata.min.json'
 
 describe('extractCountryCallingCode', () => {

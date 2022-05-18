@@ -1,4 +1,4 @@
-import parsePhoneNumber_ from './parsePhoneNumber_'
+import parsePhoneNumber_ from './parsePhoneNumber_.js'
 
 export default function parsePhoneNumber() {
 	const { text, options, metadata } = normalizeArguments(arguments)

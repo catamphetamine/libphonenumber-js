@@ -4,6 +4,12 @@ import fs from 'fs'
 
 import { version, generate, compress } from 'libphonenumber-metadata-generator'
 
+// https://ru.stackoverflow.com/questions/1281148/referenceerror-dirname-is-not-defined
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 // const REGION_CODE_FOR_NON_GEO_ENTITY = '001'
 
 const input = fs.readFileSync(path.join(__dirname, process.argv[2]), 'utf8')

@@ -1,4 +1,4 @@
-import LRUCache from './LRUCache'
+import LRUCache from './LRUCache.js'
 
 // A cache for frequently used country-specific regular expressions. Set to 32 to cover ~2-3
 // countries being used for the same doc with ~10 patterns for each country. Some pages will have

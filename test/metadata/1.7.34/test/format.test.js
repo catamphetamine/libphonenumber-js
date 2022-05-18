@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json'
-import _formatNumber from '../../../../source/format'
+import _formatNumber from '../../../../source/format.js'
 
 function formatNumber(...parameters) {
 	parameters.push(metadata)

@@ -1,5 +1,5 @@
-import { normalizeArguments } from './parsePhoneNumber'
-import parsePhoneNumberFromString_ from './parsePhoneNumberFromString_'
+import { normalizeArguments } from './parsePhoneNumber.js'
+import parsePhoneNumberFromString_ from './parsePhoneNumberFromString_.js'
 
 export default function parsePhoneNumberFromString() {
 	const { text, options, metadata } = normalizeArguments(arguments)

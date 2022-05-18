@@ -8,23 +8,23 @@ import {
 	PLUS_CHARS,
 	MIN_LENGTH_FOR_NSN,
 	MAX_LENGTH_FOR_NSN
-} from './constants'
+} from './constants.js'
 
-import ParseError from './ParseError'
-import Metadata from './metadata'
-import isViablePhoneNumber, { isViablePhoneNumberStart } from './helpers/isViablePhoneNumber'
-import extractExtension from './helpers/extension/extractExtension'
-import parseIncompletePhoneNumber from './parseIncompletePhoneNumber'
-import getCountryCallingCode from './getCountryCallingCode'
-import { isPossibleNumber } from './isPossibleNumber_'
-import { parseRFC3966 } from './helpers/RFC3966'
-import PhoneNumber from './PhoneNumber'
-import matchesEntirely from './helpers/matchesEntirely'
-import extractCountryCallingCode from './helpers/extractCountryCallingCode'
-import extractCountryCallingCodeFromInternationalNumberWithoutPlusSign from './helpers/extractCountryCallingCodeFromInternationalNumberWithoutPlusSign'
-import extractNationalNumber from './helpers/extractNationalNumber'
-import stripIddPrefix from './helpers/stripIddPrefix'
-import getCountryByCallingCode from './helpers/getCountryByCallingCode'
+import ParseError from './ParseError.js'
+import Metadata from './metadata.js'
+import isViablePhoneNumber, { isViablePhoneNumberStart } from './helpers/isViablePhoneNumber.js'
+import extractExtension from './helpers/extension/extractExtension.js'
+import parseIncompletePhoneNumber from './parseIncompletePhoneNumber.js'
+import getCountryCallingCode from './getCountryCallingCode.js'
+import { isPossibleNumber } from './isPossibleNumber_.js'
+import { parseRFC3966 } from './helpers/RFC3966.js'
+import PhoneNumber from './PhoneNumber.js'
+import matchesEntirely from './helpers/matchesEntirely.js'
+import extractCountryCallingCode from './helpers/extractCountryCallingCode.js'
+import extractCountryCallingCodeFromInternationalNumberWithoutPlusSign from './helpers/extractCountryCallingCodeFromInternationalNumberWithoutPlusSign.js'
+import extractNationalNumber from './helpers/extractNationalNumber.js'
+import stripIddPrefix from './helpers/stripIddPrefix.js'
+import getCountryByCallingCode from './helpers/getCountryByCallingCode.js'
 
 // We don't allow input strings for parsing to be longer than 250 chars.
 // This prevents malicious input from consuming CPU.

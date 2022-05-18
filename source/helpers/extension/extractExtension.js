@@ -1,4 +1,4 @@
-import createExtensionPattern from './createExtensionPattern'
+import createExtensionPattern from './createExtensionPattern.js'
 
 // Regexp of all known extension prefixes used by different regions followed by
 // 1 or more valid digits, for use when parsing.
