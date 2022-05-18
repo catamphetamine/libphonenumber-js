@@ -1,7 +1,10 @@
 'use strict'
 
 // This file is deprecated.
-// It's only for backwards compatibility with Node.js versions < 14.
+// It's the same as `index.cjs`, just with an added `.js` file extension.
+// It only exists for compatibility with the software that doesn't like `*.cjs` file extension.
+// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/62
+// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/61#note_950728292
 
 var min = require('./min/index.cjs')
 var metadata = require('./metadata.min.json')
