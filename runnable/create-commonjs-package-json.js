@@ -8,4 +8,4 @@ fs.writeFileSync('./build/package.json', JSON.stringify({
 	name: 'libphonenumber-js/build',
 	type: 'commonjs',
 	private: true
-}), 'utf8')
+}, null, 2), 'utf8')

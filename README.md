@@ -1742,9 +1742,35 @@ It will `build`, `test` and then create a `.tgz` archive which you can then inst
 npm install [module name with version].tar.gz
 ```
 
+## Tests
+
+This component comes with a 100% code coverage.
+
+To run tests:
+
+```
+npm test
+```
+
+To generate a code coverage report:
+
+```
+npm run test-coverage
+```
+
+The code coverage report can be viewed by opening `./coverage/lcov-report/index.html`.
+
 ## Advertisement
 
-If you're looking for an international "2 days ago" javascript solution then check out [`javascript-time-ago`](https://gitlab.com/catamphetamine/javascript-time-ago).
+If you like this library then you might also like:
+
+* [`react-phone-number-input`](https://npmjs.com/package/react-phone-number-input) — A `React` component for phone number input.
+* [`javascript-time-ago`](https://npmjs.com/package/javascript-time-ago) — An international human-readable past or future date formatter. Example: `"2 days ago"`.
+* [`react-time-ago`](https://npmjs.com/package/react-time-ago) — A `React` component for international human-readable formatting of past or future dates. Example: `"2 days ago"`.
+* [`read-excel-file`](https://www.npmjs.com/package/read-excel-file) — A simple and easy-to-use `*.xlsx` file reader (client-side or server-side).
+* [`write-excel-file`](https://www.npmjs.com/package/write-excel-file) — A simple and easy-to-use `*.xlsx` file writer (client-side or server-side).
+* [`flexible-json-schema`](https://www.npmjs.com/package/flexible-json-schema) — A simple and easy-to-use `*.json` schema data validator / parser.
+* [`virtual-scroller`](https://www.npmjs.com/package/virtual-scroller) — A universal implementation of a "virtual scroller" infinite list scrolling component: only renders the rows that fit the screen bounds.
 
 ## License
 
