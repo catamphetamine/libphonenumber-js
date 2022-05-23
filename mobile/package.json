@@ -1,7 +1,6 @@
 {
   "private": true,
-  "name": "libphonenumber-js-mobile",
-  "version": "1.0.0",
+  "name": "libphonenumber-js/mobile",
   "main": "index.cjs",
   "module": "index.js",
   "types": "../min/index.d.ts",

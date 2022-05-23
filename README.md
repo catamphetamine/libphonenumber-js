@@ -926,7 +926,7 @@ Although Google's javascript port doesn't have the `findPhoneNumbersInText()` fu
 Returns an example phone number for a [country](#country-code). Returns an instance of [`PhoneNumber`](#phonenumber) class. Will return `undefined` if `country` doesn't exist or isn't supported by this library.
 
 ```js
-import examples from 'libphonenumber-js/examples.mobile.json'
+import examples from 'libphonenumber-js/mobile/examples'
 import { getExampleNumber } from 'libphonenumber-js'
 
 const phoneNumber = getExampleNumber('RU', examples)
@@ -1456,9 +1456,9 @@ Using with custom metadata:
 ```js
 import { Metadata } from 'libphonenumber-js/core'
 
-import min from 'libphonenumber-js/metadata.min.json'
-// import max from 'libphonenumber-js/metadata.max.json'
-// import mobile from 'libphonenumber-js/metadata.mobile.json'
+import min from 'libphonenumber-js/min/metadata'
+// import max from 'libphonenumber-js/max/metadata'
+// import mobile from 'libphonenumber-js/mobile/metadata'
 
 const metadata = new Metadata(min)
 ```
@@ -1505,7 +1505,7 @@ import _parsePhoneNumber, {
   AsYouType as _AsYouType
 } from 'libphonenumber-js/core'
 
-import metadata from 'libphonenumber-js/metadata.max.json'
+import metadata from 'libphonenumber-js/max/metadata'
 
 function call(func, _arguments) {
   var args = Array.prototype.slice.call(_arguments)
@@ -1532,7 +1532,7 @@ And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) 
 
 ```js
 var core = require('libphonenumber-js/core')
-var metadata = require('libphonenumber-js/metadata.max.json')
+var metadata = require('libphonenumber-js/max/metadata')
 
 function call(func, _arguments) {
   var args = Array.prototype.slice.call(_arguments)
@@ -1579,7 +1579,7 @@ import {
   AsYouType
 } from 'libphonenumber-js/custom'
 
-import metadata from 'libphonenumber-js/metadata.max.json'
+import metadata from 'libphonenumber-js/max/metadata'
 
 parseNumber('+78005553535', metadata)
 formatNumber({ phone: '8005553535', country: 'RU' }, metadata)
@@ -1592,7 +1592,7 @@ And for [Common.js](https://auth0.com/blog/javascript-module-systems-showdown/) 
 
 ```js
 var custom = require('libphonenumber-js/custom')
-var metadata = require('libphonenumber-js/metadata.max.json')
+var metadata = require('libphonenumber-js/max/metadata')
 
 exports.parseNumber = function parseNumber() {
   var parameters = Array.prototype.slice.call(arguments)

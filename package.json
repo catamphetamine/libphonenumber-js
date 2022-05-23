@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.10.4",
+  "version": "1.10.5",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.cjs",
   "module": "index.js",
@@ -31,6 +31,11 @@
       "import": "./core/index.js",
       "require": "./core/index.cjs"
     },
+    "./min/metadata": {
+      "types": "./metadata.min.json.d.ts",
+      "import": "./metadata.min.json.js",
+      "require": "./metadata.min.json"
+    },
     "./metadata.min": {
       "types": "./metadata.min.json.d.ts",
       "import": "./metadata.min.json.js",
@@ -51,6 +56,11 @@
       "import": "./metadata.max.json.js",
       "require": "./metadata.max.json"
     },
+    "./max/metadata": {
+      "types": "./metadata.max.json.d.ts",
+      "import": "./metadata.max.json.js",
+      "require": "./metadata.max.json"
+    },
     "./metadata.max": {
       "types": "./metadata.max.json.d.ts",
       "import": "./metadata.max.json.js",
@@ -61,6 +71,11 @@
       "import": "./metadata.max.json.js",
       "require": "./metadata.max.json"
     },
+    "./mobile/metadata": {
+      "types": "./metadata.mobile.json.d.ts",
+      "import": "./metadata.mobile.json.js",
+      "require": "./metadata.mobile.json"
+    },
     "./metadata.mobile": {
       "types": "./metadata.mobile.json.d.ts",
       "import": "./metadata.mobile.json.js",
@@ -70,6 +85,11 @@
       "types": "./metadata.mobile.json.d.ts",
       "import": "./metadata.mobile.json.js",
       "require": "./metadata.mobile.json"
+    },
+    "./mobile/examples": {
+      "types": "./examples.mobile.json.d.ts",
+      "import": "./examples.mobile.json.js",
+      "require": "./examples.mobile.json"
     },
     "./examples.mobile": {
       "types": "./examples.mobile.json.d.ts",

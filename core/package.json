@@ -1,7 +1,6 @@
 {
   "private": true,
-  "name": "libphonenumber-js-core",
-  "version": "1.0.0",
+  "name": "libphonenumber-js/core",
   "main": "index.cjs",
   "module": "index.js",
   "type": "module",
