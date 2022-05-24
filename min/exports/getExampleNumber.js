@@ -1,6 +1,6 @@
-import { withMetadata } from '../metadata.js'
+import withMetadataArgument from './withMetadataArgument.js'
 import { getExampleNumber as _getExampleNumber } from '../../core/index.js'
 
 export function getExampleNumber() {
-	return withMetadata(_getExampleNumber, arguments)
+	return withMetadataArgument(_getExampleNumber, arguments)
 }

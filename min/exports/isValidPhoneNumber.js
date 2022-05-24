@@ -1,6 +1,6 @@
-import { withMetadata } from '../metadata.js'
+import withMetadataArgument from './withMetadataArgument.js'
 import { isValidPhoneNumber as _isValidPhoneNumber } from '../../core/index.js'
 
 export function isValidPhoneNumber() {
-	return withMetadata(_isValidPhoneNumber, arguments)
+	return withMetadataArgument(_isValidPhoneNumber, arguments)
 }

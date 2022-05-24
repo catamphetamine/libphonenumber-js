@@ -1,9 +1,9 @@
 // Deprecated.
 
-import { withMetadata } from '../min/metadata.js'
+import withMetadataArgument from '../min/exports/withMetadataArgument.js'
 
 import _isValidNumber from '../es6/validate.js'
 
 export function isValidNumber() {
-	return withMetadata(_isValidNumber, arguments)
+	return withMetadataArgument(_isValidNumber, arguments)
 }

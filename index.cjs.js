@@ -9,7 +9,7 @@
 var min = require('./min/index.cjs')
 var metadata = require('./metadata.min.json')
 
-function withMetadata(func, _arguments) {
+function withMetadataArgument(func, _arguments) {
 	var args = Array.prototype.slice.call(_arguments)
 	args.push(metadata)
 	return func.apply(this, args)
@@ -39,39 +39,39 @@ exports.validatePhoneNumberLength = min.validatePhoneNumberLength
 // `parse()` and `parseNumber()` functions are deprecated.
 var parse_ = require('./build/parse.js').default
 exports.parse = function parse() {
-	return withMetadata(parse_, arguments)
+	return withMetadataArgument(parse_, arguments)
 }
 exports.parseNumber = exports.parse
 
 // `format()` and `formatNumber()` functions are deprecated.
 var format_ = require('./build/format.js').default
 exports.format = function format() {
-	return withMetadata(format_, arguments)
+	return withMetadataArgument(format_, arguments)
 }
 exports.formatNumber = exports.format
 
 // Deprecated.
 var getNumberType_ = require('./build/getNumberType.js').default
 exports.getNumberType = function getNumberType() {
-	return withMetadata(getNumberType_, arguments)
+	return withMetadataArgument(getNumberType_, arguments)
 }
 
 // Deprecated.
 var isPossibleNumber_ = require('./build/isPossibleNumber.js').default
 exports.isPossibleNumber = function isPossibleNumber() {
-	return withMetadata(isPossibleNumber_, arguments)
+	return withMetadataArgument(isPossibleNumber_, arguments)
 }
 
 // Deprecated.
 var isValidNumber_ = require('./build/validate.js').default
 exports.isValidNumber = function isValidNumber() {
-	return withMetadata(isValidNumber_, arguments)
+	return withMetadataArgument(isValidNumber_, arguments)
 }
 
 // Deprecated.
 var isValidNumberForRegion_ = require('./build/isValidNumberForRegion.js').default
 exports.isValidNumberForRegion = function isValidNumberForRegion() {
-	return withMetadata(isValidNumberForRegion_, arguments)
+	return withMetadataArgument(isValidNumberForRegion_, arguments)
 }
 
 exports.getExampleNumber = min.getExampleNumber
@@ -80,13 +80,13 @@ exports.Metadata = min.Metadata
 // Deprecated.
 var findPhoneNumbers_ = require('./build/findPhoneNumbers.js').default
 exports.findPhoneNumbers = function findPhoneNumbers() {
-	return withMetadata(findPhoneNumbers_, arguments)
+	return withMetadataArgument(findPhoneNumbers_, arguments)
 }
 
 // Deprecated.
 var searchPhoneNumbers_ = require('./build/findPhoneNumbers.js').searchPhoneNumbers
 exports.searchPhoneNumbers = function searchPhoneNumbers() {
-	return withMetadata(searchPhoneNumbers_, arguments)
+	return withMetadataArgument(searchPhoneNumbers_, arguments)
 }
 
 // Deprecated.

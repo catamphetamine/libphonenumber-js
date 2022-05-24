@@ -51,7 +51,8 @@ npm-debug.log
 /bundle/input-format-react.min.js
 /bundle/input-format-react.min.js.map
 
-# intermediary metadata
+# "Intermediary" (non-compressed) metadata.
+# The npm package doesn't include it so that people don't attempt to use it directly.
 /metadata.json
 /PhoneNumberMetadata.xml
 

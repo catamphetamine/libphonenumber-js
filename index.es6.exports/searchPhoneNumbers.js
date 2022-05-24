@@ -1,7 +1,7 @@
-import { withMetadata } from '../min/metadata.js'
+import withMetadataArgument from '../min/exports/withMetadataArgument.js'
 
 import { searchPhoneNumbers as _searchPhoneNumbers } from '../es6/findPhoneNumbers.js'
 
 export function searchPhoneNumbers() {
-	return withMetadata(_searchPhoneNumbers, arguments)
+	return withMetadataArgument(_searchPhoneNumbers, arguments)
 }

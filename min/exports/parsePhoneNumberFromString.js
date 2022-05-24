@@ -1,6 +1,6 @@
-import { withMetadata } from '../metadata.js'
+import withMetadataArgument from './withMetadataArgument.js'
 import { parsePhoneNumberFromString as _parsePhoneNumberFromString } from '../../core/index.js'
 
 export function parsePhoneNumberFromString() {
-	return withMetadata(_parsePhoneNumberFromString, arguments)
+	return withMetadataArgument(_parsePhoneNumberFromString, arguments)
 }

@@ -1,6 +1,6 @@
-import { withMetadata } from '../metadata.js'
+import withMetadataArgument from './withMetadataArgument.js'
 import { searchNumbers as _searchNumbers } from '../../core/index.js'
 
 export function searchNumbers() {
-	return withMetadata(_searchNumbers, arguments)
+	return withMetadataArgument(_searchNumbers, arguments)
 }

@@ -1,4 +1,7 @@
-import metadata from '../metadata.js'
+// Importing from a ".js" file is a workaround for Node.js "ES Modules"
+// importing system which is even uncapable of importing "*.json" files.
+import metadata from '../../metadata.mobile.json.js'
+
 import { AsYouType as _AsYouType } from '../../core/index.js'
 
 export function AsYouType(country) {

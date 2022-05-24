@@ -1,6 +1,6 @@
-import { withMetadata } from '../metadata.js'
+import withMetadataArgument from './withMetadataArgument.js'
 import { getCountries as _getCountries } from '../../core/index.js'
 
 export function getCountries() {
-	return withMetadata(_getCountries, arguments)
+	return withMetadataArgument(_getCountries, arguments)
 }
