@@ -20,8 +20,10 @@ describe('AsYouType', () => {
 	it('should populate national number template (digit by digit)', () => {
 		const formatter = new AsYouType('US')
 		formatter.input('1')
-		formatter.formatter.template.should.equal('x (xxx) xxx-xxxx')
-		formatter.formatter.populatedNationalNumberTemplate.should.equal('1 (xxx) xxx-xxxx')
+		// formatter.formatter.template.should.equal('x (xxx) xxx-xxxx')
+		formatter.formatter.template.should.equal('x xxx-xxxx')
+		// formatter.formatter.populatedNationalNumberTemplate.should.equal('1 (xxx) xxx-xxxx')
+		formatter.formatter.populatedNationalNumberTemplate.should.equal('1 xxx-xxxx')
 		formatter.input('213')
 		formatter.formatter.populatedNationalNumberTemplate.should.equal('1 (213) xxx-xxxx')
 		formatter.input('3734253')
@@ -42,8 +44,10 @@ describe('AsYouType', () => {
 		formatter.input('1').should.equal('+1')
 		formatter.getTemplate().should.equal('xx')
 		// Hasn't started formatting the phone number using the template yet.
-		formatter.formatter.template.should.equal('xx xxx xxx xxxx')
-		formatter.formatter.populatedNationalNumberTemplate.should.equal('xxx xxx xxxx')
+		// formatter.formatter.template.should.equal('xx xxx xxx xxxx')
+		formatter.formatter.template.should.equal('xx xxx xxxx')
+		// formatter.formatter.populatedNationalNumberTemplate.should.equal('xxx xxx xxxx')
+		formatter.formatter.populatedNationalNumberTemplate.should.equal('xxx xxxx')
 		// Has some national number digits, starts formatting the phone number using the template.
 		formatter.input('213')
 		formatter.formatter.populatedNationalNumberTemplate.should.equal('213 xxx xxxx')
@@ -62,9 +66,11 @@ describe('AsYouType', () => {
 		expect(formatter.formatter.template).to.be.undefined
 		expect(formatter.formatter.populatedNationalNumberTemplate).to.be.undefined
 		formatter.input('1').should.equal('+1')
-		formatter.formatter.template.should.equal('xx xxx xxx xxxx')
+		// formatter.formatter.template.should.equal('xx xxx xxx xxxx')
+		formatter.formatter.template.should.equal('xx xxx xxxx')
 		// Hasn't yet started formatting the phone number using the template.
-		formatter.formatter.populatedNationalNumberTemplate.should.equal('xxx xxx xxxx')
+		// formatter.formatter.populatedNationalNumberTemplate.should.equal('xxx xxx xxxx')
+		formatter.formatter.populatedNationalNumberTemplate.should.equal('xxx xxxx')
 		// Has some national number digits, starts formatting the phone number using the template.
 		formatter.input('213')
 		formatter.formatter.populatedNationalNumberTemplate.should.equal('213 xxx xxxx')
@@ -1336,6 +1342,19 @@ describe('AsYouType.getNumberValue()', () => {
 			defaultCallingCode: 888
 		})
 		formatter.input('1').should.equal('1')
+	})
+
+	it('should work for SK phone numbers', function() {
+		// There was a bug: "leading digits" `"2"` matched "leading digits pattern" `"90"`.
+		// The incorrect `.match()` function result was `{ oveflow: true }`
+		// while it should've been `undefined`.
+		// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/66
+		const formatter = new AsYouType('SK')
+		formatter.input('090').should.equal('090')
+		formatter.reset()
+		formatter.input('080').should.equal('080')
+		formatter.reset()
+		formatter.input('059').should.equal('059')
 	})
 })
 

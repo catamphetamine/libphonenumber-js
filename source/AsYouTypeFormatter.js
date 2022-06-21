@@ -189,8 +189,10 @@ export default class AsYouTypeFormatter {
 	// Formats the next phone number digits.
 	formatNationalNumberWithNextDigits(nextDigits, state) {
 		const previouslyChosenFormat = this.chosenFormat
+
 		// Choose a format from the list of matching ones.
 		const newlyChosenFormat = this.chooseFormat(state)
+
 		if (newlyChosenFormat) {
 			if (newlyChosenFormat === previouslyChosenFormat) {
 				// If it can format the next (current) digits

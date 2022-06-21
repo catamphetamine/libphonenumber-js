@@ -1,3 +1,5 @@
+import PatternParser from './AsYouTypeFormatter.PatternParser.js'
+
 export default class PatternMatcher {
 	constructor(pattern) {
 		this.matchTree = new PatternParser().parse(pattern)
@@ -20,16 +22,21 @@ export default class PatternMatcher {
 	}
 }
 
+/**
+ * Matches `characters` against a pattern compiled into a `tree`.
+ * @param  {string[]} characters
+ * @param  {Tree} tree — A pattern compiled into a `tree`. See the `*.d.ts` file for the description of the `tree` structure.
+ * @param  {boolean} last — Whether it's the last (rightmost) subtree on its level of the match tree.
+ * @return {object} See the `*.d.ts` file for the description of the result object.
+ */
 function match(characters, tree, last) {
+	// If `tree` is a string, then `tree` is a single character.
+	// That's because when a pattern is parsed, multi-character-string parts
+	// of a pattern are compiled into arrays of single characters.
+	// I still wrote this piece of code for a "general" hypothetical case
+	// when `tree` could be a string of several characters, even though
+	// such case is not possible with the current implementation.
 	if (typeof tree === 'string') {
-		if (last) {
-			// `tree` is always a single character.
-			if (characters.length > tree.length) {
-				return {
-					overflow: true
-				}
-			}
-		}
 		const characterString = characters.join('')
 		if (tree.indexOf(characterString) === 0) {
 			// `tree` is always a single character.
@@ -52,6 +59,21 @@ function match(characters, tree, last) {
 			}
 		}
 		if (characterString.indexOf(tree) === 0) {
+			if (last) {
+				// The `else` path is not possible because `tree` is always a single character.
+				// The `else` case for `characters.length > tree.length` would be
+				// `characters.length <= tree.length` which means `characters.length <= 1`.
+				// `characters` array can't be empty, so that means `characters === [tree]`,
+				// which would also mean `tree.indexOf(characterString) === 0` and that'd mean
+				// that the `if (tree.indexOf(characterString) === 0)` condition before this
+				// `if` condition would be entered, and returned from there, not reaching this code.
+				/* istanbul ignore else */
+				if (characters.length > tree.length) {
+					return {
+						overflow: true
+					}
+				}
+			}
 			return {
 				match: true,
 				matchedChars: characters.slice(0, tree.length)
@@ -172,202 +194,4 @@ function match(characters, tree, last) {
 		default:
 			throw new Error(`Unsupported instruction tree: ${tree}`)
 	}
-}
-
-const OPERATOR = new RegExp(
-	// any of:
-	'(' +
-		// or operator
-		'\\|' +
-		// or
-		'|' +
-		// or group start
-		'\\(\\?\\:' +
-		// or
-		'|' +
-		// or group end
-		'\\)' +
-		// or
-		'|' +
-		// one-of set start
-		'\\[' +
-		// or
-		'|' +
-		// one-of set end
-		'\\]' +
-	')'
-)
-
-const ILLEGAL_CHARACTER_REGEXP = /[\(\)\[\]\?\:\|]/
-
-class PatternParser {
-	parse(pattern) {
-		this.context = [{
-			or: true,
-			instructions: []
-		}]
-
-		this.parsePattern(pattern)
-
-		if (this.context.length !== 1) {
-			throw new Error('Non-finalized contexts left when pattern parse ended')
-		}
-
-		const { branches, instructions } = this.context[0]
-
-		if (branches) {
-			return [{
-				op: '|',
-				args: branches.concat([instructions])
-			}]
-		}
-
-		/* istanbul ignore if */
-		if (instructions.length === 0) {
-			throw new Error('Pattern is required')
-		}
-
-		return instructions
-	}
-
-	startContext(context) {
-		this.context.push(context)
-	}
-
-	endContext() {
-		this.context.pop()
-	}
-
-	getContext() {
-		return this.context[this.context.length - 1]
-	}
-
-	parsePattern(pattern) {
-		if (!pattern) {
-			throw new Error('Pattern is required')
-		}
-
-		const match = pattern.match(OPERATOR)
-		if (!match) {
-			if (ILLEGAL_CHARACTER_REGEXP.test(pattern)) {
-				throw new Error(`Illegal characters found in a pattern: ${pattern}`)
-			}
-			this.getContext().instructions = this.getContext().instructions.concat(
-				pattern.split('')
-			)
-			return
-		}
-
-		const operator = match[1]
-		const before = pattern.slice(0, match.index)
-		const rightPart = pattern.slice(match.index + operator.length)
-
-		switch (operator) {
-			case '(?:':
-				if (before) {
-					this.parsePattern(before)
-				}
-				this.startContext({
-					or: true,
-					instructions: [],
-					branches: []
-				})
-				break
-
-			case ')':
-				if (!this.getContext().or) {
-					throw new Error('")" operator must be preceded by "(?:" operator')
-				}
-				if (before) {
-					this.parsePattern(before)
-				}
-				if (this.getContext().instructions.length === 0) {
-					throw new Error('No instructions found after "|" operator in an "or" group')
-				}
-				const { branches } = this.getContext()
-				branches.push(
-					this.getContext().instructions
-				)
-				this.endContext()
-				this.getContext().instructions.push({
-					op: '|',
-					args: branches
-				})
-				break
-
-			case '|':
-				if (!this.getContext().or) {
-					throw new Error('"|" operator can only be used inside "or" groups')
-				}
-				if (before) {
-					this.parsePattern(before)
-				}
-				// The top-level is an implicit "or" group, if required.
-				if (!this.getContext().branches) {
-					// `branches` are not defined only for the root implicit "or" operator.
-					/* istanbul ignore else */
-					if (this.context.length === 1) {
-						this.getContext().branches = []
-					} else {
-						throw new Error('"branches" not found in an "or" group context')
-					}
-				}
-				this.getContext().branches.push(
-					this.getContext().instructions
-				)
-				this.getContext().instructions = []
-				break
-
-			case '[':
-				if (before) {
-					this.parsePattern(before)
-				}
-				this.startContext({
-					oneOfSet: true
-				})
-				break
-
-			case ']':
-				if (!this.getContext().oneOfSet) {
-					throw new Error('"]" operator must be preceded by "[" operator')
-				}
-				this.endContext()
-				this.getContext().instructions.push({
-					op: '[]',
-					args: parseOneOfSet(before)
-				})
-				break
-
-			/* istanbul ignore next */
-			default:
-				throw new Error(`Unknown operator: ${operator}`)
-		}
-
-		if (rightPart) {
-			this.parsePattern(rightPart)
-		}
-	}
-}
-
-function parseOneOfSet(pattern) {
-	const values = []
-	let i = 0
-	while (i < pattern.length) {
-		if (pattern[i] === '-') {
-			if (i === 0 || i === pattern.length - 1) {
-				throw new Error(`Couldn't parse a one-of set pattern: ${pattern}`)
-			}
-			const prevValue = pattern[i - 1].charCodeAt(0) + 1
-			const nextValue = pattern[i + 1].charCodeAt(0) - 1
-			let value = prevValue
-			while (value <= nextValue) {
-				values.push(String.fromCharCode(value))
-				value++
-			}
-		} else {
-			values.push(pattern[i])
-		}
-		i++
-	}
-	return values
 }
