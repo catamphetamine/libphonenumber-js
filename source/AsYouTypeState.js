@@ -40,16 +40,16 @@ export default class AsYouTypeState {
 
 	setCallingCode(callingCode) {
 		this.callingCode = callingCode
-		return this.onCallingCodeChange(this.country, callingCode)
+		this.onCallingCodeChange(callingCode, this.country)
 	}
 
-	startInternationalNumber() {
+	startInternationalNumber(country, callingCode) {
 		// Prepend the `+` to parsed input.
 		this.international = true
 		// If a default country was set then reset it
 		// because an explicitly international phone
 		// number is being entered.
-		this.initCountryAndCallingCode()
+		this.initCountryAndCallingCode(country, callingCode)
 	}
 
 	appendDigits(nextDigits) {

@@ -385,7 +385,10 @@ export default class AsYouTypeParser {
 			state.update({
 				IDDPrefix: digits.slice(0, digits.length - numberWithoutIDD.length)
 			})
-			this.startInternationalNumber(state)
+			this.startInternationalNumber(state, {
+				country: undefined,
+				callingCode: undefined
+			})
 			return true
 		}
 	}
@@ -405,14 +408,17 @@ export default class AsYouTypeParser {
 				state.update({
 					missingPlus: true
 				})
-				this.startInternationalNumber(state)
+				this.startInternationalNumber(state, {
+					country: state.country,
+					callingCode: newCallingCode
+				})
 				return true
 			}
 		}
 	}
 
-	startInternationalNumber(state) {
-		state.startInternationalNumber()
+	startInternationalNumber(state, { country, callingCode }) {
+		state.startInternationalNumber(country, callingCode)
 		// If a national (significant) number has been extracted before, reset it.
 		if (state.nationalSignificantNumber) {
 			state.resetNationalSignificantNumber()

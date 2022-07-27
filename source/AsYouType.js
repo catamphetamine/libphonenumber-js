@@ -97,7 +97,7 @@ export default class AsYouType {
 				// with the old versions.
 				this.country = country
 			},
-			onCallingCodeChange: (country, callingCode) => {
+			onCallingCodeChange: (callingCode, country) => {
 				this.metadata.selectNumberingPlan(country, callingCode)
 				this.formatter.reset(this.metadata.numberingPlan, this.state)
 				this.parser.reset(this.metadata.numberingPlan)

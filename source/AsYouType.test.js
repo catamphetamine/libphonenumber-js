@@ -1356,6 +1356,13 @@ describe('AsYouType.getNumberValue()', () => {
 		formatter.reset()
 		formatter.input('059').should.equal('059')
 	})
+
+	it('should work for SK phone numbers (2)', function() {
+		// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/69
+		const formatter = new AsYouType('SK')
+		formatter.input('421901222333').should.equal('421 901 222 333')
+		formatter.getTemplate().should.equal('xxx xxx xxx xxx')
+	})
 })
 
 function type(something) {
