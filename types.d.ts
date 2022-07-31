@@ -24,7 +24,7 @@ export type Countries = {
   // `in` operator docs:
   // https://www.typescriptlang.org/docs/handbook/advanced-types.html#mapped-types
   // `country in CountryCode` means "for each and every CountryCode".
-  [country in CountryCode]: any[];
+  [country in CountryCode]?: any[];
 };
 
 export type MetadataJson = {
