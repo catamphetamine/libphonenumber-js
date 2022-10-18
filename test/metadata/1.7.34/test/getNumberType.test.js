@@ -1,4 +1,4 @@
-import metadata from '../metadata.max.json'
+import metadata from '../metadata.max.json' assert { type: 'json' }
 import Metadata from '../../../../source/metadata.js'
 import { checkNumberLengthForType } from '../../../../source/helpers/checkNumberLength.js'
 import _getNumberType from '../../../../source/getNumberType.js'

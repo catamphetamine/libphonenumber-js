@@ -1,5 +1,5 @@
 import _validatePhoneNumberLength from './validatePhoneNumberLength.js'
-import metadata from '../metadata.min.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
 
 function validatePhoneNumberLength(...parameters) {
 	parameters.push(metadata)

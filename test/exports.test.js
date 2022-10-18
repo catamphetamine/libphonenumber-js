@@ -69,8 +69,8 @@ from '../index.js'
 
 import Library from '../index.cjs'
 
-import metadata from '../metadata.min.json'
-import examples from '../examples.mobile.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
+import examples from '../examples.mobile.json' assert { type: 'json' }
 
 describe(`exports`, () => {
 	it(`should export ES6`, () => {

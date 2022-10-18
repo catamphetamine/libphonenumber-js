@@ -35,7 +35,7 @@ import parse, {
 
 import Library from '../min/index.cjs'
 
-import examples from '../examples.mobile.json'
+import examples from '../examples.mobile.json' assert { type: 'json' }
 
 describe('exports/min', () => {
 	it('should export ES6', () => {

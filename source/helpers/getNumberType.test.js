@@ -1,6 +1,6 @@
 import getNumberType from './getNumberType.js'
 
-import oldMetadata from '../../test/metadata/1.0.0/metadata.min.json'
+import oldMetadata from '../../test/metadata/1.0.0/metadata.min.json' assert { type: 'json' }
 
 import Metadata from '../metadata.js'
 

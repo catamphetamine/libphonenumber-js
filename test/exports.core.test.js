@@ -35,8 +35,8 @@ import parse, {
 
 import Library from '../core/index.cjs'
 
-import metadata from '../metadata.min.json'
-import examples from '../examples.mobile.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
+import examples from '../examples.mobile.json' assert { type: 'json' }
 
 describe('exports/core', () => {
 	it('should export ES6', () => {

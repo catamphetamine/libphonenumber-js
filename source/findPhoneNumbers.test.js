@@ -3,7 +3,7 @@
 
 import findNumbers, { searchPhoneNumbers } from './findPhoneNumbers.js'
 import { PhoneNumberSearch } from './findPhoneNumbers_.js'
-import metadata from '../metadata.min.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
 
 describe('findPhoneNumbers', () => {
 	it('should find numbers', () => {

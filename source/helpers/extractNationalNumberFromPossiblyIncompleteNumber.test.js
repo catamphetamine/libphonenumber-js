@@ -1,5 +1,5 @@
 import Metadata from '../metadata.js'
-import metadata from '../../metadata.min.json'
+import metadata from '../../metadata.min.json' assert { type: 'json' }
 import extractNationalNumberFromPossiblyIncompleteNumber from './extractNationalNumberFromPossiblyIncompleteNumber.js'
 
 describe('extractNationalNumberFromPossiblyIncompleteNumber', () => {

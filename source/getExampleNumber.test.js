@@ -1,5 +1,5 @@
-import examples from '../examples.mobile.json'
-import metadata from '../metadata.min.json'
+import examples from '../examples.mobile.json' assert { type: 'json' }
+import metadata from '../metadata.min.json' assert { type: 'json' }
 import getExampleNumber from './getExampleNumber.js'
 
 describe('getExampleNumber', () => {

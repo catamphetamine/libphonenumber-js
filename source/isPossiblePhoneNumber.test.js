@@ -1,6 +1,6 @@
 import _isPossiblePhoneNumber from './isPossiblePhoneNumber.js'
-import metadata from '../metadata.min.json'
-import oldMetadata from '../test/metadata/1.0.0/metadata.min.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
+import oldMetadata from '../test/metadata/1.0.0/metadata.min.json' assert { type: 'json' }
 
 function isPossiblePhoneNumber(...parameters) {
 	parameters.push(metadata)

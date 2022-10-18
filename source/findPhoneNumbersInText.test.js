@@ -1,5 +1,5 @@
 import findPhoneNumbersInText from './findPhoneNumbersInText.js'
-import metadata from '../metadata.min.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
 
 describe('findPhoneNumbersInText', () => {
 	it('should find phone numbers in text (with default country)', () => {

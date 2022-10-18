@@ -3,7 +3,8 @@
 		"@babel/env"
 	],
 	"plugins": [
-		["@babel/transform-for-of", { "loose": true }]
+		["@babel/transform-for-of", { "loose": true }],
+		["@babel/plugin-syntax-import-assertions"]
 	],
 	"env": {
 		"es6": {

@@ -1,4 +1,4 @@
-import metadata from '../metadata.min.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
 import _parseNumber from './parse.js'
 import Metadata from './metadata.js'
 

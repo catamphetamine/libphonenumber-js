@@ -1,8 +1,8 @@
-import metadata from '../metadata.min.json'
-import metadataV1 from '../test/metadata/1.0.0/metadata.min.json'
-import metadataV2 from '../test/metadata/1.1.11/metadata.min.json'
-import metadataV3 from '../test/metadata/1.7.34/metadata.min.json'
-import metadataV4 from '../test/metadata/1.7.37/metadata.min.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
+import metadataV1 from '../test/metadata/1.0.0/metadata.min.json' assert { type: 'json' }
+import metadataV2 from '../test/metadata/1.1.11/metadata.min.json' assert { type: 'json' }
+import metadataV3 from '../test/metadata/1.7.34/metadata.min.json' assert { type: 'json' }
+import metadataV4 from '../test/metadata/1.7.37/metadata.min.json' assert { type: 'json' }
 
 import Metadata, { validateMetadata, getExtPrefix, isSupportedCountry } from './metadata.js'
 

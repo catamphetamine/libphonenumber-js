@@ -1,4 +1,4 @@
-import metadata from '../metadata.min.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
 import AsYouType_ from '../../../../source/AsYouType.js'
 
 class AsYouType extends AsYouType_ {

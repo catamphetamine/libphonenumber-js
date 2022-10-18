@@ -1,6 +1,6 @@
 import Metadata from '../metadata.js'
-import metadata from '../../metadata.max.json'
-import oldMetadata from '../../test/metadata/1.0.0/metadata.min.json'
+import metadata from '../../metadata.max.json' assert { type: 'json' }
+import oldMetadata from '../../test/metadata/1.0.0/metadata.min.json' assert { type: 'json' }
 
 import { checkNumberLengthForType } from './checkNumberLength.js'
 

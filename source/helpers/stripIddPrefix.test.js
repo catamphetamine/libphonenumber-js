@@ -1,6 +1,6 @@
 import stripIddPrefix from './stripIddPrefix.js'
 
-import metadata from '../../metadata.min.json'
+import metadata from '../../metadata.min.json' assert { type: 'json' }
 
 describe('stripIddPrefix', () => {
 	it('should strip a valid IDD prefix', () => {

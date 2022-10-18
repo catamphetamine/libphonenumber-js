@@ -1,6 +1,6 @@
 import formatIncompletePhoneNumber from './formatIncompletePhoneNumber.js'
 
-import metadata from '../metadata.min.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
 
 describe('formatIncompletePhoneNumber', () => {
 	it('should format parsed input value', () => {

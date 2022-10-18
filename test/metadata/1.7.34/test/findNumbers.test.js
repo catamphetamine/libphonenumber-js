@@ -1,5 +1,5 @@
 import findNumbers from '../../../../source/findNumbers.js'
-import metadata from '../metadata.min.json'
+import metadata from '../metadata.min.json' assert { type: 'json' }
 
 describe('findNumbers', () => {
 	it('should find numbers', () => {

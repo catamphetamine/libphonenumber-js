@@ -1,5 +1,5 @@
 import extractCountryCallingCode from './extractCountryCallingCode.js'
-import metadata from '../../metadata.min.json'
+import metadata from '../../metadata.min.json' assert { type: 'json' }
 
 describe('extractCountryCallingCode', () => {
 	it('should extract country calling code from a number', () => {
