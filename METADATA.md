@@ -28,17 +28,25 @@ Localized `" ext. "` prefix for this country. For example, in Russia it's `" д�
 
 ### `leading_digits`
 
-National (significant) number "leading digits" pattern. It's only defined for about 20% of the countries, most of which are countries sharing the same "country calling code". At the same time, two countries sharing the same "country calling code" doesn't necessarily imply that the "secondary" country has a `leading_digits` pattern defined.
+National (significant) number "leading digits" pattern. It's only defined for about 20% of the countries, and in most cases it's for resolving ambiguity in cases when there're groups of countries sharing the same "country calling code". Although, if there's a group of countries sharing the same "country calling code", it doesn't necessarily mean that those countries have a `leading_digits` pattern defined.
 
-For example, USA and Canada share the same `1` country calling code, but neither of them have a `leading_digits` pattern defined. On the other hand, Antigua and Barbuda also shares the same `1` country calling code, and its `leading_digits` pattern is `"268"`, so if an international phone number starts with `+1268` then it's certain that it belongs to Antigua and Barbuda, so "leading digits" are, in some cases, a means of determining which one of the countries sharing the same country calling code does a phone number belong to.
+For example, USA and Canada share the same `1` country calling code, but neither of them have a `leading_digits` pattern defined. On the other hand, Antigua and Barbuda also shares the same `1` country calling code, and its `leading_digits` pattern is `"268"`, so if an international phone number starts with `+1268` then it's certain that it belongs to Antigua and Barbuda, so "leading digits" are, in some cases, a quick way of determining which one of the countries sharing the same country calling code does a phone number belong to.
 
-While in most cases a `leading_digits` pattern is a sequence of digits like `"268"` for Antigua and Barbuda, in some cases it's a pattern like `"8001|8[024]9"` for Dominican Republic.
+While in most cases a `leading_digits` pattern is a sequence of digits like `"268"` for Antigua and Barbuda, in other cases it's a pattern like `"8001|8[024]9"` for Dominican Republic.
 
-Overall, `leading_digits` patterns are only used as a performance speed-up trick when determining which country a phone number belongs to, which is still simpler than looking for a match against precise phone number patterns of every country sharing a given country calling code.
+Overall, `leading_digits` patterns are only used as a performance speed-up trick when determining which country a phone number belongs to: the check is still simpler than looking for a match against all of the precise phone number digit patterns of every country sharing a given country calling code.
 
-For that reason, matching a `leading_digits` pattern is a sufficient but not necessary condition for a phone number to belong to the country: if a `leading_digits` pattern exists and a phone number matches it that it's certain that the phone number belongs to the country, and no other country. But, if there's no `leading_digits` pattern, or if the phone number doesn't match it, then one can't say that the phone number doesn't belong to the country.
+For that reason, matching a `leading_digits` pattern is a sufficient but not a necessary condition for a phone number to belong to a country: if a `leading_digits` pattern exists and a phone number matches it that it's certain that the phone number belongs to the country, and no other country. But, if there's no `leading_digits` pattern, or if the phone number doesn't match the `leading_digits` pattern, then it doesn't mean that the phone number doesn't belong to the country.
 
-For example, "toll free" numbers starting with `800` are valid for all countries having `1` country calling code, so it doesn't make sense to include `800` in their `leading_digits` patterns. But, at the same time, those "toll free" numbers could be thought of as an unrelated edge case that can be ignored if the application only deals with human phone numbers. But, at the same time, it doesn't necessarily mean that there're no other exceptions. So I'd say that `leading_digits` has a meaning of "most likely" rather than "necessarily".
+For example, "toll free" numbers starting with `800` are valid for all countries having `1` country calling code, so it doesn't make sense to include `800` in their `leading_digits` patterns. But one could say that those "toll free" numbers could be thought of as an unrelated edge case that can be ignored if the application only deals with human phone numbers.
+
+Another example of phone number that're not included in `leading_digits` patters are ["personal"](https://en.wikipedia.org/wiki/Personal_Communications_Service) (satellite) numbers that start with [`5xx`](https://en.wikipedia.org/wiki/Personal_communications_service_(NANP)) for `+1` calling code.
+
+<!-- https://www.nationalnanpa.com/number_resource_info/5XX_codes.html -->
+
+The last example are mobile phone numbers which sometimes have identical patterns across the countries sharing the same "country calling code". An example are Finland (`FI`) and Åland Islands (`AX`) which share the same `+358` calling code and the same pattern for mobile phone numbers. And while [`+358 457 XXX XXXX`](https://en.wikipedia.org/wiki/Telephone_numbers_in_Åland) mobile numbers could belong both to Finland or Åland Islands, Åland Islands' `leading_digits` pattern is just `18` which doesn't include any mobile numbers at all.
+
+So `leading_digits` patterns could only be used for a quick "positive" check and they can't be used for ruling out any countries.
 
 ### `national_number_pattern`
 
@@ -54,7 +62,7 @@ Other national prefix examples: `1` in US, `0` in France and UK, `8` in Russia.
 
 ### `national_prefix_for_parsing` / `national_prefix_transform_rule`
 
-`national_prefix_for_parsing` is used to parse a [national (significant) number](https://github.com/catamphetamine/libphonenumber-js#national-significant-number) from a phone number. Contrary to its name, `national_prefix_for_parsing` is used not just for parsing a "national prefix" out of a phone number (just `national_prefix` property would be sufficient for that), but also for parsing any other possible phone number prefixes out of a phone number, if there're any, and for any other cases like fixing a missing area code. So it's actually not a "national prefix for parsing", but rather a "national (significant) number extraction mechanism".
+`national_prefix_for_parsing` is used to parse a [national (significant) number](https://gitlab.com/catamphetamine/libphonenumber-js#national-significant-number) from a phone number. Contrary to its name, `national_prefix_for_parsing` is used not just for parsing a "national prefix" out of a phone number (just `national_prefix` property would be sufficient for that), but also for parsing any other possible phone number prefixes out of a phone number, if there're any, and for any other cases like fixing a missing area code. So it's actually not a "national prefix for parsing", but rather a "national (significant) number extraction mechanism".
 
 `national_prefix_for_parsing` is a regular expression that could (or could not) have some ["capturing groups"](https://www.regular-expressions.info/refcapture.html). If there're any "capturing groups", then `national_prefix_for_parsing` is accompanied by `national_prefix_transform_rule`: yet another incorrect name by Google, because `national_prefix_transform_rule` is not a "rule for transforming a national prefix", but rather a "template to transform the captured groups into a national (significant) number".
 
@@ -78,7 +86,7 @@ Whatever national prefix has been extracted, it's not used anywhere: instead, `n
 
 ### `types`
 
-Regular expressions for all possible phone number types for this country: fixed line, mobile, toll free, premium rate, [etc](https://github.com/catamphetamine/libphonenumber-js#gettype).
+Regular expressions for all possible phone number [types](https://gitlab.com/catamphetamine/libphonenumber-js#gettype-string) for this country: `fixed_line`, `mobile`, `toll_free`, `premium_rate`, etc.
 
 #### `type` `pattern`
 
@@ -140,6 +148,6 @@ For example, Google's `libphonenumber` has `formatNumberForMobileDialing()` func
 
 ## Non-geographic
 
-There're [calling codes](https://github.com/catamphetamine/libphonenumber-js#non-geographic) that don't correspond to any country. For example, "Global Mobile Satellite System" (`+881`). Such phone numbering systems are called "non-geographic entities" in Google's code. These "non-geographic entitites" reside in their own `nonGeographic` property, analogous to the `countries` property. `nonGeographic` is an object with keys being calling codes of the corresponding "non-geographic entities", and values being same as the values of the `countries` property.
+There're [calling codes](https://gitlab.com/catamphetamine/libphonenumber-js#non-geographic) that don't correspond to any country. For example, "Global Mobile Satellite System" (`+881`). Such phone numbering systems are called "non-geographic entities" in Google's code. These "non-geographic entitites" reside in their own `nonGeographic` property, analogous to the `countries` property. `nonGeographic` is an object with keys being calling codes of the corresponding "non-geographic entities", and values being same as the values of the `countries` property.
 
 "Non-geographic" numbering plans don't have [`possible_lengths`](#possible-lengths).

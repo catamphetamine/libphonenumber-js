@@ -3,6 +3,7 @@ import isPossibleNumber from './isPossibleNumber_.js'
 import isValidNumber from './validate_.js'
 import isValidNumberForRegion from './isValidNumberForRegion_.js'
 import getNumberType from './helpers/getNumberType.js'
+import getPossibleCountriesForNumber from './helpers/getPossibleCountriesForNumber.js'
 import formatNumber from './format_.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
@@ -41,6 +42,17 @@ export default class PhoneNumber {
 
 	setExt(ext) {
 		this.ext = ext
+	}
+
+	getPossibleCountries() {
+		if (this.country) {
+			return [this.country]
+		}
+		return getPossibleCountriesForNumber(
+			this.countryCallingCode,
+			this.nationalNumber,
+			this.metadata
+		)
 	}
 
 	isPossible() {

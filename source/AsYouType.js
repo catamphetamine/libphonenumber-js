@@ -117,7 +117,10 @@ export default class AsYouType {
 				this.formatter.reset(this.metadata.numberingPlan, this.state)
 			}
 		})
-		this.state.reset(this.defaultCountry, this.defaultCallingCode)
+		this.state.reset({
+			country: this.defaultCountry,
+			callingCode: this.defaultCallingCode
+		})
 		this.formattedOutput = ''
 		return this
 	}

@@ -65,6 +65,9 @@ type FormatNumberOptions = {
   formatExtension?: FormatExtension;
 };
 
+// // https://stackoverflow.com/a/67026991
+// type ArrayOfAtLeastOneCountryCode = [CountryCode, ...CountryCode[]];
+
 export class PhoneNumber {
   constructor(countryCallingCodeOrCountry: CountryCallingCode | CountryCode, nationalNumber: NationalNumber, metadata: MetadataJson);
   countryCallingCode: CountryCallingCode;
@@ -74,6 +77,7 @@ export class PhoneNumber {
   carrierCode?: CarrierCode;
   ext?: Extension;
   setExt(ext: Extension): void;
+  getPossibleCountries(): CountryCode[];
   isPossible(): boolean;
   isValid(): boolean;
   getType(): NumberType;

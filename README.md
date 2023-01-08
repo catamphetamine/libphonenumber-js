@@ -539,6 +539,12 @@ Is just an alias for `this.isValid() && this.country === country`.
 https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-use-isvalidnumberforregion
 -->
 
+#### `getPossibleCountries(): string[]`
+
+Returns a list of countries this phone number could possibly belong to.
+
+Can be used when parsing complete international phone numbers containing a "calling code" that is shared between several countries. If parsing such a phone number returns `country: undefined` then `getPossibleCountries()` function could be used to somehow speculate about what country could this phone number possibly belong to.
+
 #### `getType(): string?`
 
 Returns phone number type (fixed line, mobile, toll free, etc) or `undefined` (if the number is invalid or if there are no phone number type regular expressions for this country in metadata).
@@ -550,17 +556,17 @@ By default the library uses "minimal" metadata which is only 75 kilobytes in siz
 
 ####
 
-* `MOBILE`
-* `FIXED_LINE`
-* `FIXED_LINE_OR_MOBILE`
-* `PREMIUM_RATE`
-* `TOLL_FREE`
-* `SHARED_COST`
-* `VOIP`
-* `PERSONAL_NUMBER`
-* `PAGER`
-* `UAN`
-* `VOICEMAIL`
+* `MOBILE` — Cellphones.
+* `FIXED_LINE` — Stationary phones.
+* `FIXED_LINE_OR_MOBILE` — Could be `MOBILE` or `FIXED_LINE`.
+* [`PREMIUM_RATE`](https://en.wikipedia.org/wiki/Premium-rate_telephone_number) — Callers are charged by call or per minute. SMS text messages are also subject to charge.
+* [`TOLL_FREE`](https://en.wikipedia.org/wiki/Toll-free_telephone_number) — Free to call from anywhere.
+* [`SHARED_COST`](https://en.wikipedia.org/wiki/Shared-cost_service) — "An intermediate level of telephone call billing where the charge for calling a particular international or long-distance phone number is partially, but not entirely, paid for by the recipient".
+* [`VOIP`](https://en.wikipedia.org/wiki/Voice_over_IP) — "IP telephony". Calls are made over the Internet rather than via the conventional telephone-only lines.
+* [`PERSONAL_NUMBER`](https://en.wikipedia.org/wiki/Personal_Communications_Service) — Phones connected by satellites.
+* [`PAGER`](https://en.wikipedia.org/wiki/Pager) — "Pagers" are wireless telecommunications devices that were widely used in the 80-es and could receive (and, optionally, send) text or voice messages.
+* [`UAN`](https://www.pta.gov.pk/media/num/faqs_110208.pdf) — "UAN is a number resource that allows a service or business with several terminating lines to be reached through a unique universal number. A UAN number shall be dialable from the entire Pakistan, based on the applicant’s proposed coverage without dialing the area code. UAN cannot be assigned to two separate business or mutually exclusive public services. Each service provider who allows UAN through its network shall offer a tariff, which is not more expensive than the normal tariff available for a similar non-UAN public service".
+* [`VOICEMAIL`](https://www.easytechjunkie.com/what-is-a-voicemail-access-number.htm) — "A voicemail access number is a telephone number provided by a [voicemail](https://en.wikipedia.org/wiki/Voicemail) service to allow subscribers to dial into their voicemail accounts and manage any currently saved messages. Typically, the number is used when a subscriber is away from home and wishes to check any voice messages currently stored on the service. Originally envisioned as part of the features associated with voicemail accounts offered with land line accounts, many mobile service providers today also supply their customers with a voicemail access number to use when checking messages from any phone other than the mobile or cellular unit associated with the account".
 </details>
 
 ####

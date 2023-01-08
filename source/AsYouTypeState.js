@@ -4,14 +4,14 @@ export default class AsYouTypeState {
 		this.onCallingCodeChange = onCallingCodeChange
 	}
 
-	reset(defaultCountry, defaultCallingCode) {
+	reset({ country, callingCode }) {
 		this.international = false
 		this.IDDPrefix = undefined
 		this.missingPlus = undefined
 		this.callingCode = undefined
 		this.digits = ''
 		this.resetNationalSignificantNumber()
-		this.initCountryAndCallingCode(defaultCountry, defaultCallingCode)
+		this.initCountryAndCallingCode(country, callingCode)
 	}
 
 	resetNationalSignificantNumber() {

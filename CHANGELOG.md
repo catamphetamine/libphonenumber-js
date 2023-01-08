@@ -67,6 +67,11 @@ And edit the README:
 
 This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
 
+1.10.17 / 08.01.2023
+==================
+
+* [Added](https://github.com/catamphetamine/libphonenumber-js/issues/420) `PhoneNumber.getPossibleCountries()` function. It returns a list of countries this phone number could possibly belong to. Can be used when parsing complete international phone numbers containing a "calling code" that is shared between several countries. If parsing such a phone number returns `country: undefined` then `getPossibleCountries()` function could be used to somehow speculate about what country could this phone number possibly belong to.
+
 1.10.0 / 18.05.2022
 ==================
 
