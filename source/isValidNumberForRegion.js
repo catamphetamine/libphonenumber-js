@@ -2,6 +2,39 @@ import isViablePhoneNumber from './helpers/isViablePhoneNumber.js'
 import parseNumber from './parse_.js'
 import _isValidNumberForRegion from './isValidNumberForRegion_.js'
 
+// This function has been deprecated and is not exported as
+// `isValidPhoneNumberForCountry()` or `isValidPhoneNumberForRegion()`.
+//
+// The rationale is:
+//
+// * We don't use the "region" word, so "country" would be better.
+//
+// * It could be substituted with:
+//
+// ```js
+// export default function isValidPhoneNumberForCountry(phoneNumberString, country) {
+// 	const phoneNumber = parsePhoneNumber(phoneNumberString, country)
+// 	if (!phoneNumber) {
+// 		return false
+// 	}
+// 	if (phoneNumber.country !== country) {
+// 		return false
+// 	}
+// 	return phoneNumber.isValid()
+// }
+// ```
+//
+// * Same function could be used for `isPossiblePhoneNumberForCountry()`
+//   by replacing `isValid()` with `isPossible()`.
+//
+// * The reason why this function is not exported is because its result is ambiguous.
+//   Suppose `false` is returned. It could mean any of:
+//   * Not a phone number.
+//   * The phone number is valid but belongs to another country or another calling code.
+//   * The phone number belongs to the correct country but is not valid digit-wise.
+//   All those three cases should be handled separately from a "User Experience" standpoint.
+//   Simply showing "Invalid phone number" error in all of those cases would be lazy UX.
+
 export default function isValidNumberForRegion(number, country, metadata) {
 	if (typeof number !== 'string') {
 		throw new TypeError('number must be a string')

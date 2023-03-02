@@ -95,4 +95,12 @@ describe('PhoneNumber', () => {
 		expect(phoneNumber.country).to.be.undefined
 		phoneNumber.getPossibleCountries().should.deep.equal([])
 	})
+
+	// it('should validate phone number length', () => {
+	// 	const phoneNumber = new PhoneNumber('RU', '800', metadata)
+	// 	expect(phoneNumber.validateLength()).to.equal('TOO_SHORT')
+	//
+	// 	const phoneNumberValid = new PhoneNumber('RU', '8005553535', metadata)
+	// 	expect(phoneNumberValid.validateLength()).to.be.undefined
+	// })
 })
