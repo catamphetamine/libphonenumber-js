@@ -13,7 +13,10 @@ import _isValidNumberForRegion from './isValidNumberForRegion_.js'
 //
 // ```js
 // export default function isValidPhoneNumberForCountry(phoneNumberString, country) {
-// 	const phoneNumber = parsePhoneNumber(phoneNumberString, country)
+// 	const phoneNumber = parsePhoneNumber(phoneNumberString, {
+// 		defaultCountry: country,
+// 		// extract: false // Is `true` by default
+// 	})
 // 	if (!phoneNumber) {
 // 		return false
 // 	}
