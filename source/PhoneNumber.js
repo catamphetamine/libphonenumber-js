@@ -9,8 +9,8 @@ import formatNumber from './format_.js'
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
 export default class PhoneNumber {
-	constructor(countryCallingCode, nationalNumber, metadata) {
-		if (!countryCallingCode) {
+	constructor(countryOrCountryCallingCode, nationalNumber, metadata) {
+		if (!countryOrCountryCallingCode) {
 			throw new TypeError('`country` or `countryCallingCode` not passed')
 		}
 		if (!nationalNumber) {
@@ -19,21 +19,11 @@ export default class PhoneNumber {
 		if (!metadata) {
 			throw new TypeError('`metadata` not passed')
 		}
-		const _metadata = new Metadata(metadata)
-		// If country code is passed then derive `countryCallingCode` from it.
-		// Also store the country code as `.country`.
-		if (isCountryCode(countryCallingCode)) {
-			this.country = countryCallingCode
-			_metadata.country(countryCallingCode)
-			countryCallingCode = _metadata.countryCallingCode()
-		} else {
-			/* istanbul ignore if */
-			if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
-				if (_metadata.isNonGeographicCallingCode(countryCallingCode)) {
-					this.country = '001'
-				}
-			}
-		}
+		const { country, countryCallingCode } = getCountryAndCountryCallingCode(
+			countryOrCountryCallingCode,
+			metadata
+		)
+		this.country = country
 		this.countryCallingCode = countryCallingCode
 		this.nationalNumber = nationalNumber
 		this.number = '+' + this.countryCallingCode + this.nationalNumber
@@ -105,3 +95,30 @@ export default class PhoneNumber {
 }
 
 const isCountryCode = (value) => /^[A-Z]{2}$/.test(value)
+
+function getCountryAndCountryCallingCode(countryOrCountryCallingCode, metadataJson) {
+	let country
+	let countryCallingCode
+
+	const metadata = new Metadata(metadataJson)
+	// If country code is passed then derive `countryCallingCode` from it.
+	// Also store the country code as `.country`.
+	if (isCountryCode(countryOrCountryCallingCode)) {
+		country = countryOrCountryCallingCode
+		metadata.selectNumberingPlan(country)
+		countryCallingCode = metadata.countryCallingCode()
+	} else {
+		countryCallingCode = countryOrCountryCallingCode
+		/* istanbul ignore if */
+		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
+			if (metadata.isNonGeographicCallingCode(countryCallingCode)) {
+				country = '001'
+			}
+		}
+	}
+
+	return {
+		country,
+		countryCallingCode
+	}
+}

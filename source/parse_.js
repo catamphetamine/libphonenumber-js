@@ -21,7 +21,6 @@ import { parseRFC3966 } from './helpers/RFC3966.js'
 import PhoneNumber from './PhoneNumber.js'
 import matchesEntirely from './helpers/matchesEntirely.js'
 import extractCountryCallingCode from './helpers/extractCountryCallingCode.js'
-import extractCountryCallingCodeFromInternationalNumberWithoutPlusSign from './helpers/extractCountryCallingCodeFromInternationalNumberWithoutPlusSign.js'
 import extractNationalNumber from './helpers/extractNationalNumber.js'
 import stripIddPrefix from './helpers/stripIddPrefix.js'
 import getCountryByCallingCode from './helpers/getCountryByCallingCode.js'
@@ -282,8 +281,8 @@ function parsePhoneNumber(
 	if (countryCallingCode) {
 		metadata.selectNumberingPlan(countryCallingCode)
 	}
-	// If `formattedPhoneNumber` is in "national" format
-	// then `number` is defined and `countryCallingCode` isn't.
+	// If `formattedPhoneNumber` is passed in "national" format
+	// then `number` is defined and `countryCallingCode` is `undefined`.
 	else if (number && (defaultCountry || defaultCallingCode)) {
 		metadata.selectNumberingPlan(defaultCountry, defaultCallingCode)
 		if (defaultCountry) {

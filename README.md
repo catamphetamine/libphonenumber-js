@@ -362,9 +362,9 @@ Returns an instance of [`PhoneNumber`](#phonenumber) class, or `undefined` if no
 
 Available `options`:
 
-* `defaultCountry: string` — Default [country](#country-code) for parsing national numbers. Instead of passing `options.defaultCountry` one could pass `defaultCountry` argument directly.
+* `defaultCountry: string` — Default [country](#country-code) for parsing numbers written in non-international form (without a `+` sign). Will be ignored when parsing numbers written in international form (with a `+` sign). Instead of passing it as `options.defaultCountry`, one could also pass it as a standalone `defaultCountry` argument (for convenience).
 
-* `defaultCallingCode: string` — Default [calling code](#country-calling-code) for parsing national numbers. Some numbering plans are for ["non-geographic numbering plans"](#non-geographic) and they don't have a country code, so `defaultCountry` can't be specified for them.
+* `defaultCallingCode: string` — Default calling code for parsing numbers written in non-international form (without a `+` sign). Will be ignored when parsing numbers written in international form (with a `+` sign). It could be specified when parsing phone numbers belonging to ["non-geographic numbering plans"](#non-geographic) which by nature don't have a country code, making the `defaultCountry` option unusable.
 
 * `extract: boolean` — Defines the ["strictness"](#strictness) of parsing a phone number.
 
@@ -606,7 +606,7 @@ Returns `true` if the number belongs to a ["non-geographic numbering plan"](#non
 
 Compares two `PhoneNumber`s: returns `true` if they're equal, `false` otherwise.
 
-### `isPossiblePhoneNumber(input: string): boolean`
+### `isPossiblePhoneNumber(input: string, defaultCountry?: string): boolean`
 
 Checks if `input` can be parsed as a "possible" phone number. A phone number is "possible" when it has valid length. The actual phone number digits aren't validated.
 
@@ -615,11 +615,13 @@ isPossiblePhoneNumber('8 (888) 888-88-88', 'RU') === true
 isPossiblePhoneNumber('+12223333333') === true
 ```
 
+The `defaultCountry` argument should be supplied for numbers written in non-international form (without a `+` sign). It will be ignored for numbers written in international form (with a `+` sign).
+
 This function is just a shortcut for a two-step process of ["strictly"](#strictness) parsing a phone number and then calling `.isPossible()`.
 
-### `isValidPhoneNumber(input: string): boolean`
+### `isValidPhoneNumber(input: string, defaultCountry?: string): boolean`
 
-Checks if `input` can be parsed as a "valid" phone number. A phone number is "valid" when it has valid length, and the actual phone number digits match the regular expressions for that country.
+Checks if `input` can be parsed as a "valid" phone number. A phone number is "valid" when it has valid length, and the actual phone number digits match the regular expressions for its country.
 
 ```js
 isValidPhoneNumber('8 (888) 888-88-88', 'RU') === false
@@ -628,11 +630,13 @@ isValidPhoneNumber('+12223333333') === false
 isValidPhoneNumber('+12133734253') === true
 ```
 
+The `defaultCountry` argument should be supplied for numbers written in non-international form (without a `+` sign). It will be ignored for numbers written in international form (with a `+` sign).
+
 This function is just a shortcut for a two-step process of ["strictly"](#strictness) parsing a phone number and then calling `.isValid()`.
 
 See ["Using phone number validation feature"](#using-phone-number-validation-feature) for choosing between `isPossible()` and `isValid()`.
 
-### `validatePhoneNumberLength(input: string): string?`
+### `validatePhoneNumberLength(input: string, defaultCountry?: string): string?`
 
 Checks if `input` phone number length is valid. If it is, then nothing is returned. Otherwise, a rejection reason is returned.
 
@@ -667,6 +671,8 @@ validatePhoneNumberLength('444 1 444444', 'TR') === undefined
 validatePhoneNumberLength('444 1 4444444444', 'TR') === 'TOO_LONG'
 ```
 
+The `defaultCountry` argument should be supplied for numbers written in non-international form (without a `+` sign). It will be ignored for numbers written in international form (with a `+` sign).
+
 This function is just a more detailed version of `isPossiblePhoneNumber()` for those who've [asked](https://github.com/catamphetamine/libphonenumber-js/issues/406) for a more specific rejection reason.
 
 ### `class` AsYouType([options or defaultCountry])
@@ -675,9 +681,9 @@ Creates a formatter for a partially entered phone number.
 
 Available `options`:
 
-* `defaultCountry` — Default [country](#country-code) for parsing national numbers. Instead of passing `options.defaultCountry` one could pass `defaultCountry` argument directly.
+* `defaultCountry: string` — Default [country](#country-code) for parsing numbers written in non-international form (without a `+` sign). Will be ignored when parsing numbers written in international form (with a `+` sign). Instead of passing it as `options.defaultCountry`, one could also pass it as a standalone `defaultCountry` argument (for convenience).
 
-* `defaultCallingCode` — Default calling code for parsing national numbers. Some numbering plans are for ["non-geographic numbering plans"](#non-geographic) and they don't have a country code, so `defaultCountry` can't be specified for them.
+* `defaultCallingCode: string` — Default calling code for parsing numbers written in non-international form (without a `+` sign). Will be ignored when parsing numbers written in international form (with a `+` sign). It could be specified when parsing phone numbers belonging to ["non-geographic numbering plans"](#non-geographic) which by nature don't have a country code, making the `defaultCountry` option unusable.
 
 The formatter instance has the following methods:
 
