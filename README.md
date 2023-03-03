@@ -678,6 +678,40 @@ This function is just a shortcut for a two-step process of ["strictly"](#strictn
 
 See ["Using phone number validation feature"](#using-phone-number-validation-feature) for choosing between `isPossible()` and `isValid()`.
 
+### `isValidPhoneNumberForCountry(input: string, country: string): boolean`
+
+Same as `isValidPhoneNumber()` but with the "default country" argument being an "exact country" instead.
+
+This function is not currently exported from this library. The reason is that its result would be too vague when `false` is returned — it could mean any of:
+
+* The input is not a valid phone number.
+* The input is a valid phone number but it belongs to another country.
+* The input is a phone number that belongs to the correct country but is not valid.
+
+At least the second case should be handled separately from a "User Experience" point of view: if the user has input a valid phone number but for another country, they should be notified that "the country is incorrect" rather than that "the phone number is incorrect", otherwise it would be bad UX design.
+
+But for those who'd still like to have such function, here's a possible implementation for it:
+
+```js
+export default function isValidPhoneNumberForCountry(phoneNumberString, country) {
+  const phoneNumber = parsePhoneNumber(phoneNumberString, {
+    defaultCountry: country,
+    // Demand that the entire input string must be a phone number.
+    // Otherwise, it would "extract" a phone number from an input string.
+    extract: false
+  })
+  if (!phoneNumber) {
+    return false
+  }
+  if (phoneNumber.country !== country) {
+    return false
+  }
+  return phoneNumber.isValid()
+}
+```
+
+The same approach could be used to implement an `isPossiblePhoneNumberForCountry()` function.
+
 ### `validatePhoneNumberLength(input: string, defaultCountry?: string | options?: object): string?`
 
 Checks if `input` phone number length is valid. If it is, then nothing is returned. Otherwise, a rejection reason is returned.

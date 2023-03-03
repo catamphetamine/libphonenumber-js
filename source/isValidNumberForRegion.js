@@ -15,7 +15,9 @@ import _isValidNumberForRegion from './isValidNumberForRegion_.js'
 // export default function isValidPhoneNumberForCountry(phoneNumberString, country) {
 // 	const phoneNumber = parsePhoneNumber(phoneNumberString, {
 // 		defaultCountry: country,
-// 		// extract: false // Is `true` by default
+// 		// Demand that the entire input string must be a phone number.
+// 		// Otherwise, it would "extract" a phone number from an input string.
+// 		extract: false
 // 	})
 // 	if (!phoneNumber) {
 // 		return false
