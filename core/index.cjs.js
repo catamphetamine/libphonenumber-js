@@ -5,7 +5,7 @@
 // It only exists for compatibility with the software that doesn't like `*.cjs` file extension.
 // https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/61#note_950728292
 
-var parsePhoneNumberFromString = require('../build/parsePhoneNumberFromString.js').default
+var parsePhoneNumberFromString = require('../build/parsePhoneNumber.js').default
 
 // ES5 `require()` "default" "interoperability" hack.
 // https://github.com/babel/babel/issues/2212#issuecomment-131827986
@@ -15,7 +15,7 @@ exports = module.exports = parsePhoneNumberFromString
 exports['default'] = parsePhoneNumberFromString
 
 exports.ParseError = require('../build/ParseError.js').default
-var parsePhoneNumberWithError = require('../build/parsePhoneNumber.js').default
+var parsePhoneNumberWithError = require('../build/parsePhoneNumberWithError.js').default
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 exports.parsePhoneNumberWithError = parsePhoneNumberWithError
 exports.parsePhoneNumber = parsePhoneNumberWithError
@@ -28,8 +28,9 @@ exports.isValidPhoneNumber = require('../build/isValidPhoneNumber.js').default
 exports.isPossiblePhoneNumber = require('../build/isPossiblePhoneNumber.js').default
 exports.validatePhoneNumberLength = require('../build/validatePhoneNumberLength.js').default
 
-exports.findNumbers = require('../build/findNumbers.js').default
-exports.searchNumbers = require('../build/searchNumbers.js').default
+exports.findNumbers = require('../build/legacy/findNumbers.js').default
+exports.searchNumbers = require('../build/legacy/searchNumbers.js').default
+
 exports.findPhoneNumbersInText = require('../build/findPhoneNumbersInText.js').default
 exports.searchPhoneNumbersInText = require('../build/searchPhoneNumbersInText.js').default
 exports.PhoneNumberMatcher = require('../build/PhoneNumberMatcher.js').default

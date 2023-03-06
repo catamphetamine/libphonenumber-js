@@ -1,5 +1,5 @@
-import isViablePhoneNumber from './helpers/isViablePhoneNumber.js'
-import parseNumber from './parse_.js'
+import isViablePhoneNumber from '../helpers/isViablePhoneNumber.js'
+import parseNumber from '../parse.js'
 import _isValidNumberForRegion from './isValidNumberForRegion_.js'
 
 // This function has been deprecated and is not exported as

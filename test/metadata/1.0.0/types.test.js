@@ -1,5 +1,5 @@
 import metadata from './metadata.max.json' assert { type: 'json' }
-import get_number_type_custom from '../../../source/getNumberType.js'
+import get_number_type_custom from '../../../source/legacy/getNumberType.js'
 
 function get_number_type(...parameters)
 {

@@ -1,11 +1,10 @@
 import Metadata from './metadata.js'
-import isPossibleNumber from './isPossibleNumber_.js'
-import isValidNumber from './validate_.js'
-// import isValidNumberForRegion from './isValidNumberForRegion_.js'
+import isPossibleNumber from './isPossible.js'
+import isValidNumber from './isValid.js'
 // import checkNumberLength from './helpers/checkNumberLength.js'
 import getNumberType from './helpers/getNumberType.js'
 import getPossibleCountriesForNumber from './helpers/getPossibleCountriesForNumber.js'
-import formatNumber from './format_.js'
+import formatNumber from './format.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
@@ -62,14 +61,6 @@ export default class PhoneNumber {
 	isEqual(phoneNumber) {
 		return this.number === phoneNumber.number && this.ext === phoneNumber.ext
 	}
-
-	// A better name would be `isValidForCountry()` / `isValidForCallingCode()`.
-	// Also, see the rationale for not including this method in `isValidNumberForRegion.js`.
-	// // This is just an alias for `this && this.isValid() && this.country === country`.
-	// // https://github.com/googlei18n/libphonenumber/blob/master/FAQ.md#when-should-i-use-isvalidnumberforregion
-	// isValidForRegion(country) {
-	// 	return isValidNumberForRegion(this, country, { v2: true }, this.metadata)
-	// }
 
 	// This function was originally meant to be an equivalent for `validatePhoneNumberLength()`,
 	// but later it was found out that it doesn't include the possible `TOO_SHORT` result

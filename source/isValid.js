@@ -5,6 +5,11 @@ import getNumberType from './helpers/getNumberType.js'
 /**
  * Checks if a given phone number is valid.
  *
+ * isValid(phoneNumberInstance, { ..., v2: true }, metadata)
+ *
+ * isPossible({ phone: '8005553535', country: 'RU' }, { ... }, metadata)
+ * isPossible({ phone: '8005553535', country: 'RU' }, undefined, metadata)
+ *
  * If the `number` is a string, it will be parsed to an object,
  * but only if it contains only valid phone number characters (including punctuation).
  * If the `number` is an object, it is used as is.
@@ -39,24 +44,25 @@ export default function isValidNumber(input, options, metadata)
 
 	metadata = new Metadata(metadata)
 
-	// This is just to support `isValidNumber({})`
-	// for cases when `parseNumber()` returns `{}`.
-	if (!input.country)
-	{
-		return false
-	}
+/**
+ * Checks if a phone number is "possible" (basically just checks its length).
+ *
+ * @param  {object|PhoneNumber} input — If `options.v2: true` flag is passed, the `input` should be a `PhoneNumber` instance. Otherwise, it should be an object of shape `{ phone: '...', country: '...' }`.
+ * @param  {object} [options]
+ * @param  {object} metadata
+ * @return {string}
+ */
 
 	metadata.selectNumberingPlan(input.country, input.countryCallingCode)
 
 	// By default, countries only have type regexps when it's required for
 	// distinguishing different countries having the same `countryCallingCode`.
-	if (metadata.hasTypes())
-	{
+	if (metadata.hasTypes()) {
 		return getNumberType(input, options, metadata.metadata) !== undefined
 	}
 
 	// If there are no type regexps for this country in metadata then use
 	// `nationalNumberPattern` as a "better than nothing" replacement.
-	const national_number = options.v2 ? input.nationalNumber : input.phone
-	return matchesEntirely(national_number, metadata.nationalNumberPattern())
+	const nationalNumber = options.v2 ? input.nationalNumber : input.phone
+	return matchesEntirely(nationalNumber, metadata.nationalNumberPattern())
 }

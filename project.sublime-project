@@ -4,7 +4,7 @@
 		{
 			"follow_symlinks": true,
 			"path": ".",
-			"folder_exclude_patterns": ["libphonenumber-js/node_modules", "libphonenumber-js/bundle", "libphonenumber-js/coverage", "libphonenumber-js/build", "libphonenumber-js/lib", "libphonenumber-js/es6", "libphonenumber-js/.nyc_output", "project.sublime-workspace"]
+			"folder_exclude_patterns": ["libphonenumber-js/node_modules", "libphonenumber-js/bundle", "libphonenumber-js/coverage", "libphonenumber-js/build", "libphonenumber-js/lib", "libphonenumber-js/es6", "libphonenumber-js/.nyc_output", "libphonenumber-js/website/lib", "project.sublime-workspace"]
 		}
 	],
 	"settings":

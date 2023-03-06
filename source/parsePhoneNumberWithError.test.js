@@ -1,4 +1,4 @@
-import _parsePhoneNumber from '../../../../source/parsePhoneNumberWithError.js'
+import _parsePhoneNumber from './parsePhoneNumberWithError.js'
 import metadata from '../metadata.min.json' assert { type: 'json' }
 import metadataFull from '../metadata.max.json' assert { type: 'json' }
 
@@ -12,9 +12,9 @@ function parsePhoneNumberFull(...parameters) {
 	return _parsePhoneNumber.apply(this, parameters)
 }
 
-describe('parsePhoneNumber', () => {
+describe('parsePhoneNumberWithError', () => {
 	it('should parse phone numbers', () => {
-		const phoneNumber = parsePhoneNumber('Phone: 8 (800) 555 35 35.', 'RU')
+		const phoneNumber = parsePhoneNumber('The phone number is: 8 (800) 555 35 35. Some other text.', 'RU')
 		phoneNumber.country.should.equal('RU')
 		phoneNumber.countryCallingCode.should.equal('7')
 		phoneNumber.nationalNumber.should.equal('8005553535')
@@ -68,8 +68,10 @@ describe('parsePhoneNumber', () => {
 	it('should throw parse errors', () => {
 		expect(() => parsePhoneNumber('8005553535', 'XX')).to.throw('INVALID_COUNTRY')
 		expect(() => parsePhoneNumber('+', 'RU')).to.throw('NOT_A_NUMBER')
-		// Won't throw here because the regexp already demands length > 1.
-		// expect(() => parsePhoneNumber('11', 'RU')).to.throw('TOO_SHORT')
+		expect(() => parsePhoneNumber('a', 'RU')).to.throw('NOT_A_NUMBER')
+		expect(() => parsePhoneNumber('1', 'RU')).to.throw('TOO_SHORT')
+		expect(() => parsePhoneNumber('+4')).to.throw('TOO_SHORT')
+		expect(() => parsePhoneNumber('+44')).to.throw('TOO_SHORT')
 		expect(() => parsePhoneNumber('+443')).to.throw('TOO_SHORT')
 		expect(() => parsePhoneNumber('+370')).to.throw('TOO_SHORT')
 		expect(() => parsePhoneNumber('88888888888888888888', 'RU')).to.throw('TOO_LONG')

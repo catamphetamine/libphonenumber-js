@@ -1,5 +1,5 @@
-import metadata from '../metadata.max.json' assert { type: 'json' }
-import Metadata from './metadata.js'
+import metadata from '../../metadata.max.json' assert { type: 'json' }
+import Metadata from '../metadata.js'
 import _getNumberType from './getNumberType.js'
 
 function getNumberType(...parameters) {

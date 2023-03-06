@@ -2,7 +2,7 @@
 export { parsePhoneNumberWithError, parsePhoneNumberWithError as parsePhoneNumber } from './min/exports/parsePhoneNumberWithError.js'
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.
-export { parsePhoneNumberFromString, parsePhoneNumberFromString as default } from './min/exports/parsePhoneNumberFromString.js'
+export { parsePhoneNumber as parsePhoneNumberFromString, parsePhoneNumber as default } from './min/exports/parsePhoneNumber.js'
 
 export { isValidPhoneNumber } from './min/exports/isValidPhoneNumber.js'
 export { isPossiblePhoneNumber } from './min/exports/isPossiblePhoneNumber.js'
@@ -10,7 +10,6 @@ export { validatePhoneNumberLength } from './min/exports/validatePhoneNumberLeng
 
 // Deprecated.
 export { findNumbers } from './min/exports/findNumbers.js'
-// Deprecated.
 export { searchNumbers } from './min/exports/searchNumbers.js'
 
 export { findPhoneNumbersInText } from './min/exports/findPhoneNumbersInText.js'
@@ -56,12 +55,12 @@ export { PhoneNumberSearch } from './index.es6.exports/PhoneNumberSearch.js'
 export { DIGITS } from './es6/helpers/parseDigits.js'
 
 // Deprecated "custom" exports.
-export { default as parseCustom } from './es6/parse.js'
-export { default as formatCustom } from './es6/format.js'
-export { default as isValidNumberCustom } from './es6/validate.js'
-export { default as findPhoneNumbersCustom } from './es6/findPhoneNumbers.js'
-export { searchPhoneNumbers as searchPhoneNumbersCustom } from './es6/findPhoneNumbers.js'
-export { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/findPhoneNumbers_.js'
-export { default as getNumberTypeCustom } from './es6/getNumberType.js'
+export { default as parseCustom } from './es6/legacy/parse.js'
+export { default as formatCustom } from './es6/legacy/format.js'
+export { default as isValidNumberCustom } from './es6/legacy/isValidNumber.js'
+export { default as findPhoneNumbersCustom } from './es6/legacy/findPhoneNumbers.js'
+export { searchPhoneNumbers as searchPhoneNumbersCustom } from './es6/legacy/findPhoneNumbers.js'
+export { PhoneNumberSearch as PhoneNumberSearchCustom } from './es6/legacy/findPhoneNumbersInitialImplementation.js'
+export { default as getNumberTypeCustom } from './es6/legacy/getNumberType.js'
 export { default as getCountryCallingCodeCustom, default as getPhoneCodeCustom } from './es6/getCountryCallingCode.js'
 export { default as AsYouTypeCustom } from './es6/AsYouType.js'

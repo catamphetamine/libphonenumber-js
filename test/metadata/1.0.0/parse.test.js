@@ -1,5 +1,5 @@
 import metadata from './metadata.min.json' assert { type: 'json' }
-import parser from '../../../source/parse.js'
+import parser from '../../../source/legacy/parse.js'
 
 function parse(...parameters)
 {

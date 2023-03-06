@@ -2,7 +2,7 @@
 export { parsePhoneNumberWithError, parsePhoneNumberWithError as parsePhoneNumber } from './exports/parsePhoneNumberWithError.js'
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.
-export { parsePhoneNumberFromString, parsePhoneNumberFromString as default } from './exports/parsePhoneNumberFromString.js'
+export { parsePhoneNumber as parsePhoneNumberFromString, parsePhoneNumber as default } from './exports/parsePhoneNumber.js'
 
 export { isValidPhoneNumber } from './exports/isValidPhoneNumber.js'
 export { isPossiblePhoneNumber } from './exports/isPossiblePhoneNumber.js'
@@ -10,7 +10,6 @@ export { validatePhoneNumberLength } from './exports/validatePhoneNumberLength.j
 
 // Deprecated.
 export { findNumbers } from './exports/findNumbers.js'
-// Deprecated.
 export { searchNumbers } from './exports/searchNumbers.js'
 
 export { findPhoneNumbersInText } from './exports/findPhoneNumbersInText.js'

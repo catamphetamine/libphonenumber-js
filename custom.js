@@ -2,7 +2,7 @@
 
 'use strict'
 
-var parsePhoneNumberFromString = require('./build/parsePhoneNumberFromString.js').default
+var parsePhoneNumberFromString = require('./build/parsePhoneNumber.js').default
 
 // ES5 `require()` "default" "interoperability" hack.
 // https://github.com/babel/babel/issues/2212#issuecomment-131827986
@@ -12,7 +12,7 @@ exports = module.exports = parsePhoneNumberFromString
 exports['default'] = parsePhoneNumberFromString
 
 exports.ParseError = require('./build/ParseError.js').default
-var parsePhoneNumberWithError = require('./build/parsePhoneNumber.js').default
+var parsePhoneNumberWithError = require('./build/parsePhoneNumberWithError.js').default
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 exports.parsePhoneNumber = parsePhoneNumberWithError
 exports.parsePhoneNumberWithError = parsePhoneNumberWithError
@@ -23,30 +23,29 @@ exports.parsePhoneNumberFromString = parsePhoneNumberFromString
 
 // Deprecated: remove `parse()` export in 2.0.0.
 // (renamed to `parseNumber()`)
-exports.parse              = require('./build/parse.js').default
-exports.parseNumber        = require('./build/parse.js').default
+exports.parse              = require('./build/legacy/parse.js').default
+exports.parseNumber        = require('./build/legacy/parse.js').default
 // Deprecated: remove `format()` export in 2.0.0.
 // (renamed to `formatNumber()`)
-exports.format             = require('./build/format.js').default
-exports.formatNumber       = require('./build/format.js').default
-exports.getNumberType      = require('./build/getNumberType.js').default
-exports.getExampleNumber   = require('./build/getExampleNumber.js').default
-exports.isValidNumber      = require('./build/validate.js').default
-exports.isValidNumberForRegion = require('./build/isValidNumberForRegion.js').default
+exports.format             = require('./build/legacy/format.js').default
+exports.formatNumber       = require('./build/legacy/format.js').default
+exports.getNumberType      = require('./build/legacy/getNumberType.js').default
+exports.isValidNumber      = require('./build/legacy/isValidNumber.js').default
+exports.isValidNumberForRegion = require('./build/legacy/isValidNumberForRegion.js').default
 
 // Deprecated.
-exports.isPossibleNumber   = require('./build/isPossibleNumber.js').default
+exports.isPossibleNumber   = require('./build/legacy/isPossibleNumber.js').default
+exports.findNumbers        = require('./build/legacy/findNumbers.js').default
+exports.searchNumbers      = require('./build/legacy/searchNumbers.js').default
+exports.findPhoneNumbers   = require('./build/legacy/findPhoneNumbers.js').default
+exports.searchPhoneNumbers = require('./build/legacy/findPhoneNumbers.js').searchPhoneNumbers
+exports.PhoneNumberSearch  = require('./build/legacy/findPhoneNumbersInitialImplementation.js').PhoneNumberSearch
 
-exports.findNumbers        = require('./build/findNumbers.js').default
-exports.searchNumbers      = require('./build/searchNumbers.js').default
+exports.getExampleNumber   = require('./build/getExampleNumber.js').default
+
 exports.findPhoneNumbersInText = require('./build/findPhoneNumbersInText.js').default
 exports.searchPhoneNumbersInText = require('./build/searchPhoneNumbersInText.js').default
 exports.PhoneNumberMatcher = require('./build/PhoneNumberMatcher.js').default
-
-// Deprecated.
-exports.findPhoneNumbers   = require('./build/findPhoneNumbers.js').default
-exports.searchPhoneNumbers = require('./build/findPhoneNumbers.js').searchPhoneNumbers
-exports.PhoneNumberSearch  = require('./build/findPhoneNumbers_.js').PhoneNumberSearch
 
 exports.AsYouType = require('./build/AsYouType.js').default
 

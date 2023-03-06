@@ -1,5 +1,5 @@
 import searchNumbers from './searchNumbers.js'
-import metadata from '../metadata.min.json' assert { type: 'json' }
+import metadata from '../../metadata.min.json' assert { type: 'json' }
 
 describe('searchNumbers', () => {
 	it('should iterate', () => {

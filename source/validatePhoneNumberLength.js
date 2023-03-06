@@ -1,5 +1,5 @@
-import { normalizeArguments } from './parsePhoneNumber.js'
-import parsePhoneNumber from './parsePhoneNumber_.js'
+import normalizeArguments from './normalizeArguments.js'
+import parsePhoneNumberWithError from './parsePhoneNumberWithError_.js'
 import ParseError from './ParseError.js'
 import Metadata from './metadata.js'
 import checkNumberLength from './helpers/checkNumberLength.js'
@@ -13,7 +13,7 @@ export default function validatePhoneNumberLength() {
 
 	// Parse phone number.
 	try {
-		const phoneNumber = parsePhoneNumber(text, options, metadata)
+		const phoneNumber = parsePhoneNumberWithError(text, options, metadata)
 		metadata = new Metadata(metadata)
 		metadata.selectNumberingPlan(phoneNumber.countryCallingCode)
 		const result = checkNumberLength(phoneNumber.nationalNumber, metadata)

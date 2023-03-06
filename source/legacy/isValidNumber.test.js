@@ -1,12 +1,12 @@
-import metadata from '../metadata.min.json' assert { type: 'json' }
-import _isValidNumber from './validate.js'
+import metadata from '../../metadata.min.json' assert { type: 'json' }
+import _isValidNumber from './isValidNumber.js'
 
 function isValidNumber(...parameters) {
 	parameters.push(metadata)
 	return _isValidNumber.apply(this, parameters)
 }
 
-describe('validate', () => {
+describe('isValidNumber', () => {
 	it('should validate phone numbers', () => {
 		isValidNumber('+1-213-373-4253').should.equal(true)
 		isValidNumber('+1-213-373').should.equal(false)
@@ -33,7 +33,10 @@ describe('validate', () => {
 
 	it('should refine phone number validation in case extended regular expressions are set for a country', () => {
 		// Germany general validation must pass
+		console.log('--------------------------')
 		isValidNumber('961111111', 'UZ').should.equal(true)
+
+		const phoneNumberTypePatterns = metadata.countries.UZ[11]
 
 		// Different regular expressions for precise national number validation.
 		// `types` index in compressed array is `9` for v1.
@@ -50,6 +53,8 @@ describe('validate', () => {
 
 		// Extended validation must pass for a valid phone number
 		isValidNumber('912345678', 'UZ').should.equal(true)
+
+		metadata.countries.UZ[11] = phoneNumberTypePatterns
 	})
 
 	it('should work in edge cases', () => {

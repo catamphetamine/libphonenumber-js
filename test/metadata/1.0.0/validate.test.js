@@ -1,5 +1,5 @@
 import metadata from './metadata.min.json' assert { type: 'json' }
-import validate from '../../../source/validate.js'
+import validate from '../../../source/legacy/isValidNumber.js'
 
 function is_valid_number(...parameters)
 {

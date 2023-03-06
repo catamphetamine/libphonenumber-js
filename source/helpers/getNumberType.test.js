@@ -4,7 +4,6 @@ import oldMetadata from '../../test/metadata/1.0.0/metadata.min.json' assert { t
 
 import Metadata from '../metadata.js'
 
-
 describe('getNumberType', function() {
 	it('should get number type when using old metadata', function() {
 		getNumberType(

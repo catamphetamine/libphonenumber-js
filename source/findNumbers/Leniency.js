@@ -1,4 +1,4 @@
-import isValidNumber from '../validate_.js'
+import isValidNumber from '../isValid.js'
 import parseDigits from '../helpers/parseDigits.js'
 
 import {

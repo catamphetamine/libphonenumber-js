@@ -1,12 +1,38 @@
 import metadata from '../metadata.min.json' assert { type: 'json' }
-import _isPossibleNumber from './isPossibleNumber.js'
+import _isPossibleNumber from './isPossible.js'
+import parsePhoneNumber from './parsePhoneNumber.js'
 
 function isPossibleNumber(...parameters) {
+	let v2
+	if (parameters.length < 1) {
+		// `input` parameter.
+		parameters.push(undefined)
+	} else {
+		// Convert string `input` to a `PhoneNumber` instance.
+		if (typeof parameters[0] === 'string') {
+			v2 = true
+			parameters[0] = parsePhoneNumber(parameters[0], {
+				...parameters[1],
+				extract: false
+			}, metadata)
+		}
+	}
+	if (parameters.length < 2) {
+		// `options` parameter.
+		parameters.push(undefined)
+	}
+	// Set `v2` flag.
+	parameters[1] = {
+		v2,
+		...parameters[1]
+	}
+	// Add `metadata` parameter.
 	parameters.push(metadata)
+	// Call the function.
 	return _isPossibleNumber.apply(this, parameters)
 }
 
-describe('isPossibleNumber', () => {
+describe('isPossible', () => {
 	it('should work', function()
 	{
 		isPossibleNumber('+79992223344').should.equal(true)

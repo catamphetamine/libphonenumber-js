@@ -1,11 +1,11 @@
 // This function is copy-pasted from
 // https://github.com/googlei18n/libphonenumber/blob/master/javascript/i18n/phonenumbers/phonenumberutil.js
-// It hasn't been tested.
+// It hasn't been tested. It's not currently exported.
 // Carriers codes aren't part of this library.
 // Send a PR if you want to add them.
 
 import Metadata from './metadata.js'
-import format from './format_.js'
+import format from './format.js'
 import getNumberType from './helpers/getNumberType.js'
 import checkNumberLength from './helpers/checkNumberLength.js'
 import getCountryCallingCode from './getCountryCallingCode.js'

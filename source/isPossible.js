@@ -1,6 +1,19 @@
 import Metadata from './metadata.js'
 import checkNumberLength from './helpers/checkNumberLength.js'
 
+/**
+ * Checks if a phone number is "possible" (basically just checks its length).
+ *
+ * isPossible(phoneNumberInstance, { ..., v2: true }, metadata)
+ *
+ * isPossible({ phone: '8005553535', country: 'RU' }, { ... }, metadata)
+ * isPossible({ phone: '8005553535', country: 'RU' }, undefined, metadata)
+ *
+ * @param  {object|PhoneNumber} input — If `options.v2: true` flag is passed, the `input` should be a `PhoneNumber` instance. Otherwise, it should be an object of shape `{ phone: '...', country: '...' }`.
+ * @param  {object} [options]
+ * @param  {object} metadata
+ * @return {string}
+ */
 export default function isPossiblePhoneNumber(input, options, metadata) {
 	/* istanbul ignore if */
 	if (options === undefined) {

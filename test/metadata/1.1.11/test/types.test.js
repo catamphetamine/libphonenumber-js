@@ -1,6 +1,6 @@
 import metadata from '../metadata.max.json' assert { type: 'json' }
 import Metadata from '../../../../source/metadata.js'
-import get_number_type_custom from '../../../../source/getNumberType.js'
+import get_number_type_custom from '../../../../source/legacy/getNumberType.js'
 import { checkNumberLengthForType } from '../../../../source/helpers/checkNumberLength.js'
 
 function get_number_type(...parameters)

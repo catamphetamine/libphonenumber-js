@@ -1,11 +1,14 @@
-import isViablePhoneNumber from './helpers/isViablePhoneNumber.js'
-import _getNumberType from './helpers/getNumberType.js'
-import parse from './parse_.js'
+import isViablePhoneNumber from '../helpers/isViablePhoneNumber.js'
+import _getNumberType from '../helpers/getNumberType.js'
+import parse from '../parse.js'
 
 // Finds out national phone number type (fixed line, mobile, etc)
-export default function getNumberType()
-{
+export default function getNumberType() {
 	const { input, options, metadata } = normalizeArguments(arguments)
+	// `parseNumber()` would return `{}` when no phone number could be parsed from the input.
+	if (!input.phone) {
+		return
+	}
 	return _getNumberType(input, options, metadata)
 }
 

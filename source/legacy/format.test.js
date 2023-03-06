@@ -1,39 +1,9 @@
-import metadata from '../metadata.min.json' assert { type: 'json' }
-import formatNumber_ from './format.js'
-import parsePhoneNumber from './parsePhoneNumber.js'
+import metadata from '../../metadata.min.json' assert { type: 'json' }
+import _formatNumber from './format.js'
 
 function formatNumber(...parameters) {
-	let v2
-	if (parameters.length < 1) {
-		// `input` parameter.
-		parameters.push(undefined)
-	} else {
-		// Convert string `input` to a `PhoneNumber` instance.
-		if (typeof parameters[0] === 'string') {
-			v2 = true
-			parameters[0] = parsePhoneNumber(parameters[0], {
-				...parameters[2],
-				extract: false
-			}, metadata)
-		}
-	}
-	if (parameters.length < 2) {
-		// `format` parameter.
-		parameters.push(undefined)
-	}
-	if (parameters.length < 3) {
-		// `options` parameter.
-		parameters.push(undefined)
-	}
-	// Set `v2` flag.
-	parameters[2] = {
-		v2,
-		...parameters[2]
-	}
-	// Add `metadata` parameter.
 	parameters.push(metadata)
-	// Call the function.
-	return formatNumber_.apply(this, parameters)
+	return _formatNumber.apply(this, parameters)
 }
 
 describe('format', () => {
@@ -50,8 +20,13 @@ describe('format', () => {
 	})
 
 	it('should work with the first object argument expanded', () => {
-		formatNumber('2133734253', 'NATIONAL', { defaultCountry: 'US' }).should.equal('(213) 373-4253')
-		formatNumber('2133734253', 'INTERNATIONAL', { defaultCountry: 'US' }).should.equal('+1 213 373 4253')
+		formatNumber('2133734253', 'US', 'NATIONAL').should.equal('(213) 373-4253')
+		formatNumber('2133734253', 'US', 'INTERNATIONAL').should.equal('+1 213 373 4253')
+	})
+
+	it('should support legacy "National" / "International" formats', () => {
+		formatNumber('2133734253', 'US', 'National').should.equal('(213) 373-4253')
+		formatNumber('2133734253', 'US', 'International').should.equal('+1 213 373 4253')
 	})
 
 	it('should format using formats with no leading digits (`format.leadingDigitsPatterns().length === 0`)', () => {
@@ -72,14 +47,14 @@ describe('format', () => {
 
 		// Parse number from string.
 		formatNumber('+78005553535', 'NATIONAL', options).should.equal('8 (800) 555-35-35')
-		formatNumber('8005553535', 'NATIONAL', { ...options, defaultCountry: 'RU' }).should.equal('8 (800) 555-35-35')
+		formatNumber('8005553535', 'RU', 'NATIONAL', options).should.equal('8 (800) 555-35-35')
 	})
 
 	it('should format with national prefix when specifically instructed', () => {
 		// With national prefix.
-		formatNumber('88005553535', 'NATIONAL', { defaultCountry: 'RU' }).should.equal('8 (800) 555-35-35')
+		formatNumber('88005553535', 'RU', 'NATIONAL').should.equal('8 (800) 555-35-35')
 		// Without national prefix via an explicitly set option.
-		formatNumber('88005553535', 'NATIONAL', { nationalPrefix: false, defaultCountry: 'RU' }).should.equal('800 555-35-35')
+		formatNumber('88005553535', 'RU', 'NATIONAL', { nationalPrefix: false }).should.equal('800 555-35-35')
 	})
 
 	it('should format valid phone numbers', () => {
@@ -104,40 +79,40 @@ describe('format', () => {
 	it('should work in edge cases', () => {
 		let thrower
 
-		// // No phone number
-		// formatNumber('', 'INTERNATIONAL', { defaultCountry: 'RU' }).should.equal('')
-		// formatNumber('', 'NATIONAL', { defaultCountry: 'RU' }).should.equal('')
+		// No phone number
+		formatNumber('', 'RU', 'INTERNATIONAL').should.equal('')
+		formatNumber('', 'RU', 'NATIONAL').should.equal('')
 
 		formatNumber({ country: 'RU', phone: '' }, 'INTERNATIONAL').should.equal('+7')
 		formatNumber({ country: 'RU', phone: '' }, 'NATIONAL').should.equal('')
 
 		// No suitable format
-		formatNumber('+121337342530', 'NATIONAL', { defaultCountry: 'US' }).should.equal('21337342530')
+		formatNumber('+121337342530', 'US', 'NATIONAL').should.equal('21337342530')
 		// No suitable format (leading digits mismatch)
-		formatNumber('28199999', 'NATIONAL', { defaultCountry: 'AD' }).should.equal('28199999')
+		formatNumber('28199999', 'AD', 'NATIONAL').should.equal('28199999')
 
-		// // Numerical `value`
-		// thrower = () => formatNumber(89150000000, 'NATIONAL', { defaultCountry: 'RU' })
-		// thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
+		// Numerical `value`
+		thrower = () => formatNumber(89150000000, 'RU', 'NATIONAL')
+		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
 
-		// // No metadata for country
-		// expect(() => formatNumber('+121337342530', 'NATIONAL', { defaultCountry: 'USA' })).to.throw('Unknown country')
-		// expect(() => formatNumber('21337342530', 'NATIONAL', { defaultCountry: 'USA' })).to.throw('Unknown country')
+		// No metadata for country
+		expect(() => formatNumber('+121337342530', 'USA', 'NATIONAL')).to.throw('Unknown country')
+		expect(() => formatNumber('21337342530', 'USA', 'NATIONAL')).to.throw('Unknown country')
 
 		// No format type
 		thrower = () => formatNumber('+123')
-		thrower.should.throw('Unknown "format" argument')
+		thrower.should.throw('`format` argument not passed')
 
 		// Unknown format type
-		thrower = () => formatNumber('123', 'Gay', { defaultCountry: 'US' })
+		thrower = () => formatNumber('123', 'US', 'Gay')
 		thrower.should.throw('Unknown "format" argument')
 
-		// // No metadata
-		// thrower = () => _formatNumber('123', 'E.164', { defaultCountry: 'RU' })
-		// thrower.should.throw('`metadata`')
+		// No metadata
+		thrower = () => _formatNumber('123', 'US', 'E.164')
+		thrower.should.throw('`metadata`')
 
 		// No formats
-		formatNumber('012345', 'NATIONAL', { defaultCountry: 'AC' }).should.equal('012345')
+		formatNumber('012345', 'AC', 'NATIONAL').should.equal('012345')
 
 		// No `fromCountry` for `IDD` format.
 		expect(formatNumber('+78005553535', 'IDD')).to.be.undefined

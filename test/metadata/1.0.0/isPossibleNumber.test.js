@@ -1,5 +1,5 @@
 import metadata from './metadata.min.json' assert { type: 'json' }
-import _isPossibleNumber from '../../../source/isPossibleNumber.js'
+import _isPossibleNumber from '../../../source/legacy/isPossibleNumber.js'
 
 function isPossibleNumber(...parameters)
 {

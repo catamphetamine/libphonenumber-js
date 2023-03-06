@@ -1,5 +1,5 @@
-import { normalizeArguments } from './parsePhoneNumber.js'
-import PhoneNumberMatcher from './PhoneNumberMatcher.js'
+import normalizeArguments from '../normalizeArguments.js'
+import PhoneNumberMatcher from '../PhoneNumberMatcher.js'
 
 /**
  * @return ES6 `for ... of` iterator.

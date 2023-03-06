@@ -36,7 +36,7 @@ import isValidCandidate, { LEAD_CLASS } from './findNumbers/isValidCandidate.js'
 
 import { isSupportedCountry } from './metadata.js'
 
-import parseNumber from './parse_.js'
+import parseNumber from './parse.js'
 
 const EXTN_PATTERNS_FOR_MATCHING = createExtensionPattern('matching')
 

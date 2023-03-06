@@ -6,15 +6,15 @@ import {
 	VALID_PUNCTUATION,
 	VALID_DIGITS,
 	WHITESPACE
-} from './constants.js'
+} from '../constants.js'
 
-import parse from './parse_.js'
-import { VALID_PHONE_NUMBER_WITH_EXTENSION } from './helpers/isViablePhoneNumber.js'
-import createExtensionPattern from './helpers/extension/createExtensionPattern.js'
+import parse from '../parse.js'
+import { VALID_PHONE_NUMBER_WITH_EXTENSION } from '../helpers/isViablePhoneNumber.js'
+import createExtensionPattern from '../helpers/extension/createExtensionPattern.js'
 
-import parsePreCandidate from './findNumbers/parsePreCandidate.js'
-import isValidPreCandidate from './findNumbers/isValidPreCandidate.js'
-import isValidCandidate from './findNumbers/isValidCandidate.js'
+import parsePreCandidate from '../findNumbers/parsePreCandidate.js'
+import isValidPreCandidate from '../findNumbers/isValidPreCandidate.js'
+import isValidCandidate from '../findNumbers/isValidCandidate.js'
 
 /**
  * Regexp of all possible ways to write extensions, for use when parsing. This

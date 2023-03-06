@@ -1,10 +1,13 @@
-import metadata from '../metadata.min.json' assert { type: 'json' }
-import _parseNumber from '../../../../source/legacy/parse.js'
+import metadata from '../../metadata.min.json' assert { type: 'json' }
+import _parseNumber from './parse.js'
+import Metadata from '../metadata.js'
 
 function parseNumber(...parameters) {
 	parameters.push(metadata)
 	return _parseNumber.apply(this, parameters)
 }
+
+const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
 describe('parse', () => {
 	it('should not parse invalid phone numbers', () => {
@@ -93,7 +96,6 @@ describe('parse', () => {
 
 		// International phone number.
 		// Single country with the given country phone code.
-		// Strips national prefix `0`.
 		parseNumber('+33011222333', { extended: true }).should.deep.equal({
 			country            : 'FR',
 			countryCallingCode : '33',
@@ -105,7 +107,7 @@ describe('parse', () => {
 		})
 
 		// Too short.
-		// Strips national prefix `8`.
+		// Won't strip national prefix `8` because otherwise the number would be too short.
 		parseNumber('+7 (800) 55-35-35', { extended: true }).should.deep.equal({
 			country            : 'RU',
 			countryCallingCode : '7',
@@ -117,10 +119,10 @@ describe('parse', () => {
 		})
 
 		// Too long.
-		parseNumber('+7 (800) 55-35-35-555', { extended: true }).should.deep.equal({
+		parseNumber('+1 213 37342530', { extended: true }).should.deep.equal({
 			country            : undefined,
-			countryCallingCode : '7',
-			phone              : '00553535555',
+			countryCallingCode : '1',
+			phone              : '21337342530',
 			carrierCode        : undefined,
 			ext                : undefined,
 			valid              : false,
@@ -380,6 +382,143 @@ describe('parse', () => {
 	})
 
 	it('should parse non-geographic numbering plan phone numbers', () => {
-		parseNumber('+870773111632').should.deep.equal({})
+		parseNumber('+870773111632').should.deep.equal(
+			USE_NON_GEOGRAPHIC_COUNTRY_CODE ?
+			{
+				country: '001',
+				phone: '773111632'
+			} :
+			{}
+		)
+	})
+
+	it('should parse non-geographic numbering plan phone numbers (default country code)', () => {
+		parseNumber('773111632', { defaultCallingCode: '870' }).should.deep.equal(
+			USE_NON_GEOGRAPHIC_COUNTRY_CODE ?
+			{
+				country: '001',
+				phone: '773111632'
+			} :
+			{}
+		)
+	})
+
+	it('should parse non-geographic numbering plan phone numbers (extended)', () => {
+		parseNumber('+870773111632', { extended: true }).should.deep.equal({
+			country: USE_NON_GEOGRAPHIC_COUNTRY_CODE ? '001' : undefined,
+			countryCallingCode: '870',
+			phone: '773111632',
+			carrierCode: undefined,
+			ext: undefined,
+			possible: true,
+			valid: true
+		})
+	})
+
+	it('should parse non-geographic numbering plan phone numbers (default country code) (extended)', () => {
+		parseNumber('773111632', { defaultCallingCode: '870', extended: true }).should.deep.equal({
+			country: USE_NON_GEOGRAPHIC_COUNTRY_CODE ? '001' : undefined,
+			countryCallingCode: '870',
+			phone: '773111632',
+			carrierCode: undefined,
+			ext: undefined,
+			possible: true,
+			valid: true
+		})
+	})
+
+	it('shouldn\'t crash when invalid `defaultCallingCode` is passed', () => {
+		expect(() => parseNumber('773111632', { defaultCallingCode: '999' }))
+			.to.throw('Unknown calling code')
+	})
+
+	it('shouldn\'t set `country` when there\'s no `defaultCountry` and `defaultCallingCode` is not of a "non-geographic entity"', () => {
+		parseNumber('88005553535', { defaultCallingCode: '7' }).should.deep.equal({
+			country: 'RU',
+			phone: '8005553535'
+		})
+	})
+
+	it('should correctly parse numbers starting with the same digit as the national prefix', () => {
+		// https://github.com/catamphetamine/libphonenumber-js/issues/373
+		// `BY`'s `national_prefix` is `8`.
+		parseNumber('+37582004910060').should.deep.equal({
+			country: 'BY',
+			phone: '82004910060'
+		});
+	})
+
+	it('should autocorrect numbers without a leading +', () => {
+		// https://github.com/catamphetamine/libphonenumber-js/issues/376
+		parseNumber('375447521111', 'BY').should.deep.equal({
+			country: 'BY',
+			phone: '447521111'
+		});
+		// https://github.com/catamphetamine/libphonenumber-js/issues/316
+		parseNumber('33612902554', 'FR').should.deep.equal({
+			country: 'FR',
+			phone: '612902554'
+		});
+		// https://github.com/catamphetamine/libphonenumber-js/issues/375
+		parseNumber('61438331999', 'AU').should.deep.equal({
+			country: 'AU',
+			phone: '438331999'
+		});
+		// A case when `49` is a country calling code of a number without a leading `+`.
+		parseNumber('4930123456', 'DE').should.deep.equal({
+			country: 'DE',
+			phone: '30123456'
+		});
+		// A case when `49` is a valid area code.
+		parseNumber('4951234567890', 'DE').should.deep.equal({
+			country: 'DE',
+			phone: '4951234567890'
+		});
+	})
+
+	it('should parse extensions (long extensions with explicitl abels)', () => {
+		// Test lower and upper limits of extension lengths for each type of label.
+
+		// Firstly, when in RFC format: PhoneNumberUtil.extLimitAfterExplicitLabel
+		parseNumber('33316005 ext 0', 'NZ').ext.should.equal('0')
+		parseNumber('33316005 ext 01234567890123456789', 'NZ').ext.should.equal('01234567890123456789')
+		// Extension too long.
+		expect(parseNumber('33316005 ext 012345678901234567890', 'NZ').ext).to.be.undefined
+
+		// Explicit extension label.
+		parseNumber('03 3316005ext:1', 'NZ').ext.should.equal('1')
+		parseNumber('03 3316005 xtn:12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
+		parseNumber('03 3316005 extension\t12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
+		parseNumber('03 3316005 xtensio:12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
+		parseNumber('03 3316005 xtensión, 12345678901234567890#', 'NZ').ext.should.equal('12345678901234567890')
+		parseNumber('03 3316005extension.12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
+		parseNumber('03 3316005 доб:12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
+
+		// Extension too long.
+		expect(parseNumber('03 3316005 extension 123456789012345678901', 'NZ').ext).to.be.undefined
+	})
+
+	it('should parse extensions (long extensions with auto dialling labels)', () => {
+		parseNumber('+12679000000,,123456789012345#').ext.should.equal('123456789012345')
+		parseNumber('+12679000000;123456789012345#').ext.should.equal('123456789012345')
+		parseNumber('+442034000000,,123456789#').ext.should.equal('123456789')
+		// Extension too long.
+		expect(parseNumber('+12679000000,,1234567890123456#').ext).to.be.undefined
+	})
+
+	it('should parse extensions (short extensions with ambiguous characters)', () => {
+		parseNumber('03 3316005 x 123456789', 'NZ').ext.should.equal('123456789')
+		parseNumber('03 3316005 x. 123456789', 'NZ').ext.should.equal('123456789')
+		parseNumber('03 3316005 #123456789#', 'NZ').ext.should.equal('123456789')
+		parseNumber('03 3316005 ~ 123456789', 'NZ').ext.should.equal('123456789')
+		// Extension too long.
+		expect(parseNumber('03 3316005 ~ 1234567890', 'NZ').ext).to.be.undefined
+	})
+
+	it('should parse extensions (short extensions when not sure of label)', () => {
+		parseNumber('+1123-456-7890 666666#', { v2: true }).ext.should.equal('666666')
+		parseNumber('+11234567890-6#', { v2: true }).ext.should.equal('6')
+		// Extension too long.
+		expect(() => parseNumber('+1123-456-7890 7777777#', { v2: true })).to.throw('NOT_A_NUMBER')
 	})
 })

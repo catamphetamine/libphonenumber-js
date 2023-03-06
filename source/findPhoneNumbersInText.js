@@ -1,45 +1,12 @@
-import findNumbers from './findNumbers.js'
+import PhoneNumberMatcher from './PhoneNumberMatcher.js'
+import normalizeArguments from './normalizeArguments.js'
 
-export default function findPhoneNumbersInText(text, defaultCountry, options, metadata) {
-	const args = getArguments(defaultCountry, options, metadata)
-	return findNumbers(text, args.options, args.metadata)
-}
-
-export function getArguments(defaultCountry, options, metadata) {
-	if (metadata) {
-		if (defaultCountry) {
-			options = {
-				...options,
-				defaultCountry
-			}
-		}
-	} else {
-		if (options) {
-			metadata = options
-			if (defaultCountry) {
-				if (is_object(defaultCountry)) {
-					options = defaultCountry
-				} else {
-					options = { defaultCountry }
-				}
-			} else {
-				options = undefined
-			}
-		} else {
-			metadata = defaultCountry
-			options = undefined
-		}
+export default function findPhoneNumbersInText() {
+	const { text, options, metadata } = normalizeArguments(arguments)
+	const matcher = new PhoneNumberMatcher(text, { ...options, v2: true }, metadata)
+	const results = []
+	while (matcher.hasNext()) {
+		results.push(matcher.next())
 	}
-	return {
-		options: {
-			...options,
-			v2: true
-		},
-		metadata
-	}
+	return results
 }
-
-// Babel transforms `typeof` into some "branches"
-// so istanbul will show this as "branch not covered".
-/* istanbul ignore next */
-const is_object = _ => typeof _ === 'object'

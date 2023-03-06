@@ -1,5 +1,5 @@
 import metadata from '../metadata.min.json' assert { type: 'json' }
-import formatter from '../../../../source/format.js'
+import formatter from '../../../../source/legacy/format.js'
 
 function format(...parameters)
 {

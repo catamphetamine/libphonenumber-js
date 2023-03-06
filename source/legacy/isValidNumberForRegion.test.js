@@ -1,4 +1,4 @@
-import metadata from '../metadata.min.json' assert { type: 'json' }
+import metadata from '../../metadata.min.json' assert { type: 'json' }
 import isValidNumberForRegionCustom from './isValidNumberForRegion.js'
 import _isValidNumberForRegion from './isValidNumberForRegion_.js'
 

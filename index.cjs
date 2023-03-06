@@ -31,39 +31,39 @@ exports.isPossiblePhoneNumber = min.isPossiblePhoneNumber
 exports.validatePhoneNumberLength = min.validatePhoneNumberLength
 
 // `parse()` and `parseNumber()` functions are deprecated.
-var parse_ = require('./build/parse.js').default
+var parse_ = require('./build/legacy/parse.js').default
 exports.parse = function parse() {
 	return withMetadataArgument(parse_, arguments)
 }
 exports.parseNumber = exports.parse
 
 // `format()` and `formatNumber()` functions are deprecated.
-var format_ = require('./build/format.js').default
+var format_ = require('./build/legacy/format.js').default
 exports.format = function format() {
 	return withMetadataArgument(format_, arguments)
 }
 exports.formatNumber = exports.format
 
 // Deprecated.
-var getNumberType_ = require('./build/getNumberType.js').default
+var getNumberType_ = require('./build/legacy/getNumberType.js').default
 exports.getNumberType = function getNumberType() {
 	return withMetadataArgument(getNumberType_, arguments)
 }
 
 // Deprecated.
-var isPossibleNumber_ = require('./build/isPossibleNumber.js').default
+var isPossibleNumber_ = require('./build/legacy/isPossibleNumber.js').default
 exports.isPossibleNumber = function isPossibleNumber() {
 	return withMetadataArgument(isPossibleNumber_, arguments)
 }
 
 // Deprecated.
-var isValidNumber_ = require('./build/validate.js').default
+var isValidNumber_ = require('./build/legacy/isValidNumber.js').default
 exports.isValidNumber = function isValidNumber() {
 	return withMetadataArgument(isValidNumber_, arguments)
 }
 
 // Deprecated.
-var isValidNumberForRegion_ = require('./build/isValidNumberForRegion.js').default
+var isValidNumberForRegion_ = require('./build/legacy/isValidNumberForRegion.js').default
 exports.isValidNumberForRegion = function isValidNumberForRegion() {
 	return withMetadataArgument(isValidNumberForRegion_, arguments)
 }
@@ -72,19 +72,19 @@ exports.getExampleNumber = min.getExampleNumber
 exports.Metadata = min.Metadata
 
 // Deprecated.
-var findPhoneNumbers_ = require('./build/findPhoneNumbers.js').default
+var findPhoneNumbers_ = require('./build/legacy/findPhoneNumbers.js').default
 exports.findPhoneNumbers = function findPhoneNumbers() {
 	return withMetadataArgument(findPhoneNumbers_, arguments)
 }
 
 // Deprecated.
-var searchPhoneNumbers_ = require('./build/findPhoneNumbers.js').searchPhoneNumbers
+var searchPhoneNumbers_ = require('./build/legacy/findPhoneNumbers.js').searchPhoneNumbers
 exports.searchPhoneNumbers = function searchPhoneNumbers() {
 	return withMetadataArgument(searchPhoneNumbers_, arguments)
 }
 
 // Deprecated.
-var PhoneNumberSearch_ = require('./build/findPhoneNumbers_.js').PhoneNumberSearch
+var PhoneNumberSearch_ = require('./build/legacy/findPhoneNumbersInitialImplementation.js').PhoneNumberSearch
 exports.PhoneNumberSearch = function PhoneNumberSearch(text, options) {
 	return PhoneNumberSearch_.call(this, text, options, metadata)
 }

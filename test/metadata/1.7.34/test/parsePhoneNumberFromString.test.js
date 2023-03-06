@@ -1,4 +1,4 @@
-import _parsePhoneNumberFromString from '../../../../source/parsePhoneNumberFromString.js'
+import _parsePhoneNumberFromString from '../../../../source/parsePhoneNumber.js'
 import metadata from '../metadata.min.json' assert { type: 'json' }
 
 function parsePhoneNumberFromString(...parameters) {

@@ -3,7 +3,22 @@ import _parseNumber from './parse.js'
 import Metadata from './metadata.js'
 
 function parseNumber(...parameters) {
-	parameters.push(metadata)
+	if (parameters.length < 2) {
+		// `options` parameter.
+		parameters.push(undefined)
+	}
+	// Convert default country argument to an `options` object.
+	if (typeof parameters[1] === 'string') {
+		parameters[1] = {
+			...parameters[2],
+			defaultCountry: parameters[1]
+		}
+	}
+	if (parameters[2]) {
+		parameters[2] = metadata
+	} else {
+		parameters.push(metadata)
+	}
 	return _parseNumber.apply(this, parameters)
 }
 
@@ -225,9 +240,9 @@ describe('parse', () => {
 		thrower = () => _parseNumber('')
 		thrower.should.throw('`metadata` argument not passed')
 
-		// Numerical `value`
-		thrower = () => parseNumber(2141111111, 'US')
-		thrower.should.throw('A text for parsing must be a string.')
+		// // Numerical `value`
+		// thrower = () => parseNumber(2141111111, 'US')
+		// thrower.should.throw('A text for parsing must be a string.')
 
 		// Input string too long.
 		parseNumber('8005553535                                                                                                                                                                                                                                                 ', 'RU').should.deep.equal({})

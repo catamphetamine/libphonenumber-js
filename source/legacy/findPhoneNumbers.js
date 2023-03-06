@@ -1,8 +1,8 @@
 // This is a legacy function.
 // Use `findNumbers()` instead.
 
-import _findPhoneNumbers, { searchPhoneNumbers as _searchPhoneNumbers } from './findPhoneNumbers_.js'
-import { normalizeArguments } from './parsePhoneNumber.js'
+import _findPhoneNumbers, { searchPhoneNumbers as _searchPhoneNumbers } from './findPhoneNumbersInitialImplementation.js'
+import normalizeArguments from '../normalizeArguments.js'
 
 export default function findPhoneNumbers()
 {
