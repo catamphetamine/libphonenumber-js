@@ -1,7 +1,7 @@
 import {
 	character,
 	MatchTree
-} from './AsYouTypeFormatter.PatternParser'
+} from './AsYouTypeFormatter.PatternParser.d.js'
 
 interface MatchOptions {
 	allowOverflow?: boolean;

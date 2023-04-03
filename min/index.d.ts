@@ -15,7 +15,7 @@ import {
   NumberFormat,
   NumberingPlan,
   ValidatePhoneNumberLengthResult
-} from '../types';
+} from '../types.d.js';
 
 // They say this re-export is required.
 // https://github.com/catamphetamine/libphonenumber-js/pull/290#issuecomment-453281180
@@ -59,8 +59,8 @@ export function searchNumbers(text: string, options?: CountryCode): IterableIter
 export function findNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): NumberFound[];
 export function searchNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): IterableIterator<NumberFound>;
 
-export function findPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): NumberFound[];
-export function searchPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): IterableIterator<NumberFound>;
+export function findPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extended?: boolean }): NumberFound[];
+export function searchPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extended?: boolean }): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
   constructor(text: string, options?: { defaultCountry?: CountryCode, v2: true });

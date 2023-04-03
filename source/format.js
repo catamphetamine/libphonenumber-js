@@ -128,7 +128,7 @@ function formatNationalNumber(number, carrierCode, formatAs, metadata, options) 
 	)
 }
 
-function chooseFormatForNumber(availableFormats, nationalNnumber) {
+export function chooseFormatForNumber(availableFormats, nationalNnumber) {
 	for (const format of availableFormats) {
 		// Validate leading digits.
 		// The test case for "else path" could be found by searching for

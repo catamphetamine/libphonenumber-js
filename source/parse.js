@@ -17,13 +17,14 @@ import extractExtension from './helpers/extension/extractExtension.js'
 import parseIncompletePhoneNumber from './parseIncompletePhoneNumber.js'
 import getCountryCallingCode from './getCountryCallingCode.js'
 import { isPossibleNumber } from './isPossible.js'
-import { parseRFC3966 } from './helpers/RFC3966.js'
+// import { parseRFC3966 } from './helpers/RFC3966.js'
 import PhoneNumber from './PhoneNumber.js'
 import matchesEntirely from './helpers/matchesEntirely.js'
 import extractCountryCallingCode from './helpers/extractCountryCallingCode.js'
 import extractNationalNumber from './helpers/extractNationalNumber.js'
 import stripIddPrefix from './helpers/stripIddPrefix.js'
 import getCountryByCallingCode from './helpers/getCountryByCallingCode.js'
+import extractFormattedPhoneNumberFromPossibleRfc3966NumberUri from './helpers/extractFormattedPhoneNumberFromPossibleRfc3966NumberUri.js'
 
 // We don't allow input strings for parsing to be longer than 250 chars.
 // This prevents malicious input from consuming CPU.
@@ -96,6 +97,7 @@ export default function parse(text, options, metadata) {
 		country,
 		nationalNumber,
 		countryCallingCode,
+		countryCallingCodeSource,
 		carrierCode
 	} = parsePhoneNumber(
 		formattedPhoneNumber,
@@ -154,6 +156,7 @@ export default function parse(text, options, metadata) {
 		if (ext) {
 			phoneNumber.ext = ext
 		}
+		phoneNumber.__countryCallingCodeSource = countryCallingCodeSource
 		return phoneNumber
 	}
 
@@ -229,11 +232,14 @@ function extractFormattedPhoneNumber(text, extract, throwOnError) {
  * @return {object} `{ ?number, ?ext }`.
  */
 function parseInput(text, v2, extract) {
-	// Parse RFC 3966 phone number URI.
-	if (text && text.indexOf('tel:') === 0) {
-		return parseRFC3966(text)
-	}
-	let number = extractFormattedPhoneNumber(text, extract, v2)
+	// // Parse RFC 3966 phone number URI.
+	// if (text && text.indexOf('tel:') === 0) {
+	// 	return parseRFC3966(text)
+	// }
+	// let number = extractFormattedPhoneNumber(text, extract, v2)
+	let number = extractFormattedPhoneNumberFromPossibleRfc3966NumberUri(text, {
+		extractFormattedPhoneNumber: (text) => extractFormattedPhoneNumber(text, extract, v2)
+	})
 	// If the phone number is not viable, then abort.
 	if (!number) {
 		return {}
@@ -282,7 +288,7 @@ function parsePhoneNumber(
 	metadata
 ) {
 	// Extract calling code from phone number.
-	let { countryCallingCode, number } = extractCountryCallingCode(
+	let { countryCallingCodeSource, countryCallingCode, number } = extractCountryCallingCode(
 		parseIncompletePhoneNumber(formattedPhoneNumber),
 		defaultCountry,
 		defaultCallingCode,
@@ -313,7 +319,10 @@ function parsePhoneNumber(
 	else return {}
 
 	if (!number) {
-		return { countryCallingCode }
+		return {
+			countryCallingCodeSource,
+			countryCallingCode
+		}
 	}
 
 	const {
@@ -350,6 +359,7 @@ function parsePhoneNumber(
 	return {
 		country,
 		countryCallingCode,
+		countryCallingCodeSource,
 		nationalNumber,
 		carrierCode
 	}

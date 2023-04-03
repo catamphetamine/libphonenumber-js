@@ -63,7 +63,7 @@ exports.isPossibleNumber = function isPossibleNumber() {
 }
 
 // Deprecated.
-var isValidNumber_ = require('./build/legacy/legacy/isValidNumber.js').default
+var isValidNumber_ = require('./build/legacy/isValidNumber.js').default
 exports.isValidNumber = function isValidNumber() {
 	return withMetadataArgument(isValidNumber_, arguments)
 }

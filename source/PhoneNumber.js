@@ -9,6 +9,12 @@ import formatNumber from './format.js'
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
 export default class PhoneNumber {
+	/**
+	 * @param  {string} countryOrCountryCallingCode
+	 * @param  {string} nationalNumber
+	 * @param  {object} metadata — Metadata JSON
+	 * @return {PhoneNumber}
+	 */
 	constructor(countryOrCountryCallingCode, nationalNumber, metadata) {
 		if (!countryOrCountryCallingCode) {
 			throw new TypeError('`country` or `countryCallingCode` not passed')

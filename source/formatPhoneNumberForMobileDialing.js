@@ -13,12 +13,6 @@ import getCountryCallingCode from './getCountryCallingCode.js'
 const REGION_CODE_FOR_NON_GEO_ENTITY = '001'
 
 /**
- * The prefix that needs to be inserted in front of a Colombian landline number
- * when dialed from a mobile phone in Colombia.
- */
-const COLOMBIA_MOBILE_TO_FIXED_LINE_PREFIX = '3'
-
-/**
  * Returns a number formatted in such a way that it can be dialed from a mobile
  * phone in a specific region. If the number cannot be reached from the region
  * (e.g. some countries block toll-free numbers from being called outside of the
@@ -57,13 +51,7 @@ export default function(number, from_country, with_formatting, metadata) {
 			number_type === 'FIXED_LINE_OR_MOBILE'
 
 		// Carrier codes may be needed in some countries. We handle this here.
-		if (country === 'CO' && number_type === 'FIXED_LINE') {
-			formatted_number = formatNationalNumberWithCarrierCode(
-				number,
-				COLOMBIA_MOBILE_TO_FIXED_LINE_PREFIX
-			)
-		}
-		else if (country == 'BR' && is_fixed_line_or_mobile) {
+		if (country == 'BR' && is_fixed_line_or_mobile) {
 			formatted_number =
 				carrierCode ?
 				formatNationalNumberWithPreferredCarrierCode(number) :

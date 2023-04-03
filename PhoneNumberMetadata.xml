@@ -4110,14 +4110,12 @@
                mobileNumberPortableRegion="true">
       <generalDesc>
         <nationalNumberPattern>
+          590\d{6}|
           (?:
-            590|
-            (?:
-              69|
-              80
-            )\d|
-            976
-          )\d{6}
+            69|
+            80|
+            9\d
+          )\d{7}
         </nationalNumberPattern>
       </generalDesc>
       <fixedLine>
@@ -4160,7 +4158,15 @@
       <voip>
         <possibleLengths national="9"/>
         <exampleNumber>976012345</exampleNumber>
-        <nationalNumberPattern>976[01]\d{5}</nationalNumberPattern>
+        <nationalNumberPattern>
+          9(?:
+            (?:
+              395|
+              76[018]
+            )\d|
+            475[01]
+          )\d{4}
+        </nationalNumberPattern>
       </voip>
     </territory>
 
@@ -11099,21 +11105,24 @@
                mobileNumberPortableRegion="true">
       <availableFormats>
         <numberFormat pattern="(\d{3})(\d{2})(\d{2})(\d{2})" nationalPrefixFormattingRule="$NP$FG">
-          <leadingDigits>[569]</leadingDigits>
+          <leadingDigits>
+            [56]|
+            9[47]
+          </leadingDigits>
           <format>$1 $2 $3 $4</format>
         </numberFormat>
         <numberFormat pattern="(\d{3})(\d{2})(\d{2})(\d{2})" nationalPrefixFormattingRule="$NP$FG">
-          <leadingDigits>8</leadingDigits>
+          <leadingDigits>[89]</leadingDigits>
           <format>$1 $2 $3 $4</format>
         </numberFormat>
       </availableFormats>
       <generalDesc>
         <nationalNumberPattern>
+          [56]94\d{6}|
           (?:
-            [56]94|
-            80\d|
-            976
-          )\d{6}
+            80|
+            9\d
+          )\d{7}
         </nationalNumberPattern>
       </generalDesc>
       <fixedLine>
@@ -11152,7 +11161,15 @@
       <voip>
         <possibleLengths national="9"/>
         <exampleNumber>976012345</exampleNumber>
-        <nationalNumberPattern>976\d{6}</nationalNumberPattern>
+        <nationalNumberPattern>
+          9(?:
+            (?:
+              396|
+              76\d
+            )\d|
+            476[01]
+          )\d{4}
+        </nationalNumberPattern>
       </voip>
     </territory>
 
@@ -11387,9 +11404,9 @@
       <generalDesc>
         <nationalNumberPattern>
           (?:
-            [25]\d\d|
-            606
-          )\d{5}
+            [25]\d|
+            60
+          )\d{6}
         </nationalNumberPattern>
       </generalDesc>
       <fixedLine>
@@ -11399,8 +11416,8 @@
           2190[0-2]\d{3}|
           2(?:
             0(?:
-              0\d|
-              20
+              [02]\d|
+              3[01]
             )|
             16[24-9]|
             2[2-5]\d
@@ -11411,14 +11428,17 @@
         <possibleLengths national="8"/>
         <exampleNumber>57123456</exampleNumber>
         <nationalNumberPattern>
-          525(?:
-            0\d|
-            1[0-4]
-          )\d{3}|
+          5251[0-4]\d{3}|
           (?:
-            5[146-8]\d|
-            606
-          )\d{5}
+            5(?:
+              [146-8]\d\d|
+              250
+            )|
+            60(?:
+              1[01]|
+              6\d
+            )
+          )\d{4}
         </nationalNumberPattern>
       </mobile>
     </territory>
@@ -11523,7 +11543,7 @@
         <nationalNumberPattern>
           (?:
             [23679]\d|
-            5[0-389]
+            5[0-489]
           )\d{5}
         </nationalNumberPattern>
       </mobile>
@@ -11610,14 +11630,12 @@
       </availableFormats>
       <generalDesc>
         <nationalNumberPattern>
+          590\d{6}|
           (?:
-            590|
-            (?:
-              69|
-              80
-            )\d|
-            976
-          )\d{6}
+            69|
+            80|
+            9\d
+          )\d{7}
         </nationalNumberPattern>
       </generalDesc>
       <fixedLine>
@@ -11630,9 +11648,8 @@
             2[0-68]|
             3[1289]|
             5[3-579]|
-            6[0-489]|
+            [68][0-689]|
             7[08]|
-            8[0-689]|
             9\d
           )\d{4}
         </nationalNumberPattern>
@@ -11665,7 +11682,15 @@
       <voip>
         <possibleLengths national="9"/>
         <exampleNumber>976012345</exampleNumber>
-        <nationalNumberPattern>976[01]\d{5}</nationalNumberPattern>
+        <nationalNumberPattern>
+          9(?:
+            (?:
+              395|
+              76[018]
+            )\d|
+            475[01]
+          )\d{4}
+        </nationalNumberPattern>
       </voip>
     </territory>
 
@@ -12623,17 +12648,22 @@
         <possibleLengths national="8,9"/>
         <exampleNumber>921234567</exampleNumber>
         <nationalNumberPattern>
-          98\d{6,7}|
-          975(?:
-            1\d|
-            77|
-            9[67]
-          )\d{4}|
           9(?:
-            0[1-9]|
-            [1259]\d|
-            7[0679]
-          )\d{6}
+            (?:
+              0[1-9]|
+              [12589]\d
+            )\d\d|
+            7(?:
+              [0679]\d\d|
+              5(?:
+                [01]\d|
+                44|
+                77|
+                9[67]
+              )
+            )
+          )\d{4}|
+          98\d{6}
         </nationalNumberPattern>
       </mobile>
       <tollFree>
@@ -17695,7 +17725,6 @@
             9(?:
               (?:
                 0[09]|
-                22|
                 [4679]\d|
                 8[057-9]
               )\d|
@@ -17703,9 +17732,13 @@
                 1[01]|
                 99
               )|
+              2(?:
+                00|
+                2\d
+              )|
               3(?:
                 00|
-                33
+                3[03]
               )|
               5(?:
                 00|
@@ -19524,14 +19557,12 @@
                mobileNumberPortableRegion="true">
       <generalDesc>
         <nationalNumberPattern>
+          590\d{6}|
           (?:
-            590|
-            (?:
-              69|
-              80
-            )\d|
-            976
-          )\d{6}
+            69|
+            80|
+            9\d
+          )\d{7}
         </nationalNumberPattern>
       </generalDesc>
       <fixedLine>
@@ -19577,7 +19608,15 @@
       <voip>
         <possibleLengths national="9"/>
         <exampleNumber>976012345</exampleNumber>
-        <nationalNumberPattern>976[01]\d{5}</nationalNumberPattern>
+        <nationalNumberPattern>
+          9(?:
+            (?:
+              395|
+              76[018]
+            )\d|
+            475[01]
+          )\d{4}
+        </nationalNumberPattern>
       </voip>
     </territory>
 
@@ -20673,10 +20712,8 @@
         <exampleNumber>976612345</exampleNumber>
         <nationalNumberPattern>
           9(?:
-            (?:
-              39|
-              47
-            )7[01]|
+            397[01]|
+            477[0-2]|
             76(?:
               6\d|
               7[0-367]
@@ -21665,8 +21702,7 @@
                 [1-9]\d
               )|
               7(?:
-                [0134]\d|
-                2[1-9]|
+                [0-4]\d|
                 5[0-6]
               )
             )|
@@ -24097,6 +24133,10 @@
           <leadingDigits>[45]</leadingDigits>
           <format>$1 $2 $3</format>
         </numberFormat>
+        <numberFormat pattern="(\d{3})(\d{3})(\d{3})">
+          <leadingDigits>7</leadingDigits>
+          <format>$1 $2 $3</format>
+        </numberFormat>
         <numberFormat pattern="(\d{3})(\d{2})(\d{2})(\d{2})" nationalPrefixFormattingRule="$NP$FG">
           <leadingDigits>8</leadingDigits>
           <format>$1 $2 $3 $4</format>
@@ -24104,10 +24144,11 @@
       </availableFormats>
       <generalDesc>
         <nationalNumberPattern>
+          [45]\d{5}|
           (?:
-            [45]|
-            80\d\d
-          )\d{5}
+            708|
+            80\d
+          )\d{6}
         </nationalNumberPattern>
       </generalDesc>
       <!-- Fixed-line and mobile numbers do not include any main prefix (like country code)
@@ -24128,12 +24169,13 @@
       <!-- 44 XXXX might be a mobile range as it is assigned to Globaltel. Category is not
            mentioned in the ITU doc. -->
       <mobile>
-        <possibleLengths national="6"/>
+        <possibleLengths national="6,9"/>
         <exampleNumber>551234</exampleNumber>
         <nationalNumberPattern>
           (?:
             4[02-4]|
-            5[056]
+            5[056]|
+            708[45][0-5]
           )\d{4}
         </nationalNumberPattern>
       </mobile>
@@ -24428,9 +24470,13 @@
         <exampleNumber>707123456</exampleNumber>
         <nationalNumberPattern>
           70(?:
-            7\d|
-            8[17]
-          )\d{5}
+            38[01]|
+            596|
+            (?:
+              7\d|
+              8[17]
+            )\d
+          )\d{4}
         </nationalNumberPattern>
       </uan>
       <voicemail>

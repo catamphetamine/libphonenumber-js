@@ -71,4 +71,8 @@ describe('PhoneNumberMatcher', () => {
 		test('+54 23 1234 0000', 'AR', '2312340000')
 		test('023 1234 0000', 'AR', '2312340000')
 	})
+
+	it('should only support the supported leniency values', function() {
+		expect(() => new PhoneNumberMatcher('+54 23 1234 0000', { leniency: 'STRICT_GROUPING', v2: true }, metadata)).to.throw('Supported values: "POSSIBLE", "VALID".')
+	})
 })

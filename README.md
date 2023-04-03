@@ -444,6 +444,11 @@ const phoneNumber = new PhoneNumber('RU', '8005553535', metadata)
 * `ext: string?` — The [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)), if any. Example: `"1234"`.
 * `carrierCode: string?` — The ["carrier code"](https://www.voip-info.org/carrier-identification-codes/), if any. Example: `"15"`. "Carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
 
+<!-- * `countryCallingCodeSource: string` — How the [country calling code](#country-calling-code) was obtained for this phone number. -->
+  <!-- * `FROM_NUMBER_WITH_PLUS_SIGN` — The country_code is derived based on a phone number with a leading "+", e.g. the French number "+33 1 42 68 53 00". -->
+  <!-- * `FROM_NUMBER_WITHOUT_PLUS_SIGN` — The country_code is derived based on a phone number without a leading "+", e.g. the French number "33 1 42 68 53 00" when defaultCountry is supplied as France. -->
+  <!-- * `FROM_DEFAULT_COUNTRY` — The country_code is derived NOT based on the phone number itself, but from the defaultCountry parameter provided in the parsing function by the clients. This happens mostly for numbers written in the national format (without country code). For example, this would be set when parsing the French number "01 42 68 53 00", when defaultCountry is supplied as France. -->
+
 `PhoneNumber` class instance provides the following methods:
 
 #### `setExt(ext: string)`
@@ -662,7 +667,7 @@ isPossiblePhoneNumber('8 (888) 888-88-88', 'RU') === true
 isPossiblePhoneNumber('+12223333333') === true
 ```
 
-For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string-options-object-phonenumber) function description.
+For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string--options-object-phonenumber) function description.
 
 This function is just a shortcut for a two-step process of ["strictly"](#strictness) parsing a phone number and then calling `.isPossible()`.
 
@@ -677,7 +682,7 @@ isValidPhoneNumber('+12223333333') === false
 isValidPhoneNumber('+12133734253') === true
 ```
 
-For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string-options-object-phonenumber) function description.
+For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string--options-object-phonenumber) function description.
 
 This function is just a shortcut for a two-step process of ["strictly"](#strictness) parsing a phone number and then calling `.isValid()`.
 
@@ -752,7 +757,7 @@ validatePhoneNumberLength('444 1 444444', 'TR') === undefined // Length is valid
 validatePhoneNumberLength('444 1 4444444444', 'TR') === 'TOO_LONG'
 ```
 
-For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string-options-object-phonenumber) function description.
+For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string--options-object-phonenumber) function description.
 
 This function is just a more detailed version of `isPossiblePhoneNumber()` for those who've [asked](https://github.com/catamphetamine/libphonenumber-js/issues/406) for a more specific rejection reason.
 
@@ -764,7 +769,7 @@ The phone number is parsed ["strictly"](#strictness) from the input string.
 
 Creates a formatter for a partially entered phone number.
 
-For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string-options-object-phonenumber) function description.
+For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string--options-object-phonenumber) function description.
 
 The formatter instance has the following methods:
 
@@ -881,7 +886,12 @@ Google's "As You Type" formatter does not support entering phone number extensio
 
 Searches for phone numbers in `text`.
 
-For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string-options-object-phonenumber) function description.
+Available `options`:
+
+* `defaultCountry: string`
+* `defaultCallingCode: string`
+
+For the description of `defaultCountry` or `defaultCallingCode`, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string--options-object-phonenumber) function description.
 
 ```js
 import { findPhoneNumbersInText } from 'libphonenumber-js'
@@ -1787,7 +1797,7 @@ Also Google sometimes (very rarely) updates their code:
 * [`AsYouTypeFormatter.java`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/AsYouTypeFormatter.java) — `AsYouType`
 * [`PhoneNumberMatcher.java`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) — `findPhoneNumbersInText()`
 
-The latest sync-up was on April 24th, 2022.
+The latest sync-up was on Mar 15th, 2023.
 
 ## Contributing
 

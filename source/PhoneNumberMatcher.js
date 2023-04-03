@@ -36,7 +36,9 @@ import isValidCandidate, { LEAD_CLASS } from './findNumbers/isValidCandidate.js'
 
 import { isSupportedCountry } from './metadata.js'
 
-import parseNumber from './parse.js'
+import parsePhoneNumber from './parsePhoneNumber.js'
+
+const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
 const EXTN_PATTERNS_FOR_MATCHING = createExtensionPattern('matching')
 
@@ -143,54 +145,48 @@ const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1
 export default class PhoneNumberMatcher
 {
   /**
-   * Creates a new instance. See the factory methods in {@link PhoneNumberUtil} on how to obtain a
-   * new instance.
-   *
-   * @param util  the phone number util to use
-   * @param text  the character sequence that we will search, null for no text
-   * @param country  the country to assume for phone numbers not written in international format
-   *     (with a leading plus, or with the international dialing prefix of the specified region).
-   *     May be null or "ZZ" if only numbers with a leading plus should be
-   *     considered.
-   * @param leniency  the leniency to use when evaluating candidate phone numbers
-   * @param maxTries  the maximum number of invalid numbers to try before giving up on the text.
-   *     This is to cover degenerate cases where the text has a lot of false positives in it. Must
-   *     be {@code >= 0}.
+   * @param {string} text — the character sequence that we will search, null for no text.
+   * @param {'POSSIBLE'|'VALID'|'STRICT_GROUPING'|'EXACT_GROUPING'} [options.leniency] — The leniency to use when evaluating candidate phone numbers. See `source/findNumbers/Leniency.js` for more details.
+   * @param {number} [options.maxTries] — The maximum number of invalid numbers to try before giving up on the text. This is to cover degenerate cases where the text has a lot of false positives in it. Must be >= 0.
    */
   constructor(text = '', options = {}, metadata)
   {
     options = {
-      ...options,
+      v2: options.v2,
       defaultCallingCode: options.defaultCallingCode,
       defaultCountry: options.defaultCountry && isSupportedCountry(options.defaultCountry, metadata) ? options.defaultCountry : undefined,
-      leniency: options.leniency || options.extended ? 'POSSIBLE' : 'VALID',
+      leniency: options.leniency || (options.extended ? 'POSSIBLE' : 'VALID'),
       maxTries: options.maxTries || MAX_SAFE_INTEGER
     }
 
+    // Validate `leniency`.
 		if (!options.leniency) {
-			throw new TypeError('`Leniency` not supplied')
+			throw new TypeError('`leniency` is required')
 		}
+    if (options.leniency !== 'POSSIBLE' && options.leniency !== 'VALID') {
+      throw new TypeError(`Invalid \`leniency\`: "${options.leniency}". Supported values: "POSSIBLE", "VALID".`)
+    }
 
+    // Validate `maxTries`.
 		if (options.maxTries < 0) {
-			throw new TypeError('`maxTries` not supplied')
+			throw new TypeError('`maxTries` must be `>= 0`')
 		}
 
 		this.text = text
 		this.options = options
     this.metadata = metadata
 
-		/** The degree of validation requested. */
+		// The degree of phone number validation.
 		this.leniency = Leniency[options.leniency]
 
 		if (!this.leniency) {
-			throw new TypeError(`Unknown leniency: ${options.leniency}.`)
+			throw new TypeError(`Unknown leniency: "${options.leniency}"`)
 		}
 
 		/** The maximum number of retries after matching an invalid number. */
 		this.maxTries = options.maxTries
 
 		this.PATTERN = new RegExp(PATTERN, 'ig')
-
 
     /** The iteration tristate. */
     this.state = 'NOT_READY'
@@ -233,21 +229,37 @@ export default class PhoneNumberMatcher
 
 				if (match) {
 					if (this.options.v2) {
-						const phoneNumber = new PhoneNumber(
-              match.country || match.countryCallingCode,
-              match.phone,
-              this.metadata
-            )
-						if (match.ext) {
-							phoneNumber.ext = match.ext
-						}
 						return {
 							startsAt: match.startsAt,
 							endsAt: match.endsAt,
-							number: phoneNumber
+							number: match.phoneNumber
 						}
-					}
-					return match
+					} else {
+            const { phoneNumber } = match
+
+            const result = {
+              startsAt: match.startsAt,
+              endsAt: match.endsAt,
+              phone: phoneNumber.nationalNumber
+            }
+
+            if (phoneNumber.country) {
+              /* istanbul ignore if */
+              if (USE_NON_GEOGRAPHIC_COUNTRY_CODE && country === '001') {
+                result.countryCallingCode = phoneNumber.countryCallingCode
+              } else {
+                result.country = phoneNumber.country
+              }
+            } else {
+              result.countryCallingCode = phoneNumber.countryCallingCode
+            }
+
+            if (phoneNumber.ext) {
+              result.ext = phoneNumber.ext
+            }
+
+            return result
+          }
 				}
 			}
 
@@ -302,7 +314,7 @@ export default class PhoneNumberMatcher
   }
 
   /**
-   * Parses a phone number from the `candidate` using `parseNumber` and
+   * Parses a phone number from the `candidate` using `parse` and
    * verifies it matches the requested `leniency`. If parsing and verification succeed,
    * a corresponding `PhoneNumberMatch` is returned, otherwise this method returns `null`.
    *
@@ -315,8 +327,9 @@ export default class PhoneNumberMatcher
       return
   	}
 
-    const number = parseNumber(
-      candidate, {
+    const phoneNumber = parsePhoneNumber(
+      candidate,
+      {
         extended: true,
         defaultCountry: this.options.defaultCountry,
         defaultCallingCode: this.options.defaultCallingCode
@@ -324,36 +337,20 @@ export default class PhoneNumberMatcher
       this.metadata
     )
 
-    if (!number.possible) {
+    if (!phoneNumber) {
       return
     }
 
-    if (this.leniency(number, candidate, this.metadata, this.regExpCache)) {
-      // // We used parseAndKeepRawInput to create this number,
-      // // but for now we don't return the extra values parsed.
-      // // TODO: stop clearing all values here and switch all users over
-      // // to using rawInput() rather than the rawString() of PhoneNumberMatch.
-      // number.clearCountryCodeSource()
-      // number.clearRawInput()
-      // number.clearPreferredDomesticCarrierCode()
+    if (!phoneNumber.isPossible()) {
+      return
+    }
 
-      const result = {
+    if (this.leniency(phoneNumber, candidate, this.metadata, this.regExpCache)) {
+      return {
         startsAt: offset,
         endsAt: offset + candidate.length,
-        phone: number.phone
+        phoneNumber
       }
-
-      if (number.country && number.country !== '001') {
-        result.country = number.country
-      } else {
-        result.countryCallingCode = number.countryCallingCode
-      }
-
-      if (number.ext) {
-        result.ext = number.ext
-      }
-
-      return result
     }
   }
 

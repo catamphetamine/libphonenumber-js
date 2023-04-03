@@ -29,5 +29,8 @@ describe('RFC3966', () => {
 			number : '8005553535',
 			ext    : '123'
 		})
+
+		// Not a viable phone number.
+		parseRFC3966('tel:3').should.deep.equal({})
 	})
 })
