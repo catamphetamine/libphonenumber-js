@@ -345,7 +345,12 @@ export default class PhoneNumberMatcher
       return
     }
 
-    if (this.leniency(phoneNumber, candidate, this.metadata, this.regExpCache)) {
+    if (this.leniency(phoneNumber, {
+      candidate,
+      defaultCountry: this.options.defaultCountry,
+      metadata: this.metadata,
+      regExpCache: this.regExpCache
+    })) {
       return {
         startsAt: offset,
         endsAt: offset + candidate.length,

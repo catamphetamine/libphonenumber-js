@@ -1,3 +1,21 @@
+// This "state" object simply holds the state of the "AsYouType" parser:
+//
+// * `country?: string`
+// * `callingCode?: string`
+// * `digits: string`
+// * `international: boolean`
+// * `missingPlus: boolean`
+// * `IDDPrefix?: string`
+// * `carrierCode?: string`
+// * `nationalPrefix?: string`
+// * `nationalSignificantNumber?: string`
+// * `nationalSignificantNumberMatchesInput: boolean`
+// * `complexPrefixBeforeNationalSignificantNumber?: string`
+//
+// `state.country` and `state.callingCode` aren't required to be in sync.
+// For example, `state.country` could be `"AR"` and `state.callingCode` could be `undefined`.
+// So `state.country` and `state.callingCode` are totally independent.
+//
 export default class AsYouTypeState {
 	constructor({ onCountryChange, onCallingCodeChange }) {
 		this.onCountryChange = onCountryChange
@@ -6,8 +24,8 @@ export default class AsYouTypeState {
 
 	reset({ country, callingCode }) {
 		this.international = false
+		this.missingPlus = false
 		this.IDDPrefix = undefined
-		this.missingPlus = undefined
 		this.callingCode = undefined
 		this.digits = ''
 		this.resetNationalSignificantNumber()

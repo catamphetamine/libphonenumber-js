@@ -4,6 +4,7 @@ import AsYouTypeState from './AsYouTypeState.js'
 import AsYouTypeFormatter, { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter.js'
 import AsYouTypeParser, { extractFormattedDigitsAndPlus } from './AsYouTypeParser.js'
 import getCountryByCallingCode from './helpers/getCountryByCallingCode.js'
+import getCountryByNationalNumber from './helpers/getCountryByNationalNumber.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
@@ -15,6 +16,9 @@ export default class AsYouType {
 	constructor(optionsOrDefaultCountry, metadata) {
 		this.metadata = new Metadata(metadata)
 		const [defaultCountry, defaultCallingCode] = this.getCountryAndCallingCode(optionsOrDefaultCountry)
+		// `this.defaultCountry` and `this.defaultCallingCode` aren't required to be in sync.
+		// For example, `this.defaultCountry` could be `"AR"` and `this.defaultCallingCode` could be `undefined`.
+		// So `this.defaultCountry` and `this.defaultCallingCode` are totally independent.
 		this.defaultCountry = defaultCountry
 		this.defaultCallingCode = defaultCallingCode
 		this.reset()
@@ -273,8 +277,11 @@ export default class AsYouType {
 	determineTheCountry() {
 		this.state.setCountry(getCountryByCallingCode(
 			this.isInternational() ? this.state.callingCode : this.defaultCallingCode,
-			this.state.nationalSignificantNumber,
-			this.metadata
+			{
+				nationalNumber: this.state.nationalSignificantNumber,
+				defaultCountry: this.defaultCountry,
+				metadata: this.metadata
+			}
 		))
 	}
 
@@ -339,14 +346,53 @@ export default class AsYouType {
 		// `this._getCountry()` is basically same as `this.state.country`
 		// with the only change that it return `undefined` in case of a
 		// "non-geographic" numbering plan instead of `"001"` "internal use" value.
-		const country = this._getCountry()
+		let country = this._getCountry()
 
 		if (!nationalSignificantNumber) {
 			return
 		}
 
+		// `state.country` and `state.callingCode` aren't required to be in sync.
+		// For example, `country` could be `"AR"` and `callingCode` could be `undefined`.
+		// So `country` and `callingCode` are totally independent.
+
 		if (!country && !callingCode) {
 			return
+		}
+
+		// By default, if `defaultCountry` parameter was passed when
+		// creating `AsYouType` instance, `state.country` is gonna be
+		// that `defaultCountry`, which doesn't entirely conform with
+		// `parsePhoneNumber()`'s behavior where it attempts to determine
+		// the country more precisely in cases when multiple countries
+		// could correspond to the same `countryCallingCode`.
+		// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/103#note_1417192969
+		//
+		// Because `AsYouType.getNumber()` method is supposed to be a 1:1
+		// equivalent for `parsePhoneNumber(AsYouType.getNumberValue())`,
+		// then it should also behave accordingly in cases of `country` ambiguity.
+		// That's how users of this library would expect it to behave anyway.
+		//
+		if (country) {
+			if (country === this.defaultCountry) {
+				// `state.country` and `state.callingCode` aren't required to be in sync.
+				// For example, `state.country` could be `"AR"` and `state.callingCode` could be `undefined`.
+				// So `state.country` and `state.callingCode` are totally independent.
+				const metadata = new Metadata(this.metadata.metadata)
+				metadata.selectNumberingPlan(country)
+				const callingCode = metadata.numberingPlan.callingCode()
+				const ambiguousCountries = this.metadata.getCountryCodesForCallingCode(callingCode)
+				if (ambiguousCountries.length > 1) {
+					const exactCountry = getCountryByNationalNumber(nationalSignificantNumber, {
+						countries: ambiguousCountries,
+						defaultCountry: this.defaultCountry,
+						metadata: this.metadata.metadata
+					})
+					if (exactCountry) {
+						country = exactCountry
+					}
+				}
+			}
 		}
 
 		const phoneNumber = new PhoneNumber(

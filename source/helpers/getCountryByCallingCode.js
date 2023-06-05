@@ -2,7 +2,11 @@ import getCountryByNationalNumber from './getCountryByNationalNumber.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
-export default function getCountryByCallingCode(callingCode, nationalPhoneNumber, metadata) {
+export default function getCountryByCallingCode(callingCode, {
+	nationalNumber: nationalPhoneNumber,
+	defaultCountry,
+	metadata
+}) {
 	/* istanbul ignore if */
 	if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
 		if (metadata.isNonGeographicCallingCode(callingCode)) {
@@ -18,5 +22,9 @@ export default function getCountryByCallingCode(callingCode, nationalPhoneNumber
 	if (possibleCountries.length === 1) {
 		return possibleCountries[0]
 	}
-	return getCountryByNationalNumber(possibleCountries, nationalPhoneNumber, metadata.metadata)
+	return getCountryByNationalNumber(nationalPhoneNumber, {
+		countries: possibleCountries,
+		defaultCountry,
+		metadata: metadata.metadata
+	})
 }

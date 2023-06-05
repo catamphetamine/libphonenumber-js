@@ -19,7 +19,7 @@ export default
 	/**
 	 * Phone numbers accepted are "possible", but not necessarily "valid".
 	 */
-	POSSIBLE(phoneNumber, candidate, metadata)
+	POSSIBLE(phoneNumber, { candidate, metadata })
 	{
 		return true
 	},
@@ -29,7 +29,7 @@ export default
 	 * Numbers written in national format must have their national-prefix
 	 * present if it is usually written for a number of this type.
 	 */
-	VALID(phoneNumber, candidate, metadata)
+	VALID(phoneNumber, { candidate, defaultCountry, metadata })
 	{
 		if (
 			!phoneNumber.isValid() ||
@@ -40,7 +40,7 @@ export default
 		}
 
 		// Skipped for simplicity.
-		// return isNationalPrefixPresentIfRequired(phoneNumber, metadata)
+		// return isNationalPrefixPresentIfRequired(phoneNumber, { defaultCountry, metadata })
 		return true
 	},
 
@@ -56,13 +56,13 @@ export default
 	 * country code "+1". If you are not sure about which level to use,
 	 * email the discussion group libphonenumber-discuss@googlegroups.com.
 	 */
-	STRICT_GROUPING(phoneNumber, candidate, metadata, regExpCache)
+	STRICT_GROUPING(phoneNumber, { candidate, defaultCountry, metadata, regExpCache })
 	{
 		if (
 			!phoneNumber.isValid() ||
 			!containsOnlyValidXChars(phoneNumber, candidate, metadata) ||
 			containsMoreThanOneSlashInNationalNumber(phoneNumber, candidate) ||
-			!isNationalPrefixPresentIfRequired(phoneNumber, metadata)
+			!isNationalPrefixPresentIfRequired(phoneNumber, { defaultCountry, metadata })
 		)
 		{
 			return false
@@ -89,13 +89,13 @@ export default
 	 * country code "+1". If you are not sure about which level to use, email the discussion group
 	 * libphonenumber-discuss@googlegroups.com.
 	 */
-	EXACT_GROUPING(phoneNumber, candidate, metadata, regExpCache)
+	EXACT_GROUPING(phoneNumber, { candidate, defaultCountry, metadata, regExpCache })
 	{
 		if (
 			!phoneNumber.isValid() ||
 			!containsOnlyValidXChars(phoneNumber, candidate, metadata) ||
 			containsMoreThanOneSlashInNationalNumber(phoneNumber, candidate) ||
-			!isNationalPrefixPresentIfRequired(phoneNumber, metadata)
+			!isNationalPrefixPresentIfRequired(phoneNumber, { defaultCountry, metadata })
 		)
 		{
 			return false
@@ -157,7 +157,7 @@ function containsOnlyValidXChars(phoneNumber, candidate, metadata)
 	return true
 }
 
-function isNationalPrefixPresentIfRequired(phoneNumber, _metadata)
+function isNationalPrefixPresentIfRequired(phoneNumber, { defaultCountry, metadata: _metadata })
 {
 	// First, check how we deduced the country code. If it was written in international format, then
 	// the national prefix is not required.
@@ -169,7 +169,11 @@ function isNationalPrefixPresentIfRequired(phoneNumber, _metadata)
 	const metadata = new Metadata(_metadata)
 	metadata.selectNumberingPlan(phoneNumber.countryCallingCode)
 
-	const phoneNumberRegion = phoneNumber.country || getCountryByCallingCode(phoneNumber.countryCallingCode, phoneNumber.nationalNumber, metadata)
+	const phoneNumberRegion = phoneNumber.country || getCountryByCallingCode(phoneNumber.countryCallingCode, {
+		nationalNumber: phoneNumber.nationalNumber,
+		defaultCountry,
+		metadata
+	})
 
 	// Check if a national prefix should be present when formatting this number.
 	const nationalNumber = phoneNumber.nationalNumber

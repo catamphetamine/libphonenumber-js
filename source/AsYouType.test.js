@@ -1363,6 +1363,22 @@ describe('AsYouType.getNumberValue()', () => {
 		formatter.input('421901222333').should.equal('421 901 222 333')
 		formatter.getTemplate().should.equal('xxx xxx xxx xxx')
 	})
+
+	it('should choose `defaultCountry` (non-"main" one) when multiple countries match the number', function() {
+		// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/103
+		const formatter = new AsYouType('CA')
+		formatter.input('8004001000')
+		formatter.getNumber().country.should.equal('CA')
+
+		const formatter2 = new AsYouType('US')
+		formatter2.input('4389999999')
+		formatter2.getNumber().country.should.equal('CA')
+
+		// No country matches the national number digits.
+		const formatter3 = new AsYouType('US')
+		formatter3.input('1111111111')
+		formatter3.getNumber().country.should.equal('US')
+	})
 })
 
 function type(something) {

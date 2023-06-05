@@ -343,7 +343,11 @@ function parsePhoneNumber(
 	// get their countries populated with the full set of
 	// "phone number type" regular expressions.
 	//
-	const exactCountry = getCountryByCallingCode(countryCallingCode, nationalNumber, metadata)
+	const exactCountry = getCountryByCallingCode(countryCallingCode, {
+		nationalNumber,
+		defaultCountry,
+		metadata
+	})
 	if (exactCountry) {
 		country = exactCountry
 		/* istanbul ignore if */

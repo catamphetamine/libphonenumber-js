@@ -33,7 +33,11 @@ export default class PhoneNumber {
 		this.countryCallingCode = countryCallingCode
 		this.nationalNumber = nationalNumber
 		this.number = '+' + this.countryCallingCode + this.nationalNumber
-		this.metadata = metadata
+		// Exclude `metadata` property output from `PhoneNumber.toString()`
+		// so that it doesn't clutter the console output of Node.js.
+		// Previously, when Node.js did `console.log(new PhoneNumber(...))`,
+		// it would output the whole internal structure of the `metadata` object.
+		this.getMetadata = () => metadata
 	}
 
 	setExt(ext) {
@@ -47,20 +51,20 @@ export default class PhoneNumber {
 		return getPossibleCountriesForNumber(
 			this.countryCallingCode,
 			this.nationalNumber,
-			this.metadata
+			this.getMetadata()
 		)
 	}
 
 	isPossible() {
-		return isPossibleNumber(this, { v2: true }, this.metadata)
+		return isPossibleNumber(this, { v2: true }, this.getMetadata())
 	}
 
 	isValid() {
-		return isValidNumber(this, { v2: true }, this.metadata)
+		return isValidNumber(this, { v2: true }, this.getMetadata())
 	}
 
 	isNonGeographic() {
-		const metadata = new Metadata(this.metadata)
+		const metadata = new Metadata(this.getMetadata())
 		return metadata.isNonGeographicCallingCode(this.countryCallingCode)
 	}
 
@@ -75,7 +79,7 @@ export default class PhoneNumber {
 	// and just left the `validatePhoneNumberLength()` function, even though that one would require
 	// and additional step to also validate the actual country / calling code of the phone number.
 	// validateLength() {
-	// 	const metadata = new Metadata(this.metadata)
+	// 	const metadata = new Metadata(this.getMetadata())
 	// 	metadata.selectNumberingPlan(this.countryCallingCode)
 	// 	const result = checkNumberLength(this.nationalNumber, metadata)
 	// 	if (result !== 'IS_POSSIBLE') {
@@ -84,7 +88,7 @@ export default class PhoneNumber {
 	// }
 
 	getType() {
-		return getNumberType(this, { v2: true }, this.metadata)
+		return getNumberType(this, { v2: true }, this.getMetadata())
 	}
 
 	format(format, options) {
@@ -92,7 +96,7 @@ export default class PhoneNumber {
 			this,
 			format,
 			options ? { ...options, v2: true } : { v2: true },
-			this.metadata
+			this.getMetadata()
 		)
 	}
 
