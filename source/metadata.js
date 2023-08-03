@@ -511,7 +511,7 @@ export function getCountryCallingCode(country, metadata) {
 export function isSupportedCountry(country, metadata) {
 	// metadata = new Metadata(metadata)
 	// return metadata.hasCountry(country)
-	return metadata.countries[country] !== undefined
+	return metadata.countries.hasOwnProperty(country)
 }
 
 function setVersion(metadata) {
