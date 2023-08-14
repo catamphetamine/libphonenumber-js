@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.10.40",
+  "version": "1.10.41",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.cjs",
   "module": "index.js",
@@ -143,9 +143,10 @@
     "build:commonjs:with-tests": "cross-env BABEL_ENV=commonjs babel ./source --out-dir ./build --source-maps",
     "build:commonjs:package.json": "node runnable/create-commonjs-package-json.js",
     "build:commonjs:create-typescript-definitions": "rimraf --verbose --glob ./*.d.cts ./!(node_modules)/**/*.d.cts && cpy **/{index,metadata*,examples*}.d.ts . --rename={{basename}}.cts && renamer --find d.cts.ts --replace d.cts ./*.d.cts.ts ./!(node_modules)/**/*.d.cts.ts",
+    "build:modules:copy-typescript-definitions": "cpy --flat min/index.d.ts max && cpy --flat min/index.d.ts mobile",
     "build:modules": "cross-env BABEL_ENV=es6 babel ./source --out-dir ./es6 --source-maps --ignore test.js",
     "build:bundle": "rollup --config rollup.config.mjs",
-    "build": "npm-run-all clean build:commonjs build:modules build:bundle",
+    "build": "npm-run-all clean build:modules:copy-typescript-definitions build:modules build:commonjs build:bundle",
     "prepublishOnly": "npm run metadata:generate && npm run generate-country-codes && crlf --set=LF metadata.*.json && npm-run-all build test"
   },
   "repository": {

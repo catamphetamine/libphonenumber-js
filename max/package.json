@@ -3,11 +3,9 @@
   "name": "libphonenumber-js/max",
   "main": "index.cjs",
   "module": "index.js",
-  "types": "../min/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
-      "types": "../min/index.d.ts",
       "import": "./index.js",
       "require": "./index.cjs"
     }

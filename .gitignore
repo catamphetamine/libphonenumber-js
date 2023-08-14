@@ -45,3 +45,5 @@ npm-debug.log
 .nyc_output
 
 *.d.cts
+/max/index.d.ts
+/mobile/index.d.ts
