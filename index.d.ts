@@ -139,7 +139,7 @@ export function getCountryCallingCode(countryCode: CountryCode): CountryCallingC
 // Deprecated.
 export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;
 export function getExtPrefix(countryCode: CountryCode): string;
-export function isSupportedCountry(countryCode: string): boolean;
+export function isSupportedCountry(countryCode: string): countryCode is CountryCode;
 
 export function formatIncompletePhoneNumber(number: string, countryCode?: CountryCode): string;
 export function parseIncompletePhoneNumber(text: string): string;
