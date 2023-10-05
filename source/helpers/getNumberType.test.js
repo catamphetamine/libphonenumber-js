@@ -15,4 +15,12 @@ describe('getNumberType', function() {
 			oldMetadata
 		).should.equal('FIXED_LINE_OR_MOBILE')
 	})
+
+	it('should return `undefined` when the phone number is a malformed one', function() {
+		expect(getNumberType(
+			{},
+			{ v2: true },
+			oldMetadata
+		)).to.equal(undefined)
+	})
 })

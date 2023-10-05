@@ -20,9 +20,10 @@ export default function getNumberType(input, options, metadata)
 	// code coverage would decrease for some weird reason.
 	options = options || {}
 
-	// When `parse()` returned `{}`
-	// meaning that the phone number is not a valid one.
-	if (!input.country) {
+	// When `parse()` returns an empty object — `{}` —
+	// that means that the phone number is malformed,
+	// so it can't possibly be valid.
+	if (!input.country && !input.countryCallingCode) {
 		return
 	}
 

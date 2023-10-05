@@ -113,4 +113,8 @@ describe('validate', () => {
 		// National
 		isValidNumber('88005553535 x123', { defaultCountry: 'RU' }).should.equal(true)
 	})
+
+	it('should validate non-geographic toll-free phone numbers', () => {
+		isValidNumber('+80074454123').should.equal(true)
+	})
 })
