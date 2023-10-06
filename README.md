@@ -1120,12 +1120,25 @@ parseIncompletePhoneNumber('+7 800 555') === '+7800555'
 parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤') === '+442323234'
 ```
 
-### formatIncompletePhoneNumber(value: string, country: string?): string
+### formatIncompletePhoneNumber(value: string, defaultCountry?: string | options?: object): string
 
-Formats incomplete phone number as a national one for a given `country`. If `country` is not specified then outputs the phone number in international format. This is just an alias for `new AsYouType(country, metadata).input(value)`. Can be used for building a phone number input component (e.g. [react-phone-number-input](https://gitlab.com/catamphetamine/react-phone-number-input/)).
+Formats a possibly incomplete phone number.
+
+While the usual `parsePhoneNumber(string).format()` function could only be used to format a complete phone number, this function could be used to format a possibly incomplete phone number.
+
+The `value` argument should be a (possibly incomplete) phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format.
+
+For the description of the `defaultCountry?: string | options?: object` argument, see [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string--options-object-phonenumber) function description.
+
+This function is just an alias for `new AsYouType(defaultCountry, metadata).input(value)`. It can be used for building a phone number input component (e.g. [react-phone-number-input](https://gitlab.com/catamphetamine/react-phone-number-input/)).
 
 ```js
+// National numbers, with second argument.
 formatIncompletePhoneNumber('8800555', 'RU') === '8 (800) 555'
+formatIncompletePhoneNumber('8800555', { defaultCountry: 'RU' }) === '8 (800) 555'
+formatIncompletePhoneNumber('8800555', { defaultCallingCode: '7' }) === '8 (800) 555'
+
+// International numbers, without second argument.
 formatIncompletePhoneNumber('+7800555') === '+7 800 555'
 ```
 

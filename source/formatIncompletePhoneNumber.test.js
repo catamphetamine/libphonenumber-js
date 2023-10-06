@@ -18,4 +18,9 @@ describe('formatIncompletePhoneNumber', () => {
 		// International input, with country.
 		formatIncompletePhoneNumber('+780055535', 'RU', metadata).should.equal('+7 800 555 35')
 	})
+
+	it('should support an object argument', () => {
+		formatIncompletePhoneNumber('880055535', { defaultCountry: 'RU' }, metadata).should.equal('8 (800) 555-35')
+		formatIncompletePhoneNumber('880055535', { defaultCallingCode: '7' }, metadata).should.equal('8 (800) 555-35')
+	})
 })

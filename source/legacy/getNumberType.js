@@ -1,5 +1,6 @@
 import isViablePhoneNumber from '../helpers/isViablePhoneNumber.js'
 import _getNumberType from '../helpers/getNumberType.js'
+import isObject from '../helpers/isObject.js'
 import parse from '../parse.js'
 
 // Finds out national phone number type (fixed line, mobile, etc)
@@ -28,7 +29,7 @@ export function normalizeArguments(args)
 		// If "default country" argument is being passed
 		// then convert it to an `options` object.
 		// `getNumberType('88005553535', 'RU', metadata)`.
-		if (typeof arg_2 !== 'object')
+		if (!isObject(arg_2))
 		{
 			if (arg_4)
 			{
@@ -86,7 +87,7 @@ export function normalizeArguments(args)
 	}
 	// If the phone number is passed as a parsed phone number.
 	// `getNumberType({ phone: '88005553535', country: 'RU' }, ...)`.
-	else if (is_object(arg_1))
+	else if (isObject(arg_1))
 	{
 		input = arg_1
 
@@ -108,8 +109,3 @@ export function normalizeArguments(args)
 		metadata
 	}
 }
-
-// Babel transforms `typeof` into some "branches"
-// so istanbul will show this as "branch not covered".
-/* istanbul ignore next */
-const is_object = _ => typeof _ === 'object'

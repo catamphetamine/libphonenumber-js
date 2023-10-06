@@ -1,4 +1,5 @@
 import compare from './tools/semver-compare.js'
+import isObject from './helpers/isObject.js'
 
 // Added "possibleLengths" and renamed
 // "country_phone_code_to_countries" to "country_calling_codes".
@@ -458,20 +459,15 @@ export function validateMetadata(metadata) {
 
 	// `country_phone_code_to_countries` was renamed to
 	// `country_calling_codes` in `1.0.18`.
-	if (!is_object(metadata) || !is_object(metadata.countries)) {
-		throw new Error(`[libphonenumber-js] \`metadata\` argument was passed but it's not a valid metadata. Must be an object having \`.countries\` child object property. Got ${is_object(metadata) ? 'an object of shape: { ' + Object.keys(metadata).join(', ') + ' }' : 'a ' + type_of(metadata) + ': ' + metadata}.`)
+	if (!isObject(metadata) || !isObject(metadata.countries)) {
+		throw new Error(`[libphonenumber-js] \`metadata\` argument was passed but it's not a valid metadata. Must be an object having \`.countries\` child object property. Got ${isObject(metadata) ? 'an object of shape: { ' + Object.keys(metadata).join(', ') + ' }' : 'a ' + typeOf(metadata) + ': ' + metadata}.`)
 	}
 }
 
 // Babel transforms `typeof` into some "branches"
 // so istanbul will show this as "branch not covered".
 /* istanbul ignore next */
-const is_object = _ => typeof _ === 'object'
-
-// Babel transforms `typeof` into some "branches"
-// so istanbul will show this as "branch not covered".
-/* istanbul ignore next */
-const type_of = _ => typeof _
+const typeOf = _ => typeof _
 
 /**
  * Returns extension prefix for a country.

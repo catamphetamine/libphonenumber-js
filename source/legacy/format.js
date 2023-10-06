@@ -1,5 +1,6 @@
 import _formatNumber from '../format.js'
 import parse from '../parse.js'
+import isObject from '../helpers/isObject.js'
 
 export default function formatNumber() {
 	const {
@@ -72,7 +73,7 @@ function normalizeArguments(args)
 	}
 	// If the phone number is passed as a parsed number object.
 	// `format({ phone: '8005553535', country: 'RU' }, 'NATIONAL', [options], metadata)`.
-	else if (is_object(arg_1))
+	else if (isObject(arg_1))
 	{
 		input  = arg_1
 		format = arg_2
@@ -103,8 +104,3 @@ function normalizeArguments(args)
 		metadata
 	}
 }
-
-// Babel transforms `typeof` into some "branches"
-// so istanbul will show this as "branch not covered".
-/* istanbul ignore next */
-const is_object = _ => typeof _ === 'object'

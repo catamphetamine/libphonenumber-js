@@ -5,6 +5,7 @@ import AsYouTypeFormatter, { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter.js'
 import AsYouTypeParser, { extractFormattedDigitsAndPlus } from './AsYouTypeParser.js'
 import getCountryByCallingCode from './helpers/getCountryByCallingCode.js'
 import getCountryByNationalNumber from './helpers/getCountryByNationalNumber.js'
+import isObject from './helpers/isObject.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
@@ -30,7 +31,7 @@ export default class AsYouType {
 		let defaultCallingCode
 		// Turns out `null` also has type "object". Weird.
 		if (optionsOrDefaultCountry) {
-			if (typeof optionsOrDefaultCountry === 'object') {
+			if (isObject(optionsOrDefaultCountry)) {
 				defaultCountry = optionsOrDefaultCountry.defaultCountry
 				defaultCallingCode = optionsOrDefaultCountry.defaultCallingCode
 			} else {

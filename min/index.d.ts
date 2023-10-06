@@ -75,7 +75,7 @@ export function getExtPrefix(countryCode: CountryCode): string;
 
 export function getExampleNumber(country: CountryCode, examples: Examples): PhoneNumber | undefined;
 
-export function formatIncompletePhoneNumber(number: string, countryCode?: CountryCode): string;
+export function formatIncompletePhoneNumber(number: string, defaultCountryCode?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): string;
 export function parseIncompletePhoneNumber(text: string): string;
 export function parsePhoneNumberCharacter(character: string): string;
 export function parseDigits(character: string): string;

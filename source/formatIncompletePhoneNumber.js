@@ -5,13 +5,13 @@ import AsYouType from './AsYouType.js'
  * The phone number can be either in E.164 format
  * or in a form of national number digits.
  * @param {string} value - A possibly incomplete phone number. Either in E.164 format or in a form of national number digits.
- * @param {string?} country - Two-letter ("ISO 3166-1 alpha-2") country code.
+ * @param {string|object} [optionsOrDefaultCountry] - A two-letter ("ISO 3166-1 alpha-2") country code, or an object of shape `{ defaultCountry?: string, defaultCallingCode?: string }`.
  * @return {string} Formatted (possibly incomplete) phone number.
  */
-export default function formatIncompletePhoneNumber(value, country, metadata) {
+export default function formatIncompletePhoneNumber(value, optionsOrDefaultCountry, metadata) {
 	if (!metadata) {
-		metadata = country
-		country = undefined
+		metadata = optionsOrDefaultCountry
+		optionsOrDefaultCountry = undefined
 	}
-	return new AsYouType(country, metadata).input(value)
+	return new AsYouType(optionsOrDefaultCountry, metadata).input(value)
 }

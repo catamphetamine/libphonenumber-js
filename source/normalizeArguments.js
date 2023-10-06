@@ -1,3 +1,5 @@
+import isObject from './helpers/isObject.js'
+
 // Extracts the following properties from function arguments:
 // * input `text`
 // * `options` object
@@ -51,7 +53,3 @@ export default function normalizeArguments(args) {
 		metadata
 	}
 }
-
-// Otherwise istanbul would show this as "branch not covered".
-/* istanbul ignore next */
-const isObject = _ => typeof _ === 'object'
