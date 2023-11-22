@@ -66,8 +66,8 @@ export interface ParsedNumber {
 }
 
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
-export function parsePhoneNumber(text: string, defaultCountry?: CountryCode): PhoneNumber;
-export function parsePhoneNumberWithError(text: string, defaultCountry?: CountryCode): PhoneNumber;
+export function parsePhoneNumber(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extract?: boolean }): PhoneNumber;
+export function parsePhoneNumberWithError(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extract?: boolean }): PhoneNumber;
 
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.

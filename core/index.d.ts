@@ -40,10 +40,10 @@ export {
 
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 export function parsePhoneNumber(text: string, metadata: MetadataJson): PhoneNumber;
-export function parsePhoneNumber(text: string, defaultCountry: CountryCode, metadata: MetadataJson): PhoneNumber;
+export function parsePhoneNumber(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extract?: boolean }, metadata: MetadataJson): PhoneNumber;
 
 export function parsePhoneNumberWithError(text: string, metadata: MetadataJson): PhoneNumber;
-export function parsePhoneNumberWithError(text: string, defaultCountry: CountryCode, metadata: MetadataJson): PhoneNumber;
+export function parsePhoneNumberWithError(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extract?: boolean }, metadata: MetadataJson): PhoneNumber;
 
 // `parsePhoneNumberFromString()` named export is now considered legacy:
 // it has been promoted to a default export due to being too verbose.
