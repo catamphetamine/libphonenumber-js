@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.10.50",
+  "version": "1.10.51",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.cjs",
   "module": "index.js",
@@ -139,7 +139,7 @@
     "coveralls--nyc-is-very-slow-and-is-not-used": "nyc report --reporter=text-lcov | coveralls",
     "test-travis": "node --experimental-json-modules node_modules/istanbul/lib/cli.js cover -x \"build/**\" -x \"es6/**\" -x \"*.test.js\" -x \"source/findNumbers/Leniency.js\" -x \"source/findNumbers/matchPhoneNumberStringAgainstPhoneNumber.js\" -x \"source/findNumbers/RegExpCache.js\" -x \"source/findNumbers/LRUCache.js\" -x \"source/PhoneNumberMatcher.js\" -x \"source/tools/semver-compare.js\" node_modules/mocha/bin/_mocha --report lcovonly -- --colors --reporter spec --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
     "clean": "rimraf ./build/**/* ./es6/**/*",
-    "build:commonjs": "npm-run-all build:commonjs:with-tests build:commonjs:package.json build:commonjs:create-typescript-definitions",
+    "build:commonjs": "npm-run-all build:commonjs:with-tests build:commonjs:package.json build:commonjs:create-typescript-definitions build:commonjs:patch-typescript-definitions",
     "build:commonjs:before-es-modules": "cross-env BABEL_ENV=commonjs babel ./source --out-dir ./build --source-maps --ignore test.js",
     "build:commonjs:with-tests": "cross-env BABEL_ENV=commonjs babel ./source --out-dir ./build --source-maps",
     "build:commonjs:package.json": "node runnable/create-commonjs-package-json.js",
