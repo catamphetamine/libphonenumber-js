@@ -1070,15 +1070,34 @@ getExtPrefix('US') === ' ext. '
 getExtPrefix('GB') === ' x'
 ```
 
-<!--
-### parsePhoneNumberCharacter(nextCharacter, prevParsedCharacters)
+### parseDigits(text: string): string
 
-Parses next character while parsing phone number digits (including a `+`) from text: discards everything except `+` and digits, and `+` is only allowed at the start of a phone number.
-
-For example, is used in [`input-format`](https://gitlab.com/catamphetamine/input-format).
+Parses digits from string. Can be used for building a phone number extension input component (e.g. [react-phone-number-input](https://gitlab.com/catamphetamine/react-phone-number-input/)).
 
 ```js
-// Suppose a user inputs "+1 (213) 373-42-53".
+parseDigits('x123') === '123'
+parseDigits('٤٤٢٣') === '4423'
+```
+
+### parseIncompletePhoneNumber(text: string): string
+
+Parses phone number characters (`+` and digits). Can be used for building a phone number input component (e.g. [react-phone-number-input](https://gitlab.com/catamphetamine/react-phone-number-input/)).
+
+```js
+parseIncompletePhoneNumber('8 (800) 555') === '8800555'
+parseIncompletePhoneNumber('+7 800 555') === '+7800555'
+parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤') === '+442323234'
+```
+
+### parsePhoneNumberCharacter(nextCharacter, prevParsedCharacters, emitEvent?)
+
+Parses next character of an input string while parsing phone number digits (including a `+`) from that string. Basically, it discards everything except `+` and digits, and `+` is only allowed at the start of a phone number.
+
+This function is a low-level one that is currently only used in [`react-phone-number-input`](https://gitlab.com/catamphetamine/react-phone-number-input) with [`input-format`](https://gitlab.com/catamphetamine/input-format). Frankly speaking, that's the only reason why this function is exported. Other developers should just ignore it and use `parseIncompletePhoneNumber()` instead because it's much simpler.
+
+```js
+// Suppose a user inputs a "+1 (213) 373-42-53" string
+// and it starts parsing that string character-by-character.
 
 parsePhoneNumberCharacter('+', undefined) === '+'
 parsePhoneNumberCharacter('1', '+') === '1'
@@ -1099,26 +1118,10 @@ parsePhoneNumberCharacter('-', '+12133734') === undefined
 parsePhoneNumberCharacter('5', '+121337342') === '5'
 parsePhoneNumberCharacter('3', '+1213373425') === '3'
 ```
--->
 
-### parseDigits(text: string): string
+So basically, it's the same as `parseIncompletePhoneNumber()` with the only difference that it operates at a character-by-character level rather than at a string-as-a-whole level.
 
-Parses digits from string. Can be used for building a phone number extension input component (e.g. [react-phone-number-input](https://gitlab.com/catamphetamine/react-phone-number-input/)).
-
-```js
-parseDigits('x123') === '123'
-parseDigits('٤٤٢٣') === '4423'
-```
-
-### parseIncompletePhoneNumber(text: string): string
-
-Parses phone number characters (`+` and digits). Can be used for building a phone number input component (e.g. [react-phone-number-input](https://gitlab.com/catamphetamine/react-phone-number-input/)).
-
-```js
-parseIncompletePhoneNumber('8 (800) 555') === '8800555'
-parseIncompletePhoneNumber('+7 800 555') === '+7800555'
-parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤') === '+442323234'
-```
+The optional `emitEvent` argument is a function of `(eventName: string)` arguments. It will be called in a situation when the application should stop parsing the input string. Currently, the only situation when that could happen is when it encounters an "out-of-place" `+` character. For example, when parsing a `"+1 (234) + 56-78"` string it would emit an `"end"` event at the second `+` character so that the application would return `"+1234"` rather than `"+12345678"`.
 
 ### formatIncompletePhoneNumber(value: string, defaultCountry?: string | options?: object): string
 

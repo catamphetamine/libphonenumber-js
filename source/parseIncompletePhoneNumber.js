@@ -37,15 +37,29 @@ export default function parseIncompletePhoneNumber(string) {
  * [`input-format`](https://gitlab.com/catamphetamine/input-format).
  * @param  {string} character - Yet another character from raw input string.
  * @param  {string?} prevParsedCharacters - Previous parsed characters.
- * @param  {object} meta - Optional custom use-case-specific metadata.
+ * @param  {function?} emitEvent - An optional "emit event" function.
  * @return {string?} The parsed character.
  */
-export function parsePhoneNumberCharacter(character, prevParsedCharacters) {
+export function parsePhoneNumberCharacter(character, prevParsedCharacters, emitEvent) {
 	// Only allow a leading `+`.
 	if (character === '+') {
 		// If this `+` is not the first parsed character
 		// then discard it.
 		if (prevParsedCharacters) {
+			// `emitEvent` argument was added to this `export`ed function on Dec 26th, 2023.
+			// Any 3rd-party code that used to `import` and call this function before that
+			// won't be passing any `emitEvent` argument.
+			//
+			// The addition of the `emitEvent` argument was to fix the slightly-weird behavior
+			// of parsing an input string when the user inputs something like `"2+7"
+			// https://github.com/catamphetamine/react-phone-number-input/issues/437
+			//
+			// If the parser encounters an unexpected `+` in a string being parsed
+			// then it simply discards that out-of-place `+` and any following characters.
+			//
+			if (typeof emitEvent === 'function') {
+				emitEvent('end')
+			}
 			return
 		}
 		return '+'

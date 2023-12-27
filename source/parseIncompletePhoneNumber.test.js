@@ -33,4 +33,49 @@ describe('parseIncompletePhoneNumber', () => {
 		// Parses non-European digits.
 		parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤').should.equal('+442323234')
 	})
+
+	it('should work with a new `context` argument in `parsePhoneNumberCharacter()` function (international number)', () => {
+		let stopped = false
+
+		const emit = (event) => {
+			switch (event) {
+				case 'end':
+					stopped = true
+					break
+			}
+		}
+
+		parsePhoneNumberCharacter('+', undefined, emit).should.equal('+')
+		expect(stopped).to.equal(false)
+
+		parsePhoneNumberCharacter('1', '+', emit).should.equal('1')
+		expect(stopped).to.equal(false)
+
+		expect(parsePhoneNumberCharacter('+', '+1', emit)).to.equal(undefined)
+		expect(stopped).to.equal(true)
+
+		expect(parsePhoneNumberCharacter('2', '+1', emit)).to.equal('2')
+		expect(stopped).to.equal(true)
+	})
+
+	it('should work with a new `context` argument in `parsePhoneNumberCharacter()` function (national number)', () => {
+		let stopped = false
+
+		const emit = (event) => {
+			switch (event) {
+				case 'end':
+					stopped = true
+					break
+			}
+		}
+
+		parsePhoneNumberCharacter('2', undefined, emit).should.equal('2')
+		expect(stopped).to.equal(false)
+
+		expect(parsePhoneNumberCharacter('+', '2', emit)).to.equal(undefined)
+		expect(stopped).to.equal(true)
+
+		expect(parsePhoneNumberCharacter('1', '2', emit)).to.equal('1')
+		expect(stopped).to.equal(true)
+	})
 })
