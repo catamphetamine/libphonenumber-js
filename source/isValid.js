@@ -44,15 +44,6 @@ export default function isValidNumber(input, options, metadata)
 
 	metadata = new Metadata(metadata)
 
-/**
- * Checks if a phone number is "possible" (basically just checks its length).
- *
- * @param  {object|PhoneNumber} input — If `options.v2: true` flag is passed, the `input` should be a `PhoneNumber` instance. Otherwise, it should be an object of shape `{ phone: '...', country: '...' }`.
- * @param  {object} [options]
- * @param  {object} metadata
- * @return {string}
- */
-
 	metadata.selectNumberingPlan(input.country, input.countryCallingCode)
 
 	// By default, countries only have type regexps when it's required for
