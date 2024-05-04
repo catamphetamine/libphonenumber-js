@@ -54,13 +54,45 @@ export type Examples = {
 export type NumberFormat = 'NATIONAL' | 'INTERNATIONAL' | 'E.164' | 'RFC3966' | 'IDD';
 export type NumberType = undefined | 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST' | 'VOIP' | 'PERSONAL_NUMBER' | 'PAGER' | 'UAN' | 'VOICEMAIL' | 'FIXED_LINE_OR_MOBILE' | 'FIXED_LINE' | 'MOBILE';
 
+// "Tagged" types are used to introduce some degree of type safety when passing in arguments to the functions.
+// https://medium.com/@ethanresnick/advanced-typescript-tagged-types-for-fewer-bugs-and-better-security-24db681d5721
+//
+// For example, if some function returns an `E164Number`, it can only be interpreted as
+// either a `string` or an `E164Number` and it can't mistakenly be interpreted as
+// a `NationalNumber` or an `Extension` or a `CarrierCode` or a `CountryCallingCode`.
+//
+// Example:
+//
+// import type { E164Number, CarrierCode } from 'libphonenumber-js'
+// const number: E164Number = '+78005553535'
+// const carrierCode: CarrierCode = number
+//
+// Shows an error:
+// Type 'E164Number' is not assignable to type 'CarrierCode'.
+//
+// The `__tag` property is declared optional in order to allow passing a `string`
+// in place of a `Tagged` argument to functions that receive such arguments.
+// There currently are no such functions in this package, but in case there were any,
+// in their arguments they'd accept both a `string` and the `Tagged` type of the argument.
+//
+// The `__tag` property could also be declared non-optional but what issue would it solve?
+// It would disallow assigning a `string` to an `E164Number` variable, but what would be the props of such approach?
+// For example, the following code wouldn't compile:
+//
+// const number: E164Number = "some random text"
+//
+// But in that case, how would one initialize an `E164Number` variable with a value received from outside?
+// For example, a program reads an `E.164` number from a database in the form of a `string`.
+// How would it cast it to an `E164Number`? Using `as` keyword?
+// In that case it wouldn't really make any difference from allowing it to assign a `string` to a `E164Number` variable directly.
+//
 type Tagged<A, T> = A & { __tag?: T };
 
-type E164Number = Tagged<string, "E164Number">;
-type NationalNumber = Tagged<string, "NationalNumber">;
-type Extension = Tagged<string, "Extension">;
-type CarrierCode = Tagged<string, "CarrierCode">;
-type CountryCallingCode = Tagged<string, "CountryCallingCode">;
+export type E164Number = Tagged<string, "E164Number">;
+export type NationalNumber = Tagged<string, "NationalNumber">;
+export type Extension = Tagged<string, "Extension">;
+export type CarrierCode = Tagged<string, "CarrierCode">;
+export type CountryCallingCode = Tagged<string, "CountryCallingCode">;
 
 type FormatExtension = (formattedNumber: string, extension: Extension, metadata: MetadataJson) => string
 
