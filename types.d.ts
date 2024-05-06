@@ -86,7 +86,7 @@ export type NumberType = undefined | 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST
 // How would it cast it to an `E164Number`? Using `as` keyword?
 // In that case it wouldn't really make any difference from allowing it to assign a `string` to a `E164Number` variable directly.
 //
-type Tagged<A, T> = A & { __tag?: T };
+type Tagged<A, T> = A & { __tag: T };
 
 export type E164Number = Tagged<string, "E164Number">;
 export type NationalNumber = Tagged<string, "NationalNumber">;
