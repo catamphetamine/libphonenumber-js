@@ -139,6 +139,7 @@ export interface NumberFound {
   endsAt: number;
 }
 
+// Deprecated
 export interface NumberFoundLegacy {
   country: CountryCode;
   phone: NationalNumber;
