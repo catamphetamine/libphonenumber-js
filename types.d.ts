@@ -70,21 +70,16 @@ export type NumberType = undefined | 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST
 // Shows an error:
 // Type 'E164Number' is not assignable to type 'CarrierCode'.
 //
-// The `__tag` property is declared optional in order to allow passing a `string`
-// in place of a `Tagged` argument to functions that receive such arguments.
-// There currently are no such functions in this package, but in case there were any,
-// in their arguments they'd accept both a `string` and the `Tagged` type of the argument.
+// Originally, the `__tag` property was declared optional in order to allow passing
+// a generic `string` in place of a `Tagged` type argument to functions that receive such arguments:
+// that would allow ingesting generic `string` values from an outside source such as a database.
+// Without that, those externally-obtained `string` values would have to be forcefully converted
+// to the `Tagged` type via TypeScript `as` operator which is an anti-pattern.
 //
-// The `__tag` property could also be declared non-optional but what issue would it solve?
-// It would disallow assigning a `string` to an `E164Number` variable, but what would be the props of such approach?
-// For example, the following code wouldn't compile:
-//
-// const number: E164Number = "some random text"
-//
-// But in that case, how would one initialize an `E164Number` variable with a value received from outside?
-// For example, a program reads an `E.164` number from a database in the form of a `string`.
-// How would it cast it to an `E164Number`? Using `as` keyword?
-// In that case it wouldn't really make any difference from allowing it to assign a `string` to a `E164Number` variable directly.
+// Later, it has been decided to make the `__tag` property non-optional and instead
+// declare the arguments of those functions as `string | Tagged` rather than just `Tagged`:
+// that would still allow ingesting generic `string` values from an outside source
+// and would also make the `Tagged` type more "type safe".
 //
 type Tagged<A, T> = A & { __tag: T };
 

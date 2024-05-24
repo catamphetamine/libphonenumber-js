@@ -260,6 +260,6 @@ describe('format', () => {
 	it('should use the default IDD prefix when formatting a phone number', () => {
 		// Testing preferred international prefixes with ~ are supported.
 		// ("~" designates waiting on a line until proceeding with the input).
-		formatNumber('+390236618300', 'IDD', { fromCountry: 'UZ' }).should.equal('8~10 39 02 3661 8300')
+		formatNumber('+390236618300', 'IDD', { fromCountry: 'BY' }).should.equal('8~10 39 02 3661 8300')
 	})
 })
