@@ -750,37 +750,53 @@ describe('AsYouType', () => {
 
 	it('should work with Mexico numbers', () => {
 		const asYouType = new AsYouType('MX')
-		// Fixed line.
+
+		// Fixed line. International.
 		asYouType.input('+52(449)978-000').should.equal('+52 449 978 000')
 		asYouType.input('1').should.equal('+52 449 978 0001')
 		asYouType.reset()
-		asYouType.input('01449978000').should.equal('01449 978 000')
-		asYouType.getTemplate().should.equal('xxxxx xxx xxx')
-		asYouType.input('1').should.equal('01449 978 0001')
-		asYouType.getTemplate().should.equal('xxxxx xxx xxxx')
-		asYouType.reset()
+
+		// "Dialling tokens 01, 02, 044, 045 and 1 are removed as they are
+		//  no longer valid since August 2019."
+		// // Fixed line. National. With national prefix "01".
+		// asYouType.input('01449978000').should.equal('01449 978 000')
+		// asYouType.getTemplate().should.equal('xxxxx xxx xxx')
+		// asYouType.input('1').should.equal('01449 978 0001')
+		// asYouType.getTemplate().should.equal('xxxxx xxx xxxx')
+		// asYouType.reset()
+
+		// Fixed line. National. Without national prefix.
 		asYouType.input('(449)978-000').should.equal('449 978 000')
 		asYouType.getTemplate().should.equal('xxx xxx xxx')
 		asYouType.input('1').should.equal('449 978 0001')
 		asYouType.getTemplate().should.equal('xxx xxx xxxx')
+		asYouType.reset()
+
 		// Mobile.
-		// `1` is prepended before area code to mobile numbers in international format.
-		asYouType.reset()
-		asYouType.input('+521331234567').should.equal('+52 133 1234 567')
-		asYouType.getTemplate().should.equal('xxx xxx xxxx xxx')
-		// Google's `libphonenumber` seems to not able to format this type of number.
-		// https://issuetracker.google.com/issues/147938979
-		asYouType.input('8').should.equal('+52 133 1234 5678')
-		asYouType.getTemplate().should.equal('xxx xxx xxxx xxxx')
-		asYouType.reset()
 		asYouType.input('+52331234567').should.equal('+52 33 1234 567')
 		asYouType.input('8').should.equal('+52 33 1234 5678')
 		asYouType.reset()
-		asYouType.input('044331234567').should.equal('04433 1234 567')
-		asYouType.input('8').should.equal('04433 1234 5678')
-		asYouType.reset()
-		asYouType.input('045331234567').should.equal('04533 1234 567')
-		asYouType.input('8').should.equal('04533 1234 5678')
+
+		// "Dialling tokens 01, 02, 044, 045 and 1 are removed as they are
+		//  no longer valid since August 2019."
+		// // Mobile.
+		// // With `1` prepended before area code to mobile numbers in international format.
+		// asYouType.input('+521331234567').should.equal('+52 133 1234 567')
+		// asYouType.getTemplate().should.equal('xxx xxx xxxx xxx')
+		// // Google's `libphonenumber` seems to not able to format this type of number.
+		// // https://issuetracker.google.com/issues/147938979
+		// asYouType.input('8').should.equal('+52 133 1234 5678')
+		// asYouType.getTemplate().should.equal('xxx xxx xxxx xxxx')
+		// asYouType.reset()
+		//
+		// // Mobile. National. With "044" prefix.
+		// asYouType.input('044331234567').should.equal('04433 1234 567')
+		// asYouType.input('8').should.equal('04433 1234 5678')
+		// asYouType.reset()
+		//
+		// // Mobile. National. With "045" prefix.
+		// asYouType.input('045331234567').should.equal('04533 1234 567')
+		// asYouType.input('8').should.equal('04533 1234 5678')
 	})
 
 	it('should just prepend national prefix if national_prefix_formatting_rule does not produce a suitable number', () => {

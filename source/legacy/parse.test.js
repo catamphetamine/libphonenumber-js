@@ -353,32 +353,41 @@ describe('parse', () => {
 			country: 'MX',
 			phone: '4499780001'
 		})
-		parseNumber('01 (449)978-0001', 'MX').should.deep.equal({
-			country: 'MX',
-			phone: '4499780001'
-		})
+		// "Dialling tokens 01, 02, 044, 045 and 1 are removed as they are
+		//  no longer valid since August 2019."
+		//
+		// parseNumber('01 (449)978-0001', 'MX').should.deep.equal({
+		// 	country: 'MX',
+		// 	phone: '4499780001'
+		// })
 		parseNumber('(449)978-0001', 'MX').should.deep.equal({
 			country: 'MX',
 			phone: '4499780001'
 		})
-		// Mobile.
-		// `1` is prepended before area code to mobile numbers in international format.
-		parseNumber('+52 1 33 1234-5678', 'MX').should.deep.equal({
-			country: 'MX',
-			phone: '3312345678'
-		})
+		// "Dialling tokens 01, 02, 044, 045 and 1 are removed as they are
+		//  no longer valid since August 2019."
+		//
+		// // Mobile.
+		// // `1` is prepended before area code to mobile numbers in international format.
+		// parseNumber('+52 1 33 1234-5678', 'MX').should.deep.equal({
+		// 	country: 'MX',
+		// 	phone: '3312345678'
+		// })
 		parseNumber('+52 33 1234-5678', 'MX').should.deep.equal({
 			country: 'MX',
 			phone: '3312345678'
 		})
-		parseNumber('044 (33) 1234-5678', 'MX').should.deep.equal({
-			country: 'MX',
-			phone: '3312345678'
-		})
-		parseNumber('045 33 1234-5678', 'MX').should.deep.equal({
-			country: 'MX',
-			phone: '3312345678'
-		})
+		// "Dialling tokens 01, 02, 044, 045 and 1 are removed as they are
+		//  no longer valid since August 2019."
+		//
+		// parseNumber('044 (33) 1234-5678', 'MX').should.deep.equal({
+		// 	country: 'MX',
+		// 	phone: '3312345678'
+		// })
+		// parseNumber('045 33 1234-5678', 'MX').should.deep.equal({
+		// 	country: 'MX',
+		// 	phone: '3312345678'
+		// })
 	})
 
 	it('should parse non-geographic numbering plan phone numbers', () => {

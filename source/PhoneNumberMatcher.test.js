@@ -47,10 +47,13 @@ describe('PhoneNumberMatcher', () => {
 		test('+52 (449)978-0001', 'MX', '4499780001')
 		test('01 (449)978-0001', 'MX', '4499780001')
 		test('(449)978-0001', 'MX', '4499780001')
-		// Test parsing mobile numbers of Mexico.
-		test('+52 1 33 1234-5678', 'MX', '3312345678')
-		test('044 (33) 1234-5678', 'MX', '3312345678')
-		test('045 33 1234-5678', 'MX', '3312345678')
+
+		// "Dialling tokens 01, 02, 044, 045 and 1 are removed as they are
+		//  no longer valid since August 2019."
+		// // Test parsing mobile numbers of Mexico.
+		// test('+52 1 33 1234-5678', 'MX', '3312345678')
+		// test('044 (33) 1234-5678', 'MX', '3312345678')
+		// test('045 33 1234-5678', 'MX', '3312345678')
 	})
 
 	it('should find phone numbers from Argentina', () => {
