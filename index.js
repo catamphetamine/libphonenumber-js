@@ -24,6 +24,7 @@ export { getCountries } from './min/exports/getCountries.js'
 // `getPhoneCode` name is deprecated, use `getCountryCallingCode` instead.
 export { getCountryCallingCode, getCountryCallingCode as getPhoneCode } from './min/exports/getCountryCallingCode.js'
 export { getExtPrefix } from './min/exports/getExtPrefix.js'
+export { getCountryName } from './min/exports/getCountryName.js'
 
 export { Metadata } from './min/exports/Metadata.js'
 export { getExampleNumber } from './min/exports/getExampleNumber.js'

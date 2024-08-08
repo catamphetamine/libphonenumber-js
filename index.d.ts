@@ -62,6 +62,7 @@ export class PhoneNumberMatcher {
 export function getCountries(): CountryCode[];
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
 export function getExtPrefix(countryCode: CountryCode): string;
+export function getCountryName(countryCode: CountryCode): string;
 export function isSupportedCountry(countryCode: string): countryCode is CountryCode;
 
 export function formatIncompletePhoneNumber(number: string, countryCode?: CountryCode): string;

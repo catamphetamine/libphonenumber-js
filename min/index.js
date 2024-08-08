@@ -22,6 +22,7 @@ export { isSupportedCountry } from './exports/isSupportedCountry.js'
 export { getCountries } from './exports/getCountries.js'
 export { getCountryCallingCode } from './exports/getCountryCallingCode.js'
 export { getExtPrefix } from './exports/getExtPrefix.js'
+export { getCountryName } from './exports/getCountryName.js'
 
 export { Metadata } from './exports/Metadata.js'
 export { getExampleNumber } from './exports/getExampleNumber.js'

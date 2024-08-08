@@ -37,6 +37,7 @@ exports.isSupportedCountry = require('../build/metadata.js').isSupportedCountry
 exports.getCountries = require('../build/getCountries.js').default
 exports.getCountryCallingCode = require('../build/metadata.js').getCountryCallingCode
 exports.getExtPrefix = require('../build/metadata.js').getExtPrefix
+exports.getCountryName = require('../build/metadata.js').getCountryName
 
 exports.getExampleNumber = require('../build/getExampleNumber.js').default
 

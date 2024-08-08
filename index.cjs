@@ -6,6 +6,8 @@ var metadata = require('./metadata.min.json')
 function withMetadataArgument(func, _arguments) {
 	var args = Array.prototype.slice.call(_arguments)
 	args.push(metadata)
+	console.log('test', args, func)
+
 	return func.apply(this, args)
 }
 
@@ -106,6 +108,7 @@ exports.getCountries = min.getCountries
 exports.getCountryCallingCode = min.getCountryCallingCode
 exports.isSupportedCountry = min.isSupportedCountry
 exports.getExtPrefix = min.getExtPrefix
+exports.getCountryName = min.getCountryName
 
 exports.parseRFC3966 = min.parseRFC3966
 exports.formatRFC3966 = min.formatRFC3966

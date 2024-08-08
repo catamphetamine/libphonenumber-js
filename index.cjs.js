@@ -112,6 +112,7 @@ exports.getCountries = min.getCountries
 exports.getCountryCallingCode = min.getCountryCallingCode
 exports.isSupportedCountry = min.isSupportedCountry
 exports.getExtPrefix = min.getExtPrefix
+exports.getCountryName = min.getCountryName
 
 exports.parseRFC3966 = min.parseRFC3966
 exports.formatRFC3966 = min.formatRFC3966

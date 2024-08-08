@@ -84,6 +84,7 @@ export function isSupportedCountry(countryCode: CountryCode, metadata: MetadataJ
 export function getCountries(metadata: MetadataJson): CountryCode[];
 export function getCountryCallingCode(countryCode: CountryCode, metadata: MetadataJson): CountryCallingCode;
 export function getExtPrefix(countryCode: CountryCode, metadata: MetadataJson): string;
+export function getCountryName(countryCode: CountryCode, metadata: MetadataJson): string;
 
 export function getExampleNumber(country: CountryCode, examples: Examples, metadata: MetadataJson): PhoneNumber | undefined;
 

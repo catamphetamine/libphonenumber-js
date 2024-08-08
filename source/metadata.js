@@ -33,6 +33,10 @@ export default class Metadata {
 		return this.metadata.countries[countryCode]
 	}
 
+	getCountryName(countryCode) {
+		return this.metadata.countries[countryCode].name
+	}
+
 	nonGeographic() {
 		if (this.v1 || this.v2 || this.v3) return
 		// `nonGeographical` was a typo.
@@ -149,6 +153,10 @@ export default class Metadata {
 	// Deprecated.
 	countryCallingCode() {
 		return this.numberingPlan.callingCode()
+	}
+
+	countryName() {
+		return this.numberingPlan.name()
 	}
 
 	// Deprecated.
@@ -348,6 +356,10 @@ class NumberingPlan {
 		if (this.v1 || this.v2) return DEFAULT_EXT_PREFIX
 		return this.metadata[13] || DEFAULT_EXT_PREFIX
 	}
+
+	name() { 
+		return this.metadata[14]
+	}
 }
 
 class Format {
@@ -500,6 +512,15 @@ export function getCountryCallingCode(country, metadata) {
 	metadata = new Metadata(metadata)
 	if (metadata.hasCountry(country)) {
 		return metadata.country(country).countryCallingCode()
+	}
+	throw new Error(`Unknown country: ${country}`)
+}
+
+export function getCountryName(country, metadata) {
+	metadata = new Metadata(metadata)
+	if (metadata.hasCountry(country)) {
+		return metadata.country(country).countryName()
+	
 	}
 	throw new Error(`Unknown country: ${country}`)
 }

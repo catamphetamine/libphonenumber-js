@@ -4,7 +4,7 @@ import metadataV2 from '../test/metadata/1.1.11/metadata.min.json' assert { type
 import metadataV3 from '../test/metadata/1.7.34/metadata.min.json' assert { type: 'json' }
 import metadataV4 from '../test/metadata/1.7.37/metadata.min.json' assert { type: 'json' }
 
-import Metadata, { validateMetadata, getExtPrefix, isSupportedCountry } from './metadata.js'
+import Metadata, { validateMetadata, getExtPrefix, isSupportedCountry, getCountryName } from './metadata.js'
 
 describe('metadata', () => {
 	it('should return undefined for non-defined types', () => {
@@ -28,6 +28,12 @@ describe('metadata', () => {
 		getExtPrefix('GB', metadata).should.equal(' x')
 		// expect(getExtPrefix('XX', metadata)).to.equal(undefined)
 		getExtPrefix('XX', metadata).should.equal(' ext. ')
+	})
+
+	it('should return country name', () => {
+		getCountryName('US', metadata).should.equal('United States of America')
+		getCountryName('CA', metadata).should.equal('Canada')
+		getCountryName('GB', metadata).should.equal('United Kingdom')
 	})
 
 	it('should cover non-occuring edge cases', () => {

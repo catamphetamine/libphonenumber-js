@@ -72,6 +72,7 @@ export function isSupportedCountry(countryCode: string): countryCode is CountryC
 export function getCountries(): CountryCode[];
 export function getCountryCallingCode(countryCode: CountryCode): CountryCallingCode;
 export function getExtPrefix(countryCode: CountryCode): string;
+export function getCountryName(countryCode: CountryCode): string;
 
 export function getExampleNumber(country: CountryCode, examples: Examples): PhoneNumber | undefined;
 

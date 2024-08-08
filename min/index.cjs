@@ -90,6 +90,10 @@ exports.getExtPrefix = function getExtPrefix(country) {
 	return call(core.getExtPrefix, arguments)
 }
 
+exports.getCountryName = function getCountryName(country) {
+	return call(core.getCountryName, arguments)
+}
+
 exports.getExampleNumber = function getExampleNumber() {
 	return call(core.getExampleNumber, arguments)
 }

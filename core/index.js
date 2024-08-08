@@ -22,7 +22,7 @@ export { default as AsYouType } from '../es6/AsYouType.js'
 export { DIGIT_PLACEHOLDER } from '../es6/AsYouTypeFormatter.js'
 
 export { default as getCountries } from '../es6/getCountries.js'
-export { default as Metadata, isSupportedCountry, getCountryCallingCode, getExtPrefix } from '../es6/metadata.js'
+export { default as Metadata, isSupportedCountry, getCountryCallingCode, getExtPrefix, getCountryName } from '../es6/metadata.js'
 
 export { default as getExampleNumber } from '../es6/getExampleNumber.js'
 
