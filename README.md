@@ -1813,7 +1813,7 @@ Also Google sometimes (very rarely) updates their code:
 * [`AsYouTypeFormatter.java`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/AsYouTypeFormatter.java) — `AsYouType`
 * [`PhoneNumberMatcher.java`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) — `findPhoneNumbersInText()`
 
-The latest sync-up was on Mar 18th, 2024.
+The latest sync-up was on Aug 14th, 2024.
 
 ## Contributing
 
