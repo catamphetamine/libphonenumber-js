@@ -546,12 +546,16 @@ describe('parse', () => {
 		expect(() => parseNumber('+1123-456-7890 7777777#', { v2: true })).to.throw('NOT_A_NUMBER')
 	})
 
-	it('should choose `defaultCountry` (non-"main" one) when multiple countries match the number', () => {
+	it('should not choose `defaultCountry` over the "main" one when both the `defaultCountry` and the "main" one match the phone number', function() {
+		// This phone number matches both US and CA because they have the same
+		// regular expression for some weird reason.
 		// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/103
 		const phoneNumber = parseNumber('8004001000', { defaultCountry: 'CA', v2: true })
-		phoneNumber.country.should.equal('CA')
+		phoneNumber.country.should.not.equal('CA')
+		phoneNumber.country.should.equal('US')
 
+		// This phone number is specific to CA.
 		const phoneNumber2 = parseNumber('4389999999', { defaultCountry: 'US', v2: true })
-		phoneNumber.country.should.equal('CA')
+		phoneNumber2.country.should.equal('CA')
 	})
 })

@@ -9,7 +9,7 @@ export default function getCountryByNationalNumber(nationalPhoneNumber, {
 	// Re-create `metadata` because it will be selecting a `country`.
 	metadata = new Metadata(metadata)
 
-	const matchingCountries = []
+	// const matchingCountries = []
 
 	for (const country of countries) {
 		metadata.country(country)
@@ -29,20 +29,24 @@ export default function getCountryByNationalNumber(nationalPhoneNumber, {
 		// Else perform full validation with all of those
 		// fixed-line/mobile/etc regular expressions.
 		else if (getNumberType({ phone: nationalPhoneNumber, country }, undefined, metadata.metadata)) {
-			// If the `defaultCountry` is among the `matchingCountries` then return it.
-			if (defaultCountry) {
-				if (country === defaultCountry) {
-					return country
-				}
-				matchingCountries.push(country)
-			} else {
-				return country
-			}
+			// If both the `defaultCountry` and the "main" one match the phone number,
+			// don't prefer the `defaultCountry` over the "main" one.
+			// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/154
+			return country
+			// // If the `defaultCountry` is among the `matchingCountries` then return it.
+			// if (defaultCountry) {
+			// 	if (country === defaultCountry) {
+			// 		return country
+			// 	}
+			// 	matchingCountries.push(country)
+			// } else {
+			// 	return country
+			// }
 		}
 	}
 
-	// Return the first ("main") one of the `matchingCountries`.
-	if (matchingCountries.length > 0) {
-		return matchingCountries[0]
-	}
+	// // Return the first ("main") one of the `matchingCountries`.
+	// if (matchingCountries.length > 0) {
+	// 	return matchingCountries[0]
+	// }
 }

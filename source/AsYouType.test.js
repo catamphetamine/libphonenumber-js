@@ -1380,17 +1380,22 @@ describe('AsYouType.getNumberValue()', () => {
 		formatter.getTemplate().should.equal('xxx xxx xxx xxx')
 	})
 
-	it('should choose `defaultCountry` (non-"main" one) when multiple countries match the number', function() {
+	it('should not choose `defaultCountry` over the "main" one when both the `defaultCountry` and the "main" one match the phone number', function() {
+		// This phone number matches both US and CA because they have the same
+		// regular expression for some weird reason.
 		// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/103
 		const formatter = new AsYouType('CA')
 		formatter.input('8004001000')
-		formatter.getNumber().country.should.equal('CA')
+		formatter.getNumber().country.should.not.equal('CA')
+		formatter.getNumber().country.should.equal('US')
 
+		// This phone number is specific to CA.
 		const formatter2 = new AsYouType('US')
 		formatter2.input('4389999999')
 		formatter2.getNumber().country.should.equal('CA')
 
-		// No country matches the national number digits.
+		// This phone number doesn't belong neither to CA nor to US.
+		// In fact, it doesn't belong to any country from the "NANPA" zone.
 		const formatter3 = new AsYouType('US')
 		formatter3.input('1111111111')
 		formatter3.getNumber().country.should.equal('US')
