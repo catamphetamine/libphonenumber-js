@@ -93,11 +93,14 @@ export class Metadata {
   numberingPlan?: NumberingPlan;
 }
 
-// Deprecated
-// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
+/**
+ * @deprecated `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`
+ */
 export function parsePhoneNumber(text: string, defaultCountry?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extract?: boolean }): PhoneNumber;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export interface ParsedNumber {
   countryCallingCode?: CountryCallingCode;
   country: CountryCode;
@@ -107,22 +110,32 @@ export interface ParsedNumber {
   valid?: boolean;
 }
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export type ParseNumberOptions = {
   defaultCountry?: CountryCode;
   extended?: boolean;
 };
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function parse(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function parseNumber(text: string, options?: CountryCode | ParseNumberOptions): ParsedNumber | {};
 
-// Deprecated
+/**
+ * @deprecated
+ */
 type FormatExtension = (number: string, extension: string, metadata: MetadataJson) => string
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export type FormatNumberOptions = {
   v2?: boolean;
   fromCountry?: CountryCode;
@@ -130,49 +143,71 @@ export type FormatNumberOptions = {
   formatExtension?: FormatExtension;
 };
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function format(parsedNumber: ParsedNumber, format: NumberFormat): string;
 export function format(phone: string, format: NumberFormat): string;
 export function format(phone: string, country: CountryCode, format: NumberFormat): string;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function formatNumber(parsedNumber: ParsedNumber, format: NumberFormat, options?: FormatNumberOptions): string;
 export function formatNumber(phone: string, format: NumberFormat, options?: FormatNumberOptions): string;
 export function formatNumber(phone: string, country: CountryCode, format: NumberFormat, options?: FormatNumberOptions): string;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function getNumberType(parsedNumber: ParsedNumber): NumberType;
 export function getNumberType(phone: string, country?: CountryCode): NumberType;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function isPossibleNumber(parsedNumber: ParsedNumber): boolean;
 export function isPossibleNumber(phone: string, country?: CountryCode): boolean;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function isValidNumber(parsedNumber: ParsedNumber): boolean;
 export function isValidNumber(phone: string, country?: CountryCode): boolean;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function isValidNumberForRegion(phone: string, country: CountryCode): boolean;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function findParsedNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): NumberFoundLegacy[];
 export function searchParsedNumbers(text: string, options?: CountryCode | { defaultCountry?: CountryCode }): IterableIterator<NumberFoundLegacy>;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export class ParsedNumberSearch {
   constructor(text: string, options?: { defaultCountry?: CountryCode });
   hasNext(): boolean;
   next(): NumberFoundLegacy | undefined;
 }
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function findNumbers(text: string, options?: CountryCode): NumberFoundLegacy[];
 export function searchNumbers(text: string, options?: CountryCode): IterableIterator<NumberFoundLegacy>;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function findNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): NumberFound[];
 export function searchNumbers(text: string, options?: { defaultCountry?: CountryCode, v2: true }): IterableIterator<NumberFound>;
 
-// Deprecated
+/**
+ * @deprecated
+ */
 export function getPhoneCode(countryCode: CountryCode): CountryCallingCode;
