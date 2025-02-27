@@ -156,21 +156,6 @@ export function parseNumber(text: string, options?: CountryCode | ParseNumberOpt
 /**
  * @deprecated
  */
-type FormatExtension = (number: string, extension: string, metadata: MetadataJson) => string
-
-/**
- * @deprecated
- */
-export type FormatNumberOptions = {
-  v2?: boolean;
-  fromCountry?: CountryCode;
-  humanReadable?: boolean;
-  formatExtension?: FormatExtension;
-};
-
-/**
- * @deprecated
- */
 export function format(parsedNumber: ParsedNumber, format: NumberFormat): string;
 export function format(phone: string, format: NumberFormat): string;
 export function format(phone: string, country: CountryCode, format: NumberFormat): string;
