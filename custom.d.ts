@@ -4,7 +4,6 @@
 import {
   MetadataJson,
   Examples,
-  PhoneNumber as IPhoneNumber,
   E164Number,
   CountryCallingCode,
   CountryCode,
@@ -13,7 +12,6 @@ import {
   Extension,
   ParseError,
   NumberFoundLegacy,
-  NumberFound,
   NumberType,
   NumberFormat,
   NumberingPlan
@@ -22,6 +20,7 @@ import {
 import {
   ParsedNumber,
   FormatNumberOptions,
+  FormatNumberOptionsWithoutIDD,
   ParseNumberOptions
 } from './index.d.js';
 
@@ -39,14 +38,36 @@ export {
   ParseNumberOptions,
   ParseError,
   NumberFoundLegacy,
-  NumberFound,
   NumberFormat,
   NumberType,
   NumberingPlan
 };
 
-export class PhoneNumber implements IPhoneNumber {
+export class PhoneNumber {
   constructor(number: E164Number, metadata: MetadataJson);
+  countryCallingCode: CountryCallingCode;
+  country?: CountryCode;
+  nationalNumber: NationalNumber;
+  number: E164Number;
+  carrierCode?: CarrierCode;
+  ext?: Extension;
+  setExt(ext: Extension): void;
+  getPossibleCountries(): CountryCode[];
+  isPossible(): boolean;
+  isValid(): boolean;
+  getType(): NumberType;
+  format(format: NumberFormat, options?: FormatNumberOptions): string;
+  formatNational(options?: FormatNumberOptionsWithoutIDD): string;
+  formatInternational(options?: FormatNumberOptionsWithoutIDD): string;
+  getURI(options?: FormatNumberOptionsWithoutIDD): string;
+  isNonGeographic(): boolean;
+  isEqual(phoneNumber: PhoneNumber): boolean;
+}
+
+export interface NumberFound {
+  number: PhoneNumber;
+  startsAt: number;
+  endsAt: number;
 }
 
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.

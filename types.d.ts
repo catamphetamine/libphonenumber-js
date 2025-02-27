@@ -91,12 +91,7 @@ export type CountryCallingCode = Tagged<string, "CountryCallingCode">;
 
 type FormatExtension = (formattedNumber: string, extension: Extension, metadata: MetadataJson) => string
 
-type FormatNumberOptionsWithoutIDD = {
-  v2?: boolean;
-  formatExtension?: FormatExtension;
-};
-
-type FormatNumberOptions = {
+export interface FormatNumberOptions {
   v2?: boolean;
   fromCountry?: CountryCode;
   humanReadable?: boolean;
@@ -104,34 +99,47 @@ type FormatNumberOptions = {
   formatExtension?: FormatExtension;
 };
 
+export interface FormatNumberOptionsWithoutIDD {
+  v2?: boolean;
+  formatExtension?: FormatExtension;
+};
+
 // // https://stackoverflow.com/a/67026991
 // type ArrayOfAtLeastOneCountryCode = [CountryCode, ...CountryCode[]];
 
-export interface PhoneNumber {
-  countryCallingCode: CountryCallingCode;
-  country?: CountryCode;
-  nationalNumber: NationalNumber;
-  number: E164Number;
-  carrierCode?: CarrierCode;
-  ext?: Extension;
-  setExt(ext: Extension): void;
-  getPossibleCountries(): CountryCode[];
-  isPossible(): boolean;
-  isValid(): boolean;
-  getType(): NumberType;
-  format(format: NumberFormat, options?: FormatNumberOptions): string;
-  formatNational(options?: FormatNumberOptionsWithoutIDD): string;
-  formatInternational(options?: FormatNumberOptionsWithoutIDD): string;
-  getURI(options?: FormatNumberOptionsWithoutIDD): string;
-  isNonGeographic(): boolean;
-  isEqual(phoneNumber: PhoneNumber): boolean;
-}
-
-export interface NumberFound {
-  number: PhoneNumber;
-  startsAt: number;
-  endsAt: number;
-}
+// For some weird reason, `export class PhoneNumber implements IPhoneNumber {}` approach
+// didn't work, so the declaration of the `PhoneNumber` class had to be copy-pasted everywhere
+// instead of being declared once in this file.
+//
+// export interface PhoneNumber {
+//   countryCallingCode: CountryCallingCode;
+//   country?: CountryCode;
+//   nationalNumber: NationalNumber;
+//   number: E164Number;
+//   carrierCode?: CarrierCode;
+//   ext?: Extension;
+//   setExt(ext: Extension): void;
+//   getPossibleCountries(): CountryCode[];
+//   isPossible(): boolean;
+//   isValid(): boolean;
+//   getType(): NumberType;
+//   format(format: NumberFormat, options?: FormatNumberOptions): string;
+//   formatNational(options?: FormatNumberOptionsWithoutIDD): string;
+//   formatInternational(options?: FormatNumberOptionsWithoutIDD): string;
+//   getURI(options?: FormatNumberOptionsWithoutIDD): string;
+//   isNonGeographic(): boolean;
+//   isEqual(phoneNumber: PhoneNumber): boolean;
+// }
+//
+// Because `PhoneNumber` interface was commented out,
+// `NumberFound` also had to be copy-pasted everywhere
+// instead of being declared once in this file.
+//
+// export interface NumberFound {
+//   number: PhoneNumber;
+//   startsAt: number;
+//   endsAt: number;
+// }
 
 // Deprecated
 export interface NumberFoundLegacy {
