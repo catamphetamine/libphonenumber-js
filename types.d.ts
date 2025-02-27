@@ -97,12 +97,12 @@ export interface FormatNumberOptions {
   humanReadable?: boolean;
   nationalPrefix?: boolean;
   formatExtension?: FormatExtension;
-};
+}
 
 export interface FormatNumberOptionsWithoutIDD {
   v2?: boolean;
   formatExtension?: FormatExtension;
-};
+}
 
 // // https://stackoverflow.com/a/67026991
 // type ArrayOfAtLeastOneCountryCode = [CountryCode, ...CountryCode[]];
