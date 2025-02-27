@@ -107,8 +107,7 @@ type FormatNumberOptions = {
 // // https://stackoverflow.com/a/67026991
 // type ArrayOfAtLeastOneCountryCode = [CountryCode, ...CountryCode[]];
 
-export class PhoneNumber {
-  constructor(countryCallingCodeOrCountry: CountryCallingCode | CountryCode, nationalNumber: NationalNumber, metadata: MetadataJson);
+export interface PhoneNumber {
   countryCallingCode: CountryCallingCode;
   country?: CountryCode;
   nationalNumber: NationalNumber;

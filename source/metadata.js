@@ -457,8 +457,9 @@ export function validateMetadata(metadata) {
 		throw new Error('[libphonenumber-js] `metadata` argument not passed. Check your arguments.')
 	}
 
-	// `country_phone_code_to_countries` was renamed to
-	// `country_calling_codes` in `1.0.18`.
+	// `country_phone_code_to_countries` was renamed to `country_calling_codes` in `1.0.18`.
+	// For that reason, it's not used in this detection algorithm.
+	// Instead, it detects by `countries: {}` property existence.
 	if (!isObject(metadata) || !isObject(metadata.countries)) {
 		throw new Error(`[libphonenumber-js] \`metadata\` argument was passed but it's not a valid metadata. Must be an object having \`.countries\` child object property. Got ${isObject(metadata) ? 'an object of shape: { ' + Object.keys(metadata).join(', ') + ' }' : 'a ' + typeOf(metadata) + ': ' + metadata}.`)
 	}

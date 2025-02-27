@@ -2,10 +2,27 @@ import metadata from '../metadata.min.json' assert { type: 'json' }
 import PhoneNumber from './PhoneNumber.js'
 
 describe('PhoneNumber', () => {
-	it('should validate constructor arguments', () => {
-		expect(() => new PhoneNumber()).to.throw('`countryCallingCode` not passed')
-		expect(() => new PhoneNumber('7')).to.throw('`nationalNumber` not passed')
-		expect(() => new PhoneNumber('7', '8005553535')).to.throw('`metadata` not passed')
+	it('should create a phone number via a public constructor', () => {
+		const phoneNumber = new PhoneNumber('+78005553535', metadata)
+		phoneNumber.setExt('1234')
+		expect(phoneNumber.country).to.be.undefined
+		phoneNumber.countryCallingCode.should.equal('7')
+		phoneNumber.nationalNumber.should.equal('8005553535')
+		phoneNumber.formatNational().should.equal('8 (800) 555-35-35 ext. 1234')
+	})
+
+	it('should validate constructor arguments (public constructor)', () => {
+		expect(() => new PhoneNumber()).to.throw('argument is required')
+		expect(() => new PhoneNumber(undefined, metadata)).to.throw('argument is required')
+		expect(() => new PhoneNumber('7', metadata)).to.throw('must consist of a "+"')
+		expect(() => new PhoneNumber('+7', metadata)).to.throw('too short')
+		expect(() => new PhoneNumber('+7800')).to.throw('`metadata` argument not passed')
+	})
+
+	it('should validate constructor arguments (private constructor)', () => {
+		expect(() => new PhoneNumber(undefined, '800', metadata)).to.throw('First argument is required')
+		expect(() => new PhoneNumber('7', undefined, metadata)).to.throw('`nationalNumber` argument is required')
+		expect(() => new PhoneNumber('7', '8005553535')).to.throw('`metadata` argument not passed')
 	})
 
 	it('should accept country code argument', () => {

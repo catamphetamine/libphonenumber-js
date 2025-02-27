@@ -11,6 +11,7 @@ var parsePhoneNumberFromString = require('./build/parsePhoneNumber.js').default
 exports = module.exports = parsePhoneNumberFromString
 exports['default'] = parsePhoneNumberFromString
 
+exports.PhoneNumber = require('./build/PhoneNumber.js').default
 exports.ParseError = require('./build/ParseError.js').default
 var parsePhoneNumberWithError = require('./build/parsePhoneNumberWithError.js').default
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.

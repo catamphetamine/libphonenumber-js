@@ -1,3 +1,4 @@
+export { default as PhoneNumber } from '../es6/PhoneNumber.js'
 export { default as ParseError } from '../es6/ParseError.js'
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 export { default as parsePhoneNumberWithError, default as parsePhoneNumber } from '../es6/parsePhoneNumberWithError.js'

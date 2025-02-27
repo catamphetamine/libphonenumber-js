@@ -26,6 +26,7 @@ exports['default'] = min.parsePhoneNumberFromString
 // it has been promoted to a default export due to being too verbose.
 exports.parsePhoneNumberFromString = min.parsePhoneNumberFromString
 
+exports.PhoneNumber = min.PhoneNumber
 exports.ParseError = min.ParseError
 
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.

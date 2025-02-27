@@ -29,6 +29,7 @@ export { Metadata } from './min/exports/Metadata.js'
 export { getExampleNumber } from './min/exports/getExampleNumber.js'
 
 export { formatIncompletePhoneNumber } from './min/exports/formatIncompletePhoneNumber.js'
+export { PhoneNumber } from './min/exports/PhoneNumber.js'
 
 export {
 	ParseError,

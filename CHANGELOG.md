@@ -67,7 +67,12 @@ And edit the README:
 
 This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
 
-1.11.00 / 06.05.2024
+1.12.0 / 24.02.2025
+===================
+
+* Added an export of `PhoneNumber` class, as suggested by [Jan Vincent Liwanag](https://gitlab.com/jvliwanag) in his [pull request](https://gitlab.com/catamphetamine/libphonenumber-js/-/merge_requests/26).
+
+1.11.0 / 06.05.2024
 ====================
 
 * (TypeScript) Fixed Tagged type to be more strict, as suggested in an [issue](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/144) by Islam Sharabash.

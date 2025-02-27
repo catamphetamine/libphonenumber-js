@@ -427,6 +427,17 @@ parsePhoneNumber('(213) 373-4253', {
 
 ### `PhoneNumber`
 
+`PhoneNumber` class represents a parsed phone number.
+
+`PhoneNumber` class instance is returned from [`parsePhoneNumber()`](#parsephonenumberstring-defaultcountry-string--options-object-phonenumber) function, or it could also be constructed manually from a parsed phone `number` in [`E.164`](https://en.wikipedia.org/wiki/E.164) format:
+
+```js
+const phoneNumber = new PhoneNumber('+12133734253')
+
+// (optional) Add a phone number extension.
+phoneNumber.setExt('1234')
+```
+
 <!--
 `PhoneNumber` class constructor accepts two arguments: `country`/`countryCallingCode` and `nationalNumber`. Also `metadata`.
 
@@ -437,7 +448,7 @@ const phoneNumber = new PhoneNumber('RU', '8005553535', metadata)
 
 `PhoneNumber` class instance has the following properties:
 
-* `number: string` — The phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format. Example: `"+12133734253"`.
+* `number: string` — The phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format. Example: `"+12133734253"`.
 * `countryCallingCode: string` — The [country calling code](#country-calling-code). Example: `"1"`.
 * `nationalNumber: string` — The [national (significant) number](#national-significant-number). Example: `"2133734253"`.
 * `country: string?` — The [country code](#country-code). Example: `"US"`. Will be `undefined` when no `country` could be derived from the phone number. For example, when several countries have the same `countryCallingCode` and the `nationalNumber` doesn't look like it belongs to any of them. Or when a number belongs to a [non-geographic numbering plan](#non-geographic).

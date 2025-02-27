@@ -27,6 +27,7 @@ export { Metadata } from './exports/Metadata.js'
 export { getExampleNumber } from './exports/getExampleNumber.js'
 
 export { formatIncompletePhoneNumber } from './exports/formatIncompletePhoneNumber.js'
+export { PhoneNumber } from './exports/PhoneNumber.js'
 
 export {
 	ParseError,

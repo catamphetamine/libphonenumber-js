@@ -1,9 +1,11 @@
-import Metadata from './metadata.js'
+import Metadata, { validateMetadata } from './metadata.js'
 import isPossibleNumber from './isPossible.js'
 import isValidNumber from './isValid.js'
 // import checkNumberLength from './helpers/checkNumberLength.js'
 import getNumberType from './helpers/getNumberType.js'
 import getPossibleCountriesForNumber from './helpers/getPossibleCountriesForNumber.js'
+import extractCountryCallingCode from './helpers/extractCountryCallingCode.js'
+import isObject from './helpers/isObject.js'
 import formatNumber from './format.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
@@ -16,15 +18,48 @@ export default class PhoneNumber {
 	 * @return {PhoneNumber}
 	 */
 	constructor(countryOrCountryCallingCode, nationalNumber, metadata) {
+		// Validate `countryOrCountryCallingCode` argument.
 		if (!countryOrCountryCallingCode) {
-			throw new TypeError('`country` or `countryCallingCode` not passed')
+			throw new TypeError('First argument is required')
 		}
+		if (typeof countryOrCountryCallingCode !== 'string') {
+			throw new TypeError('First argument must be a string')
+		}
+
+		// In case of public API use: `constructor(number, metadata)`.
+		// Transform the arguments from `constructor(number, metadata)` to
+		// `constructor(countryOrCountryCallingCode, nationalNumber, metadata)`.
+		if (typeof countryOrCountryCallingCode === 'string') {
+			if (countryOrCountryCallingCode[0] === '+' && !nationalNumber) {
+				throw new TypeError('`metadata` argument not passed')
+			}
+			if (isObject(nationalNumber) && isObject(nationalNumber.countries)) {
+				metadata = nationalNumber
+				const e164Number = countryOrCountryCallingCode
+				if (!E164_NUMBER_REGEXP.test(e164Number)) {
+					throw new Error('Invalid `number` argument passed: must consist of a "+" followed by digits')
+				}
+				const { countryCallingCode, number } = extractCountryCallingCode(e164Number, undefined, undefined, metadata)
+				nationalNumber = number
+				countryOrCountryCallingCode = countryCallingCode
+				if (!nationalNumber) {
+					throw new Error('Invalid `number` argument passed: too short')
+				}
+			}
+		}
+
+		// Validate `nationalNumber` argument.
 		if (!nationalNumber) {
-			throw new TypeError('`nationalNumber` not passed')
+			throw new TypeError('`nationalNumber` argument is required')
 		}
-		if (!metadata) {
-			throw new TypeError('`metadata` not passed')
+		if (typeof nationalNumber !== 'string') {
+			throw new TypeError('`nationalNumber` argument must be a string')
 		}
+
+		// Validate `metadata` argument.
+		validateMetadata(metadata)
+
+		// Initialize properties.
 		const { country, countryCallingCode } = getCountryAndCountryCallingCode(
 			countryOrCountryCallingCode,
 			metadata
@@ -141,3 +176,5 @@ function getCountryAndCountryCallingCode(countryOrCountryCallingCode, metadataJs
 		countryCallingCode
 	}
 }
+
+const E164_NUMBER_REGEXP = /^\+\d+$/

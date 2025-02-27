@@ -20,6 +20,7 @@ function parsePhoneNumberFromString() {
 exports = module.exports = parsePhoneNumberFromString
 exports['default'] = parsePhoneNumberFromString
 
+exports.PhoneNumber = core.PhoneNumber
 exports.ParseError = core.ParseError
 
 function parsePhoneNumberWithError() {

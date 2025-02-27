@@ -20,6 +20,12 @@ function parsePhoneNumberFromString() {
 exports = module.exports = parsePhoneNumberFromString
 exports['default'] = parsePhoneNumberFromString
 
+exports.PhoneNumber = function PhoneNumber(number) {
+	return core.PhoneNumber.call(this, number, metadata)
+}
+exports.PhoneNumber.prototype = Object.create(core.PhoneNumber.prototype, {})
+exports.PhoneNumber.prototype.constructor = exports.PhoneNumber
+
 exports.ParseError = core.ParseError
 
 function parsePhoneNumberWithError() {

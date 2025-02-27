@@ -1,5 +1,6 @@
 import defaultExportParse,
 {
+	PhoneNumber,
 	ParseError,
 	parsePhoneNumber,
 	parsePhoneNumberWithError,
@@ -76,6 +77,7 @@ describe(`exports`, () => {
 	it(`should export ES6`, () => {
 		defaultExportParse('+12133734253').nationalNumber.should.equal('2133734253')
 
+		new PhoneNumber('+12133734253').formatNational.should.be.a('function')
 		expect(ParseError).to.be.a('function')
 
 		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
@@ -142,6 +144,7 @@ describe(`exports`, () => {
 		isValidNumberCustom('', 'US', metadata)
 		findPhoneNumbers('', 'US', metadata)
 		searchPhoneNumbers('', 'US', metadata)
+		new PhoneNumber('+7800', metadata)
 		new PhoneNumberSearchCustom('', metadata)
 		// `getPhoneCode` name is deprecated.
 		getPhoneCodeCustom('KZ', metadata)
@@ -152,6 +155,7 @@ describe(`exports`, () => {
 		Library('+12133734253').nationalNumber.should.equal('2133734253')
 		Library.default('+12133734253').nationalNumber.should.equal('2133734253')
 
+		new Library.PhoneNumber('+12133734253').formatNational.should.be.a('function')
 		expect(Library.ParseError).to.be.a('function')
 
 		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.

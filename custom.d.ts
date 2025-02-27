@@ -4,7 +4,7 @@
 import {
   MetadataJson,
   Examples,
-  PhoneNumber,
+  PhoneNumber as IPhoneNumber,
   E164Number,
   CountryCallingCode,
   CountryCode,
@@ -28,7 +28,6 @@ import {
 export {
   MetadataJson,
   Examples,
-  PhoneNumber,
   E164Number,
   CountryCallingCode,
   CountryCode,
@@ -45,6 +44,10 @@ export {
   NumberType,
   NumberingPlan
 };
+
+export class PhoneNumber implements IPhoneNumber {
+  constructor(number: E164Number, metadata: MetadataJson);
+}
 
 // `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
 export function parsePhoneNumber(text: string, metadata: MetadataJson): PhoneNumber;
