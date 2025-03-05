@@ -27,6 +27,10 @@ export {
   NationalNumber,
   Extension,
   ParseError,
+  // `FormatNumberOptions` export is deprecated.
+  // It's still here just due to legacy compatibility.
+  // https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/174#note_2380633424
+  FormatNumberOptions,
   NumberFoundLegacy,
   NumberFormat,
   NumberType,
