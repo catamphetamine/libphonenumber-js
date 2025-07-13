@@ -17,6 +17,8 @@ describe('PhoneNumber', () => {
 		expect(() => new PhoneNumber('7', metadata)).to.throw('must consist of a "+"')
 		expect(() => new PhoneNumber('+7', metadata)).to.throw('too short')
 		expect(() => new PhoneNumber('+7800')).to.throw('`metadata` argument not passed')
+		expect(() => new PhoneNumber(1234567890)).to.throw('must be a string')
+		expect(() => new PhoneNumber('+1', 1234567890)).to.throw('must be a string')
 	})
 
 	it('should validate constructor arguments (private constructor)', () => {

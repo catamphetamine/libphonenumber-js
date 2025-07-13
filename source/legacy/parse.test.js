@@ -109,7 +109,7 @@ describe('parse', () => {
 		// Too short.
 		// Won't strip national prefix `8` because otherwise the number would be too short.
 		parseNumber('+7 (800) 55-35-35', { extended: true }).should.deep.equal({
-			country            : 'RU',
+			country            : undefined,
 			countryCallingCode : '7',
 			phone              : '800553535',
 			carrierCode        : undefined,

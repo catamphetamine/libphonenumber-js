@@ -58,7 +58,7 @@ describe('exports/min', () => {
 		expect(parsePhoneNumberFromString('2133734253')).to.be.undefined
 
 		// Test "min" metadata.
-		expect(parsePhoneNumber('9150000000', 'RU').getType()).to.be.undefined
+		expect(parsePhoneNumber('9150000000', 'RU').getType()).to.equal('MOBILE')
 		expect(parsePhoneNumber('91187654321', 'AR').getType()).to.be.undefined
 		expect(parsePhoneNumber('51234567', 'EE').getType()).to.be.undefined
 

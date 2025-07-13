@@ -193,7 +193,7 @@ describe('exports/mobile', () => {
 		parsePhoneNumberFromString('+79123456789').isValid().should.equal(true)
 		parsePhoneNumberFromString('+79123456789').getType().should.equal('MOBILE')
 		// RU. Not a mobile phone number.
-		parsePhoneNumberFromString('+78005553535').country.should.equal('RU')
+		expect(parsePhoneNumberFromString('+78005553535').country).to.be.undefined
 		parsePhoneNumberFromString('+78005553535').isValid().should.equal(false)
 		expect(parsePhoneNumberFromString('+78005553535').getType()).to.be.undefined
 		// KZ

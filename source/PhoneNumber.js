@@ -29,22 +29,20 @@ export default class PhoneNumber {
 		// In case of public API use: `constructor(number, metadata)`.
 		// Transform the arguments from `constructor(number, metadata)` to
 		// `constructor(countryOrCountryCallingCode, nationalNumber, metadata)`.
-		if (typeof countryOrCountryCallingCode === 'string') {
-			if (countryOrCountryCallingCode[0] === '+' && !nationalNumber) {
-				throw new TypeError('`metadata` argument not passed')
+		if (countryOrCountryCallingCode[0] === '+' && !nationalNumber) {
+			throw new TypeError('`metadata` argument not passed')
+		}
+		if (isObject(nationalNumber) && isObject(nationalNumber.countries)) {
+			metadata = nationalNumber
+			const e164Number = countryOrCountryCallingCode
+			if (!E164_NUMBER_REGEXP.test(e164Number)) {
+				throw new Error('Invalid `number` argument passed: must consist of a "+" followed by digits')
 			}
-			if (isObject(nationalNumber) && isObject(nationalNumber.countries)) {
-				metadata = nationalNumber
-				const e164Number = countryOrCountryCallingCode
-				if (!E164_NUMBER_REGEXP.test(e164Number)) {
-					throw new Error('Invalid `number` argument passed: must consist of a "+" followed by digits')
-				}
-				const { countryCallingCode, number } = extractCountryCallingCode(e164Number, undefined, undefined, metadata)
-				nationalNumber = number
-				countryOrCountryCallingCode = countryCallingCode
-				if (!nationalNumber) {
-					throw new Error('Invalid `number` argument passed: too short')
-				}
+			const { countryCallingCode, number } = extractCountryCallingCode(e164Number, undefined, undefined, metadata)
+			nationalNumber = number
+			countryOrCountryCallingCode = countryCallingCode
+			if (!nationalNumber) {
+				throw new Error('Invalid `number` argument passed: too short')
 			}
 		}
 

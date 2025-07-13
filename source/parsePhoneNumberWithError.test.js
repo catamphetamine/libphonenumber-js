@@ -107,6 +107,6 @@ describe('parsePhoneNumberWithError', () => {
 		// For incomplete numbers it shouldn't strip national prefix.
 		phoneNumber = parsePhoneNumber('+7 8800 555 353')
 		phoneNumber.nationalNumber.should.equal('8800555353')
-		phoneNumber.country.should.equal('RU')
+		expect(phoneNumber.country).to.be.undefined
 	})
 })
