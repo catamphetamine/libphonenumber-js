@@ -1,0 +1,26 @@
+{
+	"coveragePathIgnorePatterns": [
+		"/node_modules/",
+		"<rootDir>/test/",
+    "<rootDir>/source/findNumbers/RegExpCache.js",
+    "<rootDir>/source/findNumbers/Leniency.js",
+    "<rootDir>/source/findNumbers/LRUCache.js",
+    "<rootDir>/source/findNumbers/matchPhoneNumberStringAgainstPhoneNumber.js",
+    "<rootDir>/source/formatNumberForMobileDialing.js",
+    "<rootDir>/source/getCountryCallingCode.js",
+    "<rootDir>/source/PhoneNumberMatcher.js",
+    "<rootDir>/source/tools/*.js"
+	],
+	"testPathIgnorePatterns": [
+		"/node_modules/",
+		"<rootDir>/test/"
+	],
+	"coverageThreshold": {
+    "global": {
+      "branches": 100,
+      "functions": 100,
+      "lines": 100,
+      "statements": 100
+    }
+	}
+}

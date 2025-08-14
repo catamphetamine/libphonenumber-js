@@ -34,6 +34,20 @@ npm-debug.log
 /metadata.mobile.json
 /examples.mobile.json
 
+# metadata subpackages' copied files
+/min/metadata/metadata.min.json
+/min/metadata/metadata.min.json.js
+/min/metadata/metadata.min.json.d.ts
+/max/metadata/metadata.max.json
+/max/metadata/metadata.max.json.js
+/max/metadata/metadata.max.json.d.ts
+/mobile/metadata/metadata.mobile.json
+/mobile/metadata/metadata.mobile.json.js
+/mobile/metadata/metadata.mobile.json.d.ts
+/mobile/examples/examples.mobile.json
+/mobile/examples/examples.mobile.json.js
+/mobile/examples/examples.mobile.json.d.ts
+
 # metadata.js
 /metadata.full.json.js
 /metadata.min.json.js

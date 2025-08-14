@@ -3,34 +3,34 @@ import parseIncompletePhoneNumber, { parsePhoneNumberCharacter } from '../../../
 describe('parseIncompletePhoneNumber', () => {
 	it('should parse phone number character', () => {
 		// Accepts leading `+`.
-		parsePhoneNumberCharacter('+').should.equal('+')
+		expect(parsePhoneNumberCharacter('+')).to.equal('+')
 
 		// Doesn't accept non-leading `+`.
 		expect(parsePhoneNumberCharacter('+', '+')).to.be.undefined
 
 		// Parses digits.
-		parsePhoneNumberCharacter('1').should.equal('1')
+		expect(parsePhoneNumberCharacter('1')).to.equal('1')
 
 		// Parses non-European digits.
-		parsePhoneNumberCharacter('٤').should.equal('4')
+		expect(parsePhoneNumberCharacter('٤')).to.equal('4')
 
 		// Dismisses other characters.
 		expect(parsePhoneNumberCharacter('-')).to.be.undefined
 	})
 
 	it('should parse incomplete phone number', () => {
-		parseIncompletePhoneNumber('').should.equal('')
+		expect(parseIncompletePhoneNumber('')).to.equal('')
 
 		// Doesn't accept non-leading `+`.
-		parseIncompletePhoneNumber('++').should.equal('+')
+		expect(parseIncompletePhoneNumber('++')).to.equal('+')
 
 		// Accepts leading `+`.
-		parseIncompletePhoneNumber('+7 800 555').should.equal('+7800555')
+		expect(parseIncompletePhoneNumber('+7 800 555')).to.equal('+7800555')
 
 		// Parses digits.
-		parseIncompletePhoneNumber('8 (800) 555').should.equal('8800555')
+		expect(parseIncompletePhoneNumber('8 (800) 555')).to.equal('8800555')
 
 		// Parses non-European digits.
-		parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤').should.equal('+442323234')
+		expect(parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤')).to.equal('+442323234')
 	})
 })

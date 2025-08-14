@@ -2,7 +2,7 @@ import applyInternationalSeparatorStyle from './applyInternationalSeparatorStyle
 
 describe('applyInternationalSeparatorStyle', () => {
 	it('should change Google\'s international format style', () => {
-		applyInternationalSeparatorStyle('(xxx) xxx-xx-xx').should.equal('xxx xxx xx xx')
-		applyInternationalSeparatorStyle('(xxx)xxx').should.equal('xxx xxx')
+		expect(applyInternationalSeparatorStyle('(xxx) xxx-xx-xx')).to.equal('xxx xxx xx xx')
+		expect(applyInternationalSeparatorStyle('(xxx)xxx')).to.equal('xxx xxx')
 	})
 })

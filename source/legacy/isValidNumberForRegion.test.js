@@ -1,4 +1,4 @@
-import metadata from '../../metadata.min.json' assert { type: 'json' }
+import metadata from '../../metadata.min.json' with { type: 'json' }
 import isValidNumberForRegionCustom from './isValidNumberForRegion.js'
 import _isValidNumberForRegion from './isValidNumberForRegion_.js'
 
@@ -9,8 +9,8 @@ function isValidNumberForRegion(...parameters) {
 
 describe('isValidNumberForRegion', () => {
 	it('should detect if is valid number for region', () => {
-		isValidNumberForRegion('07624369230', 'GB').should.equal(false)
-		isValidNumberForRegion('07624369230', 'IM').should.equal(true)
+		expect(isValidNumberForRegion('07624369230', 'GB')).to.equal(false)
+		expect(isValidNumberForRegion('07624369230', 'IM')).to.equal(true)
 	})
 
 	it('should validate arguments', () => {
@@ -20,9 +20,9 @@ describe('isValidNumberForRegion', () => {
 
 	it('should work in edge cases', () => {
 		// Not a "viable" phone number.
-		isValidNumberForRegion('7', 'GB').should.equal(false)
+		expect(isValidNumberForRegion('7', 'GB')).to.equal(false)
 
 		// `options` argument `if/else` coverage.
-		_isValidNumberForRegion('07624369230', 'GB', {}, metadata).should.equal(false)
+		expect(_isValidNumberForRegion('07624369230', 'GB', {}, metadata)).to.equal(false)
 	})
 })

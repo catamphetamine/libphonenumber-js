@@ -1,4 +1,4 @@
-import metadata from '../../metadata.min.json' assert { type: 'json' }
+import metadata from '../../metadata.min.json' with { type: 'json' }
 import _parseNumber from './parse.js'
 import Metadata from '../metadata.js'
 
@@ -12,15 +12,15 @@ const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 describe('parse', () => {
 	it('should not parse invalid phone numbers', () => {
 		// Too short.
-		parseNumber('+7 (800) 55-35-35').should.deep.equal({})
+		expect(parseNumber('+7 (800) 55-35-35')).to.deep.equal({})
 		// Too long.
-		parseNumber('+7 (800) 55-35-35-55').should.deep.equal({})
+		expect(parseNumber('+7 (800) 55-35-35-55')).to.deep.equal({})
 
-		parseNumber('+7 (800) 55-35-35', 'US').should.deep.equal({})
-		parseNumber('(800) 55 35 35', { defaultCountry: 'RU' }).should.deep.equal({})
-		parseNumber('+1 187 215 5230', 'US').should.deep.equal({})
+		expect(parseNumber('+7 (800) 55-35-35', 'US')).to.deep.equal({})
+		expect(parseNumber('(800) 55 35 35', { defaultCountry: 'RU' })).to.deep.equal({})
+		expect(parseNumber('+1 187 215 5230', 'US')).to.deep.equal({})
 
-		parseNumber('911231231', 'BE').should.deep.equal({})
+		expect(parseNumber('911231231', 'BE')).to.deep.equal({})
 	})
 
 	it('should parse valid phone numbers', () => {
@@ -28,50 +28,50 @@ describe('parse', () => {
 		// https://www.youtube.com/watch?v=6e1pMrYH5jI
 		//
 		// Restrict to RU
-		parseNumber('Phone: 8 (800) 555 35 35.', 'RU').should.deep.equal({ country: 'RU', phone: '8005553535' })
+		expect(parseNumber('Phone: 8 (800) 555 35 35.', 'RU')).to.deep.equal({ country: 'RU', phone: '8005553535' })
 		// International format
-		parseNumber('Phone: +7 (800) 555-35-35.').should.deep.equal({ country: 'RU', phone: '8005553535' })
+		expect(parseNumber('Phone: +7 (800) 555-35-35.')).to.deep.equal({ country: 'RU', phone: '8005553535' })
 		// // Restrict to US, but not a US country phone code supplied
 		// parseNumber('+7 (800) 555-35-35', 'US').should.deep.equal({})
 		// Restrict to RU
-		parseNumber('(800) 555 35 35', 'RU').should.deep.equal({ country: 'RU', phone: '8005553535' })
+		expect(parseNumber('(800) 555 35 35', 'RU')).to.deep.equal({ country: 'RU', phone: '8005553535' })
 		// Default to RU
-		parseNumber('8 (800) 555 35 35', { defaultCountry: 'RU' }).should.deep.equal({ country: 'RU', phone: '8005553535' })
+		expect(parseNumber('8 (800) 555 35 35', { defaultCountry: 'RU' })).to.deep.equal({ country: 'RU', phone: '8005553535' })
 
 		// Gangster partyline
-		parseNumber('+1-213-373-4253').should.deep.equal({ country: 'US', phone: '2133734253' })
+		expect(parseNumber('+1-213-373-4253')).to.deep.equal({ country: 'US', phone: '2133734253' })
 
 		// Switzerland (just in case)
-		parseNumber('044 668 18 00', 'CH').should.deep.equal({ country: 'CH', phone: '446681800' })
+		expect(parseNumber('044 668 18 00', 'CH')).to.deep.equal({ country: 'CH', phone: '446681800' })
 
 		// China, Beijing
-		parseNumber('010-852644821', 'CN').should.deep.equal({ country: 'CN', phone: '10852644821' })
+		expect(parseNumber('010-852644821', 'CN')).to.deep.equal({ country: 'CN', phone: '10852644821' })
 
 		// France
-		parseNumber('+33169454850').should.deep.equal({ country: 'FR', phone: '169454850' })
+		expect(parseNumber('+33169454850')).to.deep.equal({ country: 'FR', phone: '169454850' })
 
 		// UK (Jersey)
-		parseNumber('+44 7700 300000').should.deep.equal({ country: 'JE', phone: '7700300000' })
+		expect(parseNumber('+44 7700 300000')).to.deep.equal({ country: 'JE', phone: '7700300000' })
 
 		// KZ
-		parseNumber('+7 702 211 1111').should.deep.equal({ country: 'KZ', phone: '7022111111' })
+		expect(parseNumber('+7 702 211 1111')).to.deep.equal({ country: 'KZ', phone: '7022111111' })
 
 		// Brazil
-		parseNumber('11987654321', 'BR').should.deep.equal({ country: 'BR', phone: '11987654321' })
+		expect(parseNumber('11987654321', 'BR')).to.deep.equal({ country: 'BR', phone: '11987654321' })
 
 		// Long country phone code.
-		parseNumber('+212659777777').should.deep.equal({ country: 'MA', phone: '659777777' })
+		expect(parseNumber('+212659777777')).to.deep.equal({ country: 'MA', phone: '659777777' })
 
 		// No country could be derived.
 		// parseNumber('+212569887076').should.deep.equal({ countryPhoneCode: '212', phone: '569887076' })
 
 		// GB. Moible numbers starting 07624* are Isle of Man.
-		parseNumber('07624369230', 'GB').should.deep.equal({ country: 'IM', phone: '7624369230' })
+		expect(parseNumber('07624369230', 'GB')).to.deep.equal({ country: 'IM', phone: '7624369230' })
 	})
 
 	it('should parse possible numbers', () => {
 		// Invalid phone number for a given country.
-		parseNumber('1112223344', 'RU', { extended: true }).should.deep.equal({
+		expect(parseNumber('1112223344', 'RU', { extended: true })).to.deep.equal({
 			country            : 'RU',
 			countryCallingCode : '7',
 			phone              : '1112223344',
@@ -83,8 +83,8 @@ describe('parse', () => {
 
 		// International phone number.
 		// Several countries with the same country phone code.
-		parseNumber('+71112223344').should.deep.equal({})
-		parseNumber('+71112223344', { extended: true }).should.deep.equal({
+		expect(parseNumber('+71112223344')).to.deep.equal({})
+		expect(parseNumber('+71112223344', { extended: true })).to.deep.equal({
 			country            : undefined,
 			countryCallingCode : '7',
 			phone              : '1112223344',
@@ -96,7 +96,7 @@ describe('parse', () => {
 
 		// International phone number.
 		// Single country with the given country phone code.
-		parseNumber('+33011222333', { extended: true }).should.deep.equal({
+		expect(parseNumber('+33011222333', { extended: true })).to.deep.equal({
 			country            : 'FR',
 			countryCallingCode : '33',
 			phone              : '011222333',
@@ -108,7 +108,7 @@ describe('parse', () => {
 
 		// Too short.
 		// Won't strip national prefix `8` because otherwise the number would be too short.
-		parseNumber('+7 (800) 55-35-35', { extended: true }).should.deep.equal({
+		expect(parseNumber('+7 (800) 55-35-35', { extended: true })).to.deep.equal({
 			country            : undefined,
 			countryCallingCode : '7',
 			phone              : '800553535',
@@ -119,7 +119,7 @@ describe('parse', () => {
 		})
 
 		// Too long.
-		parseNumber('+1 213 37342530', { extended: true }).should.deep.equal({
+		expect(parseNumber('+1 213 37342530', { extended: true })).to.deep.equal({
 			country            : undefined,
 			countryCallingCode : '1',
 			phone              : '21337342530',
@@ -130,12 +130,12 @@ describe('parse', () => {
 		})
 
 		// No national number to be parsed.
-		parseNumber('+996', { extended: true }).should.deep.equal({
+		expect(parseNumber('+996', { extended: true })).to.deep.equal({
 			// countryCallingCode : '996'
 		})
 
 		// Valid number.
-		parseNumber('+78005553535', { extended: true }).should.deep.equal({
+		expect(parseNumber('+78005553535', { extended: true })).to.deep.equal({
 			country            : 'RU',
 			countryCallingCode : '7',
 			phone              : '8005553535',
@@ -146,9 +146,9 @@ describe('parse', () => {
 		})
 
 		// https://github.com/catamphetamine/libphonenumber-js/issues/211
-		parseNumber('+966', { extended: true }).should.deep.equal({})
-		parseNumber('+9664', { extended: true }).should.deep.equal({})
-		parseNumber('+96645', { extended: true }).should.deep.equal({
+		expect(parseNumber('+966', { extended: true })).to.deep.equal({})
+		expect(parseNumber('+9664', { extended: true })).to.deep.equal({})
+		expect(parseNumber('+96645', { extended: true })).to.deep.equal({
 			carrierCode        : undefined,
 			phone              : '45',
 			ext                : undefined,
@@ -160,149 +160,151 @@ describe('parse', () => {
 	})
 
 	it('should parse non-European digits', () => {
-		parseNumber('+١٢١٢٢٣٢٣٢٣٢').should.deep.equal({ country: 'US', phone: '2122323232' })
+		expect(parseNumber('+١٢١٢٢٣٢٣٢٣٢')).to.deep.equal({ country: 'US', phone: '2122323232' })
 	})
 
 	it('should work in edge cases', () => {
 		let thrower
 
 		// No input
-		parseNumber('').should.deep.equal({})
+		expect(parseNumber('')).to.deep.equal({})
 
 		// No country phone code
-		parseNumber('+').should.deep.equal({})
+		expect(parseNumber('+')).to.deep.equal({})
 
 		// No country at all (non international number and no explicit country code)
-		parseNumber('123').should.deep.equal({})
+		expect(parseNumber('123')).to.deep.equal({})
 
 		// No country metadata for this `require` country code
 		thrower = () => parseNumber('123', 'ZZ')
-		thrower.should.throw('Unknown country')
+		expect(thrower).to.throw('Unknown country')
 
 		// No country metadata for this `default` country code
 		thrower = () => parseNumber('123', { defaultCountry: 'ZZ' })
-		thrower.should.throw('Unknown country')
+		expect(thrower).to.throw('Unknown country')
 
 		// Invalid country phone code
-		parseNumber('+210').should.deep.equal({})
+		expect(parseNumber('+210')).to.deep.equal({})
 
 		// Invalid country phone code (extended parsing mode)
-		parseNumber('+210', { extended: true }).should.deep.equal({})
+		expect(parseNumber('+210', { extended: true })).to.deep.equal({})
 
 		// Too short of a number.
-		parseNumber('1', 'US', { extended: true }).should.deep.equal({})
+		expect(parseNumber('1', 'US', { extended: true })).to.deep.equal({})
 
 		// Too long of a number.
-		parseNumber('1111111111111111111', 'RU', { extended: true }).should.deep.equal({})
+		expect(parseNumber('1111111111111111111', 'RU', { extended: true })).to.deep.equal({})
 
 		// Not a number.
-		parseNumber('abcdefg', 'US', { extended: true }).should.deep.equal({})
+		expect(parseNumber('abcdefg', 'US', { extended: true })).to.deep.equal({})
 
 		// Country phone code beginning with a '0'
-		parseNumber('+0123').should.deep.equal({})
+		expect(parseNumber('+0123')).to.deep.equal({})
 
 		// Barbados NANPA phone number
-		parseNumber('+12460000000').should.deep.equal({ country: 'BB', phone: '2460000000' })
+		expect(parseNumber('+12460000000')).to.deep.equal({ country: 'BB', phone: '2460000000' })
 
 		// // A case when country (restricted to) is not equal
 		// // to the one parsed out of an international number.
 		// parseNumber('+1-213-373-4253', 'RU').should.deep.equal({})
 
 		// National (significant) number too short
-		parseNumber('2', 'US').should.deep.equal({})
+		expect(parseNumber('2', 'US')).to.deep.equal({})
 
 		// National (significant) number too long
-		parseNumber('222222222222222222', 'US').should.deep.equal({})
+		expect(parseNumber('222222222222222222', 'US')).to.deep.equal({})
 
 		// No `national_prefix_for_parsing`
-		parseNumber('41111', 'AC').should.deep.equal({ country: 'AC', phone: '41111'})
+		expect(parseNumber('41111', 'AC')).to.deep.equal({ country: 'AC', phone: '41111'})
 
 		// https://github.com/catamphetamine/libphonenumber-js/issues/235
 		// `matchesEntirely()` bug fix.
-		parseNumber('+4915784846111‬').should.deep.equal({ country: 'DE', phone: '15784846111' })
+		expect(parseNumber('+4915784846111‬')).to.deep.equal({ country: 'DE', phone: '15784846111' })
 
 		// No metadata
 		thrower = () => _parseNumber('')
-		thrower.should.throw('`metadata` argument not passed')
+		expect(thrower).to.throw('`metadata` argument not passed')
 
 		// Numerical `value`
 		thrower = () => parseNumber(2141111111, 'US')
-		thrower.should.throw('A text for parsing must be a string.')
+		expect(thrower).to.throw('A text for parsing must be a string.')
 
 		// Input string too long.
-		parseNumber('8005553535                                                                                                                                                                                                                                                 ', 'RU').should.deep.equal({})
+		expect(
+            parseNumber('8005553535                                                                                                                                                                                                                                                 ', 'RU')
+        ).to.deep.equal({})
 	})
 
 	it('should parse phone number extensions', () => {
 		// "ext"
-		parseNumber('2134567890 ext 123', 'US').should.deep.equal({
+		expect(parseNumber('2134567890 ext 123', 'US')).to.deep.equal({
 			country : 'US',
 			phone   : '2134567890',
 			ext     : '123'
 		})
 
 		// "ext."
-		parseNumber('+12134567890 ext. 12345', 'US').should.deep.equal({
+		expect(parseNumber('+12134567890 ext. 12345', 'US')).to.deep.equal({
 			country : 'US',
 			phone   : '2134567890',
 			ext     : '12345'
 		})
 
 		// "доб."
-		parseNumber('+78005553535 доб. 1234', 'RU').should.deep.equal({
+		expect(parseNumber('+78005553535 доб. 1234', 'RU')).to.deep.equal({
 			country : 'RU',
 			phone   : '8005553535',
 			ext     : '1234'
 		})
 
 		// "#"
-		parseNumber('+12134567890#1234').should.deep.equal({
+		expect(parseNumber('+12134567890#1234')).to.deep.equal({
 			country : 'US',
 			phone   : '2134567890',
 			ext     : '1234'
 		})
 
 		// "x"
-		parseNumber('+78005553535 x1234').should.deep.equal({
+		expect(parseNumber('+78005553535 x1234')).to.deep.equal({
 			country : 'RU',
 			phone   : '8005553535',
 			ext     : '1234'
 		})
 
 		// Not a valid extension
-		parseNumber('2134567890 ext. abc', 'US').should.deep.equal({
+		expect(parseNumber('2134567890 ext. abc', 'US')).to.deep.equal({
 			country : 'US',
 			phone   : '2134567890'
 		})
 	})
 
 	it('should parse RFC 3966 phone numbers', () => {
-		parseNumber('tel:+78005553535;ext=123').should.deep.equal({
+		expect(parseNumber('tel:+78005553535;ext=123')).to.deep.equal({
 			country : 'RU',
 			phone   : '8005553535',
 			ext     : '123'
 		})
 
 		// Should parse "visual separators".
-		parseNumber('tel:+7(800)555-35.35;ext=123').should.deep.equal({
+		expect(parseNumber('tel:+7(800)555-35.35;ext=123')).to.deep.equal({
 			country : 'RU',
 			phone   : '8005553535',
 			ext     : '123'
 		})
 
 		// Invalid number.
-		parseNumber('tel:+7x8005553535;ext=123').should.deep.equal({})
+		expect(parseNumber('tel:+7x8005553535;ext=123')).to.deep.equal({})
 	})
 
 	it('should parse invalid international numbers even if they are invalid', () => {
-		parseNumber('+7(8)8005553535', 'RU').should.deep.equal({
+		expect(parseNumber('+7(8)8005553535', 'RU')).to.deep.equal({
 			country : 'RU',
 			phone   : '8005553535'
 		})
 	})
 
 	it('should parse carrier codes', () => {
-		parseNumber('0 15 21 5555-5555', 'BR', { extended: true }).should.deep.equal({
+		expect(parseNumber('0 15 21 5555-5555', 'BR', { extended: true })).to.deep.equal({
 			country            : 'BR',
 			countryCallingCode : '55',
 			phone              : '2155555555',
@@ -314,16 +316,16 @@ describe('parse', () => {
 	})
 
 	it('should parse IDD prefixes', () => {
-		parseNumber('011 61 2 3456 7890', 'US').should.deep.equal({
+		expect(parseNumber('011 61 2 3456 7890', 'US')).to.deep.equal({
 			phone   : '234567890',
 			country : 'AU'
 		})
 
-		parseNumber('011 61 2 3456 7890', 'FR').should.deep.equal({})
+		expect(parseNumber('011 61 2 3456 7890', 'FR')).to.deep.equal({})
 
-		parseNumber('00 61 2 3456 7890', 'US').should.deep.equal({})
+		expect(parseNumber('00 61 2 3456 7890', 'US')).to.deep.equal({})
 
-		parseNumber('810 61 2 3456 7890', 'RU').should.deep.equal({
+		expect(parseNumber('810 61 2 3456 7890', 'RU')).to.deep.equal({
 			phone   : '234567890',
 			country : 'AU'
 		})
@@ -337,11 +339,11 @@ describe('parse', () => {
 		// The same mobile number is written differently
 		// in different formats in Argentina:
 		// `9` gets prepended in international format.
-		parseNumber('+54 9 3435 55 1212').should.deep.equal({
+		expect(parseNumber('+54 9 3435 55 1212')).to.deep.equal({
 			country: 'AR',
 			phone: '93435551212'
 		})
-		parseNumber('0343 15-555-1212', 'AR').should.deep.equal({
+		expect(parseNumber('0343 15-555-1212', 'AR')).to.deep.equal({
 			country: 'AR',
 			phone: '93435551212'
 		})
@@ -349,7 +351,7 @@ describe('parse', () => {
 
 	it('should work with Mexico numbers', () => {
 		// Fixed line.
-		parseNumber('+52 449 978 0001').should.deep.equal({
+		expect(parseNumber('+52 449 978 0001')).to.deep.equal({
 			country: 'MX',
 			phone: '4499780001'
 		})
@@ -360,7 +362,7 @@ describe('parse', () => {
 		// 	country: 'MX',
 		// 	phone: '4499780001'
 		// })
-		parseNumber('(449)978-0001', 'MX').should.deep.equal({
+		expect(parseNumber('(449)978-0001', 'MX')).to.deep.equal({
 			country: 'MX',
 			phone: '4499780001'
 		})
@@ -373,7 +375,7 @@ describe('parse', () => {
 		// 	country: 'MX',
 		// 	phone: '3312345678'
 		// })
-		parseNumber('+52 33 1234-5678', 'MX').should.deep.equal({
+		expect(parseNumber('+52 33 1234-5678', 'MX')).to.deep.equal({
 			country: 'MX',
 			phone: '3312345678'
 		})
@@ -391,29 +393,25 @@ describe('parse', () => {
 	})
 
 	it('should parse non-geographic numbering plan phone numbers', () => {
-		parseNumber('+870773111632').should.deep.equal(
-			USE_NON_GEOGRAPHIC_COUNTRY_CODE ?
-			{
-				country: '001',
-				phone: '773111632'
-			} :
-			{}
-		)
+		expect(parseNumber('+870773111632')).to.deep.equal(USE_NON_GEOGRAPHIC_COUNTRY_CODE ?
+        {
+            country: '001',
+            phone: '773111632'
+        } :
+        {})
 	})
 
 	it('should parse non-geographic numbering plan phone numbers (default country code)', () => {
-		parseNumber('773111632', { defaultCallingCode: '870' }).should.deep.equal(
-			USE_NON_GEOGRAPHIC_COUNTRY_CODE ?
-			{
-				country: '001',
-				phone: '773111632'
-			} :
-			{}
-		)
+		expect(parseNumber('773111632', { defaultCallingCode: '870' })).to.deep.equal(USE_NON_GEOGRAPHIC_COUNTRY_CODE ?
+        {
+            country: '001',
+            phone: '773111632'
+        } :
+        {})
 	})
 
 	it('should parse non-geographic numbering plan phone numbers (extended)', () => {
-		parseNumber('+870773111632', { extended: true }).should.deep.equal({
+		expect(parseNumber('+870773111632', { extended: true })).to.deep.equal({
 			country: USE_NON_GEOGRAPHIC_COUNTRY_CODE ? '001' : undefined,
 			countryCallingCode: '870',
 			phone: '773111632',
@@ -425,7 +423,7 @@ describe('parse', () => {
 	})
 
 	it('should parse non-geographic numbering plan phone numbers (default country code) (extended)', () => {
-		parseNumber('773111632', { defaultCallingCode: '870', extended: true }).should.deep.equal({
+		expect(parseNumber('773111632', { defaultCallingCode: '870', extended: true })).to.deep.equal({
 			country: USE_NON_GEOGRAPHIC_COUNTRY_CODE ? '001' : undefined,
 			countryCallingCode: '870',
 			phone: '773111632',
@@ -437,12 +435,11 @@ describe('parse', () => {
 	})
 
 	it('shouldn\'t crash when invalid `defaultCallingCode` is passed', () => {
-		expect(() => parseNumber('773111632', { defaultCallingCode: '999' }))
-			.to.throw('Unknown calling code')
+		expect(() => parseNumber('773111632', { defaultCallingCode: '999' })).to.throw('Unknown calling code')
 	})
 
 	it('shouldn\'t set `country` when there\'s no `defaultCountry` and `defaultCallingCode` is not of a "non-geographic entity"', () => {
-		parseNumber('88005553535', { defaultCallingCode: '7' }).should.deep.equal({
+		expect(parseNumber('88005553535', { defaultCallingCode: '7' })).to.deep.equal({
 			country: 'RU',
 			phone: '8005553535'
 		})
@@ -451,7 +448,7 @@ describe('parse', () => {
 	it('should correctly parse numbers starting with the same digit as the national prefix', () => {
 		// https://github.com/catamphetamine/libphonenumber-js/issues/373
 		// `BY`'s `national_prefix` is `8`.
-		parseNumber('+37582004910060').should.deep.equal({
+		expect(parseNumber('+37582004910060')).to.deep.equal({
 			country: 'BY',
 			phone: '82004910060'
 		});
@@ -459,27 +456,27 @@ describe('parse', () => {
 
 	it('should autocorrect numbers without a leading +', () => {
 		// https://github.com/catamphetamine/libphonenumber-js/issues/376
-		parseNumber('375447521111', 'BY').should.deep.equal({
+		expect(parseNumber('375447521111', 'BY')).to.deep.equal({
 			country: 'BY',
 			phone: '447521111'
 		});
 		// https://github.com/catamphetamine/libphonenumber-js/issues/316
-		parseNumber('33612902554', 'FR').should.deep.equal({
+		expect(parseNumber('33612902554', 'FR')).to.deep.equal({
 			country: 'FR',
 			phone: '612902554'
 		});
 		// https://github.com/catamphetamine/libphonenumber-js/issues/375
-		parseNumber('61438331999', 'AU').should.deep.equal({
+		expect(parseNumber('61438331999', 'AU')).to.deep.equal({
 			country: 'AU',
 			phone: '438331999'
 		});
 		// A case when `49` is a country calling code of a number without a leading `+`.
-		parseNumber('4930123456', 'DE').should.deep.equal({
+		expect(parseNumber('4930123456', 'DE')).to.deep.equal({
 			country: 'DE',
 			phone: '30123456'
 		});
 		// A case when `49` is a valid area code.
-		parseNumber('4951234567890', 'DE').should.deep.equal({
+		expect(parseNumber('4951234567890', 'DE')).to.deep.equal({
 			country: 'DE',
 			phone: '4951234567890'
 		});
@@ -489,44 +486,44 @@ describe('parse', () => {
 		// Test lower and upper limits of extension lengths for each type of label.
 
 		// Firstly, when in RFC format: PhoneNumberUtil.extLimitAfterExplicitLabel
-		parseNumber('33316005 ext 0', 'NZ').ext.should.equal('0')
-		parseNumber('33316005 ext 01234567890123456789', 'NZ').ext.should.equal('01234567890123456789')
+		expect(parseNumber('33316005 ext 0', 'NZ').ext).to.equal('0')
+		expect(parseNumber('33316005 ext 01234567890123456789', 'NZ').ext).to.equal('01234567890123456789')
 		// Extension too long.
 		expect(parseNumber('33316005 ext 012345678901234567890', 'NZ').ext).to.be.undefined
 
 		// Explicit extension label.
-		parseNumber('03 3316005ext:1', 'NZ').ext.should.equal('1')
-		parseNumber('03 3316005 xtn:12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
-		parseNumber('03 3316005 extension\t12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
-		parseNumber('03 3316005 xtensio:12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
-		parseNumber('03 3316005 xtensión, 12345678901234567890#', 'NZ').ext.should.equal('12345678901234567890')
-		parseNumber('03 3316005extension.12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
-		parseNumber('03 3316005 доб:12345678901234567890', 'NZ').ext.should.equal('12345678901234567890')
+		expect(parseNumber('03 3316005ext:1', 'NZ').ext).to.equal('1')
+		expect(parseNumber('03 3316005 xtn:12345678901234567890', 'NZ').ext).to.equal('12345678901234567890')
+		expect(parseNumber('03 3316005 extension\t12345678901234567890', 'NZ').ext).to.equal('12345678901234567890')
+		expect(parseNumber('03 3316005 xtensio:12345678901234567890', 'NZ').ext).to.equal('12345678901234567890')
+		expect(parseNumber('03 3316005 xtensión, 12345678901234567890#', 'NZ').ext).to.equal('12345678901234567890')
+		expect(parseNumber('03 3316005extension.12345678901234567890', 'NZ').ext).to.equal('12345678901234567890')
+		expect(parseNumber('03 3316005 доб:12345678901234567890', 'NZ').ext).to.equal('12345678901234567890')
 
 		// Extension too long.
 		expect(parseNumber('03 3316005 extension 123456789012345678901', 'NZ').ext).to.be.undefined
 	})
 
 	it('should parse extensions (long extensions with auto dialling labels)', () => {
-		parseNumber('+12679000000,,123456789012345#').ext.should.equal('123456789012345')
-		parseNumber('+12679000000;123456789012345#').ext.should.equal('123456789012345')
-		parseNumber('+442034000000,,123456789#').ext.should.equal('123456789')
+		expect(parseNumber('+12679000000,,123456789012345#').ext).to.equal('123456789012345')
+		expect(parseNumber('+12679000000;123456789012345#').ext).to.equal('123456789012345')
+		expect(parseNumber('+442034000000,,123456789#').ext).to.equal('123456789')
 		// Extension too long.
 		expect(parseNumber('+12679000000,,1234567890123456#').ext).to.be.undefined
 	})
 
 	it('should parse extensions (short extensions with ambiguous characters)', () => {
-		parseNumber('03 3316005 x 123456789', 'NZ').ext.should.equal('123456789')
-		parseNumber('03 3316005 x. 123456789', 'NZ').ext.should.equal('123456789')
-		parseNumber('03 3316005 #123456789#', 'NZ').ext.should.equal('123456789')
-		parseNumber('03 3316005 ~ 123456789', 'NZ').ext.should.equal('123456789')
+		expect(parseNumber('03 3316005 x 123456789', 'NZ').ext).to.equal('123456789')
+		expect(parseNumber('03 3316005 x. 123456789', 'NZ').ext).to.equal('123456789')
+		expect(parseNumber('03 3316005 #123456789#', 'NZ').ext).to.equal('123456789')
+		expect(parseNumber('03 3316005 ~ 123456789', 'NZ').ext).to.equal('123456789')
 		// Extension too long.
 		expect(parseNumber('03 3316005 ~ 1234567890', 'NZ').ext).to.be.undefined
 	})
 
 	it('should parse extensions (short extensions when not sure of label)', () => {
-		parseNumber('+1123-456-7890 666666#', { v2: true }).ext.should.equal('666666')
-		parseNumber('+11234567890-6#', { v2: true }).ext.should.equal('6')
+		expect(parseNumber('+1123-456-7890 666666#', { v2: true }).ext).to.equal('666666')
+		expect(parseNumber('+11234567890-6#', { v2: true }).ext).to.equal('6')
 		// Extension too long.
 		expect(() => parseNumber('+1123-456-7890 7777777#', { v2: true })).to.throw('NOT_A_NUMBER')
 	})

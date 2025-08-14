@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
 [![npm downloads](https://img.shields.io/npm/dm/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
-[![coverage](https://img.shields.io/coveralls/catamphetamine/libphonenumber-js/master.svg?style=flat-square)](https://coveralls.io/r/catamphetamine/libphonenumber-js?branch=master)
+<!-- [![coverage](https://img.shields.io/coveralls/catamphetamine/libphonenumber-js/master.svg?style=flat-square)](https://coveralls.io/r/catamphetamine/libphonenumber-js?branch=master) -->
 
 A simpler and smaller rewrite of Google Android's [`libphonenumber`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/) library in javascript.
 
@@ -1850,7 +1850,7 @@ After developing, the full test suite can be evaluated by running:
 npm test
 ```
 
-Test coverage must remain at 100%:
+Test coverage was meant to remain at 100% but then the coverage analysis tools got buggy and didn't report the coverage correctly:
 
 ```sh
 npm run test-coverage
@@ -1905,4 +1905,3 @@ Google's `libphonenumber` is [licensed](https://github.com/google/libphonenumber
 [Apache 2](https://en.wikipedia.org/wiki/Apache_License#Licensing_conditions) does not require a derivative work of the software, or modifications to the original, to be distributed using the same license. Hence, this library is licensed under [MIT](LICENSE), which is [compatible](https://www.quora.com/Is-the-MIT-license-compatible-with-the-Apache-License-Version-2-APLv2) with Apache 2.
 
 The Apache license is terminated if the user sues anyone over patent infringement related to the software covered by the license. This condition is added in order to prevent patent litigations.
-

@@ -19,7 +19,7 @@ describe('semver-compare', () => {
 			'10.5.5',
 			'11.3.0'
 		]
-		versions.sort(semverCompare).should.deep.equal([
+		expect(versions.sort(semverCompare)).to.deep.equal([
 			'1.2.3',
 			'1.5.4',
 			'1.5.5-alpha',

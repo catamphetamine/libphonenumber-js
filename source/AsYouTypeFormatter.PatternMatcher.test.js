@@ -43,13 +43,13 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1')).to.be.undefined
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('44')).to.be.undefined
 
-		matcher.match('44', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('44', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 	})
@@ -59,17 +59,17 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1')).to.be.undefined
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('44').should.deep.equal({
+		expect(matcher.match('44')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('444')).to.be.undefined
 
-		matcher.match('444', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('444', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 
@@ -81,13 +81,13 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1')).to.be.undefined
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('44')).to.be.undefined
 
-		matcher.match('44', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('44', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 	})
@@ -97,13 +97,13 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1')).to.be.undefined
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('44')).to.be.undefined
 
-		matcher.match('44', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('44', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 	})
@@ -113,13 +113,13 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1')).to.be.undefined
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('44')).to.be.undefined
 
-		matcher.match('44', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('44', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 	})
@@ -129,13 +129,13 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1')).to.be.undefined
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('44')).to.be.undefined
 
-		matcher.match('44', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('44', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 	})
@@ -145,31 +145,31 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('0')).to.be.undefined
 
-		matcher.match('1').should.deep.equal({
+		expect(matcher.match('1')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('2').should.deep.equal({
+		expect(matcher.match('2')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('3')).to.be.undefined
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('5').should.deep.equal({
+		expect(matcher.match('5')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('6').should.deep.equal({
+		expect(matcher.match('6')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('7')).to.be.undefined
 
-		matcher.match('8').should.deep.equal({
+		expect(matcher.match('8')).to.deep.equal({
 			match: true
 		})
 
@@ -177,7 +177,7 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('88')).to.be.undefined
 
-		matcher.match('88', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('88', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 	})
@@ -187,20 +187,20 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1')).to.be.undefined
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('5')).to.be.undefined
 		expect(matcher.match('55')).to.be.undefined
 
-		matcher.match('44').should.deep.equal({
+		expect(matcher.match('44')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('444')).to.be.undefined
 
-		matcher.match('444', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('444', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 	})
@@ -210,11 +210,11 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('0')).to.be.undefined
 
-		matcher.match('1').should.deep.equal({
+		expect(matcher.match('1')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('15').should.deep.equal({
+		expect(matcher.match('15')).to.deep.equal({
 			match: true
 		})
 
@@ -226,17 +226,17 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1')).to.be.undefined
 
-		matcher.match('7').should.deep.equal({
+		expect(matcher.match('7')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('71').should.deep.equal({
+		expect(matcher.match('71')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('73')).to.be.undefined
 
-		matcher.match('711').should.deep.equal({
+		expect(matcher.match('711')).to.deep.equal({
 			match: true
 		})
 
@@ -244,13 +244,13 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('720')).to.be.undefined
 
-		matcher.match('722').should.deep.equal({
+		expect(matcher.match('722')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('7222')).to.be.undefined
 
-		matcher.match('7222', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('7222', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 	})
@@ -260,11 +260,11 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1')).to.be.undefined
 
-		matcher.match('2').should.deep.equal({
+		expect(matcher.match('2')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('3').should.deep.equal({
+		expect(matcher.match('3')).to.deep.equal({
 			partialMatch: true
 		})
 
@@ -272,31 +272,31 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('21')).to.be.undefined
 
-		matcher.match('22').should.deep.equal({
+		expect(matcher.match('22')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('221')).to.be.undefined
 
-		matcher.match('222').should.deep.equal({
+		expect(matcher.match('222')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('2222')).to.be.undefined
 
-		matcher.match('2222', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('2222', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 
-		matcher.match('3').should.deep.equal({
+		expect(matcher.match('3')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('33').should.deep.equal({
+		expect(matcher.match('33')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('332').should.deep.equal({
+		expect(matcher.match('332')).to.deep.equal({
 			match: true
 		})
 
@@ -308,13 +308,13 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('5')).to.be.undefined
 
-		matcher.match('6').should.deep.equal({
+		expect(matcher.match('6')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('7')).to.be.undefined
 
-		matcher.match('8').should.deep.equal({
+		expect(matcher.match('8')).to.deep.equal({
 			match: true
 		})
 	})
@@ -324,33 +324,33 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('0')).to.be.undefined
 
-		matcher.match('1').should.deep.equal({
+		expect(matcher.match('1')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('2').should.deep.equal({
+		expect(matcher.match('2')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('3').should.deep.equal({
+		expect(matcher.match('3')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('4')).to.be.undefined
 
-		matcher.match('5').should.deep.equal({
+		expect(matcher.match('5')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('6').should.deep.equal({
+		expect(matcher.match('6')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('7').should.deep.equal({
+		expect(matcher.match('7')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('8').should.deep.equal({
+		expect(matcher.match('8')).to.deep.equal({
 			match: true
 		})
 
@@ -358,7 +358,7 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('18')).to.be.undefined
 
-		matcher.match('18', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('18', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 	})
@@ -368,11 +368,11 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('5')).to.be.undefined
 
-		matcher.match('6').should.deep.equal({
+		expect(matcher.match('6')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('60').should.deep.equal({
+		expect(matcher.match('60')).to.deep.equal({
 			match: true
 		})
 
@@ -380,7 +380,7 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('7')).to.be.undefined
 
-		matcher.match('8').should.deep.equal({
+		expect(matcher.match('8')).to.deep.equal({
 			match: true
 		})
 
@@ -398,17 +398,17 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('0')).to.be.undefined
 
-		matcher.match('2').should.deep.equal({
+		expect(matcher.match('2')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('21')).to.be.undefined
 
-		matcher.match('22').should.deep.equal({
+		expect(matcher.match('22')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('25').should.deep.equal({
+		expect(matcher.match('25')).to.deep.equal({
 			match: true
 		})
 
@@ -416,15 +416,15 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('222')).to.be.undefined
 
-		matcher.match('222', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('222', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 
-		matcher.match('3').should.deep.equal({
+		expect(matcher.match('3')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			match: true
 		})
 
@@ -436,27 +436,27 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('0')).to.be.undefined
 
-		matcher.match('2').should.deep.equal({
+		expect(matcher.match('2')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('21')).to.be.undefined
 
-		matcher.match('22').should.deep.equal({
+		expect(matcher.match('22')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('222')).to.be.undefined
 
-		matcher.match('222', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('222', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 
-		matcher.match('3').should.deep.equal({
+		expect(matcher.match('3')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			match: true
 		})
 
@@ -466,33 +466,33 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 	it('should match an or pattern (one-of sets groups and regular digits mixed) (different lengths)', function() {
 		const matcher = new PatternMatcher('1(?:11|[2-9])')
 
-		matcher.match('1').should.deep.equal({
+		expect(matcher.match('1')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('10')).to.be.undefined
 
-		matcher.match('11').should.deep.equal({
+		expect(matcher.match('11')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('111').should.deep.equal({
+		expect(matcher.match('111')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('1111')).to.be.undefined
 
-		matcher.match('1111', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('1111', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 
-		matcher.match('12').should.deep.equal({
+		expect(matcher.match('12')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('122')).to.be.undefined
 
-		matcher.match('19').should.deep.equal({
+		expect(matcher.match('19')).to.deep.equal({
 			match: true
 		})
 
@@ -502,7 +502,7 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 	it('should match nested or groups', function() {
 		const matcher = new PatternMatcher('1(?:2(?:3(?:4|5)|6)|7(?:8|9))0')
 
-		matcher.match('1').should.deep.equal({
+		expect(matcher.match('1')).to.deep.equal({
 			partialMatch: true
 		})
 
@@ -510,39 +510,39 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('11')).to.be.undefined
 
-		matcher.match('12').should.deep.equal({
+		expect(matcher.match('12')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('121')).to.be.undefined
 
-		matcher.match('123').should.deep.equal({
+		expect(matcher.match('123')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('1231')).to.be.undefined
 
-		matcher.match('1234').should.deep.equal({
+		expect(matcher.match('1234')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('12340').should.deep.equal({
+		expect(matcher.match('12340')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('123401')).to.be.undefined
 
-		matcher.match('123401', { allowOverflow: true }).should.deep.equal({
+		expect(matcher.match('123401', { allowOverflow: true })).to.deep.equal({
 			overflow: true
 		})
 
-		matcher.match('12350').should.deep.equal({
+		expect(matcher.match('12350')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('12360')).to.be.undefined
 
-		matcher.match('1260').should.deep.equal({
+		expect(matcher.match('1260')).to.deep.equal({
 			match: true
 		})
 
@@ -550,11 +550,11 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('1770')).to.be.undefined
 
-		matcher.match('1780').should.deep.equal({
+		expect(matcher.match('1780')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('1790').should.deep.equal({
+		expect(matcher.match('1790')).to.deep.equal({
 			match: true
 		})
 
@@ -566,67 +566,67 @@ describe('AsYouTypeFormatter.PatternMatcher', function() {
 
 		expect(matcher.match('0')).to.be.undefined
 
-		matcher.match('3').should.deep.equal({
+		expect(matcher.match('3')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('31').should.deep.equal({
+		expect(matcher.match('31')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('32')).to.be.undefined
 
-		matcher.match('316').should.deep.equal({
+		expect(matcher.match('316')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('315')).to.be.undefined
 
-		matcher.match('4').should.deep.equal({
+		expect(matcher.match('4')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('46').should.deep.equal({
+		expect(matcher.match('46')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('47')).to.be.undefined
 
-		matcher.match('5').should.deep.equal({
+		expect(matcher.match('5')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('50')).to.be.undefined
 
-		matcher.match('51').should.deep.equal({
+		expect(matcher.match('51')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('6').should.deep.equal({
+		expect(matcher.match('6')).to.deep.equal({
 			partialMatch: true
 		})
 
 		expect(matcher.match('64')).to.be.undefined
 
-		matcher.match('65').should.deep.equal({
+		expect(matcher.match('65')).to.deep.equal({
 			partialMatch: true
 		})
 
-		matcher.match('650').should.deep.equal({
+		expect(matcher.match('650')).to.deep.equal({
 			match: true
 		})
 
 		expect(matcher.match('654')).to.be.undefined
 
-		matcher.match('69').should.deep.equal({
+		expect(matcher.match('69')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('8').should.deep.equal({
+		expect(matcher.match('8')).to.deep.equal({
 			match: true
 		})
 
-		matcher.match('9').should.deep.equal({
+		expect(matcher.match('9')).to.deep.equal({
 			match: true
 		})
 	})

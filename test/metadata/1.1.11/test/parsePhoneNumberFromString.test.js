@@ -1,5 +1,5 @@
 import _parsePhoneNumberFromString from '../../../../source/parsePhoneNumber.js'
-import metadata from '../metadata.min.json' assert { type: 'json' }
+import metadata from '../metadata.min.json' with { type: 'json' }
 
 function parsePhoneNumberFromString(...parameters) {
 	parameters.push(metadata)
@@ -8,7 +8,9 @@ function parsePhoneNumberFromString(...parameters) {
 
 describe('parsePhoneNumberFromString', () => {
 	it('should parse phone numbers from string', () => {
-		parsePhoneNumberFromString('Phone: 8 (800) 555 35 35.', 'RU').nationalNumber.should.equal('8005553535')
+		expect(
+            parsePhoneNumberFromString('Phone: 8 (800) 555 35 35.', 'RU').nationalNumber
+        ).to.equal('8005553535')
 		expect(parsePhoneNumberFromString('3', 'RU')).to.be.undefined
 	})
 
@@ -17,20 +19,22 @@ describe('parsePhoneNumberFromString', () => {
 	})
 
 	it('should parse phone numbers when invalid country code is passed', () => {
-		parsePhoneNumberFromString('Phone: +7 (800) 555 35 35.', 'XX').nationalNumber.should.equal('8005553535')
+		expect(
+            parsePhoneNumberFromString('Phone: +7 (800) 555 35 35.', 'XX').nationalNumber
+        ).to.equal('8005553535')
 		expect(parsePhoneNumberFromString('Phone: 8 (800) 555-35-35.', 'XX')).to.be.undefined
 	})
 
 	it('should handle old metadata and non-geographic calling codes', () => {
 		const phoneNumber = parsePhoneNumberFromString('+870773111632')
 		expect(phoneNumber.country).to.be.undefined
-		phoneNumber.countryCallingCode.should.equal('870')
-		phoneNumber.isPossible().should.equal(true)
-		phoneNumber.isNonGeographic().should.equal(true)
+		expect(phoneNumber.countryCallingCode).to.equal('870')
+		expect(phoneNumber.isPossible()).to.equal(true)
+		expect(phoneNumber.isNonGeographic()).to.equal(true)
 	})
 
 	it('should cover all cases in metadata', () => {
 		const phoneNumber = parsePhoneNumberFromString('+78005553535')
-		phoneNumber.isNonGeographic().should.equal(false)
+		expect(phoneNumber.isNonGeographic()).to.equal(false)
 	})
 })

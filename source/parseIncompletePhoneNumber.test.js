@@ -3,35 +3,35 @@ import parseIncompletePhoneNumber, { parsePhoneNumberCharacter } from './parseIn
 describe('parseIncompletePhoneNumber', () => {
 	it('should parse phone number character', () => {
 		// Accepts leading `+`.
-		parsePhoneNumberCharacter('+').should.equal('+')
+		expect(parsePhoneNumberCharacter('+')).to.equal('+')
 
 		// Doesn't accept non-leading `+`.
 		expect(parsePhoneNumberCharacter('+', '+')).to.be.undefined
 
 		// Parses digits.
-		parsePhoneNumberCharacter('1').should.equal('1')
+		expect(parsePhoneNumberCharacter('1')).to.equal('1')
 
 		// Parses non-European digits.
-		parsePhoneNumberCharacter('٤').should.equal('4')
+		expect(parsePhoneNumberCharacter('٤')).to.equal('4')
 
 		// Dismisses other characters.
 		expect(parsePhoneNumberCharacter('-')).to.be.undefined
 	})
 
 	it('should parse incomplete phone number', () => {
-		parseIncompletePhoneNumber('').should.equal('')
+		expect(parseIncompletePhoneNumber('')).to.equal('')
 
 		// Doesn't accept non-leading `+`.
-		parseIncompletePhoneNumber('++').should.equal('+')
+		expect(parseIncompletePhoneNumber('++')).to.equal('+')
 
 		// Accepts leading `+`.
-		parseIncompletePhoneNumber('+7 800 555').should.equal('+7800555')
+		expect(parseIncompletePhoneNumber('+7 800 555')).to.equal('+7800555')
 
 		// Parses digits.
-		parseIncompletePhoneNumber('8 (800) 555').should.equal('8800555')
+		expect(parseIncompletePhoneNumber('8 (800) 555')).to.equal('8800555')
 
 		// Parses non-European digits.
-		parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤').should.equal('+442323234')
+		expect(parseIncompletePhoneNumber('+٤٤٢٣٢٣٢٣٤')).to.equal('+442323234')
 	})
 
 	it('should work with a new `context` argument in `parsePhoneNumberCharacter()` function (international number)', () => {
@@ -45,13 +45,13 @@ describe('parseIncompletePhoneNumber', () => {
 			}
 		}
 
-		parsePhoneNumberCharacter('+', undefined, emit).should.equal('+')
+		expect(parsePhoneNumberCharacter('+', undefined, emit)).to.equal('+')
 		expect(stopped).to.equal(false)
 
-		parsePhoneNumberCharacter('1', '+', emit).should.equal('1')
+		expect(parsePhoneNumberCharacter('1', '+', emit)).to.equal('1')
 		expect(stopped).to.equal(false)
 
-		expect(parsePhoneNumberCharacter('+', '+1', emit)).to.equal(undefined)
+		expect(parsePhoneNumberCharacter('+', '+1', emit)).to.be.undefined
 		expect(stopped).to.equal(true)
 
 		expect(parsePhoneNumberCharacter('2', '+1', emit)).to.equal('2')
@@ -69,10 +69,10 @@ describe('parseIncompletePhoneNumber', () => {
 			}
 		}
 
-		parsePhoneNumberCharacter('2', undefined, emit).should.equal('2')
+		expect(parsePhoneNumberCharacter('2', undefined, emit)).to.equal('2')
 		expect(stopped).to.equal(false)
 
-		expect(parsePhoneNumberCharacter('+', '2', emit)).to.equal(undefined)
+		expect(parsePhoneNumberCharacter('+', '2', emit)).to.be.undefined
 		expect(stopped).to.equal(true)
 
 		expect(parsePhoneNumberCharacter('1', '2', emit)).to.equal('1')

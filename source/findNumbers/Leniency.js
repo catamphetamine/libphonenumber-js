@@ -1,4 +1,3 @@
-import isValidNumber from '../isValid.js'
 import parseDigits from '../helpers/parseDigits.js'
 import matchPhoneNumberStringAgainstPhoneNumber from './matchPhoneNumberStringAgainstPhoneNumber.js'
 import Metadata from '../metadata.js'

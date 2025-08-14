@@ -1,6 +1,6 @@
 import parsePhoneNumber_ from '../parsePhoneNumber.js'
 import PhoneNumber from '../PhoneNumber.js'
-import metadata from '../../metadata.min.json' assert { type: 'json' }
+import metadata from '../../metadata.min.json' with { type: 'json' }
 
 function parsePhoneNumber(...parameters) {
 	parameters.push(metadata)

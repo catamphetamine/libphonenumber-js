@@ -1,13 +1,14 @@
 import findNumbers, { searchPhoneNumbers } from '../../../../source/legacy/findPhoneNumbers.js'
 import { PhoneNumberSearch } from '../../../../source/legacy/findPhoneNumbersInitialImplementation.js'
-import metadata from '../metadata.min.json' assert { type: 'json' }
+import metadata from '../metadata.min.json' with { type: 'json' }
 
 describe('findPhoneNumbers', () =>
 {
 	it('should find numbers', function()
 	{
-		findNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata).should.deep.equal
-		([{
+		expect(
+            findNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata)
+        ).to.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 14,
@@ -21,8 +22,9 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// No default country.
-		findNumbers('The number is +7 (800) 555-35-35 as written in the document.', metadata).should.deep.equal
-		([{
+		expect(
+            findNumbers('The number is +7 (800) 555-35-35 as written in the document.', metadata)
+        ).to.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 14,
@@ -30,8 +32,9 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// Passing `options` and default country.
-		findNumbers('The number is +7 (800) 555-35-35 as written in the document.', 'US', { leniency: 'VALID' }, metadata).should.deep.equal
-		([{
+		expect(
+            findNumbers('The number is +7 (800) 555-35-35 as written in the document.', 'US', { leniency: 'VALID' }, metadata)
+        ).to.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 14,
@@ -39,8 +42,9 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// Passing `options`.
-		findNumbers('The number is +7 (800) 555-35-35 as written in the document.', { leniency: 'VALID' }, metadata).should.deep.equal
-		([{
+		expect(
+            findNumbers('The number is +7 (800) 555-35-35 as written in the document.', { leniency: 'VALID' }, metadata)
+        ).to.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 14,
@@ -48,8 +52,9 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// Not a phone number and a phone number.
-		findNumbers('Digits 12 are not a number, but +7 (800) 555-35-35 is.', { leniency: 'VALID' }, metadata).should.deep.equal
-		([{
+		expect(
+            findNumbers('Digits 12 are not a number, but +7 (800) 555-35-35 is.', { leniency: 'VALID' }, metadata)
+        ).to.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			startsAt : 32,
@@ -57,8 +62,9 @@ describe('findPhoneNumbers', () =>
 		}])
 
 		// Phone number extension.
-		findNumbers('Date 02/17/2018 is not a number, but +7 (800) 555-35-35 ext. 123 is.', { leniency: 'VALID' }, metadata).should.deep.equal
-		([{
+		expect(
+            findNumbers('Date 02/17/2018 is not a number, but +7 (800) 555-35-35 ext. 123 is.', { leniency: 'VALID' }, metadata)
+        ).to.deep.equal([{
 			phone    : '8005553535',
 			country  : 'RU',
 			ext      : '123',
@@ -87,10 +93,10 @@ describe('findPhoneNumbers', () =>
 
 		for (const number of searchPhoneNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata))
 		{
-			number.should.deep.equal(expected_numbers.shift())
+			expect(number).to.deep.equal(expected_numbers.shift())
 		}
 
-		expected_numbers.length.should.equal(0)
+		expect(expected_numbers.length).to.equal(0)
 	})
 
 	it('should work in edge cases', function()
@@ -98,15 +104,15 @@ describe('findPhoneNumbers', () =>
 		let thrower
 
 		// No input
-		findNumbers('', metadata).should.deep.equal([])
+		expect(findNumbers('', metadata)).to.deep.equal([])
 
 		// No country metadata for this `require` country code
 		thrower = () => findNumbers('123', 'ZZ', metadata)
-		thrower.should.throw('Unknown country')
+		expect(thrower).to.throw('Unknown country')
 
 		// Numerical `value`
 		thrower = () => findNumbers(2141111111, 'US')
-		thrower.should.throw('A text for parsing must be a string.')
+		expect(thrower).to.throw('A text for parsing must be a string.')
 
 		// // No metadata
 		// thrower = () => findNumbers('')
@@ -120,9 +126,8 @@ describe('PhoneNumberSearch', () =>
 	{
 		const finder = new PhoneNumberSearch('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', { defaultCountry: 'US' }, metadata)
 
-		finder.hasNext().should.equal(true)
-		finder.next().should.deep.equal
-		({
+		expect(finder.hasNext()).to.equal(true)
+		expect(finder.next()).to.deep.equal({
 			country : 'RU',
 			phone   : '8005553535',
 			// number   : '+7 (800) 555-35-35',
@@ -130,9 +135,8 @@ describe('PhoneNumberSearch', () =>
 			endsAt   : 32
 		})
 
-		finder.hasNext().should.equal(true)
-		finder.next().should.deep.equal
-		({
+		expect(finder.hasNext()).to.equal(true)
+		expect(finder.next()).to.deep.equal({
 			country : 'US',
 			phone   : '2133734253',
 			// number   : '(213) 373-4253',
@@ -140,7 +144,7 @@ describe('PhoneNumberSearch', () =>
 			endsAt   : 55
 		})
 
-		finder.hasNext().should.equal(false)
+		expect(finder.hasNext()).to.equal(false)
 	})
 
 	it('should work in edge cases', function()
@@ -150,6 +154,6 @@ describe('PhoneNumberSearch', () =>
 
 		// No next element
 		let thrower = () => search.next()
-		thrower.should.throw('No next element')
+		expect(thrower).to.throw('No next element')
 	})
 })

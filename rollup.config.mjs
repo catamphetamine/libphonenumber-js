@@ -1,5 +1,5 @@
-import json from 'rollup-plugin-json'
-import { terser } from 'rollup-plugin-terser'
+import json from '@rollup/plugin-json'
+import terser from '@rollup/plugin-terser'
 
 export default [
   {

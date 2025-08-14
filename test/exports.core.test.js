@@ -1,3 +1,5 @@
+import { expect } from 'chai'
+
 import parse, {
 	ParseError,
 	parsePhoneNumber,
@@ -35,89 +37,95 @@ import parse, {
 
 import Library from '../core/index.cjs'
 
-import metadata from '../metadata.min.json' assert { type: 'json' }
-import examples from '../examples.mobile.json' assert { type: 'json' }
+import metadata from '../metadata.min.json' with { type: 'json' }
+import examples from '../examples.mobile.json' with { type: 'json' }
 
 describe('exports/core', () => {
 	it('should export ES6', () => {
 		expect(ParseError).to.be.a('function')
 
 		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
-		parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
-		parsePhoneNumberWithError('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		expect(parsePhoneNumber('+12133734253', metadata).nationalNumber).to.equal('2133734253')
+		expect(parsePhoneNumberWithError('+12133734253', metadata).nationalNumber).to.equal('2133734253')
 
-		parse('+12133734253', metadata).nationalNumber.should.equal('2133734253')
-		parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		expect(parse('+12133734253', metadata).nationalNumber).to.equal('2133734253')
+		expect(parsePhoneNumberFromString('+12133734253', metadata).nationalNumber).to.equal('2133734253')
 		expect(parsePhoneNumberFromString('2133734253', metadata)).to.be.undefined
 
-		isValidPhoneNumber('+12133734253', metadata).should.equal(true)
-		isPossiblePhoneNumber('+12133734253', metadata).should.equal(true)
+		expect(isValidPhoneNumber('+12133734253', metadata)).to.equal(true)
+		expect(isPossiblePhoneNumber('+12133734253', metadata)).to.equal(true)
 		expect(validatePhoneNumberLength('+12133734253', metadata)).to.be.undefined
 
-		findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
-		searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')
-		findPhoneNumbersInText('+12133734253', metadata)[0].number.number.should.equal('+12133734253')
-		searchPhoneNumbersInText('+12133734253', metadata)[Symbol.iterator]().next.should.be.a('function')
-		new PhoneNumberMatcher('+12133734253', undefined, metadata).find.should.be.a('function')
+		expect(findNumbers('+12133734253', 'US', metadata)[0].endsAt).to.equal(12)
+		expect(searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next).to.be.a('function')
+		expect(findPhoneNumbersInText('+12133734253', metadata)[0].number.number).to.equal('+12133734253')
+		expect(searchPhoneNumbersInText('+12133734253', metadata)[Symbol.iterator]().next).to.be.a('function')
+		expect(new PhoneNumberMatcher('+12133734253', undefined, metadata).find).to.be.a('function')
 
-		new AsYouType('US', metadata).input('+12133734253', metadata).should.equal('+1 213 373 4253')
+		expect(new AsYouType('US', metadata).input('+12133734253', metadata)).to.equal('+1 213 373 4253')
 
-		new Metadata(metadata).getCountryCodeForCallingCode('1').should.equal('US')
-		isSupportedCountry('KZ', metadata).should.equal(true)
-		expect(getCountries(metadata).indexOf('KZ') > 0).to.be.true
-		getCountryCallingCode('KZ', metadata).should.equal('7')
-		getExtPrefix('US', metadata).should.equal(' ext. ')
+		expect(new Metadata(metadata).getCountryCodeForCallingCode('1')).to.equal('US')
+		expect(isSupportedCountry('KZ', metadata)).to.equal(true)
+		expect(getCountries(metadata).indexOf('KZ') > 0).to.equal(true)
+		expect(getCountryCallingCode('KZ', metadata)).to.equal('7')
+		expect(getExtPrefix('US', metadata)).to.equal(' ext. ')
 
-		getExampleNumber('RU', examples, metadata).nationalNumber.should.equal('9123456789')
+		expect(getExampleNumber('RU', examples, metadata).nationalNumber).to.equal('9123456789')
 
-		formatIncompletePhoneNumber('+121337342', metadata).should.deep.equal('+1 213 373 42')
-		parseIncompletePhoneNumber('+1 213 373 42').should.equal('+121337342')
-		parsePhoneNumberCharacter('+').should.equal('+')
-		parseDigits('+123').should.equal('123')
+		expect(formatIncompletePhoneNumber('+121337342', metadata)).to.equal('+1 213 373 42')
+		expect(parseIncompletePhoneNumber('+1 213 373 42')).to.equal('+121337342')
+		expect(parsePhoneNumberCharacter('+')).to.equal('+')
+		expect(parseDigits('+123')).to.equal('123')
 
-		parseRFC3966('tel:+12133734253', metadata).should.deep.equal({ number: '+12133734253' })
-		formatRFC3966({ number: '+12133734253' }, metadata).should.equal('tel:+12133734253')
+		expect(parseRFC3966('tel:+12133734253', metadata)).to.deep.equal({ number: '+12133734253' })
+		expect(formatRFC3966({ number: '+12133734253' }, metadata)).to.equal('tel:+12133734253')
 	})
 
 	it('should export CommonJS', () => {
 		expect(Library.ParseError).to.be.a('function')
 
-		Library('+12133734253', metadata).nationalNumber.should.equal('2133734253')
-		Library.default('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		expect(Library('+12133734253', metadata).nationalNumber).to.equal('2133734253')
+		expect(Library.default('+12133734253', metadata).nationalNumber).to.equal('2133734253')
 
 		// `parsePhoneNumber()` named export has been renamed to `parsePhoneNumberWithError()`.
-		Library.parsePhoneNumber('+12133734253', metadata).nationalNumber.should.equal('2133734253')
-		Library.parsePhoneNumberWithError('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		expect(Library.parsePhoneNumber('+12133734253', metadata).nationalNumber).to.equal('2133734253')
+		expect(Library.parsePhoneNumberWithError('+12133734253', metadata).nationalNumber).to.equal('2133734253')
 
-		Library.parsePhoneNumberFromString('+12133734253', metadata).nationalNumber.should.equal('2133734253')
+		expect(
+            Library.parsePhoneNumberFromString('+12133734253', metadata).nationalNumber
+        ).to.equal('2133734253')
 		expect(Library.parsePhoneNumberFromString('2133734253', metadata)).to.be.undefined
 
-		Library.isValidPhoneNumber('+12133734253', metadata).should.equal(true)
-		Library.isPossiblePhoneNumber('+12133734253', metadata).should.equal(true)
+		expect(Library.isValidPhoneNumber('+12133734253', metadata)).to.equal(true)
+		expect(Library.isPossiblePhoneNumber('+12133734253', metadata)).to.equal(true)
 		expect(Library.validatePhoneNumberLength('+12133734253', metadata)).to.be.undefined
 
-		Library.findNumbers('+12133734253', 'US', metadata).should.deep.equal([{ country: 'US', phone: '2133734253', startsAt: 0, endsAt: 12 }])
-		Library.searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next.should.be.a('function')
-		Library.findPhoneNumbersInText('+12133734253', metadata)[0].number.number.should.equal('+12133734253')
-		Library.searchPhoneNumbersInText('+12133734253', metadata)[Symbol.iterator]().next.should.be.a('function')
-		new Library.PhoneNumberMatcher('+12133734253', undefined, metadata).find.should.be.a('function')
+		expect(Library.findNumbers('+12133734253', 'US', metadata)[0].endsAt).to.equal(12)
+		expect(
+            Library.searchNumbers('+12133734253', 'US', metadata)[Symbol.iterator]().next
+        ).to.be.a('function')
+		expect(Library.findPhoneNumbersInText('+12133734253', metadata)[0].number.number).to.equal('+12133734253')
+		expect(
+            Library.searchPhoneNumbersInText('+12133734253', metadata)[Symbol.iterator]().next
+        ).to.be.a('function')
+		expect(new Library.PhoneNumberMatcher('+12133734253', undefined, metadata).find).to.be.a('function')
 
-		new Library.AsYouType('US', metadata).input('+12133734253', metadata).should.equal('+1 213 373 4253')
+		expect(new Library.AsYouType('US', metadata).input('+12133734253', metadata)).to.equal('+1 213 373 4253')
 
 		new Library.Metadata(metadata)
-		Library.isSupportedCountry('KZ', metadata).should.equal(true)
-		expect(Library.getCountries(metadata).indexOf('KZ') > 0).to.be.true
-		Library.getCountryCallingCode('KZ', metadata).should.equal('7')
-		Library.getExtPrefix('US', metadata).should.equal(' ext. ')
+		expect(Library.isSupportedCountry('KZ', metadata)).to.equal(true)
+		expect(Library.getCountries(metadata).indexOf('KZ') > 0).to.equal(true)
+		expect(Library.getCountryCallingCode('KZ', metadata)).to.equal('7')
+		expect(Library.getExtPrefix('US', metadata)).to.equal(' ext. ')
 
-		Library.getExampleNumber('RU', examples, metadata).nationalNumber.should.equal('9123456789')
+		expect(Library.getExampleNumber('RU', examples, metadata).nationalNumber).to.equal('9123456789')
 
-		Library.formatIncompletePhoneNumber('+121337342', metadata).should.deep.equal('+1 213 373 42')
-		Library.parseIncompletePhoneNumber('+1 213 373 42').should.equal('+121337342')
-		Library.parsePhoneNumberCharacter('+').should.equal('+')
-		Library.parseDigits('+123').should.equal('123')
+		expect(Library.formatIncompletePhoneNumber('+121337342', metadata)).to.equal('+1 213 373 42')
+		expect(Library.parseIncompletePhoneNumber('+1 213 373 42')).to.equal('+121337342')
+		expect(Library.parsePhoneNumberCharacter('+')).to.equal('+')
+		expect(Library.parseDigits('+123')).to.equal('123')
 
-		Library.parseRFC3966('tel:+12133734253').should.deep.equal({ number: '+12133734253' })
-		Library.formatRFC3966({ number: '+12133734253' }).should.equal('tel:+12133734253')
+		expect(Library.parseRFC3966('tel:+12133734253')).to.deep.equal({ number: '+12133734253' })
+		expect(Library.formatRFC3966({ number: '+12133734253' })).to.equal('tel:+12133734253')
 	})
 })

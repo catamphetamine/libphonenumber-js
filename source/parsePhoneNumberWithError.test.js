@@ -1,6 +1,6 @@
 import _parsePhoneNumber from './parsePhoneNumberWithError.js'
-import metadata from '../metadata.min.json' assert { type: 'json' }
-import metadataFull from '../metadata.max.json' assert { type: 'json' }
+import metadata from '../metadata.min.json' with { type: 'json' }
+import metadataFull from '../metadata.max.json' with { type: 'json' }
 
 function parsePhoneNumber(...parameters) {
 	parameters.push(metadata)
@@ -15,50 +15,50 @@ function parsePhoneNumberFull(...parameters) {
 describe('parsePhoneNumberWithError', () => {
 	it('should parse phone numbers', () => {
 		const phoneNumber = parsePhoneNumber('The phone number is: 8 (800) 555 35 35. Some other text.', 'RU')
-		phoneNumber.country.should.equal('RU')
-		phoneNumber.countryCallingCode.should.equal('7')
-		phoneNumber.nationalNumber.should.equal('8005553535')
-		phoneNumber.number.should.equal('+78005553535')
-		phoneNumber.isPossible().should.equal(true)
-		phoneNumber.isValid().should.equal(true)
+		expect(phoneNumber.country).to.equal('RU')
+		expect(phoneNumber.countryCallingCode).to.equal('7')
+		expect(phoneNumber.nationalNumber).to.equal('8005553535')
+		expect(phoneNumber.number).to.equal('+78005553535')
+		expect(phoneNumber.isPossible()).to.equal(true)
+		expect(phoneNumber.isValid()).to.equal(true)
 		// phoneNumber.isValidForRegion('RU').should.equal(true)
 		// Russian phone type regexps aren't included in default metadata.
-		parsePhoneNumberFull('Phone: 8 (800) 555 35 35.', 'RU').getType().should.equal('TOLL_FREE')
+		expect(parsePhoneNumberFull('Phone: 8 (800) 555 35 35.', 'RU').getType()).to.equal('TOLL_FREE')
 	})
 
 	it('shouldn\'t set country when it\'s non-derivable', () => {
 		const phoneNumber = parsePhoneNumber('+7 111 555 35 35')
 		expect(phoneNumber.country).to.be.undefined
-		phoneNumber.countryCallingCode.should.equal('7')
-		phoneNumber.nationalNumber.should.equal('1115553535')
+		expect(phoneNumber.countryCallingCode).to.equal('7')
+		expect(phoneNumber.nationalNumber).to.equal('1115553535')
 	})
 
 	it('should parse carrier code', () => {
 		const phoneNumber = parsePhoneNumber('0 15 21 5555-5555', 'BR')
-		phoneNumber.carrierCode.should.equal('15')
+		expect(phoneNumber.carrierCode).to.equal('15')
 	})
 
 	it('should parse phone extension', () => {
 		const phoneNumber = parsePhoneNumber('Phone: 8 (800) 555 35 35 ext. 1234.', 'RU')
-		phoneNumber.ext.should.equal('1234')
+		expect(phoneNumber.ext).to.equal('1234')
 	})
 
 	it('should validate numbers for countries with no type regular expressions', () => {
-		parsePhoneNumber('+380391234567').isValid().should.equal(true)
-		parsePhoneNumber('+380191234567').isValid().should.equal(false)
+		expect(parsePhoneNumber('+380391234567').isValid()).to.equal(true)
+		expect(parsePhoneNumber('+380191234567').isValid()).to.equal(false)
 	})
 
 	it('should format numbers', () => {
 		const phoneNumber = parsePhoneNumber('Phone: 8 (800) 555 35 35.', 'RU')
-		phoneNumber.format('NATIONAL').should.equal('8 (800) 555-35-35')
-		phoneNumber.formatNational().should.equal('8 (800) 555-35-35')
-		phoneNumber.format('INTERNATIONAL').should.equal('+7 800 555 35 35')
-		phoneNumber.formatInternational().should.equal('+7 800 555 35 35')
+		expect(phoneNumber.format('NATIONAL')).to.equal('8 (800) 555-35-35')
+		expect(phoneNumber.formatNational()).to.equal('8 (800) 555-35-35')
+		expect(phoneNumber.format('INTERNATIONAL')).to.equal('+7 800 555 35 35')
+		expect(phoneNumber.formatInternational()).to.equal('+7 800 555 35 35')
 	})
 
 	it('should get tel: URI', () => {
 		const phoneNumber = parsePhoneNumber('Phone: 8 (800) 555 35 35 ext. 1234.', 'RU')
-		phoneNumber.getURI().should.equal('tel:+78005553535;ext=1234')
+		expect(phoneNumber.getURI()).to.equal('tel:+78005553535;ext=1234')
 	})
 
 	it('should work in edge cases', () => {
@@ -96,17 +96,17 @@ describe('parsePhoneNumberWithError', () => {
 
 		// For complete numbers it should strip national prefix.
 		phoneNumber = parsePhoneNumber('+1 1877 215 5230')
-		phoneNumber.nationalNumber.should.equal('8772155230')
-		phoneNumber.country.should.equal('US')
+		expect(phoneNumber.nationalNumber).to.equal('8772155230')
+		expect(phoneNumber.country).to.equal('US')
 
 		// For complete numbers it should strip national prefix.
 		phoneNumber = parsePhoneNumber('+7 8800 555 3535')
-		phoneNumber.nationalNumber.should.equal('8005553535')
-		phoneNumber.country.should.equal('RU')
+		expect(phoneNumber.nationalNumber).to.equal('8005553535')
+		expect(phoneNumber.country).to.equal('RU')
 
 		// For incomplete numbers it shouldn't strip national prefix.
 		phoneNumber = parsePhoneNumber('+7 8800 555 353')
-		phoneNumber.nationalNumber.should.equal('8800555353')
+		expect(phoneNumber.nationalNumber).to.equal('8800555353')
 		expect(phoneNumber.country).to.be.undefined
 	})
 })

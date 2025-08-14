@@ -1,4 +1,4 @@
-import metadata from './metadata.min.json' assert { type: 'json' }
+import metadata from './metadata.min.json' with { type: 'json' }
 import validate from '../../../source/legacy/isValidNumber.js'
 
 function is_valid_number(...parameters)
@@ -11,22 +11,22 @@ describe('validate', () =>
 {
 	it('should validate phone numbers', function()
 	{
-		is_valid_number('+1-213-373-4253').should.equal(true)
-		is_valid_number('+1-213-373').should.equal(false)
+		expect(is_valid_number('+1-213-373-4253')).to.equal(true)
+		expect(is_valid_number('+1-213-373')).to.equal(false)
 
-		is_valid_number('+1-213-373-4253', undefined).should.equal(true)
+		expect(is_valid_number('+1-213-373-4253', undefined)).to.equal(true)
 
-		is_valid_number('(213) 373-4253', 'US').should.equal(true)
-		is_valid_number('(213) 37', 'US').should.equal(false)
+		expect(is_valid_number('(213) 373-4253', 'US')).to.equal(true)
+		expect(is_valid_number('(213) 37', 'US')).to.equal(false)
 
-		is_valid_number({ country: 'US', phone: '2133734253' }).should.equal(true)
+		expect(is_valid_number({ country: 'US', phone: '2133734253' })).to.equal(true)
 	})
 
 	it('should refine phone number validation in case extended regular expressions are set for a country', () =>
 	{
 		// Germany general validation must pass
-		is_valid_number('123456', 'DE').should.equal(true)
-		is_valid_number('0123456', 'DE').should.equal(true)
+		expect(is_valid_number('123456', 'DE')).to.equal(true)
+		expect(is_valid_number('0123456', 'DE')).to.equal(true)
 
 		// Extra regular expressions for precise national number validation.
 		// `types` index in compressed array is `9`
@@ -43,39 +43,41 @@ describe('validate', () =>
       ]
 
 		// Germany extended validation must not pass for an invalid phone number
-		is_valid_number('123456', 'DE').should.equal(false)
-		is_valid_number('0123456', 'DE').should.equal(false)
+		expect(is_valid_number('123456', 'DE')).to.equal(false)
+		expect(is_valid_number('0123456', 'DE')).to.equal(false)
 
 		// // Germany extended validation must pass for a valid phone number,
 		// // but still must demand the national prefix (`0`).
 		// // https://github.com/catamphetamine/libphonenumber-js/issues/6
 		// is_valid_number('30123456', 'DE').should.equal(false)
-		is_valid_number('030123456', 'DE').should.equal(true)
+		expect(is_valid_number('030123456', 'DE')).to.equal(true)
 	})
 
 	it('should work in edge cases', function()
 	{
 		// No metadata
 		let thrower = () => validate('+78005553535')
-		thrower.should.throw('`metadata` argument not passed')
+		expect(thrower).to.throw('`metadata` argument not passed')
 
 		// Non-phone-number characters in a phone number
-		is_valid_number('+499821958a').should.equal(false)
-		is_valid_number('88005553535x', 'RU').should.equal(false)
+		expect(is_valid_number('+499821958a')).to.equal(false)
+		expect(is_valid_number('88005553535x', 'RU')).to.equal(false)
 
 		// Numerical `value`
 		thrower = () => is_valid_number(88005553535, 'RU')
-		thrower.should.throw('A phone number must either be a string or an object of shape { phone, [country] }.')
+		expect(thrower).to.throw(
+            'A phone number must either be a string or an object of shape { phone, [country] }.'
+        )
 
 		// Long country phone code
-		is_valid_number('+3725555555').should.equal(true)
+		expect(is_valid_number('+3725555555')).to.equal(true)
 	})
 
 	it('should accept phone number extensions', function()
 	{
 		// International
-		is_valid_number('+12133734253 ext. 123').should.equal(true)
+		expect(is_valid_number('+12133734253 ext. 123')).to.equal(true)
 		// National
-		is_valid_number('88005553535 x123', 'RU').should.equal(true)
+		expect(is_valid_number('88005553535 x123', 'RU')).to.equal(true)
 	})
 })

@@ -1,5 +1,5 @@
 import PhoneNumberMatcher from './PhoneNumberMatcher.js'
-import metadata from '../metadata.min.json' assert { type: 'json' }
+import metadata from '../metadata.min.json' with { type: 'json' }
 
 function test(text, defaultCountry, expectedNumbers) {
 	if (typeof expectedNumbers === 'string') {
@@ -12,15 +12,15 @@ function test(text, defaultCountry, expectedNumbers) {
 		const number = matcher.next()
 		const phoneNumber = expectedNumbers.shift()
 		if (phoneNumber.startsAt !== undefined) {
-			number.startsAt.should.equal(phoneNumber.startsAt)
+			expect(number.startsAt).to.equal(phoneNumber.startsAt)
 		}
 		if (phoneNumber.endsAt !== undefined) {
-			number.endsAt.should.equal(phoneNumber.endsAt)
+			expect(number.endsAt).to.equal(phoneNumber.endsAt)
 		}
-		number.number.country.should.equal(phoneNumber.country || defaultCountry)
-		number.number.nationalNumber.should.equal(phoneNumber.nationalNumber)
+		expect(number.number.country).to.equal(phoneNumber.country || defaultCountry)
+		expect(number.number.nationalNumber).to.equal(phoneNumber.nationalNumber)
 	}
-	expectedNumbers.length.should.equal(0)
+	expect(expectedNumbers.length).to.equal(0)
 }
 
 describe('PhoneNumberMatcher', () => {
@@ -77,5 +77,17 @@ describe('PhoneNumberMatcher', () => {
 
 	it('should only support the supported leniency values', function() {
 		expect(() => new PhoneNumberMatcher('+54 23 1234 0000', { leniency: 'STRICT_GROUPING', v2: true }, metadata)).to.throw('Supported values: "POSSIBLE", "VALID".')
+	})
+
+	it('should validate input parameters', function() {
+		// expect(() => new PhoneNumberMatcher('+54 23 1234 0000', { v2: true }, metadata)).to.throw('`leniency` is required')
+		expect(() => new PhoneNumberMatcher('+54 23 1234 0000', { leniency: '???', v2: true }, metadata)).to.throw('Unknown leniency: "???"')
+		expect(() => new PhoneNumberMatcher('+54 23 1234 0000', { maxTries: -1, v2: true }, metadata)).to.throw('`maxTries` must be `>= 0`')
+	})
+
+	it('should throw when calling `.next()` and there\'s no next match', function() {
+		const matcher = new PhoneNumberMatcher('+54 23 1234 0000', { v2: true }, metadata)
+		matcher.next()
+		expect(() => matcher.next()).to.throw('No next element')
 	})
 })

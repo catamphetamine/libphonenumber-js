@@ -1,5 +1,5 @@
 import searchNumbers from './searchNumbers.js'
-import metadata from '../../metadata.min.json' assert { type: 'json' }
+import metadata from '../../metadata.min.json' with { type: 'json' }
 
 describe('searchNumbers', () => {
 	it('should iterate', () => {
@@ -18,9 +18,9 @@ describe('searchNumbers', () => {
 		}]
 
 		for (const number of searchNumbers('The number is +7 (800) 555-35-35 and not (213) 373-4253 as written in the document.', 'US', metadata)) {
-			number.should.deep.equal(expectedNumbers.shift())
+			expect(number).to.deep.equal(expectedNumbers.shift())
 		}
 
-		expectedNumbers.length.should.equal(0)
+		expect(expectedNumbers.length).to.equal(0)
 	})
 })

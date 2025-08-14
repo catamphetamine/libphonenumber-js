@@ -4,8 +4,6 @@
  * Date: 08.03.2018.
  */
 
-import PhoneNumber from './PhoneNumber.js'
-
 import {
   MAX_LENGTH_FOR_NSN,
   MAX_LENGTH_COUNTRY_CODE,
@@ -128,7 +126,7 @@ const PATTERN = '(?:' + LEAD_CLASS + punctuation + ')' + leadLimit
 //
 const UNWANTED_END_CHAR_PATTERN = new RegExp(`[^${_pN}${_pL}#]+$`)
 
-const NON_DIGITS_PATTERN = /(\D+)/
+// const NON_DIGITS_PATTERN = /(\D+)/
 
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1
 
@@ -155,13 +153,18 @@ export default class PhoneNumberMatcher
       v2: options.v2,
       defaultCallingCode: options.defaultCallingCode,
       defaultCountry: options.defaultCountry && isSupportedCountry(options.defaultCountry, metadata) ? options.defaultCountry : undefined,
+      // Here it should've assigned a default value only if `options.leniency === undefined`.
       leniency: options.leniency || (options.extended ? 'POSSIBLE' : 'VALID'),
+      // Here it should've assigned a default value only if `options.maxTries === undefined`.
       maxTries: options.maxTries || MAX_SAFE_INTEGER
     }
 
     // Validate `leniency`.
-		if (!options.leniency) {
-			throw new TypeError('`leniency` is required')
+		// if (!options.leniency) {
+		// 	throw new TypeError('`leniency` is required')
+		// }
+		if (!Leniency[options.leniency]) {
+			throw new TypeError(`Unknown leniency: "${options.leniency}"`)
 		}
     if (options.leniency !== 'POSSIBLE' && options.leniency !== 'VALID') {
       throw new TypeError(`Invalid \`leniency\`: "${options.leniency}". Supported values: "POSSIBLE", "VALID".`)
@@ -178,10 +181,6 @@ export default class PhoneNumberMatcher
 
 		// The degree of phone number validation.
 		this.leniency = Leniency[options.leniency]
-
-		if (!this.leniency) {
-			throw new TypeError(`Unknown leniency: "${options.leniency}"`)
-		}
 
 		/** The maximum number of retries after matching an invalid number. */
 		this.maxTries = options.maxTries
