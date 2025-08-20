@@ -65,7 +65,18 @@ And edit the README:
 
 <!-- (breaking change) Changed `countries` and `country_calling_codes` properties in metadata: now they're not properties but rather elements of an array (`countries` is an array now rather than an object; `countries` is `metadata[0]` and `country_calling_codes` is `metadata[1]`). If you were using a custom-generated metadata then it has to be re-generated for the new version. -->
 
-This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes.
+<!-- This changelog [only](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/16#note_594165443) mentions the changes in the code. See [Google's changelog](https://github.com/google/libphonenumber/blob/master/release_notes.txt) for metadata changes. -->
+
+<!-- CHANGELOG START -->
+
+1.12.13 / 20.8.2025
+===================
+
+* Updated metadata to version 9.0.12:
+  - Updated phone metadata for region code(s): GB, GG, GM, GY, IM, JE
+  - Updated geocoding data for country calling code(s): 61 (en), 81 (en, ja)
+  - Updated carrier data for country calling code(s):
+    220 (en), 370 (en), 592 (en)
 
 1.12.0 / 24.02.2025
 ===================

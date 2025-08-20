@@ -34,6 +34,9 @@ npm-debug.log
 /metadata.mobile.json
 /examples.mobile.json
 
+# metadata update info
+/metadata-update.json
+
 # metadata subpackages' copied files
 /min/metadata/metadata.min.json
 /min/metadata/metadata.min.json.js

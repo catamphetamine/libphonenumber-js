@@ -56,6 +56,9 @@ npm-debug.log
 /metadata.json
 /PhoneNumberMetadata.xml
 
+# metadata update info
+/metadata-update.json
+
 /test.no.babel.runtime.js
 
 # GitLab pages
