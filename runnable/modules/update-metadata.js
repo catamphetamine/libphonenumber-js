@@ -110,9 +110,12 @@ function addMetadataUpdateChangelogEntry() {
 	changesLog += '==================='
 	changesLog += '\n'
 	changesLog += '\n'
-	changesLog += `* Updated metadata to version ${metadataVersion}:`
-	changesLog += '\n'
-	changesLog += metadataChanges.map(change => `  - ${change.replace(/\n/g, '\n' + '    ')}`).join('\n')
+	changesLog += `* Updated metadata to version ${metadataVersion}`
+	if (metadataChanges.length > 0) {
+		changesLog += ':'
+		changesLog += '\n'
+		changesLog += metadataChanges.map(change => `  - ${change.replace(/\n/g, '\n' + '    ')}`).join('\n')
+	}
 
 	const changelog = fs.readFileSync('./CHANGELOG.md', 'utf8')
 
