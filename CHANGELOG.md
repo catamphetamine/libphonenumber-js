@@ -69,6 +69,15 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.14 / 26.8.2025
+===================
+
+* Updated metadata to version 9.0.12:
+  - Updated phone metadata for region code(s): GB, GG, GM, GY, IM, JE
+  - Updated geocoding data for country calling code(s): 61 (en), 81 (en, ja)
+  - Updated carrier data for country calling code(s):
+    220 (en), 370 (en), 592 (en)
+
 1.12.13 / 20.8.2025
 ===================
 
