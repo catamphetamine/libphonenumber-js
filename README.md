@@ -451,7 +451,7 @@ const phoneNumber = new PhoneNumber('RU', '8005553535', metadata)
 * `number: string` — The phone number in [`E.164`](https://en.wikipedia.org/wiki/E.164) format. Example: `"+12133734253"`.
 * `countryCallingCode: string` — The [country calling code](#country-calling-code). Example: `"1"`.
 * `nationalNumber: string` — The [national (significant) number](#national-significant-number). Example: `"2133734253"`.
-* `country: string?` — The [country code](#country-code). Example: `"US"`. Will be `undefined` when no `country` could be derived from the phone number. For example, when several countries have the same `countryCallingCode` and the `nationalNumber` doesn't look like it belongs to any of them. Or when a number belongs to a [non-geographic numbering plan](#non-geographic).
+* `country: string?` — The [country code](#country-code). Example: `"US"`. Will be `undefined` when no `country` could be derived from the phone number. For example, when several countries have the same `countryCallingCode` and the `nationalNumber` doesn't look like it belongs to any particular one of them. Or when a number belongs to a [non-geographic numbering plan](#non-geographic).
 * `ext: string?` — The [phone number extension](https://en.wikipedia.org/wiki/Extension_(telephone)), if any. Example: `"1234"`.
 * `carrierCode: string?` — The ["carrier code"](https://www.voip-info.org/carrier-identification-codes/), if any. Example: `"15"`. "Carrier codes" are only used in Colombia and Brazil and only when dialing within those countries from a mobile phone to a fixed line number.
 
@@ -842,7 +842,7 @@ asYouType.getTemplate() === 'xx xxx xxx xxxx'
 
  * `getCallingCode(): string?` — Returns the ["country calling code"](#country-calling-code) part of the phone number. Returns `undefined` if the number is not being input in international format, or if no valid "country calling code" has been entered. Supports ["non-geographic"](#non-geographic) phone numbering plans: even though those aren't technically "countries", they have their own "country calling codes" too.
 
- * `getCountry(): string?` — Returns a two-letter [country code](#country-code) of the phone number. Returns `undefined` for ["non-geographic"](#non-geographic) phone numbering plans. Returns `undefined` if no phone number has been input yet.
+ * `getCountry(): string?` — Returns a two-letter [country code](#country-code) of the phone number. Returns `undefined` for ["non-geographic"](#non-geographic) phone numbering plans. Returns `undefined` if no phone number has been input yet, or if it couldn't tell what country the phone number belongs to — that could happen when several countries have the same "country calling code" and the phone number doesn't look like it belongs to any particular one of them.
 
  * `isPossible(): boolean` — Returns `true` if the phone number is "possible". Is just a shortcut for [`PhoneNumber.isPossible()`](#ispossible-boolean).
 
