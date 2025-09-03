@@ -69,6 +69,18 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.18 / 3.9.2025
+===================
+
+* Updated metadata to version 9.0.13:
+  - Updated phone metadata for region code(s):
+    BT, DE, GY, IL, OM, PA, SG, SR, UY
+  - Updated short number metadata for region code(s): UY
+  - Updated geocoding data for country calling code(s): 975 (en)
+  - Updated carrier data for country calling code(s):
+    30 (en), 41 (en), 46 (en), 49 (en), 65 (en), 86 (en, zh), 372 (en), 597 (en),
+    968 (en), 975 (en)
+
 1.12.17 / 1.9.2025
 ===================
 
