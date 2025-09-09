@@ -21,6 +21,10 @@ if (update_metadata())
 	console.log()
 
 	console.log(exec('npm version patch'))
+	console.log(exec('git push'))
+
+	// `npm` requires "two-factor authentication", so programmatic `npm publish`
+	// won't work without human intervention.
 	console.log(exec('npm publish'))
 	console.log(exec('git push'))
 
