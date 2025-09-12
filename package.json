@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.12.15",
+  "version": "1.12.17",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.cjs",
   "module": "index.js",
@@ -102,7 +102,7 @@
     "istanbul": "^1.1.0-alpha.1",
     "jest": "^30.0.5",
     "jest-codemods": "^0.34.2",
-    "libphonenumber-metadata-generator": "^2.0.0",
+    "libphonenumber-metadata-generator": "^2.0.1",
     "minimist": "^1.2.8",
     "mocha": "^10.0.0",
     "npm-run-all": "^4.1.5",

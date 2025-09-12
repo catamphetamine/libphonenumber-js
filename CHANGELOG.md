@@ -69,6 +69,23 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.17 / 12.9.2025
+===================
+
+* (miscellaneous) Updated metadata generator: fixed an error message when a developer attempts to generate custom metadata and the files are not found in Google's github repository.
+
+1.12.16 / 11.9.2025
+===================
+
+* Updated metadata to version 9.0.14:
+  - Updated phone metadata for region code(s): CZ, DE, IT, LI, LV, ME, SG, US
+  - Updated short number metadata for region code(s): DE
+  - New geocoding data for country calling code(s): 1686 (en)
+  - Updated geocoding data for country calling code(s): 39 (en, it), 61 (en)
+  - Updated carrier data for country calling code(s):
+    46 (en), 65 (en), 420 (en), 998 (en)
+  - Updated / refreshed time zone meta data.
+
 1.12.15 / 28.8.2025
 ===================
 
