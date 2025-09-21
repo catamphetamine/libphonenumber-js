@@ -3,9 +3,9 @@
  * against the regular expression.
  * @return {boolean}
  */
-export default function matchesEntirely(text, regular_expression) {
-	// If assigning the `''` default value is moved to the arguments above,
-	// code coverage would decrease for some weird reason.
+export default function matchesEntirely(text, regularExpressionText) {
+	// If the assigning of the `''` default value is moved to the arguments above,
+	// the code coverage would decrease for some weird reason.
 	text = text || ''
-	return new RegExp('^(?:' + regular_expression + ')$').test(text)
+	return new RegExp('^(?:' + regularExpressionText + ')$').test(text)
 }

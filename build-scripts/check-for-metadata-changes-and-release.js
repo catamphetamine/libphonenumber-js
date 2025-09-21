@@ -1,8 +1,14 @@
-import update_metadata from './modules/update-metadata.js'
-import commit from './modules/commit.js'
-import exec from './modules/exec.js'
+// Pulls the latest metadata from Google's repo, and, if it has changed,
+// pushes the changes in the main branch and releases a new version on `npm`.
 
-if (update_metadata())
+import update_metadata_from_google_metadata from './helpers/update-metadata-from-google-metadata.js'
+import commit from './helpers/commit.js'
+import exec from './helpers/exec.js'
+
+const googleMetadataFilePath = process.argv[2]
+const metadataInfoFilePath = process.argv[3]
+
+if (update_metadata_from_google_metadata(googleMetadataFilePath, metadataInfoFilePath))
 {
 	commit()
 

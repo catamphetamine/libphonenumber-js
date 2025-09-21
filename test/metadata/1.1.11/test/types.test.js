@@ -93,5 +93,5 @@ function check_number_length(number, type, country)
 {
 	const _metadata = new Metadata(metadata)
 	_metadata.country(country)
-	return checkNumberLengthForType(number, type, _metadata)
+	return checkNumberLengthForType(number, undefined, type, _metadata)
 }

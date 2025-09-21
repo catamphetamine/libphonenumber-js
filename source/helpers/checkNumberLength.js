@@ -1,12 +1,45 @@
+import Metadata from '../metadata.js'
 import mergeArrays from './mergeArrays.js'
 
-export default function checkNumberLength(nationalNumber, metadata) {
-	return checkNumberLengthForType(nationalNumber, undefined, metadata)
+export default function checkNumberLength(nationalNumber, country, metadata) {
+	return checkNumberLengthForType(nationalNumber, country, undefined, metadata)
 }
 
-// Checks whether a number is possible for the country based on its length.
-// Should only be called for the "new" metadata which has "possible lengths".
-export function checkNumberLengthForType(nationalNumber, type, metadata) {
+// Checks whether a number is possible for a certain `country` based on the number length.
+//
+// This function is not supported by metadata generated with ancient versions of
+// `libphonenumber-js` (before version `1.0.18`) which didn't include "possible lengths".
+//
+// There was also a known issue with `checkNumberLength()` function:
+// if a number is possible only in a certain `country` among several `countries`
+// that share the same "country calling code", that function would check
+// the possibility of the phone number only in the "main" `country` for the "country calling code"
+// and would not check if it's actually be possible in the speciifc `country`.
+//
+// For example, "+1310xxxx" numbers are valid in Canada.
+// However, they are not possible in the US due to being too short.
+// Since Canada and the US share the same country calling code — "+1" —
+// `checkNumberLength()` function used to return not "IS_POSSIBLE" for "+1310xxxx" numbers.
+//
+// In such cases, when using "/max" metadata, `isValid()` could output `true`
+// but at the same time `isPossible()` could output `false`, which was contradictory.
+//
+// See https://issuetracker.google.com/issues/335892662 for the discusson in Google's issues.
+//
+// The solution suggested by Google was implemented: an optional `country` argument
+// was added to `checkNumberLength()` function. If present, that `country` will be used
+// to check phone number length for that specific `country` rather than the "main" country
+// for the shared "country calling code".
+//
+export function checkNumberLengthForType(nationalNumber, country, type, metadata) {
+	// If the exact `country` is specified, it's no necessarily already selected in `metadata`.
+	// Most likely, in cases when there're multiple countries corresponding to the same
+	// "country calling code", the "main" country for that "country calling code" will be selected.
+	if (country) {
+		metadata = new Metadata(metadata.metadata)
+		metadata.selectNumberingPlan(country)
+	}
+
 	const type_info = metadata.type(type)
 
 	// There should always be "<possiblePengths/>" set for every type element.
@@ -17,7 +50,7 @@ export function checkNumberLengthForType(nationalNumber, type, metadata) {
 	// exist at all, there is one possible length (-1) which is guaranteed
 	// not to match the length of any real phone number.
 	let possible_lengths = type_info && type_info.possibleLengths() || metadata.possibleLengths()
-	// let local_lengths    = type_info && type.possibleLengthsLocal() || metadata.possibleLengthsLocal()
+	// let local_lengths = type_info && type.possibleLengthsLocal() || metadata.possibleLengthsLocal()
 
 	// Metadata before version `1.0.18` didn't contain `possible_lengths`.
 	if (!possible_lengths) {
@@ -30,7 +63,7 @@ export function checkNumberLengthForType(nationalNumber, type, metadata) {
 		if (!metadata.type('FIXED_LINE')) {
 			// The rare case has been encountered where no fixedLine data is available
 			// (true for some non-geographic entities), so we just check mobile.
-			return checkNumberLengthForType(nationalNumber, 'MOBILE', metadata)
+			return checkNumberLengthForType(nationalNumber, country, 'MOBILE', metadata)
 		}
 
 		const mobile_type = metadata.type('MOBILE')

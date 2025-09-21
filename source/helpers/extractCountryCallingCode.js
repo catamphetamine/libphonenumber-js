@@ -10,21 +10,23 @@ import { MAX_LENGTH_COUNTRY_CODE } from '../constants.js'
  * a national prefix, carrier code, and national
  * (significant) number.
  * @param  {string} number — Phone number digits (possibly with a `+`).
- * @param  {string} [country] — Default country.
- * @param  {string} [callingCode] — Default calling code (some phone numbering plans are non-geographic).
+ * @param  {string} [country] — Country.
+ * @param  {string} [defaultCountry] — Default country.
+ * @param  {string} [defaultCallingCode] — Default calling code (some phone numbering plans are non-geographic).
  * @param  {object} metadata
  * @return {object} `{ countryCallingCodeSource: string?, countryCallingCode: string?, number: string }`
  * @example
  * // Returns `{ countryCallingCode: "1", number: "2133734253" }`.
- * extractCountryCallingCode('2133734253', 'US', null, metadata)
- * extractCountryCallingCode('2133734253', null, '1', metadata)
- * extractCountryCallingCode('+12133734253', null, null, metadata)
- * extractCountryCallingCode('+12133734253', 'RU', null, metadata)
+ * extractCountryCallingCode('2133734253', null, 'US', null, metadata)
+ * extractCountryCallingCode('2133734253', null, null, '1', metadata)
+ * extractCountryCallingCode('+12133734253', null, null, null, metadata)
+ * extractCountryCallingCode('+12133734253', null, 'RU', null, metadata)
  */
 export default function extractCountryCallingCode(
 	number,
 	country,
-	callingCode,
+	defaultCountry,
+	defaultCallingCode,
 	metadata
 ) {
 	if (!number) {
@@ -43,7 +45,7 @@ export default function extractCountryCallingCode(
 	if (number[0] !== '+') {
 		// Convert an "out-of-country" dialing phone number
 		// to a proper international phone number.
-		const numberWithoutIDD = stripIddPrefix(number, country, callingCode, metadata)
+		const numberWithoutIDD = stripIddPrefix(number, country || defaultCountry, defaultCallingCode, metadata)
 		// If an IDD prefix was stripped then
 		// convert the number to international one
 		// for subsequent parsing.
@@ -55,14 +57,15 @@ export default function extractCountryCallingCode(
 			// for the default country. If so, we remove the country calling code,
 			// and do some checks on the validity of the number before and after.
 			// https://github.com/catamphetamine/libphonenumber-js/issues/376
-			if (country || callingCode) {
+			if (country || defaultCountry || defaultCallingCode) {
 				const {
 					countryCallingCode,
 					number: shorterNumber
 				} = extractCountryCallingCodeFromInternationalNumberWithoutPlusSign(
 					number,
 					country,
-					callingCode,
+					defaultCountry,
+					defaultCallingCode,
 					metadata
 				)
 				if (countryCallingCode) {
@@ -80,6 +83,8 @@ export default function extractCountryCallingCode(
 			}
 		}
 	}
+
+	// `number` can only be international at this point.
 
 	// Fast abortion: country codes do not begin with a '0'
 	if (number[1] === '0') {

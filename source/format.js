@@ -43,7 +43,7 @@ export default function formatNumber(input, format, options, metadata) {
 		if (!metadata.hasCountry(input.country)) {
 			throw new Error(`Unknown country: ${input.country}`)
 		}
-		metadata.country(input.country)
+		metadata.selectNumberingPlan(input.country)
 	}
 	else if (input.countryCallingCode) {
 		metadata.selectNumberingPlan(input.countryCallingCode)
@@ -128,7 +128,7 @@ function formatNationalNumber(number, carrierCode, formatAs, metadata, options) 
 	)
 }
 
-export function chooseFormatForNumber(availableFormats, nationalNnumber) {
+export function chooseFormatForNumber(availableFormats, nationalNumber) {
 	for (const format of availableFormats) {
 		// Validate leading digits.
 		// The test case for "else path" could be found by searching for
@@ -137,12 +137,12 @@ export function chooseFormatForNumber(availableFormats, nationalNnumber) {
 			// The last leading_digits_pattern is used here, as it is the most detailed
 			const lastLeadingDigitsPattern = format.leadingDigitsPatterns()[format.leadingDigitsPatterns().length - 1]
 			// If leading digits don't match then move on to the next phone number format
-			if (nationalNnumber.search(lastLeadingDigitsPattern) !== 0) {
+			if (nationalNumber.search(lastLeadingDigitsPattern) !== 0) {
 				continue
 			}
 		}
 		// Check that the national number matches the phone number format regular expression
-		if (matchesEntirely(nationalNnumber, format.pattern())) {
+		if (matchesEntirely(nationalNumber, format.pattern())) {
 			return format
 		}
 	}

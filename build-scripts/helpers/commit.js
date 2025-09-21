@@ -1,5 +1,6 @@
 import exec from './exec.js'
 
+// Commits the current changes files in the local git repository.
 export default function()
 {
 	console.log()

@@ -66,7 +66,7 @@ export default class AsYouTypeParser {
 		let justLeadingPlus
 		if (hasPlus) {
 			if (!state.digits) {
-				state.startInternationalNumber()
+				state.startInternationalNumber(undefined, undefined)
 				if (!digits) {
 					justLeadingPlus = true
 				}
@@ -143,6 +143,7 @@ export default class AsYouTypeParser {
 	extractCountryCallingCode(state) {
 		const { countryCallingCode, number } = extractCountryCallingCode(
 			'+' + state.getDigitsWithoutInternationalPrefix(),
+			state.country,
 			this.defaultCountry,
 			this.defaultCallingCode,
 			this.metadata.metadata
@@ -245,39 +246,55 @@ export default class AsYouTypeParser {
 		nationalDigits,
 		setState
 	) {
-		let complexPrefixBeforeNationalSignificantNumber
-		let nationalSignificantNumberMatchesInput
-		// This check also works with empty `this.nationalSignificantNumber`.
-		const nationalSignificantNumberIndex = nationalDigits.lastIndexOf(nationalSignificantNumber)
-		// If the extracted national (significant) number is the
-		// last substring of the `digits`, then it means that it hasn't been altered:
-		// no digits have been removed from the national (significant) number
-		// while applying `national_prefix_transform_rule`.
+		// Tells if the parsed national (significant) number is present as-is in the input string.
+		// For example, when inputting "0343515551212999" Argentinian mobile number,
+		// the parsed national (significant) number is "93435551212999".
+		// There, one can see how it stripped "0" national prefix and prepended a "9",
+		// because that's how it is instructed to do in Argentina's metadata.
+		// So in the described example, the parsed national (significant) number is not present
+		// as-is in the input string. Instead, it's "modified" in the input string.
 		// https://gitlab.com/catamphetamine/libphonenumber-js/-/blob/master/METADATA.md#national_prefix_for_parsing--national_prefix_transform_rule
-		if (nationalSignificantNumberIndex >= 0 &&
-			nationalSignificantNumberIndex === nationalDigits.length - nationalSignificantNumber.length) {
-			nationalSignificantNumberMatchesInput = true
-			// If a prefix of a national (significant) number is not as simple
-			// as just a basic national prefix, then such prefix is stored in
-			// `this.complexPrefixBeforeNationalSignificantNumber` property and will be
-			// prepended "as is" to the national (significant) number to produce
-			// a formatted result.
+		let nationalSignificantNumberIsModified = false
+
+		// In some countries, a phone number could have a prefix that is not a "national prefix"
+		// but rather some other type of "utility" prefix.
+		// For example, when calling within Australia, one could prepend `1831` prefix to hide
+		// caller's phone number.
+		// https://gitlab.com/catamphetamine/libphonenumber-js/-/blob/master/METADATA.md#national_prefix_for_parsing--national_prefix_transform_rule
+		let prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix
+
+		// `nationalSignificantNumber` could be empty. In that case, `.lastIndexOf()` still works correctly.
+		const nationalSignificantNumberIndex = nationalDigits.lastIndexOf(nationalSignificantNumber)
+
+		// If the parsed national (significant) number is the last substring of the `nationalDigits`,
+		// then it means that it's present as-is in the input string.
+		// In any other case, the parsed national (significant) number is "modified" in the input string.
+		if (
+			nationalSignificantNumberIndex < 0 ||
+			nationalSignificantNumberIndex !== nationalDigits.length - nationalSignificantNumber.length
+		) {
+			nationalSignificantNumberIsModified = true
+		} else {
 			const prefixBeforeNationalNumber = nationalDigits.slice(0, nationalSignificantNumberIndex)
-			// `prefixBeforeNationalNumber` is always non-empty,
-			// because `onExtractedNationalNumber()` isn't called
-			// when a national (significant) number hasn't been actually "extracted":
-			// when a national (significant) number is equal to the national part of `digits`,
-			// then `onExtractedNationalNumber()` doesn't get called.
-			if (prefixBeforeNationalNumber !== nationalPrefix) {
-				complexPrefixBeforeNationalSignificantNumber = prefixBeforeNationalNumber
+			// When national (significant) number is equal to the `nationalDigits`,
+			// this `onExtractedNationalNumber()` function simply doesn't get called.
+			// This means that at this point, `prefixBeforeNationalNumber` is always non-empty.
+			// Still, added this `if` check just to prevent potential silly bugs.
+			// The `!prefixBeforeNationalNumber` case is not really testable
+			// so this line is exluded from the code coverage.
+			/* istanbul ignore if */
+			if (prefixBeforeNationalNumber) {
+				if (prefixBeforeNationalNumber !== nationalPrefix) {
+					prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix = prefixBeforeNationalNumber
+				}
 			}
 		}
 		setState({
 			nationalPrefix,
 			carrierCode,
 			nationalSignificantNumber,
-			nationalSignificantNumberMatchesInput,
-			complexPrefixBeforeNationalSignificantNumber
+			nationalSignificantNumberIsModified,
+			prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix
 		})
 		// `onExtractedNationalNumber()` is only called when
 		// the national (significant) number actually did change.
@@ -396,10 +413,10 @@ export default class AsYouTypeParser {
 	fixMissingPlus(state) {
 		if (!state.international) {
 			const {
-				countryCallingCode: newCallingCode,
-				number
+				countryCallingCode: newCallingCode
 			} = extractCountryCallingCodeFromInternationalNumberWithoutPlusSign(
 				state.digits,
+				state.country,
 				this.defaultCountry,
 				this.defaultCallingCode,
 				this.metadata.metadata

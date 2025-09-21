@@ -96,7 +96,7 @@ export function isSupportedCountry(countryCode: string): countryCode is CountryC
 export function formatIncompletePhoneNumber(number: string, countryCode?: CountryCode): string;
 export function formatIncompletePhoneNumber(number: string, defaultCountryCode?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): string;
 export function parseIncompletePhoneNumber(text: string): string;
-export function parsePhoneNumberCharacter(character: string): string;
+export function parsePhoneNumberCharacter(character: string, prevParsedCharacters?: string, eventListener?: (eventName: 'end') => void): string | undefined;
 export function parseDigits(character: string): string;
 
 export class AsYouType {

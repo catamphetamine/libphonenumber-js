@@ -482,7 +482,7 @@ const typeOf = _ => typeof _
 export function getExtPrefix(country, metadata) {
 	metadata = new Metadata(metadata)
 	if (metadata.hasCountry(country)) {
-		return metadata.country(country).ext()
+		return metadata.selectNumberingPlan(country).ext()
 	}
 	return DEFAULT_EXT_PREFIX
 }
@@ -500,7 +500,7 @@ export function getExtPrefix(country, metadata) {
 export function getCountryCallingCode(country, metadata) {
 	metadata = new Metadata(metadata)
 	if (metadata.hasCountry(country)) {
-		return metadata.country(country).countryCallingCode()
+		return metadata.selectNumberingPlan(country).countryCallingCode()
 	}
 	throw new Error(`Unknown country: ${country}`)
 }

@@ -21,8 +21,8 @@ export default function formatCompleteNumber(state, format, {
 	}
 }
 
-export function canFormatCompleteNumber(nationalSignificantNumber, metadata) {
-	return checkNumberLength(nationalSignificantNumber, metadata) === 'IS_POSSIBLE'
+export function canFormatCompleteNumber(nationalSignificantNumber, country, metadata) {
+	return checkNumberLength(nationalSignificantNumber, country, metadata) === 'IS_POSSIBLE'
 }
 
 function formatNationalNumberWithAndWithoutNationalPrefixFormattingRule(state, format, {
@@ -90,8 +90,8 @@ function formatNationalNumber(state, format, {
 			formattedNationalNumber = state.nationalPrefix +
 				getSeparatorAfterNationalPrefix(format) +
 				formattedNationalNumber
-		} else if (state.complexPrefixBeforeNationalSignificantNumber) {
-			formattedNationalNumber = state.complexPrefixBeforeNationalSignificantNumber +
+		} else if (state.prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix) {
+			formattedNationalNumber = state.prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix +
 				' ' +
 				formattedNationalNumber
 		}

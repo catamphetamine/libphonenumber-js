@@ -96,7 +96,7 @@ export default class AsYouType {
 		this.state = new AsYouTypeState({
 			onCountryChange: (country) => {
 				// Before version `1.6.0`, the official `AsYouType` formatter API
-				// included the `.country` property of an `AsYouType` instance.
+				// included a `.country` property on an `AsYouType` instance.
 				// Since that property (along with the others) have been moved to
 				// `this.state`, `this.country` property is emulated for compatibility
 				// with the old versions.
@@ -239,11 +239,11 @@ export default class AsYouType {
 	getNonFormattedNationalNumberWithPrefix() {
 		const {
 			nationalSignificantNumber,
-			complexPrefixBeforeNationalSignificantNumber,
+			prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix,
 			nationalPrefix
 		} = this.state
 		let number = nationalSignificantNumber
-		const prefix = complexPrefixBeforeNationalSignificantNumber || nationalPrefix
+		const prefix = prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix || nationalPrefix
 		if (prefix) {
 			number = prefix + number
 		}
@@ -251,11 +251,11 @@ export default class AsYouType {
 	}
 
 	getNonFormattedNumber() {
-		const { nationalSignificantNumberMatchesInput } = this.state
+		const { nationalSignificantNumberIsModified } = this.state
 		return this.getFullNumber(
-			nationalSignificantNumberMatchesInput
-				? this.getNonFormattedNationalNumberWithPrefix()
-				: this.state.getNationalDigits()
+			nationalSignificantNumberIsModified
+				? this.state.getNationalDigits()
+				: this.getNonFormattedNationalNumberWithPrefix()
 		)
 	}
 
@@ -272,7 +272,7 @@ export default class AsYouType {
 		return countryCodes && countryCodes.length > 1
 	}
 
-	// Determines the country of the phone number
+	// Determines the exact country of the phone number
 	// entered so far based on the country phone code
 	// and the national phone number.
 	determineTheCountry() {
@@ -280,7 +280,6 @@ export default class AsYouType {
 			this.isInternational() ? this.state.callingCode : this.defaultCallingCode,
 			{
 				nationalNumber: this.state.nationalSignificantNumber,
-				defaultCountry: this.defaultCountry,
 				metadata: this.metadata
 			}
 		))
@@ -386,7 +385,6 @@ export default class AsYouType {
 				if (ambiguousCountries.length > 1) {
 					const exactCountry = getCountryByNationalNumber(nationalSignificantNumber, {
 						countries: ambiguousCountries,
-						defaultCountry: this.defaultCountry,
 						metadata: this.metadata.metadata
 					})
 					if (exactCountry) {

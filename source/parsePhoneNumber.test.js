@@ -77,4 +77,18 @@ describe('parsePhoneNumber', () => {
 		expect(phoneNumber.isValid()).to.equal(false)
 		expect(phoneNumber.nationalNumber).to.equal('123456789')
 	})
+
+	it('should handle the cases when multiple countries share the same country calling code and a phone number is possible in non-"main" country and is not possible in the "main" country', () => {
+		const phoneNumber = parsePhoneNumber('+13100000')
+		expect(phoneNumber.country).to.equal('CA')
+		expect(phoneNumber.isPossible()).to.equal(true)
+		expect(phoneNumber.isValid()).to.equal(true)
+		expect(phoneNumber.nationalNumber).to.equal('3100000')
+
+		const phoneNumberLocal = parsePhoneNumber('3100000', 'CA')
+		expect(phoneNumberLocal.country).to.equal('CA')
+		expect(phoneNumberLocal.isPossible()).to.equal(true)
+		expect(phoneNumberLocal.isValid()).to.equal(true)
+		expect(phoneNumberLocal.nationalNumber).to.equal('3100000')
+	})
 })

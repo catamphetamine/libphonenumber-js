@@ -92,6 +92,8 @@ Regular expressions for all possible phone number [types](https://gitlab.com/cat
 
 A regular expression for a national (significant) number matching the type.
 
+When multiple countries share the same "country calling code", type patterns aren't guaranteed to be unique among them. For example, both `US` and `CA` have the [same](https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/103#note_1417147572) pattern for `toll_free` numbers.
+
 #### `type` `possible_lengths`
 
 Possible lengths of a national (significant) number matching the type. Is always present.

@@ -1,6 +1,7 @@
 import extractNationalNumberFromPossiblyIncompleteNumber from './extractNationalNumberFromPossiblyIncompleteNumber.js'
 import matchesEntirely from './matchesEntirely.js'
 import checkNumberLength from './checkNumberLength.js'
+import getCountryByCallingCode from './getCountryByCallingCode.js'
 
 /**
  * Strips national prefix and carrier code from a complete phone number.
@@ -8,10 +9,11 @@ import checkNumberLength from './checkNumberLength.js'
  * it won't extract national prefix if the resultant number is too short
  * to be a complete number for the selected phone numbering plan.
  * @param  {string} number — Complete phone number digits.
+ * @param  {string?} country — Country, if known.
  * @param  {Metadata} metadata — Metadata with a phone numbering plan selected.
  * @return {object} `{ nationalNumber: string, carrierCode: string? }`.
  */
-export default function extractNationalNumber(number, metadata) {
+export default function extractNationalNumber(number, country, metadata) {
 	// Parsing national prefixes and carrier codes
 	// is only required for local phone numbers
 	// but some people don't understand that
@@ -36,7 +38,15 @@ export default function extractNationalNumber(number, metadata) {
 		}
 		// Check the national (significant) number length after extracting national prefix and carrier code.
 		// Legacy generated metadata (before `1.0.18`) didn't support the "possible lengths" feature.
-		if (metadata.possibleLengths()) {
+		if (metadata.numberingPlan.possibleLengths()) {
+			// If an exact `country` is not specified, attempt to detect it from the assumed national number.
+			if (!country) {
+				country = getCountryByCallingCode(metadata.numberingPlan.callingCode(), {
+					nationalNumber,
+					metadata
+				})
+			}
+
 			// The number remaining after stripping the national prefix and carrier code
 			// should be long enough to have a possible length for the country.
 			// Otherwise, don't strip the national prefix and carrier code,
@@ -45,7 +55,7 @@ export default function extractNationalNumber(number, metadata) {
 			// https://github.com/google/libphonenumber/blob/876268eb1ad6cdc1b7b5bef17fc5e43052702d57/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberUtil.java#L3236-L3250
 			// It doesn't check for the "possibility" of the original `number`.
 			// I guess it's fine not checking that one. It works as is anyway.
-			if (!isPossibleIncompleteNationalNumber(nationalNumber, metadata)) {
+			if (!isPossibleIncompleteNationalNumber(nationalNumber, country, metadata)) {
 				// Don't strip the national prefix.
 				return { nationalNumber: number }
 			}
@@ -92,8 +102,8 @@ function shouldHaveExtractedNationalPrefix(nationalNumberBefore, nationalNumberA
 	return true
 }
 
-function isPossibleIncompleteNationalNumber(nationalNumber, metadata) {
-	switch (checkNumberLength(nationalNumber, metadata)) {
+function isPossibleIncompleteNationalNumber(nationalNumber, country, metadata) {
+	switch (checkNumberLength(nationalNumber, country, metadata)) {
 		case 'TOO_SHORT':
 		case 'INVALID_LENGTH':
 		// This library ignores "local-only" phone numbers (for simplicity).

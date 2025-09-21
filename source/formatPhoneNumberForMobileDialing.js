@@ -67,10 +67,10 @@ export default function(number, from_country, with_formatting, metadata) {
 			// dialled in national format.
 
 			// Select country for `checkNumberLength()`.
-			metadata.country(country)
+			metadata.selectNumberingPlan(country)
 
 			if (can_be_internationally_dialled(number) &&
-				checkNumberLength(number.phone, metadata) !== 'TOO_SHORT') {
+				checkNumberLength(number.phone, country, metadata) !== 'TOO_SHORT') {
 				formatted_number = format(number, 'INTERNATIONAL', metadata.metadata)
 			}
 			else {

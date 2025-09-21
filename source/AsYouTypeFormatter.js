@@ -154,7 +154,7 @@ export default class AsYouTypeFormatter {
 		//  If so, we should use this instead of any other formatting template
 		//  whose leadingDigitsPattern also matches the input."
 		//
-		if (canFormatCompleteNumber(state.nationalSignificantNumber, this.metadata)) {
+		if (canFormatCompleteNumber(state.nationalSignificantNumber, state.country, this.metadata)) {
 			for (const format of this.matchingFormats) {
 				const formattedCompleteNumber = formatCompleteNumber(
 					state,
@@ -534,7 +534,7 @@ export default class AsYouTypeFormatter {
 		nationalSignificantNumber,
 		international,
 		nationalPrefix,
-		complexPrefixBeforeNationalSignificantNumber
+		prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix
 	}) {
 		let pattern = format.pattern()
 
@@ -654,9 +654,9 @@ export default class AsYouTypeFormatter {
 		// before the national (significant) number, optionally spacing
 		// the two with a whitespace.
 		if (!nationalPrefixIncludedInTemplate) {
-			if (complexPrefixBeforeNationalSignificantNumber) {
+			if (prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix) {
 				// Prepend the prefix to the template manually.
-				template = repeat(DIGIT_PLACEHOLDER, complexPrefixBeforeNationalSignificantNumber.length) +
+				template = repeat(DIGIT_PLACEHOLDER, prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix.length) +
 					' ' +
 					template
 			} else if (nationalPrefix) {

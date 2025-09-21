@@ -23,4 +23,9 @@ describe('isPossiblePhoneNumber', () => {
 		expect(() => _isPossiblePhoneNumber('8 (800) 555 35 35', 'RU', oldMetadata)).to.throw('Missing "possibleLengths" in metadata.')
 		expect(_isPossiblePhoneNumber('+888 123 456 78901', oldMetadata)).to.equal(true)
 	})
+
+	it('should handle the cases when multiple countries share the same country calling code and a phone number is possible in non-"main" country and is not possible in the "main" country', () => {
+		expect(isPossiblePhoneNumber('+13100000', 'CA')).to.equal(true)
+		expect(isPossiblePhoneNumber('3100000', 'CA')).to.equal(true)
+	})
 })

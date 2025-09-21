@@ -1,19 +1,16 @@
+// Generates JSON metadata from Google's `PhoneNumberMetadata.xml` file.
+
 import minimist from 'minimist'
-import path from 'path'
 import fs from 'fs'
 
 import { version, generate, compress } from 'libphonenumber-metadata-generator'
 
-// https://ru.stackoverflow.com/questions/1281148/referenceerror-dirname-is-not-defined
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
 // const REGION_CODE_FOR_NON_GEO_ENTITY = '001'
 
-const input = fs.readFileSync(path.join(__dirname, process.argv[2]), 'utf8')
+const input_file = process.argv[2]
 const output_file = process.argv[3]
+
+const input = fs.readFileSync(input_file, 'utf8')
 
 const command_line_arguments = minimist(process.argv.slice(4))
 
@@ -45,11 +42,11 @@ generate(input, version, included_countries, extended, included_phone_number_typ
 	// Write uncompressed metadata into a file for easier debugging
 	if (command_line_arguments.debug) {
 		console.log('Output uncompressed JSON for debugging')
-		fs.writeFileSync(path.join(__dirname, '../metadata.json'), JSON.stringify(output, undefined, 3))
+		fs.writeFileSync('./metadata.json', JSON.stringify(output, undefined, 3))
 	}
 
 	// Compress the generated metadata
-	fs.writeFileSync(path.join(__dirname, output_file), JSON.stringify(compress(output)))
+	fs.writeFileSync(output_file, JSON.stringify(compress(output)))
 
 	// Output mobile phone number type examples
 	if (command_line_arguments.examples === 'mobile') {
@@ -73,9 +70,6 @@ generate(input, version, included_countries, extended, included_phone_number_typ
 			}
 			return out
 		}, {})
-		fs.writeFileSync(
-			path.join(__dirname, '../examples.mobile.json'),
-			JSON.stringify(examples)
-		)
+		fs.writeFileSync('./examples.mobile.json', JSON.stringify(examples))
 	}
 })

@@ -630,17 +630,16 @@ describe('AsYouType', () => {
 	})
 
 	it('should return non-formatted phone number when no format matches and national (significant) number has digits added', () => {
-		// When formatting Argentinian mobile numbers in international format,
-		// a `9` is prepended, when compared to national format.
+		// When inputting "0343515551212999" Argentinian mobile number,
+		// the parsed national (significant) number is "93435551212999".
+		// There, one can see how it stripped "0" national prefix and prepended a "9",
+		// because that's how it is instructed to do in Argentina's metadata.
+		//
+		// So in this case, national (significant) number doesn't match the input
+		// and, therefore, `state.nationalSignificantNumberIsModified` flag is `true`.
+		//
 		const asYouType = new AsYouType('AR')
-		// Digits shouldn't be changed when formatting in national format.
-		// (no `9` is prepended).
-		// First parses national (significant) number by prepending `9` to it
-		// and stripping `15` from it.
-		// Then uses `$2 15-$3-$4` format that strips the leading `9`
-		// and adds `15`.
-		// `this.nationalSignificantNumberMatchesInput` is `false` in this case,
-		// so `getNonFormattedNumber()` returns `getFullNumber(getNationalDigits())`.
+		// This line checks that the formatter didn't alter the output digits compared to the input digits.
 		expect(asYouType.input('0343515551212999')).to.equal('0343515551212999')
 	})
 
@@ -718,7 +717,7 @@ describe('AsYouType', () => {
 		expect(formatter.input('081')).to.equal('081')
 	})
 
-	it('should prepend `complexPrefixBeforeNationalSignificantNumber` (not a complete number)', () => {
+	it('should prepend `prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix` (not a complete number)', () => {
 		// A country having `national_prefix_for_parsing` with a "capturing group".
 		// National prefix is either not used in a format or is optional.
 		// Input phone number without a national prefix.
@@ -730,10 +729,10 @@ describe('AsYouType', () => {
 		// `formatter.digits` is not always `formatter.nationalPrefix`
 		// plus `formatter.nationalNumberDigits`.
 		expect(formatter.state.nationalPrefix).to.be.undefined
-		expect(formatter.state.complexPrefixBeforeNationalSignificantNumber).to.equal('1831')
+		expect(formatter.state.prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix).to.equal('1831')
 	})
 
-	it('should prepend `complexPrefixBeforeNationalSignificantNumber` (complete number)', () => {
+	it('should prepend `prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix` (complete number)', () => {
 		// A country having `national_prefix_for_parsing` with a "capturing group".
 		// National prefix is either not used in a format or is optional.
 		// Input phone number without a national prefix.
@@ -745,7 +744,7 @@ describe('AsYouType', () => {
 		// `formatter.digits` is not always `formatter.nationalPrefix`
 		// plus `formatter.nationalNumberDigits`.
 		expect(formatter.state.nationalPrefix).to.be.undefined
-		expect(formatter.state.complexPrefixBeforeNationalSignificantNumber).to.equal('1831')
+		expect(formatter.state.prefixBeforeNationalSignificantNumberThatIsNotNationalPrefix).to.equal('1831')
 	})
 
 	it('should work with Mexico numbers', () => {

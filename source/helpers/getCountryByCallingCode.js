@@ -2,9 +2,10 @@ import getCountryByNationalNumber from './getCountryByNationalNumber.js'
 
 const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
 
+// Returns the exact country for the `nationalNumber`
+// that belongs to the specified "country calling code".
 export default function getCountryByCallingCode(callingCode, {
 	nationalNumber: nationalPhoneNumber,
-	defaultCountry,
 	metadata
 }) {
 	/* istanbul ignore if */
@@ -24,7 +25,6 @@ export default function getCountryByCallingCode(callingCode, {
 	}
 	return getCountryByNationalNumber(nationalPhoneNumber, {
 		countries: possibleCountries,
-		defaultCountry,
 		metadata: metadata.metadata
 	})
 }

@@ -69,4 +69,13 @@ describe('isPossible', () => {
 		// Incorrect country.
 		expect(() => isPossibleNumber({ phone: '1112223344', country: 'XX' })).to.throw('Unknown country')
 	})
+
+
+	it('should handle the cases when multiple countries share the same country calling code and a phone number is possible in non-"main" country and is not possible in the "main" country', () => {
+		const phoneNumber = parsePhoneNumber('+13100000', undefined, metadata)
+		expect(phoneNumber.country).to.equal('CA')
+		expect(phoneNumber.isPossible()).to.equal(true)
+		expect(phoneNumber.isValid()).to.equal(true)
+		expect(phoneNumber.nationalNumber).to.equal('3100000')
+	})
 })

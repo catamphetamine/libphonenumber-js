@@ -181,7 +181,7 @@ export default function parse(text, options, metadata) {
 		possible: valid ? true : (
 			options.extended === true &&
 			metadata.possibleLengths() &&
-			isPossibleNumber(nationalNumber, metadata) ? true : false
+			isPossibleNumber(nationalNumber, country, metadata) ? true : false
 		),
 		phone: nationalNumber,
 		ext
@@ -290,17 +290,21 @@ function parsePhoneNumber(
 	// Extract calling code from phone number.
 	let { countryCallingCodeSource, countryCallingCode, number } = extractCountryCallingCode(
 		parseIncompletePhoneNumber(formattedPhoneNumber),
+		undefined,
 		defaultCountry,
 		defaultCallingCode,
 		metadata.metadata
 	)
 
-	// Choose a country by `countryCallingCode`.
+	// The exact country of the phone number
 	let country
+
+	// If `formattedPhoneNumber` is passed in "international" format,
+	// choose a country by `countryCallingCode`.
 	if (countryCallingCode) {
 		metadata.selectNumberingPlan(countryCallingCode)
 	}
-	// If `formattedPhoneNumber` is passed in "national" format
+	// Else, if `formattedPhoneNumber` is passed in "national" format,
 	// then `number` is defined and `countryCallingCode` is `undefined`.
 	else if (number && (defaultCountry || defaultCallingCode)) {
 		metadata.selectNumberingPlan(defaultCountry, defaultCallingCode)
@@ -330,6 +334,7 @@ function parsePhoneNumber(
 		carrierCode
 	} = extractNationalNumber(
 		parseIncompletePhoneNumber(number),
+		country,
 		metadata
 	)
 
@@ -345,7 +350,6 @@ function parsePhoneNumber(
 	//
 	const exactCountry = getCountryByCallingCode(countryCallingCode, {
 		nationalNumber,
-		defaultCountry,
 		metadata
 	})
 	if (exactCountry) {
@@ -356,7 +360,7 @@ function parsePhoneNumber(
 			// If `USE_NON_GEOGRAPHIC_COUNTRY_CODE` is set to `true` for some reason,
 			// then remove the "istanbul ignore if".
 		} else {
-			metadata.country(country)
+			metadata.selectNumberingPlan(country)
 		}
 	}
 

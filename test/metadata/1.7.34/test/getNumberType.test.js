@@ -87,5 +87,5 @@ function type(something) {
 function checkNumberLength(number, type, country) {
 	const _metadata = new Metadata(metadata)
 	_metadata.country(country)
-	return checkNumberLengthForType(number, type, _metadata)
+	return checkNumberLengthForType(number, undefined, type, _metadata)
 }

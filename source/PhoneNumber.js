@@ -1,7 +1,6 @@
 import Metadata, { validateMetadata } from './metadata.js'
 import isPossibleNumber from './isPossible.js'
 import isValidNumber from './isValid.js'
-// import checkNumberLength from './helpers/checkNumberLength.js'
 import getNumberType from './helpers/getNumberType.js'
 import getPossibleCountriesForNumber from './helpers/getPossibleCountriesForNumber.js'
 import extractCountryCallingCode from './helpers/extractCountryCallingCode.js'
@@ -38,7 +37,7 @@ export default class PhoneNumber {
 			if (!E164_NUMBER_REGEXP.test(e164Number)) {
 				throw new Error('Invalid `number` argument passed: must consist of a "+" followed by digits')
 			}
-			const { countryCallingCode, number } = extractCountryCallingCode(e164Number, undefined, undefined, metadata)
+			const { countryCallingCode, number } = extractCountryCallingCode(e164Number, undefined, undefined, undefined, metadata)
 			nationalNumber = number
 			countryOrCountryCallingCode = countryCallingCode
 			if (!nationalNumber) {

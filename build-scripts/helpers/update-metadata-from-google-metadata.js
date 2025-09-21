@@ -3,9 +3,11 @@ import semver from 'semver'
 
 import exec from './exec.js'
 
-export default function()
+// Checks if Google's metadata XML file has changes, and, if it has,
+// generates JSON metadata files from it, runs the tests and updates `CHANGELOG.md`.
+export default function(googleMetadataFilePath, metadataInfoFilePath)
 {
-	let metadata_changed = exec('git ls-files --modified PhoneNumberMetadata.xml')
+	let metadata_changed = exec(`git ls-files --modified ${googleMetadataFilePath}`)
 
 	if (!metadata_changed)
 	{
@@ -40,7 +42,7 @@ export default function()
 
 	let unexpected_modified_files = modified_files.filter(function(file)
 	{
-		return file !== 'PhoneNumberMetadata.xml' &&
+		return file !== googleMetadataFilePath &&
 			!/^metadata\.[a-z]+\.json$/.test(file) &&
 			!/^examples\.[a-z]+\.json$/.test(file)
 	})
@@ -53,7 +55,7 @@ export default function()
 	{
 		let error
 
-		error += 'Only `PhoneNumberMetadata.xml`, `metadata.*.json` and `examples.*.json` files should be modified. Unexpected modified files:'
+		error += 'Only `' + googleMetadataFilePath + '`, `metadata.*.json` and `examples.*.json` files should be modified. Unexpected modified files:'
 		error += '\n'
 		error += '\n'
 		error += unexpected_modified_files.join('\n')
@@ -88,16 +90,16 @@ export default function()
 	// }
 
 	// Add an entry in `CHANGELOG.md`.
-	addMetadataUpdateChangelogEntry()
+	addMetadataUpdateChangelogEntry(metadataInfoFilePath)
 
 	return true
 }
 
-function addMetadataUpdateChangelogEntry() {
+function addMetadataUpdateChangelogEntry(metadataInfoFilePath) {
 	const {
 		version: metadataVersion,
 		changes: metadataChanges
-	} = JSON.parse(fs.readFileSync('./metadata-update.json', 'utf8'))
+	} = JSON.parse(fs.readFileSync(metadataInfoFilePath, 'utf8'))
 
 	const packageVersion = JSON.parse(fs.readFileSync('./package.json', 'utf8')).version
 	const nextPackageVersion = semver.inc(packageVersion, 'patch')

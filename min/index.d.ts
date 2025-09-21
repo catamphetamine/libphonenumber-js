@@ -102,7 +102,7 @@ export function getExampleNumber(country: CountryCode, examples: Examples): Phon
 
 export function formatIncompletePhoneNumber(number: string, defaultCountryCode?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }): string;
 export function parseIncompletePhoneNumber(text: string): string;
-export function parsePhoneNumberCharacter(character: string): string;
+export function parsePhoneNumberCharacter(character: string, prevParsedCharacters?: string, eventListener?: (eventName: 'end') => void): string | undefined;
 export function parseDigits(character: string): string;
 
 export class AsYouType {

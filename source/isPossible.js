@@ -35,7 +35,7 @@ export default function isPossiblePhoneNumber(input, options, metadata) {
 			if (!metadata.hasCountry(input.country)) {
 				throw new Error(`Unknown country: ${input.country}`)
 			}
-			metadata.country(input.country)
+			metadata.selectNumberingPlan(input.country)
 		} else {
 			if (!input.countryCallingCode) {
 				throw new Error('Invalid phone number object passed')
@@ -46,7 +46,7 @@ export default function isPossiblePhoneNumber(input, options, metadata) {
 
 	// Old metadata (< 1.0.18) had no "possible length" data.
 	if (metadata.possibleLengths()) {
-		return isPossibleNumber(input.phone || input.nationalNumber, metadata)
+		return isPossibleNumber(input.phone || input.nationalNumber, input.country, metadata)
 	} else {
 		// There was a bug between `1.7.35` and `1.7.37` where "possible_lengths"
 		// were missing for "non-geographical" numbering plans.
@@ -64,8 +64,8 @@ export default function isPossiblePhoneNumber(input, options, metadata) {
 	}
 }
 
-export function isPossibleNumber(nationalNumber, metadata) { //, isInternational) {
-	switch (checkNumberLength(nationalNumber, metadata)) {
+export function isPossibleNumber(nationalNumber, country, metadata) { //, isInternational) {
+	switch (checkNumberLength(nationalNumber, country, metadata)) {
 		case 'IS_POSSIBLE':
 			return true
 		// This library ignores "local-only" phone numbers (for simplicity).

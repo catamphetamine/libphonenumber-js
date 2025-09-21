@@ -170,7 +170,6 @@ function isNationalPrefixPresentIfRequired(phoneNumber, { defaultCountry, metada
 
 	const phoneNumberRegion = phoneNumber.country || getCountryByCallingCode(phoneNumber.countryCallingCode, {
 		nationalNumber: phoneNumber.nationalNumber,
-		defaultCountry,
 		metadata
 	})
 

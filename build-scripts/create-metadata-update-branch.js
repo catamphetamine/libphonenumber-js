@@ -1,4 +1,9 @@
-import exec from './modules/exec.js'
+// (deprecated because unused)
+
+// Ccreates a new git branch called "update-metadata" and switches into it.
+// If the branch with such name already exists, it overwrites it with a new one.
+
+import exec from './helpers/exec.js'
 
 let metadata_branch_exists = false
 
