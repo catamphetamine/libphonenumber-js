@@ -99,6 +99,7 @@
     "cpy-cli": "^5.0.0",
     "crlf": "^1.1.1",
     "cross-env": "^10.0.0",
+    "gmail-send": "^1.8.14",
     "istanbul": "^1.1.0-alpha.1",
     "jest": "^30.0.5",
     "jest-codemods": "^0.34.2",
