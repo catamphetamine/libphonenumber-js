@@ -79,6 +79,9 @@ describe('parsePhoneNumber', () => {
 	})
 
 	it('should handle the cases when multiple countries share the same country calling code and a phone number is possible in non-"main" country and is not possible in the "main" country', () => {
+		// Tests that Californian numbers `+1310xxxx` are considered possible.
+		// https://gitlab.com/catamphetamine/react-phone-number-input/-/issues/228#note_1872536721
+
 		const phoneNumber = parsePhoneNumber('+13100000')
 		expect(phoneNumber.country).to.equal('CA')
 		expect(phoneNumber.isPossible()).to.equal(true)
