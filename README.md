@@ -76,8 +76,6 @@ One part of me was curious about how all this phone number parsing and formattin
 
 On March 9th, 2020, GitHub, Inc. silently [banned](https://medium.com/@catamphetamine/how-github-blocked-me-and-all-my-libraries-c32c61f061d3) my account — erasing all my repos, issues and comments, even in my employer's private repos — without any notice or explanation. Because of that, all source codes had to be promptly moved to GitLab. The [GitHub repo](https://github.com/catamphetamine/libphonenumber-js) is now only used as a backup (although you can still "star" it), and the primary repo is now the [GitLab one](https://gitlab.com/catamphetamine/libphonenumber-js). For users' convenience, issues can be reported in both places.
 
-If you're about to report an issue, see [bug reporting](#bug-reporting) instructions.
-
 ## Install
 
 via [npm](https://npmjs.org/)
@@ -95,6 +93,8 @@ $ yarn add libphonenumber-js
 Alternatively, one could include it on a web page [directly](#cdn) via a `<script/>` tag.
 
 ## Use
+
+If you'd like to create an issue, see [bug reporting](#bug-reporting) instructions.
 
 <!--
 ### Importing
