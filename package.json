@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.12.18",
+  "version": "1.12.21",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.cjs",
   "module": "index.js",
@@ -115,7 +115,7 @@
     "tslib": "^2.8.1"
   },
   "scripts": {
-    "metadata:update:job": "git reset --hard && git pull && npm install && npm run metadata:update-and-release",
+    "metadata:update:job": "node build-scripts/check-for-uncommitted-files && git reset --hard && git pull && npm install && npm run metadata:update-and-release",
     "metadata:update-and-release": "node build-scripts/pull-google-metadata ./PhoneNumberMetadata.xml ./metadata-info.json && node build-scripts/check-for-metadata-changes-and-release ./PhoneNumberMetadata.xml ./metadata-info.json",
     "metadata:generate": "npm-run-all metadata:generate:min metadata:generate:full metadata:generate:max metadata:generate:mobile metadata:generate:min:js metadata:generate:full:js metadata:generate:max:js metadata:generate:mobile:js metadata:generate:mobile:examples:js",
     "metadata:generate:min": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.min.json --examples mobile",

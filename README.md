@@ -72,7 +72,7 @@ One part of me was curious about how all this phone number parsing and formattin
   (`.formatNumberForMobileDialing()` method is not implemented therefore there's no need to format carrier codes)
   -->
 
-## GitHub
+## GitHub Repository Status
 
 On March 9th, 2020, GitHub, Inc. silently [banned](https://medium.com/@catamphetamine/how-github-blocked-me-and-all-my-libraries-c32c61f061d3) my account — erasing all my repos, issues and comments, even in my employer's private repos — without any notice or explanation. Because of that, all source codes had to be promptly moved to GitLab. The [GitHub repo](https://github.com/catamphetamine/libphonenumber-js) is now only used as a backup (although you can still "star" it), and the primary repo is now the [GitLab one](https://gitlab.com/catamphetamine/libphonenumber-js). For users' convenience, issues can be reported in both places.
 
@@ -331,7 +331,7 @@ Choose one from the above and then simply `import` the functions from the releva
 * `max` — `libphonenumber-js/max`
 * `mobile` — `libphonenumber-js/mobile`
 
-As for "custom" metadata, it could be used in those rare cases when not all countries are needed and a developer would really prefer to reduce the bundle size to a minimum. In that case, one could [generate](#customizing-metadata) their own "custom" metadata set and then `import` the functions from `libphonenumber-js/core` sub-package which doesn't come pre-packaged with any metadata and instead accepts `metadata` as the last argument of each exported function.
+As for "custom" metadata, it could be used in those rare cases when not all countries are needed and a developer would really prefer to reduce the bundle size to a minimum. In that case, one could generate their own ["custom"](#custom-metadata) metadata set and then `import` the functions from `libphonenumber-js/core` sub-package which doesn't come pre-packaged with any metadata and instead accepts `metadata` as the last argument of each exported function.
 
 ## Definitions
 
@@ -1454,11 +1454,11 @@ isValidNumber({ phone: '2133734253', country: 'US' }) === true
 <details>
 <summary>The difference between using <code>parseNumber()</code> and <code>isValidNumber()</code></summary>
 
-The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany (basic length check, etc). But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see [Customizing metadata](#customizing-metadata) section of this document) then `isValidNumber()` is gonna use those precise regular expressions for extensive validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
+The difference between using `parseNumber()` and `isValidNumber()` for phone number validation is that `isValidNumber()` also checks the precise regular expressions of possible phone numbers for a country. For example, for Germany `parseNumber('123456', 'DE')` would return `{ country: 'DE', phone: '123456' }` because this phone number matches the general phone number rules for Germany (basic length check, etc). But, if the metadata is compiled with `--extended` (or relevant `--types`) flag (see [Custom metadata](#custom-metadata) section of this document) then `isValidNumber()` is gonna use those precise regular expressions for extensive validation and `isValid('123456', 'DE')` will return `false` because the phone number `123456` doesn't actually exist in Germany.
 
 This is how it is implemented in the original Google's [`libphonenumber`](https://static.javadoc.io/com.googlecode.libphonenumber/libphonenumber/8.9.1/com/google/i18n/phonenumbers/PhoneNumberUtil.html#parse-java.lang.CharSequence-java.lang.String-): `parseNumber()` parses phone numbers and loosely validates them while `isValidNumber()` validates phone numbers precisely (provided the precise regular expressions are included in metadata).
 
-The precise regular expressions aren't included in the default metadata because that would cause the default metadata to grow twice in its size: the complete ("full") metadata size is about 145 kilobytes while the reduced ("default") metadata size is about 77 kilobytes. Hence in the default configuration `isValidNumber()` performs absolutely the same "lite" validation as `parseNumber()`. For enabling extensive phone number validation the simplest way is to import functions from `libphonenumber-js/custom` module and supply them with `libphonenumber-js/metadata.max.json`. For generating custom metadata see the instructions provided in the [Customizing metadata](#customizing-metadata) section of this document.
+The precise regular expressions aren't included in the default metadata because that would cause the default metadata to grow twice in its size: the complete ("full") metadata size is about 145 kilobytes while the reduced ("default") metadata size is about 77 kilobytes. Hence in the default configuration `isValidNumber()` performs absolutely the same "lite" validation as `parseNumber()`. For enabling extensive phone number validation the simplest way is to import functions from `libphonenumber-js/custom` module and supply them with `libphonenumber-js/metadata.max.json`. For generating custom metadata see the instructions provided in the [Custom metadata](#custom-metadata) section of this document.
 </details>
 
 ####
@@ -1531,7 +1531,7 @@ When writing a bug report:
 * The described observed result of Google's demo must be different from the described observed result of `libphonenumber-js` demo, otherwise it's not considered a bug. If you don't agree with Google's demo result then [report it to Google](https://github.com/google/libphonenumber/blob/master/CONTRIBUTING.md) directly instead. If they fix it in their library, I'll port the fix to this library.
 
 <!--
-Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#customizing-metadata) fed with `metadata.max.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.gitlab.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s.
+Phone number validation bugs should **only** be reported if they appear when using [custom metadata functions](#custom-metadata) fed with `metadata.max.json` because by default all functions in this library use the reduced metadata set which results in looser validation than the original Google `libphonenumber`'s. The [demo page](https://catamphetamine.gitlab.io/libphonenumber-js/) also uses the reduced metadata set and therefore its validation is also looser than the original Google `libphonenumber`'s.
 
 There is also a possibility of this library's demo metadata being outdated, or this library's metadata lagging behind Google's (I have to update it manually from time to time due to `ssh-agent` not working properly on Windows).
 -->
@@ -1648,10 +1648,10 @@ In case I forget to run the "autoupdate" script for a long time anyone can reque
 
 `npm run metadata:update:branch` command creates a new `update-metadata` branch, downloads the new [`PhoneNumberMetadata.xml`](https://github.com/googlei18n/libphonenumber/blob/master/resources/PhoneNumberMetadata.xml) into the project folder replacing the old one, generates JSON metadata out of the XML one, checks if the metadata has changed, runs the tests, commits the new metadata and pushes the commit to the remote `update-metadata` branch of your fork.
 
-Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Customizing metadata](#customizing-metadata) section of this document.
+Alternatively, a developer may wish to update metadata urgently, without waiting for a pull request approval. In this case just perform the steps described in the [Custom metadata](#customi-metadata) section of this document.
 -->
 
-### Customizing metadata
+### Custom metadata
 
 This library comes prepackaged with [three types of metadata](#min-vs-max-vs-mobile-vs-core).
 
@@ -1857,17 +1857,56 @@ launchctl list | grep 'libphonenumber-js'
 ```
 -->
 
-### Maintenance
+## Maintenance
 
-Google periodically releases new metadata with the changes described in their [release notes](https://github.com/googlei18n/libphonenumber/blob/master/release_notes.txt). Most of the times, those are minor non-breaking updates. Rarely, those could be major-version breaking changes.
+This library reuses Google's metadata. Google periodically publishes a new version of the metadata, with the changes described in their [release notes](https://github.com/googlei18n/libphonenumber/blob/master/release_notes.txt). Those're usually minor fixes whenever some country decides to adjust their telephone numbering plan.
 
-After Google does that, this library pulls the updated metadata from Google's repository and publishes a new version of itself on `npm`.
+After Google updates their metadata, this library pulls the updated metadata from Google's repository and publishes a new version of itself on `npm`.
 
 The metadata pulling process is automated through an "autoupdate" script: see `autoupdate.cmd` (Windows) or `autoupdate.sh` (Linux/macOS). The script detects changes to `PhoneNumberMetadata.xml` file in Google `libphonenumber`'s repo and, if there are any changes, it pulls the latest metadata, transforms it, commits the changes to the repository, builds a new version of the package and releases it to `npm`.
 
-I did attempt to set up the autoupdate script to run dialy on my Windows machine in an automatic fashion through "Task Scheduler", and even overcame the issue of `ssh-agent` asking for a password input every time when running `git` command, but then `npm` started requiring "two-factor authentication" in order to publish a package, which requires human intervention, so the autoupdate process can't really be 100% autonomous and automatic and has to be run by a human's hand every now-and-then.
+I did manage to set up the autoupdate script to run dialy on my Windows machine in an automatic fashion through "Task Scheduler", but then `npm` started requiring "two-factor authentication" in order to publish a package, which requires human intervention, so currently the autoupdate process is kinda semi-automatic.
 
-So I just run the "autoupdate" script manually from time to time. With this workflow, one can see how the metadata could potentially get a bit stale, in which case just ping me to re-run the autoupdate script, assuming I'm still alive and well.
+<details>
+<summary>How to set up <code>autoupdate.cmd</code> to run automatically on Windows</summary>
+
+######
+
+To set up a task to run the autoupdate script periodically in Windows:
+
+* Open "Start" menu
+* Enter "Task Scheduler"
+* Task Scheduler window opens
+* On the right side, choose "Create Basic Task"
+* Enter "Name": "libphonenumber-js"
+* Enter some "Description"
+* Choose "Daily"
+* In "Start" specify a specific time. For example, when you're not using the computer but it's still on.
+* "Action" — "Start a program"
+* "Program/Script" — Choose the "autoupdate.cmd" file in `libphonenumber-js` directory
+
+After the task has been created, go to its "Properties", select "Settings" tab and check the check box where it says "Run task as soon as possible after a scheduled start is missed".
+
+Also, by default, it will open a physical "cmd" window when running the script. To prevent that, go to the task's "Properties", select "General" tab, and in "Security options" section, change the selected "radio button" from "Run only when user is logged on" to "Run whether user is logged on or not" and also check a checkbox next to it that says "Do not store password. The task will only have access to local computer resources".
+
+How to [fix](https://stackoverflow.com/questions/370030/why-git-cant-remember-my-passphrase-under-windows) `git` command asking for a password every time: "Git: "Enter passphrase for key ..."":
+
+* Open Windows start menu. Enter "Services". Choose the "Services" app.
+* In the "Services" app, find "OpenSSH Authentication Agent" service. Right-click it and choose "Properties".
+* In the properties modal, in the "Startup type" selector choose "Automatic". Also find and click the "Start" button below the selector. Click "OK" to close the properties modal.
+* Open Windows start menu. Enter "cmd". Choose the "Command Prompt" app.
+* Enter "ssh-add" and press Enter.
+* It will prompt for a passphrase: "Enter passphrase for ...". If instead it says "Error connecting to agent" then you didn't click the "Start" button at the previous steps.
+* Enter the passphrase and press Enter.
+* It will say: "Identity added".
+* Enter command: git config --global core.sshCommand "C:/Windows/System32/OpenSSH/ssh.exe"
+* Press Enter.
+* Now "git bash" is supposed to know the passphrase without having to type it in every time.
+</details>
+
+######
+
+<!-- So currently, I just run the "autoupdate" script manually from time to time. With this workflow, one can see how the metadata could potentially get a bit stale, in which case just ping me to re-run the autoupdate script, assuming I'm still alive and well. -->
 
 Also Google sometimes (extremely rarely) updates their code:
 

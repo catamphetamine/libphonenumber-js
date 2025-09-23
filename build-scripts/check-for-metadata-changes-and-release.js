@@ -17,7 +17,7 @@ if (update_metadata_from_google_metadata(googleMetadataFilePath, metadataInfoFil
 
 	console.log()
 	console.log('========================================')
-	console.log('=           Pushing changes            =')
+	console.log('=  Push the changes to the repository  =')
 	console.log('========================================')
 	console.log()
 
@@ -25,13 +25,18 @@ if (update_metadata_from_google_metadata(googleMetadataFilePath, metadataInfoFil
 
 	console.log()
 	console.log('========================================')
-	console.log('=           Pushed. Releasing.         =')
+	console.log('=        Increment the version         =')
 	console.log('========================================')
 	console.log()
 
 	console.log(exec('npm version patch'))
 	console.log(exec('git push'))
 
+	console.log()
+	console.log('========================================')
+	console.log('=       Publish the new version        =')
+	console.log('========================================')
+	console.log()
 
 	// `npm` requires "two-factor authentication", so running an `npm publish`
 	// command programmatically won't work without human intervention.
@@ -54,7 +59,7 @@ if (update_metadata_from_google_metadata(googleMetadataFilePath, metadataInfoFil
 
 		console.log()
 		console.log('==========================================================')
-		console.log('= Email notification sent. Release the package manually. =')
+		console.log('= Email notification sent. Publish the package manually. =')
 		console.log('==========================================================')
 		console.log()
 	} else {
@@ -62,7 +67,7 @@ if (update_metadata_from_google_metadata(googleMetadataFilePath, metadataInfoFil
 
 		console.log()
 		console.log('========================================')
-		console.log('=                Released              =')
+		console.log('=               Published              =')
 		console.log('========================================')
 		console.log()
 	}
@@ -70,7 +75,7 @@ if (update_metadata_from_google_metadata(googleMetadataFilePath, metadataInfoFil
 
 // Reads email settings from a JSON file just outside of `libphonenumber-js` repo folder.
 function getEmailSettings() {
-	const emailSettingsPath = '../libphonenumber-js-email-settings.json'
+	const emailSettingsPath = '../libphonenumber-js-autoupdate-email-notification-settings.json'
 	if (fs.existsSync(emailSettingsPath)) {
 		const emailSettings = JSON.parse(fs.readFileSync(emailSettingsPath, 'utf-8'))
 		// Validate `emailSettings`.
