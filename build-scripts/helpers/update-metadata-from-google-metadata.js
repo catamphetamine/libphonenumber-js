@@ -7,7 +7,7 @@ import exec from './exec.js'
 // generates JSON metadata files from it, runs the tests and updates `CHANGELOG.md`.
 export default function(googleMetadataFilePath, metadataInfoFilePath)
 {
-	let metadata_changed = true || exec(`git ls-files --modified ${googleMetadataFilePath}`)
+	let metadata_changed = exec(`git ls-files --modified ${googleMetadataFilePath}`)
 
 	if (!metadata_changed)
 	{
