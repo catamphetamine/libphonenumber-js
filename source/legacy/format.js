@@ -16,7 +16,18 @@ export default function formatNumber() {
 // Sort out arguments
 function normalizeArguments(args)
 {
-	const [arg_1, arg_2, arg_3, arg_4, arg_5] = Array.prototype.slice.call(args)
+	// This line of code appeared to not work correctly with `babel`/`istanbul`:
+	// for some weird reason, it caused coverage less than 100%.
+	// That's because `babel`/`istanbul`, for some weird reason,
+	// apparently doesn't know how to properly exclude Babel polyfills from code coverage.
+	//
+	// const [arg_1, arg_2, arg_3, arg_4, arg_5] = Array.prototype.slice.call(args)
+
+	const arg_1 = args[0]
+	const arg_2 = args[1]
+	const arg_3 = args[2]
+	const arg_4 = args[3]
+	const arg_5 = args[4]
 
 	let input
 	let format

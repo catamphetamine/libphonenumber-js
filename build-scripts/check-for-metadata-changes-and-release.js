@@ -53,7 +53,7 @@ if (update_metadata_from_google_metadata(googleMetadataFilePath, metadataInfoFil
 			pass: emailSettings.accessToken,
 			to: emailSettings.email,
 			subject: '[libphonenumber-js] Publish a new version',
-			text: 'A new version of `libphonenumber-js` has been pushed to the repository and should be published manually to `npm` — run `npm publish` in `libphonenumber-js` directory.',
+			text: 'A new version of `libphonenumber-js` has been pushed to the repository:\nhttps://gitlab.com/catamphetamine/libphonenumber-js/-/commits/master\n\nRun `npm publish` in `libphonenumber-js` directory to publish the new version.',
 			// html: '<b>html text</b>' // alternative to specifying `text`, one could specify `html`.
 		})()
 

@@ -2,7 +2,7 @@
 // Use `findNumbers()` instead.
 
 import findNumbers, { searchPhoneNumbers } from './findPhoneNumbers.js'
-import { PhoneNumberSearch } from './findPhoneNumbersInitialImplementation.js'
+import PhoneNumberSearch from './PhoneNumberSearch.js'
 import metadata from '../../metadata.min.json' with { type: 'json' }
 
 describe('findPhoneNumbers', () => {

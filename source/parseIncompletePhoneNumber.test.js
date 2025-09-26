@@ -1,6 +1,26 @@
 import parseIncompletePhoneNumber, { parsePhoneNumberCharacter } from './parseIncompletePhoneNumber.js'
 
 describe('parseIncompletePhoneNumber', () => {
+	it('should fix `for ... of` loop coverage', () => {
+		// For some weird reason, "istanbul" doesn't know how to properly cover
+		// a `for ... of` loop that has been transpiled with Babel.
+		// For some reason, it attempts to cover the `for ... of` polyfill coode too,
+		// meaning that it complains if that polyfill's edge case is not covered.
+		// This test case works around that weird bug by covering that edge case of the polyfill.
+		//
+		// When it runs `npm test` command, it does so without `babel` transpilation,
+		// so the error is gonna be "string.split is not a function or its return value is not iterable".
+		//
+		// When it runs `npm run test-coverage` command, it does so with `babel` transpilation,
+		// so the error is gonna be "Invalid attempt to iterate non-iterable instance.".
+		//
+		expect(() => {
+			parseIncompletePhoneNumber({
+				split: () => 123
+			})
+		}).to.throw(/(not iterable|non-iterable)/)
+	})
+
 	it('should parse phone number character', () => {
 		// Accepts leading `+`.
 		expect(parsePhoneNumberCharacter('+')).to.equal('+')
@@ -77,5 +97,19 @@ describe('parseIncompletePhoneNumber', () => {
 
 		expect(parsePhoneNumberCharacter('1', '2', emit)).to.equal('1')
 		expect(stopped).to.equal(true)
+	})
+
+	it('should call `eventListener` when the input ends abruptly', () => {
+		let parsingEnded = false
+		const eventListener = (event) => {
+			parsingEnded = true;
+			if (event !== 'end') {
+				throw new Error(`Unexpected event: ${event}`)
+			}
+		}
+
+		// Doesn't accept non-leading `+`.
+		expect(parsePhoneNumberCharacter('+', '+123', eventListener)).to.be.undefined
+		expect(parsingEnded).to.equal(true)
 	})
 })

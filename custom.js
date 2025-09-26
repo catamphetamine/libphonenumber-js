@@ -40,7 +40,7 @@ exports.findNumbers        = require('./build/legacy/findNumbers.js').default
 exports.searchNumbers      = require('./build/legacy/searchNumbers.js').default
 exports.findPhoneNumbers   = require('./build/legacy/findPhoneNumbers.js').default
 exports.searchPhoneNumbers = require('./build/legacy/findPhoneNumbers.js').searchPhoneNumbers
-exports.PhoneNumberSearch  = require('./build/legacy/findPhoneNumbersInitialImplementation.js').PhoneNumberSearch
+exports.PhoneNumberSearch  = require('./build/legacy/PhoneNumberSearch.js').default
 
 exports.getExampleNumber   = require('./build/getExampleNumber.js').default
 

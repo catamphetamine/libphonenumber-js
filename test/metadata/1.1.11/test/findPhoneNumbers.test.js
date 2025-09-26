@@ -1,5 +1,5 @@
 import findNumbers, { searchPhoneNumbers } from '../../../../source/legacy/findPhoneNumbers.js'
-import { PhoneNumberSearch } from '../../../../source/legacy/findPhoneNumbersInitialImplementation.js'
+import PhoneNumberSearch from '../../../../source/legacy/PhoneNumberSearch.js'
 import metadata from '../metadata.min.json' with { type: 'json' }
 
 describe('findPhoneNumbers', () =>

@@ -69,6 +69,26 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.23 / 26.9.2025
+===================
+
+* Updated metadata to version 9.0.15:
+  - Updated phone metadata for region code(s): KE, UG, US
+  - Updated short number metadata for region code(s): DE, ES
+  - Updated carrier data for country calling code(s): 254 (en), 256 (en)
+
+1.12.22 / 24.9.2025
+===================
+
+* Updated metadata to version 9.0.14:
+  - Updated phone metadata for region code(s): CZ, DE, IT, LI, LV, ME, SG, US
+  - Updated short number metadata for region code(s): DE
+  - New geocoding data for country calling code(s): 1686 (en)
+  - Updated geocoding data for country calling code(s): 39 (en, it), 61 (en)
+  - Updated carrier data for country calling code(s):
+    46 (en), 65 (en), 420 (en), 998 (en)
+  - Updated / refreshed time zone meta data.
+
 1.12.21 / 23.9.2025
 ===================
 

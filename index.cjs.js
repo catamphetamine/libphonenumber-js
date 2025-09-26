@@ -91,7 +91,7 @@ exports.searchPhoneNumbers = function searchPhoneNumbers() {
 }
 
 // Deprecated.
-var PhoneNumberSearch_ = require('./build/legacy/findPhoneNumbersInitialImplementation.js').PhoneNumberSearch
+var PhoneNumberSearch_ = require('./build/legacy/PhoneNumberSearch.js').default
 exports.PhoneNumberSearch = function PhoneNumberSearch(text, options) {
 	return PhoneNumberSearch_.call(this, text, options, metadata)
 }

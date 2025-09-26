@@ -31,7 +31,14 @@ const DEFAULT_OPTIONS = {
 export default function formatNumber(input, format, options, metadata) {
 	// Apply default options.
 	if (options) {
-		options = { ...DEFAULT_OPTIONS, ...options }
+		// Using ES6 "rest spread" syntax here didn't work with `babel`/`istanbul`
+		// for some weird reason: this line of code would cause the code coverage
+		// to show as not 100%. That's because `babel`/`istanbul`, for some weird reason,
+		// apparently doesn't know how to properly exclude Babel polyfills from code coverage.
+		//
+		// options = { ...DEFAULT_OPTIONS, ...options }
+		//
+		options = merge({}, DEFAULT_OPTIONS, options)
 	} else {
 		options = DEFAULT_OPTIONS
 	}
@@ -129,7 +136,14 @@ function formatNationalNumber(number, carrierCode, formatAs, metadata, options) 
 }
 
 export function chooseFormatForNumber(availableFormats, nationalNumber) {
-	for (const format of availableFormats) {
+	// Using a `for ... of` loop here didn't work with `babel`/`istanbul`:
+	// for some weird reason, it showed code coverage less than 100%.
+	// That's because `babel`/`istanbul`, for some weird reason,
+	// apparently doesn't know how to properly exclude Babel polyfills from code coverage.
+	//
+	// for (const format of availableFormats) { ... }
+	//
+	return pickFirstMatchingElement(availableFormats, (format) => {
 		// Validate leading digits.
 		// The test case for "else path" could be found by searching for
 		// "format.leadingDigitsPatterns().length === 0".
@@ -138,14 +152,12 @@ export function chooseFormatForNumber(availableFormats, nationalNumber) {
 			const lastLeadingDigitsPattern = format.leadingDigitsPatterns()[format.leadingDigitsPatterns().length - 1]
 			// If leading digits don't match then move on to the next phone number format
 			if (nationalNumber.search(lastLeadingDigitsPattern) !== 0) {
-				continue
+				return false
 			}
 		}
 		// Check that the national number matches the phone number format regular expression
-		if (matchesEntirely(nationalNumber, format.pattern())) {
-			return format
-		}
-	}
+		return matchesEntirely(nationalNumber, format.pattern())
+	})
 }
 
 function addExtension(formattedNumber, ext, metadata, formatExtension) {
@@ -182,5 +194,28 @@ function formatIDD(
 	const iddPrefix = getIddPrefix(fromCountry, undefined, metadata.metadata)
 	if (iddPrefix) {
 		return `${iddPrefix} ${countryCallingCode} ${formatNationalNumber(nationalNumber, null, 'INTERNATIONAL', metadata)}`
+	}
+}
+
+function merge(...objects) {
+	let i = 1
+	while (i < objects.length) {
+		if (objects[i]) {
+			for (const key in objects[i]) {
+				objects[0][key] = objects[i][key]
+			}
+		}
+		i++
+	}
+	return objects[0]
+}
+
+function pickFirstMatchingElement(elements, testFunction) {
+	let i = 0
+	while (i < elements.length) {
+		if (testFunction(elements[i])) {
+			return elements[i]
+		}
+		i++
 	}
 }
