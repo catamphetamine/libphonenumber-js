@@ -74,10 +74,6 @@ One part of me was curious about how all this phone number parsing and formattin
   (`.formatNumberForMobileDialing()` method is not implemented therefore there's no need to format carrier codes)
   -->
 
-## GitHub Repository Status
-
-On March 9th, 2020, GitHub, Inc. silently [banned](https://medium.com/@catamphetamine/how-github-blocked-me-and-all-my-libraries-c32c61f061d3) my account — erasing all my repos, issues and comments, even in my employer's private repos — without any notice or explanation. Because of that, all source codes had to be promptly moved to GitLab. The [GitHub repo](https://github.com/catamphetamine/libphonenumber-js) is now only used as a backup (although you can still "star" it), and the primary repo is now the [GitLab one](https://gitlab.com/catamphetamine/libphonenumber-js). For users' convenience, issues can be reported in both places.
-
 ## Install
 
 via [npm](https://npmjs.org/)
@@ -1499,6 +1495,10 @@ Whenever there's a "business requirement" to validate phone number input, I pref
 ## React
 
 If you’re trying to build a React component with this library, take a look at [`react-phone-number-input`](https://www.npmjs.com/package/react-phone-number-input).
+
+## GitHub Repository Status
+
+On March 9th, 2020, GitHub, Inc. silently [banned](https://medium.com/@catamphetamine/how-github-blocked-me-and-all-my-libraries-c32c61f061d3) my account — erasing all my repos, issues and comments, even in my employer's private repos — without any notice or explanation. Because of that, all source codes had to be promptly moved to GitLab. The [GitHub repo](https://github.com/catamphetamine/libphonenumber-js) is now only used as a backup (although you can still "star" it), and the primary repo is now the [GitLab one](https://gitlab.com/catamphetamine/libphonenumber-js). For users' convenience, issues can be reported in both places.
 
 <!--
 ## Node ES Modules

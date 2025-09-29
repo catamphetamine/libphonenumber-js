@@ -5,12 +5,10 @@ import exec from './exec.js'
 
 // Checks if Google's metadata XML file has changes, and, if it has,
 // generates JSON metadata files from it, runs the tests and updates `CHANGELOG.md`.
-export default function(googleMetadataFilePath, metadataInfoFilePath)
-{
-	let metadata_changed = exec(`git ls-files --modified ${googleMetadataFilePath}`)
+export default function(googleMetadataFilePath, metadataInfoFilePath) {
+	let metadataChanged = exec(`git ls-files --modified ${googleMetadataFilePath}`)
 
-	if (!metadata_changed)
-	{
+	if (!metadataChanged) {
 		console.log()
 		console.log('========================================')
 		console.log('=   Metadata is up-to-date. Exiting.   =')
@@ -40,8 +38,7 @@ export default function(googleMetadataFilePath, metadataInfoFilePath)
 
 	let modified_files = exec('git ls-files --modified').split(/\s/)
 
-	let unexpected_modified_files = modified_files.filter(function(file)
-	{
+	let unexpected_modified_files = modified_files.filter((file) => {
 		return file !== googleMetadataFilePath &&
 			!/^metadata\.[a-z]+\.json$/.test(file) &&
 			!/^examples\.[a-z]+\.json$/.test(file)
@@ -51,8 +48,7 @@ export default function(googleMetadataFilePath, metadataInfoFilePath)
 	// because on Windows random files constantly got "modified"
 	// without actually being modified.
 	// (perhaps something related to line endings)
-	if (false && unexpected_modified_files.length > 0)
-	{
+	if (false && unexpected_modified_files.length > 0) {
 		let error
 
 		error += 'Only `' + googleMetadataFilePath + '`, `metadata.*.json` and `examples.*.json` files should be modified. Unexpected modified files:'

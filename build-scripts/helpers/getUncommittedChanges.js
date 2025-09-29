@@ -21,9 +21,9 @@ export default function getUncommittedChanges() {
 
 			const uncommittedFiles = output.trim().split('\n').map((line) => {
 				line = line.trim()
-				const status = line[0]
-				line = line.slice(2)
-				const filename = line
+				const whitespaceIndex = line.indexOf(' ')
+				const status = line.slice(0, whitespaceIndex)
+				const filename = line.slice(whitespaceIndex + ' '.length)
 				return { status, filename }
 			})
 

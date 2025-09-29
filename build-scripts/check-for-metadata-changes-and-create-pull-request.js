@@ -9,7 +9,7 @@
 // * Create a "Personal Access Token" in GitHub account settings (just "repo_public" would be enough)
 // * Tell `hub` to use the token for creating GitHub pull requests: `echo "---\ngithub.com:\n- protocol: https\n  user: GITHUB_USERNAME\n  oauth_token: TOKEN" >> ~/.config/hub`
 
-import update_metadata_from_google_metadata from './helpers/update-metadata-from-google-metadata.js'
+import updateMetadataFromGoogleMetadata from './helpers/updateMetadataFromGoogleMetadata.js'
 import commit from './helpers/commit.js'
 import exec from './helpers/exec.js'
 
@@ -20,8 +20,9 @@ const metadataInfoFilePath = process.argv[3]
 // See `createMetadataUpdateBranch()` function for how it could be set up.
 throw new Error('Run `createMetadataUpdateBranch()` function first')
 
-if (update_metadata_from_google_metadata(googleMetadataFilePath, metadataInfoFilePath))
-{
+const metadataChanged = updateMetadataFromGoogleMetadata(googleMetadataFilePath, metadataInfoFilePath)
+
+if (metadataChanged) {
 	commit()
 
 	console.log()
