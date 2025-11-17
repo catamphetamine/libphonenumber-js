@@ -337,7 +337,15 @@ As for "custom" metadata, it could be used in those rare cases when not all coun
 
 A "country code" is a [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) (like `"US"`). <!-- or a special `001` country code used for ["non-geographic entities"](#non-geographic) (as per [Google's libphonenumber library](https://github.com/googlei18n/libphonenumber/blob/0068d861a68d3d4612f7bf8646ab844dd3cefce5/java/libphonenumber/test/com/google/i18n/phonenumbers/RegionCode.java#L23-L24)). -->
 
-This library supports all [officially assigned](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) ISO alpha-2 country codes, plus a few extra ones: `AC` ([Ascension Island](https://en.wikipedia.org/wiki/Ascension_Island)), `TA` ([Tristan da Cunha](https://en.wikipedia.org/wiki/Tristan_da_Cunha)), `XK` ([Kosovo](https://en.wikipedia.org/wiki/Kosovo)).
+This library supports all [officially assigned](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) ISO alpha-2 country codes, plus a few non-official ones to support special cases:
+* `AC` — [Ascension Island](https://en.wikipedia.org/wiki/Ascension_Island)
+  * Ascension Island is officially part of the United Kingdom (`GB`). Being an isolated volcanic island in the South Atlantic Ocean, it has been assigned its own country calling code of `+247` and has its own telephone numbering plan. For the purpose of differentiating Ascension Island from the rest of the United Kingdom by an exactly-two-letter code, an unofficial code of `AC` is used in Google's `libphonenumber`.
+  * Ascension Island is also part of a group of 3 territories: Saint Helena, Ascension Island and Tristan da Cunha. This group used to be collectively called "Saint Helena and Dependencies" until 2009 when they decided to each have an equal-status name, so now they're called "Saint Helena, Ascension and Tristan da Cunha". This group still retains its official ISO alpha-2 country code of `SH` from the old times, with each of the 3 territories having its own "subdivision" code, and Ascension Island has a "subdivison" code of `SH-AC`.
+* `TA` — [Tristan da Cunha](https://en.wikipedia.org/wiki/Tristan_da_Cunha)
+  * Tristan da Cunha is officially part of the United Kingdom (`GB`). Being a remote group of volcanic islands in the South Atlantic Ocean, it has been assigned its own country calling code of `+290`, which, if you're curious, translates to United Kingdom's country calling code `+44` and a `20` prefix. For the purpose of differentiating Tristan da Cunha from the rest of the United Kingdom by an exactly-two-letter code, an unofficial code of `TA` is used in Google's `libphonenumber`.
+  * Tristan da Cunha is also part of a group of 3 territories: Saint Helena, Ascension Island and Tristan da Cunha. This group used to be collectively called "Saint Helena and Dependencies" until 2009 when they decided to each have an equal-status name, so now they're called "Saint Helena, Ascension and Tristan da Cunha". This group still retains its official ISO alpha-2 country code of `SH` from the old times, with each of the 3 territories having its own "subdivision" code, and Tristan da Cunha has a "subdivison" code of `SH-TA`.
+* `XK` — [Kosovo](https://en.wikipedia.org/wiki/Kosovo)
+  * Kosovo separated from Yugoslavia (present Serbia) after a civil war in 1998-1999 and a follow-up NATO's bombing of Yugoslavia in 1999. Kosovo officially (unilaterally) declared its independence from Serbia in 2008. Due to the mixed opinions on the legitimacy of NATO's intervention, about half of the United Nations member states currently support Kosovo's independence while the rest of them don't, and that's the reason why Kosovo is currently not assigned any ISO alpha-2 country code. In the meantime, organizations may use an unofficial temporary code of `XK`, which is also used in Google's `libphonenumber`.
 
 <!--
 var countries = []
@@ -347,7 +355,7 @@ for (const code of Object.keys(country_calling_codes)) {
 console.log(countries.length)
 -->
 
-To check whether a country code is supported, use [`isSupportedCountry()`](#issupportedcountrycountry-string-boolean) function.
+To check whether a certain two-letter country code is supported by this library, use [`isSupportedCountry()`](#issupportedcountrycountry-string-boolean) function.
 
 ### Non-geographic
 
