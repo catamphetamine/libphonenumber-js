@@ -335,30 +335,38 @@ As for "custom" metadata, it could be used in those rare cases when not all coun
 
 ### Country code
 
-A "country code" is a [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) (like `"US"`). <!-- or a special `001` country code used for ["non-geographic entities"](#non-geographic) (as per [Google's libphonenumber library](https://github.com/googlei18n/libphonenumber/blob/0068d861a68d3d4612f7bf8646ab844dd3cefce5/java/libphonenumber/test/com/google/i18n/phonenumbers/RegionCode.java#L23-L24)). -->
+A "country code" is a two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) like `"US"`, `"CA"`, etc. <!-- or a special `001` country code used for ["non-geographic entities"](#non-geographic) (as per [Google's libphonenumber library](https://github.com/googlei18n/libphonenumber/blob/0068d861a68d3d4612f7bf8646ab844dd3cefce5/java/libphonenumber/test/com/google/i18n/phonenumbers/RegionCode.java#L23-L24)). -->
 
-This library supports all [officially assigned](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) ISO alpha-2 country codes, plus a few non-official ones to support special cases:
+However, this library uses the term "country code" rather broadly and it includes both the [official](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) ISO country codes and a few of unofficial "country codes" (listed below). For that reason, a developer should use a "country code" returned from this library with caution in an application that only expects the official ISO "country codes" to exist. For example, such application will likely not have a label or a flag for such an unofficial "country code". In that case, a developer could manually transform an unofficial "country code" returned from this library to an official ISO country code of the most suitable "parent" country.
+
+Here's the list of the unofficial "country codes":
 * `AC` — [Ascension Island](https://en.wikipedia.org/wiki/Ascension_Island)
-  * Ascension Island is officially part of the United Kingdom (`GB`). Being an isolated volcanic island in the South Atlantic Ocean, it has been assigned its own country calling code of `+247` and has its own telephone numbering plan. For the purpose of differentiating Ascension Island from the United Kingdom by a two-letter code, an unofficial code of `AC` is used in Google's `libphonenumber`.
-  * Ascension Island is also part of a group of 3 territories: Saint Helena, Ascension Island and Tristan da Cunha. This group used to be collectively called "Saint Helena and Dependencies" until 2009 when they decided to each have an equal-status name, so now they're called "Saint Helena, Ascension and Tristan da Cunha". This group still retains its official ISO alpha-2 country code of `SH` from the old times, with each of the 3 territories having its own "subdivision" code, and Ascension Island has a "subdivison" code of `SH-AC`.
-  * `AC` is an ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) of the ISO-3166-1 standard.
+  * Ascension Island is officially part of [Saint Helena, Ascension and Tristan da Cunha
+](https://en.wikipedia.org/wiki/Saint_Helena,_Ascension_and_Tristan_da_Cunha) (`SH`). Yet, it has been assigned its own country calling code of `+247` and has its own telephone numbering plan. An unofficial code of `AC` is used for it in Google's `libphonenumber`.
+  * `AC` is also an official ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code for Ascension Island in the ISO-3166-1 standard.
 * `TA` — [Tristan da Cunha](https://en.wikipedia.org/wiki/Tristan_da_Cunha)
-  * Tristan da Cunha is officially part of the United Kingdom (`GB`). Being a remote group of volcanic islands in the South Atlantic Ocean, it has been assigned its own country calling code of `+290`, which, if you're curious, translates to United Kingdom's country calling code `+44` and a `20` prefix. For the purpose of differentiating Tristan da Cunha from the United Kingdom by a two-letter code, an unofficial code of `TA` is used in Google's `libphonenumber`.
-  * Tristan da Cunha is also part of a group of 3 territories: Saint Helena, Ascension Island and Tristan da Cunha. This group used to be collectively called "Saint Helena and Dependencies" until 2009 when they decided to each have an equal-status name, so now they're called "Saint Helena, Ascension and Tristan da Cunha". This group still retains its official ISO alpha-2 country code of `SH` from the old times, with each of the 3 territories having its own "subdivision" code, and Tristan da Cunha has a "subdivison" code of `SH-TA`.
-  * `TA` is an ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) of the ISO-3166-1 standard.
+  * Tristan da Cunha is officially part of [Saint Helena, Ascension and Tristan da Cunha
+](https://en.wikipedia.org/wiki/Saint_Helena,_Ascension_and_Tristan_da_Cunha) (`SH`). For the purpose of differentiating Tristan da Cunha phone numbers from [Saint Helena](https://en.wikipedia.org/wiki/Saint_Helena) phone numbers, an unofficial code of `TA` is used for it in Google's `libphonenumber`.
+  * `TA` is also an official ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code for Tristan da Cunha in the ISO-3166-1 standard.
+* `SH` — [Saint Helena](https://en.wikipedia.org/wiki/Saint_Helena)
+  * Saint Helena is officially part of [Saint Helena, Ascension and Tristan da Cunha
+](https://en.wikipedia.org/wiki/Saint_Helena,_Ascension_and_Tristan_da_Cunha) (`SH`). For the purpose of differentiating Saint Helena phone numbers from [Tristan da Cunha](https://en.wikipedia.org/wiki/Tristan_da_Cunha) phone numbers, the official code of `SH` is only used for Saint Helena in Google's `libphonenumber`.
 * `XK` — [Kosovo](https://en.wikipedia.org/wiki/Kosovo)
-  * Kosovo separated from Yugoslavia (present Serbia, `RS`) after a civil war in 1998-1999 and a follow-up NATO's bombing of Yugoslavia in 1999. Kosovo officially (unilaterally) declared its independence from Serbia in 2008. Due to the mixed opinions on the legitimacy of NATO's intervention, about half of the United Nations member states currently support Kosovo's independence while the rest of them don't, so Kosovo is currently not assigned any ISO alpha-2 country code. At the same time, Kosovo has its own country calling code of `+383` which is different from Serbia's country calling code of `+381`. For the purpose of differentiating Kosovo from Serbia by a two-letter code, an unofficial code of `XK` is used in Google's `libphonenumber`.
-  * `XK` is not an ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) of the ISO-3166-1 standard, but it's being used by the European Commission, the IMF, the SWIFT, the CLDR, and other organizations as a temporary "country code" for Kosovo.
+  * History: Kosovo separated from Yugoslavia (present Serbia, `RS`) after a civil war in 1998-1999 and a follow-up NATO's bombing of Yugoslavia in 1999. Kosovo officially (unilaterally) declared its independence from Serbia in 2008. Due to the mixed opinions on the legitimacy of NATO's intervention, about half of the United Nations member states currently support Kosovo's independence while the rest of them don't, so Kosovo is currently not assigned any ISO alpha-2 country code.
+  * Kosovo has been assigned its own country calling code of `+383` and has its own telephone numbering plan. An unofficial code of `XK` is used for it in Google's `libphonenumber`.
+  * `XK` is not an ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code in the ISO-3166-1 standard, but it's still being used by various international organizations as a temporary "country code" for Kosovo.
 
-<!--
-var countries = []
-for (const code of Object.keys(country_calling_codes)) {
-  countries = countries.concat(country_calling_codes[code])
-}
-console.log(countries.length)
--->
+There're also other territories with a disputed status of an independent state, whose country calling code or telephone numbering plan is different from the one used by their "official" parent territory. These territories are currently not implemented in this library but they could potentially be implemented in some future:
+  * `XA` — [Abkhazia](https://en.wikipedia.org/wiki/Abkhazia)
+    * History: Abkhazia officially (unilaterally) declared its independence from [Georgia](https://en.wikipedia.org/wiki/Georgia_(country)) (`GE`) in 1994 after a 1992-1994 civil war. The first state to officially recognize Abkhazia's independence was Russia in 2008.
+    * Abkhazia currently shares a country calling code of `+7` with Russia but has [unique prefixes](https://en.wikipedia.org/wiki/Telephone_numbers_in_Russia#Codes_assigned_to_Abkhazia) of `840` and `940`.
+    * `XA` is not an ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code in the ISO-3166-1 standard, but it's still being used by some organizations as a temporary "country code" for Abkhazia.
+  * `XO` — [South Ossetia](https://en.wikipedia.org/wiki/South_Ossetia)
+    * History: South Ossetia officially (unilaterally) declared its independence from [Georgia](https://en.wikipedia.org/wiki/Georgia_(country)) (`GE`) in 1992 after a 1991–1992 civil war. The first state to officially recognize South Ossetia's independence was Russia in 2008.
+    * South Ossetia currently shares a country calling code of `+7` with Russia but has [unique prefixes](https://en.wikipedia.org/wiki/Telephone_numbers_in_Russia#Codes_assigned_to_South_Ossetia) of `850` and `929`.
+    * `XO` is not an ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code in the ISO-3166-1 standard, but it's still being used by some organizations as a temporary "country code" for South Ossetia.
 
-To check whether a certain two-letter country code is supported by this library, use [`isSupportedCountry()`](#issupportedcountrycountry-string-boolean) function.
+To check whether a certain two-letter "country code" is supported by this library, use [`isSupportedCountry()`](#issupportedcountrycountry-string-boolean) function.
 
 ### Non-geographic
 
@@ -411,7 +419,7 @@ Returns an instance of [`PhoneNumber`](#phonenumber) class, or `undefined` if no
 
 Available `options`:
 
-* `defaultCountry: string` — Default [country](#country-code) for parsing numbers written in non-international form (without a `+` sign). Will be ignored when parsing numbers written in international form (with a `+` sign). Instead of passing it as `options.defaultCountry`, one could also pass it as a standalone `defaultCountry` argument (for convenience).
+* `defaultCountry: string` — Default [country code](#country-code) for parsing numbers written in non-international form (without a `+` sign). Will be ignored when parsing numbers written in international form (with a `+` sign). Instead of passing it as `options.defaultCountry`, one could also pass it as a standalone `defaultCountry` argument (for convenience).
 
 * `defaultCallingCode: string` — Default calling code for parsing numbers written in non-international form (without a `+` sign). Will be ignored when parsing numbers written in international form (with a `+` sign). It could be specified when parsing phone numbers belonging to ["non-geographic numbering plans"](#non-geographic) which by nature don't have a country code, making the `defaultCountry` option unusable.
 
@@ -915,7 +923,7 @@ asYouType.getTemplate() === 'xx xxx xxx xxxx'
 
 For legacy API (before version `1.6.0`) the formatter instance provides the following getters:
 
- * `country: string?` — Phone number [country](#country-code). Will return `undefined` if the country couldn't be derived from the number.
+ * `country: string?` — The [country code](#country-code) of the phone number. Will return `undefined` if the country couldn't be derived from the number.
 
  * `getNationalNumber(): string` — Returns the national (significant) number part of the phone number.
 
@@ -1093,7 +1101,7 @@ Although Google's javascript port doesn't provide the `findPhoneNumbersInText()`
 
 ### getExampleNumber(country: string, examples: object): PhoneNumber
 
-Returns an example phone number for a [country](#country-code). Returns an instance of [`PhoneNumber`](#phonenumber) class. Will return `undefined` if `country` doesn't exist or isn't supported by this library.
+Returns an example phone number for a [country code](#country-code). Returns an instance of [`PhoneNumber`](#phonenumber) class. Will return `undefined` if `country` doesn't exist or isn't supported by this library.
 
 ```js
 import examples from 'libphonenumber-js/mobile/examples'
@@ -1106,7 +1114,7 @@ phoneNumber.formatNational() === '8 (912) 345-67-89'
 
 ### isSupportedCountry(country: string): boolean
 
-Checks if a [country](#country-code) is supported by this library.
+Checks if a given [country code](#country-code) is supported by this library.
 
 ```js
 isSupportedCountry('RU') === true
@@ -1125,7 +1133,7 @@ getCountries() === ["AC", "AD", ...]
 
 ### getCountryCallingCode(country: string): string
 
-Returns [country calling code](#country-calling-code) for a [country](#country-code). Will throw an error if `country` doesn't exist or isn't supported by this library.
+Returns [country calling code](#country-calling-code) for a [country code](#country-code). Will throw an error if `country` doesn't exist or isn't supported by this library.
 
 ```js
 getCountryCallingCode('RU') === '7'
@@ -1134,7 +1142,7 @@ getCountryCallingCode('IL') === '972'
 
 ### getExtPrefix(country: string): string
 
-Returns phone number extension prefix for a given [country](#country-code). If no custom ext prefix is defined for a `country` then the default `" ext. "` prefix is returned.
+Returns phone number extension prefix for a given [country code](#country-code). If no custom ext prefix is defined for a `country` then the default `" ext. "` prefix is returned.
 
 ```js
 getExtPrefix('US') === ' ext. '
