@@ -69,6 +69,42 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.26 / 7.11.2025
+===================
+
+* Updated metadata to version 9.0.18:
+  - Updated phone metadata for region code(s):
+    AU, BJ, CC, CX, ET, IL, IR, MC, PY, QA, SG, SV, TJ, UG, ZA
+  - Updated short number metadata for region code(s): PY
+  - Updated geocoding data for country calling code(s): 61 (en)
+  - Updated carrier data for country calling code(s):
+    61 (en), 65 (en), 98 (en, fa), 229 (en), 256 (en), 372 (en), 377 (en),
+    503 (en), 972 (en), 992 (en)
+  - Updated / refreshed time zone meta data.
+
+1.12.25 / 24.10.2025
+===================
+
+* Updated metadata to version 9.0.17:
+  - Updated phone metadata for region code(s): AU, CC, CX, GB, LB, MG, SN
+  - Updated short number metadata for region code(s): RO
+  - Updated carrier data for country calling code(s):
+    57 (en), 61 (en), 221 (en), 255 (en), 261 (en), 852 (zh), 961 (en)
+  - Updated / refreshed time zone meta data.
+
+1.12.24 / 10.10.2025
+===================
+
+* Updated metadata to version 9.0.16:
+  - Updated phone metadata for region code(s): CZ, ES, GE, HK, JO, LI, US
+  - Updated short number metadata for region code(s): ES
+  - New geocoding data for country calling code(s): 1324 (en)
+  - Updated geocoding data for country calling code(s): 1437 (en)
+  - Updated carrier data for country calling code(s):
+    34 (en), 65 (en), 233 (en), 423 (en), 673 (en), 852 (en, zh), 962 (en),
+    995 (en)
+  - Updated / refreshed time zone meta data.
+
 1.12.23 / 26.9.2025
 ===================
 
