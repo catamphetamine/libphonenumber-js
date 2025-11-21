@@ -69,6 +69,18 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.29 / 21.11.2025
+===================
+
+* Updated metadata to version 9.0.19:
+  - Updated phone metadata for region code(s):
+    CF, EE, EH, GE, IN, LB, MA, OM, SG, SN, SV, UG
+  - Updated geocoding data for country calling code(s):
+    61 (en), 91 (en), 212 (en)
+  - Updated carrier data for country calling code(s):
+    34 (en), 45 (en), 65 (en), 91 (en), 236 (en), 256 (en), 503 (en), 961 (en),
+    995 (en)
+
 1.12.26 / 7.11.2025
 ===================
 

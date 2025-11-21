@@ -378,38 +378,52 @@ To check if a certain two-letter "country code" is supported by this library, us
 
 ### Country Code (additions)
 
-Here's a list of the unofficial "country codes":
+Here's a list of the unofficial "country codes" — these codes are used for certain "regions" that're usually a subject of a [territorial dispute](https://en.wikipedia.org/wiki/Territorial_dispute).
+
 * `AC` — [Ascension Island](https://en.wikipedia.org/wiki/Ascension_Island)
-  * Ascension Island is officially part of [Saint Helena, Ascension and Tristan da Cunha
-](https://en.wikipedia.org/wiki/Saint_Helena,_Ascension_and_Tristan_da_Cunha) (`SH`), which used to be called "Saint Helena and Dependencies" until 2009 when the dependencies were raised to equal status with Saint Helena. Ascension Island has been assigned its own country calling code of `+247` and has its own telephone numbering plan. In 2009  An unofficial code of `AC` is used for it in Google's `libphonenumber`.
+  * (history) The region of Ascension Island is officially part of [Saint Helena, Ascension and Tristan da Cunha
+](https://en.wikipedia.org/wiki/Saint_Helena,_Ascension_and_Tristan_da_Cunha) (`SH`), which used to be called "Saint Helena and Dependencies" until 2009 when the dependencies were raised to equal status with Saint Helena.
+  * Ascension Island has been assigned its own country calling code of `+247`.
+  * An unofficial code `AC` is used for Ascension Island region in Google's `libphonenumber`.
   * `AC` is also an official ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code for Ascension Island in the ISO-3166-1 standard.
-  * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Ascension Island territory [is](https://en.wikipedia.org/wiki/ISO_3166-2:SH) `SH-AC`.
+  * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Ascension Island region [is](https://en.wikipedia.org/wiki/ISO_3166-2:SH) `SH-AC`.
 * `TA` — [Tristan da Cunha](https://en.wikipedia.org/wiki/Tristan_da_Cunha)
-  * Tristan da Cunha is officially part of [Saint Helena, Ascension and Tristan da Cunha
-](https://en.wikipedia.org/wiki/Saint_Helena,_Ascension_and_Tristan_da_Cunha) (`SH`), which used to be called "Saint Helena and Dependencies" until 2009 when the dependencies were raised to equal status with Saint Helena. Tristan da Cunha and Saint Helena still share the same country calling code. For the purpose of differentiating Tristan da Cunha phone numbers from [Saint Helena](https://en.wikipedia.org/wiki/Saint_Helena) phone numbers, an unofficial code of `TA` is used for it in Google's `libphonenumber`.
+  * (history) The region of Tristan da Cunha is officially part of [Saint Helena, Ascension and Tristan da Cunha
+](https://en.wikipedia.org/wiki/Saint_Helena,_Ascension_and_Tristan_da_Cunha) (`SH`), which used to be called "Saint Helena and Dependencies" until 2009 when the dependencies were raised to equal status with Saint Helena.
+  * Tristan da Cunha shares a country calling code of `+290` with [Saint Helena](https://en.wikipedia.org/wiki/Saint_Helena) where it has a unique prefix of `8`.
+  * For the purpose of differentiating Tristan da Cunha phone numbers from [Saint Helena](https://en.wikipedia.org/wiki/Saint_Helena) phone numbers, an unofficial code `TA` is used for it in Google's `libphonenumber`.
   * `TA` is also an official ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code for Tristan da Cunha in the ISO-3166-1 standard.
-  * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Tristan da Cunha territory [is](https://en.wikipedia.org/wiki/ISO_3166-2:SH) `SH-TA`.
+  * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Tristan da Cunha region [is](https://en.wikipedia.org/wiki/ISO_3166-2:SH) `SH-TA`.
 * `SH` — [Saint Helena](https://en.wikipedia.org/wiki/Saint_Helena)
-  * Saint Helena is officially part of [Saint Helena, Ascension and Tristan da Cunha
-](https://en.wikipedia.org/wiki/Saint_Helena,_Ascension_and_Tristan_da_Cunha) (`SH`), which used to be called "Saint Helena and Dependencies" until 2009 when the dependencies were raised to equal status with Saint Helena. For the purpose of differentiating Saint Helena phone numbers from [Tristan da Cunha](https://en.wikipedia.org/wiki/Tristan_da_Cunha) phone numbers, the official ISO country code of `SH` is only used for Saint Helena in Google's `libphonenumber`.
-  * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Saint Helena territory [is](https://en.wikipedia.org/wiki/ISO_3166-2:SH) `SH-HL`.
+  * (history) The region of Saint Helena is officially part of [Saint Helena, Ascension and Tristan da Cunha
+](https://en.wikipedia.org/wiki/Saint_Helena,_Ascension_and_Tristan_da_Cunha) (`SH`), which used to be called "Saint Helena and Dependencies" until 2009 when the dependencies were raised to equal status with Saint Helena.
+  * For the purpose of differentiating Saint Helena phone numbers from [Tristan da Cunha](https://en.wikipedia.org/wiki/Tristan_da_Cunha) phone numbers, the official ISO country code of `SH` is only used for Saint Helena region in Google's `libphonenumber`.
+  * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Saint Helena region [is](https://en.wikipedia.org/wiki/ISO_3166-2:SH) `SH-HL`.
 * `XK` — [Kosovo](https://en.wikipedia.org/wiki/Kosovo)
-  * History: Kosovo separated from Yugoslavia (present Serbia, `RS`) after a civil war in 1998-1999 and a follow-up NATO's bombing of Yugoslavia in 1999. Kosovo officially (unilaterally) declared its independence from Serbia in 2008. Due to the mixed opinions on the legitimacy of NATO's intervention, about half of the United Nations member states currently support Kosovo's independence while the rest of them don't, so Kosovo is currently not assigned any ISO alpha-2 country code.
-  * Kosovo has been assigned its own country calling code of `+383` and has its own telephone numbering plan. An unofficial code of `XK` is used for it in Google's `libphonenumber`.
-  * `XK` is not an ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code in the ISO-3166-1 standard, but it's still being used by various organizations as a temporary "country code" for Kosovo.
-  * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Kosovo territory [is](https://en.wikipedia.org/wiki/Autonomous_Province_of_Kosovo_and_Metohija) `RS-KM`.
+  * (history) The region of Kosovo separated from Yugoslavia (present [Serbia](https://en.wikipedia.org/wiki/Serbia), `RS`) after a 1998-1999 civil war that was put to an end by NATO's bombing of Yugoslavia in 1999. The government of Kosovo officially (unilaterally) declared independence from Serbia in 2008. Due to the mixed opinions on the legitimacy of NATO's intervention, about half of the United Nations member states currently support Kosovo's independence while the rest of them don't, so Kosovo is currently not assigned any "official" country code.
+  * Kosovo has been assigned its own country calling code of `+383`.
+  * An unofficial code `XK` is used for Kosovo region in Google's `libphonenumber`.
+  * `XK` is a ["user-assigned"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#User-assigned_code_elements) code in the ISO-3166-1 standard meaning that it can be freely assigned to any region by any application or organization for its own purposes.
+  * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Kosovo region [is](https://en.wikipedia.org/wiki/Autonomous_Province_of_Kosovo_and_Metohija) `RS-KM`.
 
 There're also other territories having a disputed status of an independent state, whose country calling code or telephone numbering plan is different from the one used by their "official" parent territory. These territories are currently not implemented in this library but they could potentially be implemented in some future:
   * `XA` — [Abkhazia](https://en.wikipedia.org/wiki/Abkhazia)
-    * History: Abkhazia officially (unilaterally) declared its independence from [Georgia](https://en.wikipedia.org/wiki/Georgia_(country)) (`GE`) in 1994 after a 1992-1994 civil war. The first state to officially recognize Abkhazia's independence was Russia in 2008.
-    * Abkhazia currently shares a country calling code of `+7` with [Russia](https://en.wikipedia.org/wiki/Russia) (`RU`) where it has [unique prefixes](https://en.wikipedia.org/wiki/Telephone_numbers_in_Russia#Codes_assigned_to_Abkhazia) of `840` and `940`, so the "country code" is currently `RU` rather than `XA`.
-    * `XA` is not an ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code in the ISO-3166-1 standard, but it's still being used by some organizations as a temporary "country code" for Abkhazia.
-    * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Abkhazia territory [is](https://en.wikipedia.org/wiki/ISO_3166-2:GE) `GE-AB`.
+    * (history) The region of Abkhazia separated from [Georgia](https://en.wikipedia.org/wiki/Georgia_(country)) (`GE`) during a civil war in 1992-1994. The government of Abkhazia officially (unilaterally) declared independence from Georgia in 1994 when the civil war was put to an end. The first state to officially recognize Abkhazia's independence was Russia in 2008.
+    * Abkhazia currently shares a country calling code of `+7` with [Russia](https://en.wikipedia.org/wiki/Russia) (`RU`) where it has [unique prefixes](https://en.wikipedia.org/wiki/Telephone_numbers_in_Russia#Codes_assigned_to_Abkhazia) of `840` and `940`, so the "country code" is currently parsed as `RU`.
+    * For the purpose of differentiating Abkhazia phone numbers from Russia phone numbers, an unofficial code like `XA` could be used for it in Google's `libphonenumber`.
+    * `XA` is a ["user-assigned"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#User-assigned_code_elements) code in the ISO-3166-1 standard meaning that it can be freely assigned to any region by any application or organization for its own purposes.
+    * The last official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2) assigned to Abkhazia region [is](https://en.wikipedia.org/wiki/ISO_3166-2:GE) `GE-AB`.
   * `XO` — [South Ossetia](https://en.wikipedia.org/wiki/South_Ossetia)
-    * History: South Ossetia officially (unilaterally) declared its independence from [Georgia](https://en.wikipedia.org/wiki/Georgia_(country)) (`GE`) in 1992 after a 1991–1992 civil war. The first state to officially recognize South Ossetia's independence was Russia in 2008.
-    * South Ossetia currently shares a country calling code of `+7` with [Russia](https://en.wikipedia.org/wiki/Russia) (`RU`) where it has [unique prefixes](https://en.wikipedia.org/wiki/Telephone_numbers_in_Russia#Codes_assigned_to_South_Ossetia) of `850` and `929`, so the "country code" is currently `RU` rather than `XO`.
-    * `XO` is not an ["exceptional reservation"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Reserved_code_elements) code in the ISO-3166-1 standard, but it's still being used by some organizations as a temporary "country code" for South Ossetia.
-    * South Ossetia is currently [not](https://en.wikipedia.org/wiki/ISO_3166-2:GE) assigned any official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2).
+    * (history) The region of South Ossetia separated from [Georgia](https://en.wikipedia.org/wiki/Georgia_(country)) (`GE`) during a civil war 1991–1992. The government of South Ossetia officially (unilaterally) declared independence from Georgia in 1992 when the civil war was put to an end. The first state to officially recognize South Ossetia's independence was Russia in 2008.
+    * South Ossetia currently shares a country calling code of `+7` with [Russia](https://en.wikipedia.org/wiki/Russia) (`RU`) where it has [unique prefixes](https://en.wikipedia.org/wiki/Telephone_numbers_in_Russia#Codes_assigned_to_South_Ossetia) of `850` and `929`, so the "country code" is currently parsed as `RU`.
+    * For the purpose of differentiating South Ossetia phone numbers from Russia phone numbers, an unofficial code like `XO` could be used for it in Google's `libphonenumber`.
+    * `XO` is a ["user-assigned"](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#User-assigned_code_elements) code in the ISO-3166-1 standard meaning that it can be freely assigned to any region by any application or organization for its own purposes.
+    * South Ossetia region has [not](https://en.wikipedia.org/wiki/ISO_3166-2:GE) ever been assigned any official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2).
+  * `XC` — [Northern Cyprus](https://en.wikipedia.org/wiki/Northern_Cyprus)
+    * (history) The region of Northern Cyprus separated from [Cyprus](https://en.wikipedia.org/wiki/Cyprus) (`CY`) during [Turkey](https://en.wikipedia.org/wiki/Turkey)'s military invasion in 1974. The government of Northern Cyprus officially (unilaterally) declared independence from Cyprus in 1983. The first state to officially recognize Northern Cyprus' independence was Turkey in 1983.
+    * Northern Cyprus currently shares a country calling code of `+90` with Turkey (`TR`) where it has [unique prefixes](https://en.wikipedia.org/wiki/Telephone_numbers_in_Northern_Cyprus) of `392`, `533` and `542`, so the "country code" is currently parsed as `TR`.
+    * For the purpose of differentiating Northern Cyprus phone numbers from Turkey phone numbers, some unofficial code like `XC` could be used for it in Google's `libphonenumber`.
+    * Northern Cyprus region has [not](https://en.wikipedia.org/wiki/ISO_3166-2:CY) ever been assigned any official ISO-3166-2 ["subdivision code"](https://en.wikipedia.org/wiki/ISO_3166-2).
 
 ## API
 
