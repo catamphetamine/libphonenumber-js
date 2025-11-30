@@ -90,4 +90,20 @@ describe('PhoneNumberMatcher', () => {
 		matcher.next()
 		expect(() => matcher.next()).to.throw('No next element')
 	})
+
+	it('should find phone numbers that are separated by a slash', function() {
+		const matcher = new PhoneNumberMatcher('651-234-2345/332-445-1234', { defaultCountry: 'US', v2: true }, metadata)
+
+		expect(matcher.hasNext()).to.equal(true)
+		const number1 = matcher.next()
+		expect(number1.startsAt).to.equal(0)
+		expect(number1.number.number).to.equal('+16512342345')
+
+		expect(matcher.hasNext()).to.equal(true)
+		const number2 = matcher.next()
+		expect(number2.startsAt).to.equal(13)
+		expect(number2.number.number).to.equal('+13324451234')
+
+		expect(matcher.hasNext()).to.equal(false)
+	})
 })

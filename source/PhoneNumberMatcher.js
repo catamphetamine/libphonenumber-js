@@ -53,7 +53,7 @@ const EXTN_PATTERNS_FOR_MATCHING = createExtensionPattern('matching')
 const INNER_MATCHES =
 [
 	// Breaks on the slash - e.g. "651-234-2345/332-445-1234"
-	'\\/+(.*)/',
+	'/+(.*)',
 
 	// Note that the bracket here is inside the capturing group, since we consider it part of the
 	// phone number. Will match a pattern like "(650) 223 3345 (754) 223 3321".
@@ -185,7 +185,9 @@ export default class PhoneNumberMatcher
 		/** The maximum number of retries after matching an invalid number. */
 		this.maxTries = options.maxTries
 
+    // Compile regular expressions.
 		this.PATTERN = new RegExp(PATTERN, 'ig')
+    this.INNER_MATCHES = INNER_MATCHES.map(pattern => new RegExp(pattern, 'g'))
 
     /** The iteration tristate. */
     this.state = 'NOT_READY'
@@ -207,9 +209,9 @@ export default class PhoneNumberMatcher
    * @param index  the search index to start searching at
    * @return  the phone number match found, null if none can be found
    */
-	find() {
-		// // Reset the regular expression.
-		// this.PATTERN.lastIndex = index
+	find(index) {
+		// Reset the regular expression.
+		this.PATTERN.lastIndex = index
 
 		let matches
 		while ((this.maxTries > 0) && (matches = this.PATTERN.exec(this.text)) !== null) {
@@ -271,10 +273,12 @@ export default class PhoneNumberMatcher
    * if the substring itself does not qualify as a match.
    */
   extractInnerMatch(substring, offset, text) {
-    for (const innerMatchPattern of INNER_MATCHES) {
+    for (const innerMatchRegExp of this.INNER_MATCHES) {
+      // Reset regular expression.
+      innerMatchRegExp.lastIndex = 0
+
       let isFirstMatch = true
       let candidateMatch
-      const innerMatchRegExp = new RegExp(innerMatchPattern, 'g')
       while (this.maxTries > 0 && (candidateMatch = innerMatchRegExp.exec(substring)) !== null) {
         if (isFirstMatch) {
           // We should handle any group before this one too.
@@ -362,11 +366,11 @@ export default class PhoneNumberMatcher
   {
     if (this.state === 'NOT_READY')
     {
-      this.lastMatch = this.find() // (this.searchIndex)
+      this.lastMatch = this.find(this.searchIndex)
 
       if (this.lastMatch)
       {
-        // this.searchIndex = this.lastMatch.endsAt
+        this.searchIndex = this.lastMatch.endsAt
         this.state = 'READY'
       }
       else

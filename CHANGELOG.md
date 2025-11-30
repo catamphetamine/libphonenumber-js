@@ -69,6 +69,11 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.30 / 01.12.2025
+===================
+
+* Merged [Endy Gower](https://gitlab.com/endycb)'s [fix](https://gitlab.com/catamphetamine/libphonenumber-js/-/merge_requests/27): `findPhoneNumbersInText()` now correctly finds phone numbers that're separated by a `/` character. Example: `651-234-2345/332-445-1234`.
+
 1.12.29 / 21.11.2025
 ===================
 
