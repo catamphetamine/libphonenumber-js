@@ -22,7 +22,7 @@ import PhoneNumber from './PhoneNumber.js'
 import matchesEntirely from './helpers/matchesEntirely.js'
 import extractCountryCallingCode from './helpers/extractCountryCallingCode.js'
 import extractNationalNumber from './helpers/extractNationalNumber.js'
-import stripIddPrefix from './helpers/stripIddPrefix.js'
+// import stripIddPrefix from './helpers/stripIddPrefix.js'
 import getCountryByCallingCode from './helpers/getCountryByCallingCode.js'
 import extractFormattedPhoneNumberFromPossibleRfc3966NumberUri from './helpers/extractFormattedPhoneNumberFromPossibleRfc3966NumberUri.js'
 

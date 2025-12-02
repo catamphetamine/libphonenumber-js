@@ -33,7 +33,6 @@ describe('isValidNumber', () => {
 
 	it('should refine phone number validation in case extended regular expressions are set for a country', () => {
 		// Germany general validation must pass
-		console.log('--------------------------')
 		expect(isValidNumber('961111111', 'UZ')).to.equal(true)
 
 		const phoneNumberTypePatterns = metadata.countries.UZ[11]

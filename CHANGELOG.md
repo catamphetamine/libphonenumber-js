@@ -69,6 +69,11 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.31 / 02.12.2025
+===================
+
+* Merged [Louis Boulagnon](https://gitlab.com/louisboulagnon)'s [fix](https://gitlab.com/catamphetamine/libphonenumber-js/-/merge_requests/28): `parse('...') instanceof PhoneNumber` check now works correctly.
+
 1.12.30 / 01.12.2025
 ===================
 

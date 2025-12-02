@@ -17,7 +17,7 @@ import parse, {
 	PhoneNumberMatcher,
 
 	AsYouType,
-
+	PhoneNumber,
 	Metadata,
 	isSupportedCountry,
 	getCountries,
@@ -248,5 +248,12 @@ describe('exports/mobile', () => {
 		expect(parsePhoneNumberFromString('+441212345678').countryCallingCode).to.equal('44')
 		expect(parsePhoneNumberFromString('+441481256789').isValid()).to.equal(false)
 		expect(parsePhoneNumberFromString('+441481256789').getType()).to.be.undefined
+	})
+
+	// Tests that the exported `parsePhoneNumber()` function returns an instance of the exported `PhoneNumber` class.
+	// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/201
+	it('should export `parsePhoneNumber()` function that returns an instance of the exported `PhoneNumber` class', () => {
+		const phoneNumber = parsePhoneNumber('+13100000')
+		expect(phoneNumber instanceof PhoneNumber).to.equal(true)
 	})
 })

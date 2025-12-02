@@ -215,6 +215,13 @@ describe(`exports`, () => {
 		expect(Library.parseDigits('+123')).to.equal('123')
 	})
 
+	// Tests that the exported `parsePhoneNumber()` function returns an instance of the exported `PhoneNumber` class.
+	// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/201
+	it('should export `parsePhoneNumber()` function that returns an instance of the exported `PhoneNumber` class', () => {
+		const phoneNumber = parsePhoneNumber('+13100000')
+		expect(phoneNumber instanceof PhoneNumber).to.equal(true)
+	})
+
 	// it(`should export CommonJS custom functions`, () => {
 	// 	const Library = require('../custom.js')
 

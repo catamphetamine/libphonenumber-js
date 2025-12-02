@@ -17,7 +17,7 @@ import parse, {
 	PhoneNumberMatcher,
 
 	AsYouType,
-
+	PhoneNumber,
 	Metadata,
 	isSupportedCountry,
 	getCountries,
@@ -184,5 +184,12 @@ describe('exports/max', () => {
 
 		expect(Library.parseRFC3966('tel:+12133734253')).to.deep.equal({ number: '+12133734253' })
 		expect(Library.formatRFC3966({ number: '+12133734253' })).to.equal('tel:+12133734253')
+	})
+
+	// Tests that the exported `parsePhoneNumber()` function returns an instance of the exported `PhoneNumber` class.
+	// https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/201
+	it('should export `parsePhoneNumber()` function that returns an instance of the exported `PhoneNumber` class', () => {
+		const phoneNumber = parsePhoneNumber('+13100000')
+		expect(phoneNumber instanceof PhoneNumber).to.equal(true)
 	})
 })
