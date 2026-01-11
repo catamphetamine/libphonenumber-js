@@ -11,8 +11,8 @@ import Metadata from '../metadata.js'
  */
 const SINGLE_IDD_PREFIX_REG_EXP = /^[\d]+(?:[~\u2053\u223C\uFF5E][\d]+)?$/
 
-// For regions that have multiple IDD prefixes
-// a preferred IDD prefix is returned.
+// If the `country` supports IDD calling, it returns a preferred IDD prefix.
+// If the `country` doesn't support IDD calling, it returns `undefined`.
 export default function getIddPrefix(country, callingCode, metadata) {
 	const countryMetadata = new Metadata(metadata)
 	countryMetadata.selectNumberingPlan(country, callingCode)

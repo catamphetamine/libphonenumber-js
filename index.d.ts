@@ -13,7 +13,7 @@ import {
   NumberFormat,
   NumberingPlan,
   FormatNumberOptions,
-  FormatNumberOptionsWithoutIDD,
+  FormatNumberOptionsForNationalOrInternational,
   ValidatePhoneNumberLengthResult
 } from './types.d.js';
 
@@ -52,9 +52,9 @@ export class PhoneNumber {
   isValid(): boolean;
   getType(): NumberType;
   format(format: NumberFormat, options?: FormatNumberOptions): string;
-  formatNational(options?: FormatNumberOptionsWithoutIDD): string;
-  formatInternational(options?: FormatNumberOptionsWithoutIDD): string;
-  getURI(options?: FormatNumberOptionsWithoutIDD): string;
+  formatNational(options?: FormatNumberOptionsForNationalOrInternational): string;
+  formatInternational(options?: FormatNumberOptionsForNationalOrInternational): string;
+  getURI(): string;
   isNonGeographic(): boolean;
   isEqual(phoneNumber: PhoneNumber): boolean;
 }
@@ -83,6 +83,8 @@ export function findPhoneNumbersInText(text: string, options?: CountryCode | { d
 export function searchPhoneNumbersInText(text: string, options?: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string, extended?: boolean }): IterableIterator<NumberFound>;
 
 export class PhoneNumberMatcher {
+  // The `v2: true` parameter only exists for legacy reasons and should always be specified.
+  // It tells it to include the parsed E.164 `number` property in the result.
   constructor(text: string, options?: { defaultCountry?: CountryCode, v2: true });
   hasNext(): boolean;
   next(): NumberFound | undefined;

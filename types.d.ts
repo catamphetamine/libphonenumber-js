@@ -91,18 +91,29 @@ export type CountryCallingCode = Tagged<string, "CountryCallingCode">;
 
 type FormatExtension = (formattedNumber: string, extension: Extension, metadata: MetadataJson) => string
 
-export interface FormatNumberOptions {
-  v2?: boolean;
-  fromCountry?: CountryCode;
-  humanReadable?: boolean;
+// The options for the `format()` function when the format is "NATIONAL" or "INTERNATIONAL".
+export interface FormatNumberOptionsForNationalOrInternational {
+  // Adds a national prefix in the formatted number.
+  // Works when formatting a "NATIONAL" or "INTERNATIONAL" phone number.
   nationalPrefix?: boolean;
+  // A function that appends an "extension" to a formatted phone number.
   formatExtension?: FormatExtension;
 }
 
-export interface FormatNumberOptionsWithoutIDD {
-  v2?: boolean;
-  formatExtension?: FormatExtension;
+// The options for the `format()` function when the format is "IDD".
+export interface FormatNumberOptionsForIDD extends FormatNumberOptionsForNationalOrInternational {
+  // A country from which the call will be made.
+  // It is only relevant when calling via "IDD" (International Direct Dialing)
+  // when the caller can use a special "00" prefix instead of using the "+" character.
+  fromCountry: CountryCode;
+  // `humanReadable` option was removed in version `1.8.6`.
+  // Now it's always `true` by default.
+  // humanReadable?: boolean;
 }
+
+// All possible `options` for the `format()` function,
+// regardless of the actual format being used.
+export type FormatNumberOptions = FormatNumberOptionsForNationalOrInternational | FormatNumberOptionsForIDD
 
 // // https://stackoverflow.com/a/67026991
 // type ArrayOfAtLeastOneCountryCode = [CountryCode, ...CountryCode[]];
@@ -124,9 +135,9 @@ export interface FormatNumberOptionsWithoutIDD {
 //   isValid(): boolean;
 //   getType(): NumberType;
 //   format(format: NumberFormat, options?: FormatNumberOptions): string;
-//   formatNational(options?: FormatNumberOptionsWithoutIDD): string;
-//   formatInternational(options?: FormatNumberOptionsWithoutIDD): string;
-//   getURI(options?: FormatNumberOptionsWithoutIDD): string;
+//   formatNational(options?: FormatNumberOptionsForNationalOrInternational): string;
+//   formatInternational(options?: FormatNumberOptionsForNationalOrInternational): string;
+//   getURI(): string;
 //   isNonGeographic(): boolean;
 //   isEqual(phoneNumber: PhoneNumber): boolean;
 // }

@@ -45,6 +45,14 @@ export default function formatNumber(input, format, options, metadata) {
 
 	metadata = new Metadata(metadata)
 
+	// Normally, the `input` object is supposed to be a `PhoneNumber` class instance.
+	// Also, according to the `PhoneNumber` class source code, `country` can't be "001".
+	// It means that normally `input.country` or `input.countryCallingCode` is supposed
+	// to be present because either of the two is always required to exist in a `PhoneNumber` instance.
+	// This means that realistically, it's gonna step into either the first `if`
+	// or the following `else if`, and normally it won't even reach the legacy-compatibility
+	// `else return input.phone || ''` part.
+	// So normally, it won't ever return an empty string here.
 	if (input.country && input.country !== '001') {
 		// Validate `input.country`.
 		if (!metadata.hasCountry(input.country)) {
@@ -67,8 +75,10 @@ export default function formatNumber(input, format, options, metadata) {
 
 	switch (format) {
 		case 'NATIONAL':
-			// Legacy argument support.
-			// (`{ country: ..., phone: '' }`)
+			// Normally, the `input` object is supposed to be a `PhoneNumber` class instance,
+			// and a `PhoneNumber` class instance is always required to have a `nationalNumber`.
+			// This means that the `if (!nationalNumber)` below is just for legacy-compatibility
+			// and it normally can't really happen, so normally it won't ever return an empty string here.
 			if (!nationalNumber) {
 				return ''
 			}
@@ -100,6 +110,7 @@ export default function formatNumber(input, format, options, metadata) {
 		// Not saying that this IDD formatter replicates it 1:1, but it seems to work.
 		// Who would even need to format phone numbers in IDD format anyway?
 		case 'IDD':
+			// If the required `fromCountry` parameter is not passed, it will return `undefined`.
 			if (!options.fromCountry) {
 				return
 				// throw new Error('`fromCountry` option not passed for IDD-prefixed formatting.')
@@ -111,6 +122,10 @@ export default function formatNumber(input, format, options, metadata) {
 				options.fromCountry,
 				metadata
 			)
+			// If the country of the phone number doesn't support IDD calling, it will return `undefined`.
+			if (!formattedNumber) {
+				return
+			}
 			return addExtension(formattedNumber, input.ext, metadata, options.formatExtension)
 
 		default:

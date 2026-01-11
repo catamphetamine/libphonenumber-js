@@ -1095,7 +1095,7 @@ async function() {
 }
 ```
 
-Java-style iterator (for those still not using ES6):
+Java-style iterator (an old-school alternative to the ES6 iterator above):
 
 ```js
 import { PhoneNumberMatcher } from 'libphonenumber-js'
@@ -1105,6 +1105,8 @@ const matcher = new PhoneNumberMatcher(`
   or reach a local US branch at (213) 373-4253 ext. 1234.
 `, {
   defaultCountry: 'US',
+  // The `v2: true` parameter only exists for legacy reasons and should always be specified.
+  // It tells it to include the parsed E.164 `number` property in the result.
   v2: true
 })
 

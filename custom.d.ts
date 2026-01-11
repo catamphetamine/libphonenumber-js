@@ -1,5 +1,6 @@
-// `/custom` export is deprecated.
-// Use `/core` sub-package instead.
+// This definition file describes the `/custom` export API.
+// The `/custom` export has been deprecated for a very long time.
+// Use `/core` export instead.
 
 import {
   MetadataJson,
@@ -20,7 +21,7 @@ import {
 import {
   ParsedNumber,
   FormatNumberOptions,
-  FormatNumberOptionsWithoutIDD,
+  FormatNumberOptionsForNationalOrInternational,
   ParseNumberOptions
 } from './index.d.js';
 
@@ -57,9 +58,9 @@ export class PhoneNumber {
   isValid(): boolean;
   getType(): NumberType;
   format(format: NumberFormat, options?: FormatNumberOptions): string;
-  formatNational(options?: FormatNumberOptionsWithoutIDD): string;
-  formatInternational(options?: FormatNumberOptionsWithoutIDD): string;
-  getURI(options?: FormatNumberOptionsWithoutIDD): string;
+  formatNational(options?: FormatNumberOptionsForNationalOrInternational): string;
+  formatInternational(options?: FormatNumberOptionsForNationalOrInternational): string;
+  getURI(): string;
   isNonGeographic(): boolean;
   isEqual(phoneNumber: PhoneNumber): boolean;
 }

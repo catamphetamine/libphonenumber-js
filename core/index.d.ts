@@ -13,7 +13,7 @@ import {
   NumberFormat,
   NumberingPlan,
   FormatNumberOptions,
-  FormatNumberOptionsWithoutIDD,
+  FormatNumberOptionsForNationalOrInternational,
   ValidatePhoneNumberLengthResult
 } from '../types.d.js';
 
@@ -50,9 +50,9 @@ export class PhoneNumber {
   isValid(): boolean;
   getType(): NumberType;
   format(format: NumberFormat, options?: FormatNumberOptions): string;
-  formatNational(options?: FormatNumberOptionsWithoutIDD): string;
-  formatInternational(options?: FormatNumberOptionsWithoutIDD): string;
-  getURI(options?: FormatNumberOptionsWithoutIDD): string;
+  formatNational(options?: FormatNumberOptionsForNationalOrInternational): string;
+  formatInternational(options?: FormatNumberOptionsForNationalOrInternational): string;
+  getURI(): string;
   isNonGeographic(): boolean;
   isEqual(phoneNumber: PhoneNumber): boolean;
 }
@@ -86,9 +86,15 @@ export function isPossiblePhoneNumber(text: string, defaultCountry: CountryCode 
 export function validatePhoneNumberLength(text: string, metadata: MetadataJson): ValidatePhoneNumberLengthResult | undefined;
 export function validatePhoneNumberLength(text: string, defaultCountry: CountryCode | { defaultCountry?: CountryCode, defaultCallingCode?: string }, metadata: MetadataJson): ValidatePhoneNumberLengthResult | undefined;
 
+/**
+ * @deprecated
+ */
 export function findNumbers(text: string, metadata: MetadataJson): NumberFoundLegacy[];
 export function findNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2: true }, metadata: MetadataJson): NumberFound[];
 
+/**
+ * @deprecated
+ */
 export function searchNumbers(text: string, metadata: MetadataJson): IterableIterator<NumberFoundLegacy>;
 export function searchNumbers(text: string, options: CountryCode | { defaultCountry?: CountryCode, v2: true }, metadata: MetadataJson): IterableIterator<NumberFound>;
 
@@ -100,6 +106,8 @@ export function searchPhoneNumbersInText(text: string, metadata: MetadataJson): 
 
 export class PhoneNumberMatcher {
   constructor(text: string, metadata: MetadataJson);
+  // The `v2: true` parameter only exists for legacy reasons and should always be specified.
+  // It tells it to include the parsed E.164 `number` property in the result.
   constructor(text: string, options: { defaultCountry?: CountryCode, v2: true }, metadata: MetadataJson);
   hasNext(): boolean;
   next(): NumberFound | undefined;

@@ -244,15 +244,15 @@ describe('format', () => {
 
 		// Same country calling code.
 		expect(
-            formatNumber('+12133734253', 'IDD', { fromCountry: 'CA', humanReadable: true })
+            formatNumber('+12133734253', 'IDD', { fromCountry: 'CA' })
         ).to.equal('1 (213) 373-4253')
 		expect(
-            formatNumber('+78005553535', 'IDD', { fromCountry: 'KZ', humanReadable: true })
+            formatNumber('+78005553535', 'IDD', { fromCountry: 'KZ' })
         ).to.equal('8 (800) 555-35-35')
 
 		// formatNumber('+78005553535', 'IDD', { fromCountry: 'US' }).should.equal('01178005553535')
 		expect(
-            formatNumber('+78005553535', 'IDD', { fromCountry: 'US', humanReadable: true })
+            formatNumber('+78005553535', 'IDD', { fromCountry: 'US' })
         ).to.equal('011 7 800 555 35 35')
 	})
 

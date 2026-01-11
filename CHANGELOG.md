@@ -69,6 +69,29 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.33 / 18.12.2025
+===================
+
+* Updated metadata to version 9.0.21:
+  - Updated alternate formatting data for country calling code(s): 91
+  - Updated phone metadata for region code(s):
+    CL, EE, ET, GE, GY, HK, IN, KR, MG, SG, SV, US
+  - New geocoding data for country calling code(s): 1353 (en)
+  - Updated geocoding data for country calling code(s): 251 (en)
+  - Updated carrier data for country calling code(s):
+    34 (en), 36 (en), 43 (en), 48 (en), 56 (en), 65 (en), 261 (en), 501 (en),
+    503 (en), 852 (en, zh)
+  - Updated / refreshed time zone meta data.
+
+1.12.32 / 5.12.2025
+===================
+
+* Updated metadata to version 9.0.20:
+  - Updated phone metadata for region code(s): GY, IL, MU, TD, TZ, UG, UZ
+  - New geocoding data for country calling code(s): 229 (en)
+  - Updated carrier data for country calling code(s):
+    34 (en), 230 (en), 255 (en), 256 (en), 998 (en)
+
 1.12.31 / 02.12.2025
 ===================
 
