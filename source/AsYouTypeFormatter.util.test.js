@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import { closeNonPairedParens, stripNonPairedParens, repeat } from './AsYouTypeFormatter.util.js'
 
 describe('closeNonPairedParens', () => {

@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import metadata from '../metadata.min.json' with { type: 'json' }
 import formatNumber_ from './format.js'
 import parsePhoneNumber from './parsePhoneNumber.js'

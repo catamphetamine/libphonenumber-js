@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import semverCompare from './semver-compare.js'
 
 describe('semver-compare', () => {

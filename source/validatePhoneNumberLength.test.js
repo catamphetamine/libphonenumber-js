@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import _validatePhoneNumberLength from './validatePhoneNumberLength.js'
 import metadata from '../metadata.min.json' with { type: 'json' }
 

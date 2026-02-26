@@ -80,19 +80,23 @@ export default function getNumberType(input, options, metadata)
 }
 
 export function isNumberTypeEqualTo(nationalNumber, type, metadata) {
-	type = metadata.type(type)
-	if (!type || !type.pattern()) {
+	const typeDefinition = metadata.type(type)
+	if (!typeDefinition || !typeDefinition.pattern()) {
 		return false
 	}
+
 	// Check if any possible number lengths are present;
 	// if so, we use them to avoid checking
 	// the validation pattern if they don't match.
 	// If they are absent, this means they match
 	// the general description, which we have
 	// already checked before a specific number type.
-	if (type.possibleLengths() &&
-		type.possibleLengths().indexOf(nationalNumber.length) < 0) {
+	if (
+		typeDefinition.possibleLengths() &&
+		typeDefinition.possibleLengths().indexOf(nationalNumber.length) < 0
+	) {
 		return false
 	}
-	return matchesEntirely(nationalNumber, type.pattern())
+
+	return matchesEntirely(nationalNumber, typeDefinition.pattern())
 }

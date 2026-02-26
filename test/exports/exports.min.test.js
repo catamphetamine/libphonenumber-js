@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
 import parse, {
@@ -33,11 +34,11 @@ import parse, {
 
 	parseRFC3966,
 	formatRFC3966
-} from '../min/index.js'
+} from '../../min/index.js'
 
-import Library from '../min/index.cjs'
+import Library from '../../min/index.cjs'
 
-import examples from '../examples.mobile.json' with { type: 'json' }
+import examples from '../../examples.mobile.json' with { type: 'json' }
 
 describe('exports/min', () => {
 	it('should export ES6', () => {
@@ -66,7 +67,7 @@ describe('exports/min', () => {
 		expect(parsePhoneNumberFromString('2133734253')).to.be.undefined
 
 		// Test "min" metadata.
-		expect(parsePhoneNumber('9150000000', 'RU').getType()).to.equal('MOBILE')
+		expect(parsePhoneNumber('2015550000', 'US').getType()).to.equal('FIXED_LINE_OR_MOBILE')
 		expect(parsePhoneNumber('91187654321', 'AR').getType()).to.be.undefined
 		expect(parsePhoneNumber('51234567', 'EE').getType()).to.be.undefined
 

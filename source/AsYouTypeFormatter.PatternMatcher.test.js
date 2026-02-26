@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import PatternMatcher from './AsYouTypeFormatter.PatternMatcher.js'
 
 describe('AsYouTypeFormatter.PatternMatcher', function() {

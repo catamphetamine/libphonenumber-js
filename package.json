@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.12.34",
+  "version": "1.12.38",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.cjs",
   "module": "index.js",
@@ -132,8 +132,9 @@
     "test": "npm run test--mocha",
     "test--jest": "npm-run-all test:except-exports--jest test:exports--mocha",
     "test:except-exports--jest": "jest",
-    "test:exports--mocha": "mocha --colors --bail --reporter spec \"test/exports.test.js\" \"test/exports.*.test.js\" --recursive",
-    "test--mocha": "mocha --colors --bail --reporter spec --require ./test/globals.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
+    "test--mocha": "mocha --bail \"source/**/*.test.js\" \"test/*.test.js\" \"test/!(exports)/**/*.test.js\"",
+    "test:exports": "npm run test:exports--mocha",
+    "test:exports--mocha": "mocha --bail \"test/exports/**/*.test.js\"",
     "test-coverage": "npm run test-coverage--mocha",
     "test-coverage--jest": "jest --coverage",
     "test-coverage--mocha": "npm-run-all build:commonjs test-coverage:commonjs--mocha",
@@ -159,7 +160,7 @@
     "build:modules": "cross-env BABEL_ENV=es6 babel ./source --out-dir ./es6 --source-maps --ignore test.js",
     "build:bundle": "rollup --config rollup.config.mjs",
     "build": "npm-run-all clean build:modules:copy-typescript-definitions build:modules build:commonjs build:bundle build:copy-metadata-files-to-subpackage-folders build:copy-examples-files-to-subpackage-folders",
-    "prepublishOnly": "npm run metadata:generate && npm run typescript:generate-country-codes-list && crlf --set=LF metadata.*.json && npm-run-all build test"
+    "prepublishOnly": "npm run metadata:generate && npm run typescript:generate-country-codes-list && crlf --set=LF metadata.*.json && npm-run-all build test test:exports"
   },
   "repository": {
     "type": "git",

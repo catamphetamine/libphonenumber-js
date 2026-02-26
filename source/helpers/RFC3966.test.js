@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import { parseRFC3966, formatRFC3966 } from './RFC3966.js'
 
 describe('RFC3966', () => {

@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
 import parse, {
@@ -33,11 +34,11 @@ import parse, {
 
 	parseRFC3966,
 	formatRFC3966
-} from '../max/index.js'
+} from '../../max/index.js'
 
-import Library from '../max/index.cjs'
+import Library from '../../max/index.cjs'
 
-import examples from '../examples.mobile.json' with { type: 'json' }
+import examples from '../../examples.mobile.json' with { type: 'json' }
 
 describe('exports/max', () => {
 	it('should export ES6', () => {

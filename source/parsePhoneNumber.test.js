@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import _parsePhoneNumber from './parsePhoneNumber.js'
 import metadata from '../metadata.min.json' with { type: 'json' }
 
@@ -22,7 +25,6 @@ describe('parsePhoneNumber', () => {
 		expect(parsePhoneNumber('Phone: +7 (800) 555 35 35.', 'XX').nationalNumber).to.equal('8005553535')
 		expect(parsePhoneNumber('Phone: 8 (800) 555-35-35.', 'XX')).to.be.undefined
 	})
-
 
 	it('should parse non-geographic numbering plan phone numbers (extended)', () => {
 		const phoneNumber = parsePhoneNumber('+870773111632')

@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import Metadata from '../metadata.js'
 import metadata from '../../metadata.min.json' with { type: 'json' }
 import extractNationalNumberFromPossiblyIncompleteNumber from './extractNationalNumberFromPossiblyIncompleteNumber.js'

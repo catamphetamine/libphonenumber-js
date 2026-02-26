@@ -69,6 +69,42 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.12.38 / 26.2.2026
+===================
+
+* Updated metadata to version 9.0.25:
+  - Updated alternate formatting data for country calling code(s): 90
+  - Updated phone metadata for region code(s): 882, HK, MY, PA, SL, TG, TR
+  - Updated short number metadata for region code(s): KR
+  - New geocoding data for country calling code(s): 1728 (en)
+  - Updated carrier data for country calling code(s):
+    33 (en), 44 (en), 55 (en), 60 (en), 81 (en), 90 (en), 228 (en), 232 (en),
+    420 (en), 852 (en, zh)
+  - Updated / refreshed time zone meta data.
+
+1.12.36 / 30.1.2026
+===================
+
+* Updated metadata to version 9.0.23:
+  - Updated alternate formatting data for country calling code(s): 595
+  - Updated phone metadata for region code(s):
+    AS, BE, CD, EH, GY, IR, JM, MA, MU, PY, SA, US
+  - Updated short number metadata for region code(s): PY
+  - Updated carrier data for country calling code(s):
+    98 (en, fa), 243 (en), 357 (en), 966 (en), 1658 (en)
+
+1.12.35 / 14.1.2026
+===================
+
+* Updated metadata to version 9.0.22:
+  - Updated phone metadata for region code(s):
+    AE, AG, AI, AS, BB, BM, BS, CA, DM, DO, GD, GU, HK, JM, KN, KR, KY, LC, MA,
+    MP, MS, PR, SG, SX, TC, TT, UG, US, VC, VG, VI
+  - Updated geocoding data for country calling code(s): 1305 (en)
+  - Updated carrier data for country calling code(s):
+    33 (en), 34 (en), 39 (en), 41 (en), 65 (en), 81 (en), 255 (en), 256 (en),
+    852 (en, zh, zh_Hant), 971 (en)
+
 1.12.33 / 18.12.2025
 ===================
 

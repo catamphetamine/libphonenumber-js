@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import metadata from '../../metadata.min.json' with { type: 'json' }
 import isValidNumberForRegionCustom from './isValidNumberForRegion.js'
 import _isValidNumberForRegion from './isValidNumberForRegion_.js'

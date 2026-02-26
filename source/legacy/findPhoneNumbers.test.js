@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 // This is a legacy function.
 // Use `findNumbers()` instead.
 

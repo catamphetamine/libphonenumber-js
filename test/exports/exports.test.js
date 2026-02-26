@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
 import defaultExportParse, {
@@ -66,12 +67,12 @@ import defaultExportParse, {
 
 	DIGIT_PLACEHOLDER,
 	DIGITS
-} from '../index.js'
+} from '../../index.js'
 
-import Library from '../index.cjs'
+import Library from '../../index.cjs'
 
-import metadata from '../metadata.min.json' with { type: 'json' }
-import examples from '../examples.mobile.json' with { type: 'json' }
+import metadata from '../../metadata.min.json' with { type: 'json' }
+import examples from '../../examples.mobile.json' with { type: 'json' }
 
 describe(`exports`, () => {
 	it(`should export ES6`, () => {

@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import _parsePhoneNumber from './parsePhoneNumberWithError.js'
 import metadata from '../metadata.min.json' with { type: 'json' }
 import metadataFull from '../metadata.max.json' with { type: 'json' }
@@ -107,6 +110,6 @@ describe('parsePhoneNumberWithError', () => {
 		// For incomplete numbers it shouldn't strip national prefix.
 		phoneNumber = parsePhoneNumber('+7 8800 555 353')
 		expect(phoneNumber.nationalNumber).to.equal('8800555353')
-		expect(phoneNumber.country).to.be.undefined
+		expect(phoneNumber.country).to.equal('RU')
 	})
 })

@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import findNumbers, { searchPhoneNumbers } from '../../../../source/legacy/findPhoneNumbers.js'
 import PhoneNumberSearch from '../../../../source/legacy/PhoneNumberSearch.js'
 import metadata from '../metadata.min.json' with { type: 'json' }

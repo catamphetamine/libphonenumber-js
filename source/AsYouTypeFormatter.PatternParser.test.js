@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import PatternParser from './AsYouTypeFormatter.PatternParser.js'
 
 describe('PatternParser', function() {

@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import metadata from '../metadata.min.json' with { type: 'json' }
 import as_you_type_custom from '../../../../source/AsYouType.js'
 

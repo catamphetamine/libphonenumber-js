@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import metadata from '../metadata.max.json' with { type: 'json' }
 import Metadata from '../../../../source/metadata.js'
 import { checkNumberLengthForType } from '../../../../source/helpers/checkNumberLength.js'

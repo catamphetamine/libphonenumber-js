@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import metadata from '../metadata.min.json' with { type: 'json' }
 import metadataV1 from '../test/metadata/1.0.0/metadata.min.json' with { type: 'json' }
 import metadataV2 from '../test/metadata/1.1.11/metadata.min.json' with { type: 'json' }

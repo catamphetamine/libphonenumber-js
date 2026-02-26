@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import metadata from '../metadata.min.json' with { type: 'json' }
 import _parseNumber from './parse.js'
 import Metadata from './metadata.js'
@@ -124,7 +127,7 @@ describe('parse', () => {
 		// Too short.
 		// Won't strip national prefix `8` because otherwise the number would be too short.
 		expect(parseNumber('+7 (800) 55-35-35', { extended: true })).to.deep.equal({
-			country            : undefined,
+			country            : 'RU',
 			countryCallingCode : '7',
 			phone              : '800553535',
 			carrierCode        : undefined,

@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
 import parse, {
@@ -33,11 +34,11 @@ import parse, {
 
 	parseRFC3966,
 	formatRFC3966
-} from '../mobile/index.js'
+} from '../../mobile/index.js'
 
-import Library from '../mobile/index.cjs'
+import Library from '../../mobile/index.cjs'
 
-import examples from '../examples.mobile.json' with { type: 'json' }
+import examples from '../../examples.mobile.json' with { type: 'json' }
 
 describe('exports/mobile', () => {
 	it('should export ES6', () => {
@@ -216,7 +217,7 @@ describe('exports/mobile', () => {
 		expect(parsePhoneNumberFromString('+79123456789').isValid()).to.equal(true)
 		expect(parsePhoneNumberFromString('+79123456789').getType()).to.equal('MOBILE')
 		// RU. Not a mobile phone number.
-		expect(parsePhoneNumberFromString('+78005553535').country).to.be.undefined
+		expect(parsePhoneNumberFromString('+78005553535').country).to.equal('RU')
 		expect(parsePhoneNumberFromString('+78005553535').isValid()).to.equal(false)
 		expect(parsePhoneNumberFromString('+78005553535').getType()).to.be.undefined
 		// KZ

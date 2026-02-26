@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import metadata from '../metadata.min.json' with { type: 'json' }
 import PhoneNumber from './PhoneNumber.js'
 
@@ -118,6 +121,11 @@ describe('PhoneNumber', () => {
 		const phoneNumber = new PhoneNumber('777', '123', metadata)
 		expect(phoneNumber.country).to.be.undefined
 		expect(phoneNumber.getPossibleCountries()).to.deep.equal([])
+	})
+
+	it('should determine phone number type', () => {
+		const phoneNumber = new PhoneNumber('US', '2015550000', metadata)
+		expect(phoneNumber.getType()).to.equal('FIXED_LINE_OR_MOBILE')
 	})
 
 	// it('should validate phone number length', () => {

@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import metadata from './metadata.min.json' with { type: 'json' }
 import validate from '../../../source/legacy/isValidNumber.js'
 
