@@ -323,11 +323,17 @@ As one may guess, the complete list of those rules is huge, so this library prov
     * You need `max` metadata capabilities and you _only_ accept mobile numbers
       * It will still be able to handle non-mobile numbers just fine, with the only difference that `.isValid()` or `.isPossible()` might potentially return `false` for them, or `.getType()` might potentially return `undefined`.
 
+* "custom" — (advanced) Create [your own](#custom-metadata) metadata that is even smaller in size by dropping support for most countries
+  * The size depends on the number of supported countries and the type of supported phone numbers
+  * Choose this when:
+    * You only need to support a handful of countries and you're absolutely obsessed with reducing the bundle size
+
 Choose one from the above and then simply `import` the functions from the relevant sub-package:
 
-* `min` — `libphonenumber-js/min`, or just `libphonenumber-js`, since it's the default.
+* `min` — `libphonenumber-js/min`, or just `libphonenumber-js` (shorter alias)
 * `max` — `libphonenumber-js/max`
 * `mobile` — `libphonenumber-js/mobile`
+* "custom" — `libphonenumber-js/core`
 
 As for "custom" metadata, it could be used in those rare cases when not all countries are needed and a developer would really prefer to reduce the bundle size to a minimum. In that case, one could generate their own ["custom"](#custom-metadata) metadata set and then `import` the functions from `libphonenumber-js/core` sub-package which doesn't come pre-packaged with any metadata and instead accepts `metadata` as the last argument of each exported function.
 
@@ -1677,7 +1683,7 @@ metadata.numberingPlan.IDDPrefix() === '011'
 metadata.numberingPlan.defaultIDDPrefix() === undefined
 ```
 
-Using with custom metadata:
+Example with metadata argument:
 
 ```js
 import { Metadata } from 'libphonenumber-js/core'
@@ -1712,10 +1718,25 @@ Alternatively, a developer may wish to update metadata urgently, without waiting
 
 This library comes prepackaged with [three types of metadata](#min-vs-max-vs-mobile-vs-core).
 
-Sometimes, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 kilobytes, while still including all regular expressions for validating phone number digits and detecting phone number type, then they can generate such custom metadata and pass it as the last argument to this library's "core" functions.
+Sometimes, if only a specific set of countries is needed in a project, and a developer really wants to reduce the resulting bundle size, say, by 50 kilobytes, then they could create a "custom" slice of metadata using [`libphonenumber-metadata-generator`](npmjs.com/libphonenumber-metadata-generator) and then pass it as the last argument to the functions imported from the `/core` subpackage.
 
-See [generate custom metadata](https://gitlab.com/catamphetamine/libphonenumber-metadata-generator) instructions.
+Note that if you'll be using your own "custom" metadata then you're responsible for keeping it up-to-date because Google regularly updates their metadata.
 
+```js
+import parsePhoneNumber, { AsYouType } from 'libphonenumber-js/core'
+
+import metadata from './metadata.RU.json'
+
+const phoneNumber = parsePhoneNumber(' 8 (800) 555-35-35 ', 'RU', metadata)
+if (phoneNumber) {
+  phoneNumber.country === 'RU'
+  phoneNumber.number === '+78005553535'
+}
+
+new AsYouType('RU', metadata).input('88005553535') === '8 (800) 555-35-35'
+```
+
+<!--
 <details>
 <summary>How to use the generated <code>metadata.custom.json</code> file with the "core" functions.</summary>
 
@@ -1786,7 +1807,9 @@ exports.AsYouType.prototype.constructor = exports.AsYouType
 </details>
 
 ####
+-->
 
+<!--
 <details>
 <summary>Legacy: How to use the generated <code>metadata.custom.json</code> file with the legacy "custom" functions.</summary>
 
@@ -1855,7 +1878,7 @@ exports.AsYouType.prototype.constructor = exports.AsYouType
 
 ######
 
-Note that if you'll be using your own "custom" metadata then you're responsible for keeping it up-to-date because Google regularly updates their metadata.
+-->
 
 <!-- ## To do -->
 
