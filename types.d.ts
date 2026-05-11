@@ -14,34 +14,57 @@ export type CountryCode = 'AC' | 'AD' | 'AE' | 'AF' | 'AG' | 'AI' | 'AL' | 'AM' 
 // // https://github.com/catamphetamine/libphonenumber-js/issues/405
 // export type CountryCode = typeof CountryCodes[number];
 
-export type CountryCallingCodes = {
-  [countryCallingCode: string]: CountryCode[];
+export type CountryCallingCodeToCountryCodes = {
+  // For each "calling code", it lists the countries that have it.
+  [countryCallingCode: CountryCallingCode]: CountryCode[];
 };
 
-export type Countries = {
-  // Metadata here is a compressed one,
-  // so a country's data is just an array of some properties
-  // instead of a JSON object of shape:
-  // {
-  //   phone_code: string,
-  //   idd_prefix: string,
-  //   national_number_pattern: string,
-  //   types: object,
-  //   examples: object,
-  //   formats: object[]?,
-  //   possible_lengths: number[],
-  //   ...
-  // }
-  //
+// A non-minified telephone numbering plan looks like:
+//
+// {
+//   phone_code: string,
+//   idd_prefix: string,
+//   national_number_pattern: string,
+//   types: object,
+//   examples: object,
+//   formats: object[]?,
+//   possible_lengths: number[],
+//   ...
+// }
+//
+// While minified telephone numbering plan is the same data but in the form of an array
+// where each index corresponds to a pre-defined property name in the original object.
+//
+export type MinifiedTelephoneNumberingPlan = any[];
+
+// Telephone numbering plan for each country.
+export type CountryCodeToMinifiedTelephoneNumberingPlan = {
   // `in` operator docs:
   // https://www.typescriptlang.org/docs/handbook/advanced-types.html#mapped-types
   // `country in CountryCode` means "for each and every CountryCode".
-  [country in CountryCode]?: any[];
+  [country in CountryCode]?: MinifiedTelephoneNumberingPlan;
 };
 
 export type MetadataJson = {
-  country_calling_codes: CountryCallingCodes;
-  countries: Countries;
+	// Metadata format version.
+	// Previously, it used to be a "semver" string but now it's an integer.
+  // Specifically:
+  // There was no `version` property in V1 of metadata.
+  // Then, `version` was a "semver" string in V2, V3 and V4 of metadata.
+  // Then, metadata stayed at version V4 but the `version` property was changed to a simple integer.
+  // From then on, `version` has stayed at numeric value `4`.
+  version: number;
+  // For each "calling code", it lists the countries that have it.
+	// Some "calling codes" correspond to only one country.
+	// Others are shared between multiple countries.
+  country_calling_codes: CountryCallingCodeToCountryCodes;
+	// Telephone numbering plan for each country.
+  countries: CountryCodeToMinifiedTelephoneNumberingPlan;
+	// Telephone numbering plans for "non-geographic" calling codes.
+	// http://npmjs.com/package/libphonenumber-js#non-geographic
+  // "Non-geographic" calling codes are "calling codes" that don't belong to
+  // any given country or territory and are inherently international.
+  nonGeographic: Record<CountryCallingCode, MinifiedTelephoneNumberingPlan>;
 };
 
 export type Examples = {
@@ -52,7 +75,17 @@ export type Examples = {
 };
 
 export type NumberFormat = 'NATIONAL' | 'INTERNATIONAL' | 'E.164' | 'RFC3966' | 'IDD';
-export type NumberType = undefined | 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST' | 'VOIP' | 'PERSONAL_NUMBER' | 'PAGER' | 'UAN' | 'VOICEMAIL' | 'FIXED_LINE_OR_MOBILE' | 'FIXED_LINE' | 'MOBILE';
+export type PhoneNumberType = 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST' | 'VOIP' | 'PERSONAL_NUMBER' | 'PAGER' | 'UAN' | 'VOICEMAIL' | 'FIXED_LINE_OR_MOBILE' | 'FIXED_LINE' | 'MOBILE';
+
+/**
+ * @deprecated Originally, for some weird reason, someone decided to declare
+ * `NumberType` type as `undefined | 'PREMIUM_RATE' | 'TOLL_FREE' | ...`
+ * which doesn't make any sense — why even include `undefined` in there?
+ * At that time, I wasn't familiar with TypeScript so this weird type definition slipped through.
+ * Now though I can see how "unconventional" it looks, so I created a new type
+ * called `PhoneNumberType` which is same as `NumberType` except it can't be `undefined`.
+ */
+export type NumberType = PhoneNumberType | undefined;
 
 // "Tagged" types are used to introduce some degree of type safety when passing in arguments to the functions.
 // https://medium.com/@ethanresnick/advanced-typescript-tagged-types-for-fewer-bugs-and-better-security-24db681d5721

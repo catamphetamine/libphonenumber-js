@@ -69,6 +69,86 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.13.0 / 08.05.2026
+===================
+
+* Merged a [pull request](https://gitlab.com/catamphetamine/libphonenumber-js/-/merge_requests/29) by [Matt d'Entremont](https://gitlab.com/mdentremont) that adds ES6-only versions of `min`/`max`/`mobile`/`core` exports.
+
+  * The new exports are:
+    * `min` — `libphonenumber-js/min/es6`
+    * `max` — `libphonenumber-js/max/es6`
+    * `mobile` — `libphonenumber-js/mobile/es6`
+    * "custom" — `libphonenumber-js/core/es6`
+
+  * The bundle size reduction is roughly `37 KB` raw and `3.8-4.1 KB` gzipped.
+
+```
+                        | legacy raw | modern raw | legacy gzip | modern gzip
+  min                   | 177,666 B  | 140,563 B  | 42,081 B    | 38,223 B
+  max                   | 251,327 B  | 214,224 B  | 62,690 B    | 58,750 B
+  mobile                | 193,117 B  | 156,014 B  | 46,712 B    | 42,682 B
+  core                  |  93,076 B  |  56,158 B  | 22,308 B    | 18,223 B
+```
+
+* Updated `libphonenumber-metadata-generator` package. No functional changes, just cosmetics: renamed some API methods and parameters.
+
+* (TypeScript) Added a new exported type `PhoneNumberType`, which is same as the old exported `NumberType` type (which is now considered deprecated) except for `undefined` value.
+
+* (TypeScript) Added comments and absent properties in `MetadataJson` interface.
+
+1.12.43 / 07.05.2026
+===================
+
+* Updated metadata to version 9.0.30:
+  - Updated alternate formatting data for country calling code(s): 91
+  - Updated phone metadata for region code(s): CL, CZ, DE, IN, SG
+  - Updated geocoding data for country calling code(s): 91 (en)
+  - Updated carrier data for country calling code(s):
+    56 (en), 65 (en), 91 (en), 594 (en), 596 (en), 855 (en)
+
+1.12.42 / 23.4.2026
+===================
+
+* Updated metadata to version 9.0.29:
+  - Updated phone metadata for region code(s):
+    BI, BL, GP, MF, MY, SK, TH, TR, TW
+  - Updated short number metadata for region code(s): CH
+  - New geocoding data for country calling code(s): 7 (kk)
+  - Updated carrier data for country calling code(s):
+    7 (en, ru), 31 (en), 32 (en), 90 (en), 257 (en), 590 (en), 593 (en)
+
+1.12.42 / 11.4.2026
+===================
+
+* Updated metadata to version 9.0.28:
+  - Updated phone metadata for region code(s): BW, IL, MN, RE, SR, YT
+  - Updated carrier data for country calling code(s):
+    34 (en), 267 (en), 359 (en), 972 (en), 976 (en)
+  - Updated / refreshed time zone meta data.
+
+1.12.41 / 28.3.2026
+===================
+
+* Updated metadata to version 9.0.27:
+  - Updated phone metadata for region code(s):
+    BF, BL, CM, GF, GH, GP, GU, KE, MF, MQ, MY, SX, TD, TJ, US
+  - New geocoding data for country calling code(s): 1738 (en)
+  - New carrier data for country calling code(s): 1721 (en)
+  - Updated carrier data for country calling code(s):
+    60 (en), 599 (en), 992 (en)
+  - Updated / refreshed time zone meta data.
+
+1.12.40 / 13.3.2026
+===================
+
+* Updated metadata to version 9.0.26:
+  - Updated phone metadata for region code(s):
+    BL, GF, GP, GY, KY, MF, PL, PM, VU
+  - Updated short number metadata for region code(s): BL, GF, GP, GY, MF, PM
+  - Updated geocoding data for country calling code(s): 48 (en)
+  - Updated carrier data for country calling code(s):
+    33 (en), 44 (en), 229 (en), 591 (en), 1345 (en)
+
 1.12.39 / 9.3.2026
 ===================
 

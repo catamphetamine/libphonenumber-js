@@ -9,6 +9,7 @@ import {
   Extension,
   ParseError,
   NumberFoundLegacy,
+  PhoneNumberType,
   NumberType,
   NumberFormat,
   NumberingPlan,
@@ -33,6 +34,7 @@ export {
   FormatNumberOptions,
   NumberFoundLegacy,
   NumberFormat,
+  PhoneNumberType,
   NumberType,
   NumberingPlan,
   ValidatePhoneNumberLengthResult
@@ -50,7 +52,7 @@ export class PhoneNumber {
   getPossibleCountries(): CountryCode[];
   isPossible(): boolean;
   isValid(): boolean;
-  getType(): NumberType;
+  getType(): PhoneNumberType | undefined;
   format(format: NumberFormat, options?: FormatNumberOptions): string;
   formatNational(options?: FormatNumberOptionsForNationalOrInternational): string;
   formatInternational(options?: FormatNumberOptionsForNationalOrInternational): string;
@@ -176,8 +178,8 @@ export function formatNumber(phone: string, country: CountryCode, format: Number
 /**
  * @deprecated
  */
-export function getNumberType(parsedNumber: ParsedNumber): NumberType;
-export function getNumberType(phone: string, country?: CountryCode): NumberType;
+export function getNumberType(parsedNumber: ParsedNumber): PhoneNumberType | undefined;
+export function getNumberType(phone: string, country?: CountryCode): PhoneNumberType | undefined;
 
 /**
  * @deprecated

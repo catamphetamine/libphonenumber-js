@@ -13,6 +13,7 @@ import {
   Extension,
   ParseError,
   NumberFoundLegacy,
+  PhoneNumberType,
   NumberType,
   NumberFormat,
   NumberingPlan
@@ -40,6 +41,7 @@ export {
   ParseError,
   NumberFoundLegacy,
   NumberFormat,
+  PhoneNumberType,
   NumberType,
   NumberingPlan
 };
@@ -56,7 +58,7 @@ export class PhoneNumber {
   getPossibleCountries(): CountryCode[];
   isPossible(): boolean;
   isValid(): boolean;
-  getType(): NumberType;
+  getType(): PhoneNumberType | undefined;
   format(format: NumberFormat, options?: FormatNumberOptions): string;
   formatNational(options?: FormatNumberOptionsForNationalOrInternational): string;
   formatInternational(options?: FormatNumberOptionsForNationalOrInternational): string;
@@ -160,9 +162,9 @@ export function formatNumber(phone: string, country: CountryCode, format: Number
 export function formatNumber(phone: string, country: CountryCode, format: NumberFormat, options: FormatNumberOptions, metadata: MetadataJson): string;
 
 // Deprecated
-export function getNumberType(parsedNumber: ParsedNumber, metadata: MetadataJson): NumberType;
-export function getNumberType(phone: string, metadata: MetadataJson): NumberType;
-export function getNumberType(phone: string, country: CountryCode, metadata: MetadataJson): NumberType;
+export function getNumberType(parsedNumber: ParsedNumber, metadata: MetadataJson): PhoneNumberType | undefined;
+export function getNumberType(phone: string, metadata: MetadataJson): PhoneNumberType | undefined;
+export function getNumberType(phone: string, country: CountryCode, metadata: MetadataJson): PhoneNumberType | undefined;
 
 // Deprecated
 export function isPossibleNumber(parsedNumber: ParsedNumber, metadata: MetadataJson): boolean;

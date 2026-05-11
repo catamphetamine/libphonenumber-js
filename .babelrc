@@ -3,17 +3,37 @@
 		"@babel/env"
 	],
 	"plugins": [
-		["@babel/transform-for-of", { "loose": true }],
 		["@babel/plugin-syntax-import-assertions"]
 	],
 	"env": {
+		"commonjs": {
+			"plugins": [
+				["@babel/transform-for-of", { "loose": true }]
+			]
+		},
 		"es6": {
 			"presets": [
 				["@babel/env", { "modules": false }]
+			],
+			"plugins": [
+				["@babel/transform-for-of", { "loose": true }]
+			]
+		},
+		"es6-modern": {
+			"presets": [
+				["@babel/env", {
+					"modules": false,
+					"bugfixes": true,
+					"loose": true,
+					"targets": {
+						"esmodules": true
+					}
+				}]
 			]
 		},
 		"nyc": {
 			"plugins": [
+				["@babel/transform-for-of", { "loose": true }],
 				"babel-plugin-istanbul"
 			]
 		}

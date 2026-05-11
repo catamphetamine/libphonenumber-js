@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.12.39",
+  "version": "1.13.1",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.cjs",
   "module": "index.js",
@@ -25,6 +25,22 @@
     "./core": {
       "import": "./core/index.js",
       "require": "./core/index.cjs"
+    },
+    "./min/es6": {
+      "types": "./min/es6/index.d.ts",
+      "import": "./min/es6/index.js"
+    },
+    "./max/es6": {
+      "types": "./max/es6/index.d.ts",
+      "import": "./max/es6/index.js"
+    },
+    "./mobile/es6": {
+      "types": "./mobile/es6/index.d.ts",
+      "import": "./mobile/es6/index.js"
+    },
+    "./core/es6": {
+      "types": "./core/es6/index.d.ts",
+      "import": "./core/es6/index.js"
     },
     "./min/metadata": {
       "import": "./metadata.min.json.js",
@@ -103,7 +119,7 @@
     "istanbul": "^1.1.0-alpha.1",
     "jest": "^30.0.5",
     "jest-codemods": "^0.34.2",
-    "libphonenumber-metadata-generator": "^2.0.4",
+    "libphonenumber-metadata-generator": "^2.0.6",
     "minimist": "^1.2.8",
     "mocha": "^10.0.0",
     "npm-run-all": "^4.1.5",
@@ -117,11 +133,13 @@
   "scripts": {
     "metadata:update:job": "node build-scripts/check-for-uncommitted-files && git reset --hard && git pull && npm install && npm run metadata:update-and-release",
     "metadata:update-and-release": "node build-scripts/pull-google-metadata ./PhoneNumberMetadata.xml ./metadata-info.json && node build-scripts/check-for-metadata-changes-and-release ./PhoneNumberMetadata.xml ./metadata-info.json",
-    "metadata:generate": "npm-run-all metadata:generate:min metadata:generate:full metadata:generate:max metadata:generate:mobile metadata:generate:min:js metadata:generate:full:js metadata:generate:max:js metadata:generate:mobile:js metadata:generate:mobile:examples:js",
-    "metadata:generate:min": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.min.json --examples mobile",
-    "metadata:generate:full": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.full.json --extended --debug",
-    "metadata:generate:max": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.max.json --extended --debug",
-    "metadata:generate:mobile": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.mobile.json --types mobile",
+    "metadata:generate": "npm-run-all metadata:generate:non-minified metadata:generate:min metadata:generate:full metadata:generate:max metadata:generate:mobile metadata:generate:mobile:examples metadata:generate:min:js metadata:generate:full:js metadata:generate:max:js metadata:generate:mobile:js metadata:generate:mobile:examples:js",
+    "metadata:generate:non-minified": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.json --with-phone-number-types --with-phone-number-type-examples --non-minified",
+    "metadata:generate:min": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.min.json",
+    "metadata:generate:full": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.full.json --with-phone-number-types",
+    "metadata:generate:max": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.max.json --with-phone-number-types",
+    "metadata:generate:mobile": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./metadata.mobile.json --with-phone-number-types --phone-number-types mobile",
+    "metadata:generate:mobile:examples": "node build-scripts/generate-metadata-from-google-metadata ./PhoneNumberMetadata.xml ./examples.mobile.json --with-phone-number-type-examples --phone-number-type-examples mobile",
     "metadata:generate:min:js": "node build-scripts/create-js-file-for-json-file ./metadata.min.json",
     "metadata:generate:full:js": "node build-scripts/create-js-file-for-json-file ./metadata.full.json",
     "metadata:generate:max:js": "node build-scripts/create-js-file-for-json-file ./metadata.max.json",
@@ -143,7 +161,7 @@
     "test:esm--nyc--does-not-seem-to-work": "cross-env nyc mocha --bail --require @babel/register --require ./test/globals.js \"source/**/*.test.js\" \"test/**/*.test.js\"",
     "test-coverage--nyc--does-not-seem-to-work": "nyc report --reporter=text-lcov",
     "test-travis": "node --experimental-json-modules node_modules/istanbul/lib/cli.js cover -x \"build/**\" -x \"es6/**\" -x \"*.test.js\" -x \"source/findNumbers/Leniency.js\" -x \"source/findNumbers/matchPhoneNumberStringAgainstPhoneNumber.js\" -x \"source/findNumbers/RegExpCache.js\" -x \"source/findNumbers/LRUCache.js\" -x \"source/PhoneNumberMatcher.js\" -x \"source/tools/semver-compare.js\" node_modules/mocha/bin/_mocha --report lcovonly -- --colors --reporter spec --require ./test/globals.js \"source/**/*.test.js\" \"test/**/*.test.js\" --recursive",
-    "clean": "rimraf --glob ./build/**/* ./es6/**/*",
+    "clean": "rimraf --glob ./build/**/* ./es6/**/* ./es6-modern/**/*",
     "build:commonjs": "npm-run-all build:commonjs:with-tests build:commonjs:package.json build:commonjs:create-typescript-definitions build:commonjs:patch-typescript-definitions",
     "build:commonjs:before-es-modules": "cross-env BABEL_ENV=commonjs babel ./source --out-dir ./build --source-maps --ignore test.js",
     "build:commonjs:with-tests": "cross-env BABEL_ENV=commonjs babel ./source --out-dir ./build --source-maps",
@@ -158,8 +176,9 @@
     "build:copy-examples-files-to-subpackage-folders:mobile": "cpy --flat examples.mobile.json examples.mobile.json.js examples.mobile.json.d.ts mobile/examples && replace-in-file \" from './\" \" from '../../\" mobile/examples/examples.*.json.d.*",
     "build:copy-examples-files-to-subpackage-folders": "npm-run-all build:copy-examples-files-to-subpackage-folders:mobile",
     "build:modules": "cross-env BABEL_ENV=es6 babel ./source --out-dir ./es6 --source-maps --ignore test.js",
+    "build:modules:modern": "cross-env BABEL_ENV=es6-modern babel ./source --out-dir ./es6-modern --source-maps --ignore test.js",
     "build:bundle": "rollup --config rollup.config.mjs",
-    "build": "npm-run-all clean build:modules:copy-typescript-definitions build:modules build:commonjs build:bundle build:copy-metadata-files-to-subpackage-folders build:copy-examples-files-to-subpackage-folders",
+    "build": "npm-run-all clean build:modules:copy-typescript-definitions build:modules build:modules:modern build:commonjs build:bundle build:copy-metadata-files-to-subpackage-folders build:copy-examples-files-to-subpackage-folders",
     "prepublishOnly": "npm run metadata:generate && npm run typescript:generate-country-codes-list && crlf --set=LF metadata.*.json && npm-run-all build test test:exports"
   },
   "repository": {

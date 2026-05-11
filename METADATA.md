@@ -146,7 +146,9 @@ For example, Google's `libphonenumber` has `formatNumberForMobileDialing()` func
 
 #### `format` `leading_digits_patterns`
 
-"Leading digits" patterns are used in `AsYouType` formatter to choose a format suitable for the phone number being input: if a phone number's "leading digits" match those of a format, then that format is used to format the phone number being input. Each subsequent leading digits pattern in `leading_digits_patterns` array requires one more leading digit.
+"Leading digits" patterns are used in `AsYouType` formatter to find a suitable `format` for a given incomplete phone number: if an incomplete phone number's "leading digits" match the `leading_digits_patterns` of a `format`, then this `format` should be used to format the incomplete phone number.
+
+The first element in the `leading_digits_patterns` array corresponds to the minimum required length of the "leading digits" of an incomplete phone number. Each subsequent element in `leading_digits_patterns` array assumes that one more digit has been added to the incomplete phone number.
 
 ## Non-geographic
 

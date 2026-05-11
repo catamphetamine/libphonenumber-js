@@ -9,6 +9,7 @@ import {
   Extension,
   ParseError,
   NumberFoundLegacy,
+  PhoneNumberType,
   NumberType,
   NumberFormat,
   NumberingPlan,
@@ -30,6 +31,7 @@ export {
   Extension,
   ParseError,
   NumberFoundLegacy,
+  PhoneNumberType,
   NumberType,
   NumberFormat,
   NumberingPlan,
@@ -48,7 +50,7 @@ export class PhoneNumber {
   getPossibleCountries(): CountryCode[];
   isPossible(): boolean;
   isValid(): boolean;
-  getType(): NumberType;
+  getType(): PhoneNumberType | undefined;
   format(format: NumberFormat, options?: FormatNumberOptions): string;
   formatNational(options?: FormatNumberOptionsForNationalOrInternational): string;
   formatInternational(options?: FormatNumberOptionsForNationalOrInternational): string;

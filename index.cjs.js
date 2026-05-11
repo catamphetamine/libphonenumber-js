@@ -120,6 +120,10 @@ exports.formatRFC3966 = min.formatRFC3966
 // Deprecated: `DIGITS` were used by `react-phone-number-input`.
 // Replaced by `parseDigits()`.
 exports.DIGITS = require('./build/helpers/parseDigits.js').DIGITS
+// Deprecated:
+// `DIGIT_PLACEHOLDER` is the character that `AsYouType` formatter uses in a phone number template.
+// It's basically an "x" character. I guess, there's no point in exporting it as a constant
+// because the established convention is that it's an "x" character so everyone just assumes "x".
 exports.DIGIT_PLACEHOLDER = min.DIGIT_PLACEHOLDER
 
 // `getPhoneCode` name is deprecated

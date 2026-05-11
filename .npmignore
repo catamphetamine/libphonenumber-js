@@ -11,9 +11,6 @@ babel.config.js
 # Travis CI
 .travis.yml
 
-# test coverage folder
-/coverage/
-
 # npm errors
 npm-debug.log
 
@@ -40,6 +37,17 @@ npm-debug.log
 
 # tests aren't needed for npm
 /test/
+*.test.js
+jest.config.json
+
+# metadata update scripts
+autoupdate.cmd
+autoupdate.sh
+
+# build scripts are only used to "build" the package
+/build-scripts/
+rollup.config.mjs
+.babelrc
 
 # Since cdnjs is used, now including `bundle` in npm distribution
 # # browser builds
@@ -65,4 +73,10 @@ npm-debug.log
 /website/
 
 # code coverage
+.nycrc
 .nyc_output
+/coverage/
+
+# readme
+README.md
+METADATA.md

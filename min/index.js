@@ -36,5 +36,8 @@ export {
 	parseDigits,
 	parseRFC3966,
 	formatRFC3966,
+	// `DIGIT_PLACEHOLDER` is the character that `AsYouType` formatter uses in a phone number template.
+	// It's basically an "x" character. I guess, there's no point in exporting it as a constant
+	// because the established convention is that it's an "x" character so everyone just assumes "x".
 	DIGIT_PLACEHOLDER
 } from '../core/index.js'

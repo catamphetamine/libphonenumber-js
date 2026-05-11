@@ -65,6 +65,7 @@ import defaultExportParse, {
 	parseRFC3966,
 	formatRFC3966,
 
+	// Deprecated.
 	DIGIT_PLACEHOLDER,
 	DIGITS
 } from '../../index.js'
@@ -118,6 +119,7 @@ describe(`exports`, () => {
 
 		expect(new AsYouType('US').input('+12133734253')).to.equal('+1 213 373 4253')
 
+		// Deprecated.
 		expect(DIGIT_PLACEHOLDER).to.equal('x')
 		expect(Object.keys(DIGITS).length > 0).to.equal(true)
 
@@ -196,6 +198,7 @@ describe(`exports`, () => {
 
 		expect(new Library.AsYouType('US').input('+12133734253')).to.equal('+1 213 373 4253')
 
+		// Deprecated.
 		expect(Library.DIGIT_PLACEHOLDER).to.equal('x')
 		expect(Object.keys(Library.DIGITS).length > 0).to.equal(true)
 

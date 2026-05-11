@@ -20,6 +20,11 @@ export { default as searchPhoneNumbersInText } from '../es6/searchPhoneNumbersIn
 export { default as PhoneNumberMatcher } from '../es6/PhoneNumberMatcher.js'
 
 export { default as AsYouType } from '../es6/AsYouType.js'
+
+// Deprecated:
+// `DIGIT_PLACEHOLDER` is the character that `AsYouType` formatter uses in a phone number template.
+// It's basically an "x" character. I guess, there's no point in exporting it as a constant
+// because the established convention is that it's an "x" character so everyone just assumes "x".
 export { DIGIT_PLACEHOLDER } from '../es6/AsYouTypeFormatter.js'
 
 export { default as getCountries } from '../es6/getCountries.js'

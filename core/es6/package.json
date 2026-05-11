@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "libphonenumber-js/core/es6",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    }
+  },
+  "sideEffects": false
+}

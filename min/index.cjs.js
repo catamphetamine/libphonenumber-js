@@ -118,6 +118,11 @@ exports.formatIncompletePhoneNumber = function formatIncompletePhoneNumber() {
 exports.parseIncompletePhoneNumber = core.parseIncompletePhoneNumber
 exports.parsePhoneNumberCharacter = core.parsePhoneNumberCharacter
 exports.parseDigits = core.parseDigits
+
+// Deprecated:
+// `DIGIT_PLACEHOLDER` is the character that `AsYouType` formatter uses in a phone number template.
+// It's basically an "x" character. I guess, there's no point in exporting it as a constant
+// because the established convention is that it's an "x" character so everyone just assumes "x".
 exports.DIGIT_PLACEHOLDER = core.DIGIT_PLACEHOLDER
 
 exports.parseRFC3966 = core.parseRFC3966

@@ -46,6 +46,11 @@ exports.formatIncompletePhoneNumber = require('../build/formatIncompletePhoneNum
 exports.parseIncompletePhoneNumber = require('../build/parseIncompletePhoneNumber.js').default
 exports.parsePhoneNumberCharacter = require('../build/parseIncompletePhoneNumber.js').parsePhoneNumberCharacter
 exports.parseDigits = require('../build/helpers/parseDigits.js').default
+
+// Deprecated:
+// `DIGIT_PLACEHOLDER` is the character that `AsYouType` formatter uses in a phone number template.
+// It's basically an "x" character. I guess, there's no point in exporting it as a constant
+// because the established convention is that it's an "x" character so everyone just assumes "x".
 exports.DIGIT_PLACEHOLDER = require('../build/AsYouTypeFormatter.js').DIGIT_PLACEHOLDER
 
 exports.parseRFC3966 = require('../build/helpers/RFC3966.js').parseRFC3966

@@ -1,0 +1,13 @@
+// Importing from a ".js" file is a workaround for Node.js "ES Modules"
+// importing system which is even uncapable of importing "*.json" files.
+import metadata from '../../../metadata.max.json.js'
+
+export default function withMetadataArgument(func, _arguments, resultPrototype) {
+	var args = Array.prototype.slice.call(_arguments)
+	args.push(metadata)
+	var result = func.apply(this, args)
+	if (resultPrototype && result) {
+		Object.setPrototypeOf(result, resultPrototype)
+	}
+	return result
+}
