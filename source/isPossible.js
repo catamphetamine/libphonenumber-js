@@ -44,24 +44,25 @@ export default function isPossiblePhoneNumber(input, options, metadata) {
 		}
 	}
 
-	// Old metadata (< 1.0.18) had no "possible length" data.
+	// Old (legacy) metadata (< 1.0.18) had no "possible length" data.
+	// So `isPossibleNumber()` function is supported only for non-legacy metadata.
 	if (metadata.possibleLengths()) {
 		return isPossibleNumber(input.phone || input.nationalNumber, input.country, metadata)
-	} else {
-		// There was a bug between `1.7.35` and `1.7.37` where "possible_lengths"
-		// were missing for "non-geographical" numbering plans.
-		// Just assume the number is possible in such cases:
-		// it's unlikely that anyone generated their custom metadata
-		// in that short period of time (one day).
-		// This code can be removed in some future major version update.
-		if (input.countryCallingCode && metadata.isNonGeographicCallingCode(input.countryCallingCode)) {
-			// "Non-geographic entities" did't have `possibleLengths`
-			// due to a bug in metadata generation process.
-			return true
-		} else {
-			throw new Error('Missing "possibleLengths" in metadata. Perhaps the metadata has been generated before v1.0.18.');
-		}
 	}
+
+	// There was a bug in versions from `1.7.35` to `1.7.37` of `libphonenumber-js`
+	// where "possible_lengths" property was missing from "non-geographical" numbering plans' metadata.
+	// After that, the bug was noticed and fixed.
+	// So for versions from `1.7.35` to `1.7.37`, just assume that all "non=geotraphical" numbers are possible.
+	// The reason is that the bug was noticed relatively quickly (within a day or so)
+	// and it's unlikely that anyone generated their custom metadata in that short time span.
+	// And if they didn't generate any custom metadata then a follow-up package update would've silently fixed the bug.
+	if (input.countryCallingCode && metadata.isNonGeographicCallingCode(input.countryCallingCode)) {
+		return true
+	}
+
+	// `isPossibleNumber()` function is not supported.
+	throw new Error('Missing "possibleLengths" in metadata. Perhaps the metadata has been generated before v1.0.18.');
 }
 
 export function isPossibleNumber(nationalNumber, country, metadata) { //, isInternational) {

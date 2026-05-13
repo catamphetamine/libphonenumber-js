@@ -250,9 +250,13 @@ validatePhoneNumberLength('8 (800) 555', 'RU') === 'TOO_SHORT' // Length is inva
 validatePhoneNumberLength('8 (800) 555-35-35', 'RU') === undefined // Length is valid
 ```
 
-`isPossiblePhoneNumber()` only validates phone number length, while `isValidPhoneNumber()` validates both phone number length and phone number digits.
+`isPossiblePhoneNumber()` validates phone number length.
 
-`validatePhoneNumberLength()` is just a more detailed version of `isPossiblePhoneNumber()` — if the phone number length is invalid, instead of just returning `false`, it returns the actual reason why the phone number length is incorrect: `TOO_SHORT`, `TOO_LONG`, etc.
+`isValidPhoneNumber()` validates both phone number length and phone number digits.
+
+It may seem counter-intuitive but when [choosing between the two](#using-phone-number-validation-feature), I'd personally prefer `isPossiblePhoneNumber()` because its strength is in its weakness. `isValidPhoneNumber()` is a double-edged sword in terms of how strict it is, and when not updated regularly, it could get stale over time and start rejecting freshly-assigned phone number ranges.
+
+As for `validatePhoneNumberLength()`, is just a more detailed version of `isPossiblePhoneNumber()` for those who need it — when the phone number length is invalid, instead of returning just `false`, it returns the actual reason why the phone number length is incorrect: `TOO_SHORT`, `TOO_LONG`, etc.
 
 ### Full-text search
 
@@ -660,7 +664,7 @@ Checks if the phone number is "possible". Only checks the phone number length. D
 
 Checks if the phone number is "valid". First checks the phone number length and then checks the phone number digits against all available regular expressions.
 
-By default, this library uses `min` ("minimal") metadata which is only `80 kB` in size but also doesn't include the precise validation regular expressions resulting in less strict validation rules (some very basic validation like number length check is still included for each country). If you don't mind the extra `65 kB` of metadata then use [`max`](#min-vs-max-vs-mobile-vs-core) metadata instead of the default (`min`) one. Google's library always uses "full" metadata so it will yield different `isValidNumber()` results compared to the "minimal" metadata used by default in this library.
+By default, this package uses [`min`](#min-vs-max-vs-mobile-vs-core) ("minimal") metadata which is only `80 kB` in size but also doesn't include the precise regular expressions for validating phone number digits, i.e. it only validates phone number length, effectively causing `isValid()` to behave same way as if it was `isPossible()`. So if you need to validate phone number digits themselves and you don't mind the extra `65 kB` of metadata then use [`max`](#min-vs-max-vs-mobile-vs-core) metadata instead of the default (`min`) one. For reference, Google's original `libphonenumber` always uses `max` metadata and doesn't have a concept of `min` metadata.
 
 <details>
 <summary>See an example illustrating different results when using <code>/min</code> vs <code>/max</code> vs <code>/mobile</code> metadata</summary>
@@ -1580,9 +1584,9 @@ isValidNumberForRegion('07624369230', 'IM') === true
 
 ## Using phone number validation feature
 
-I personally don't use strict phone number validation feature. The rationale is that telephone numbering plans can and sometimes do change, meaning that [`PhoneNumber.isValid()`](#isvalid-boolean) function may one day become outdated on a website that isn't actively maintained anymore. Imagine a "promo-site" or a "personal website" being deployed once and then running for years without any maintenance, where a client may be unable to submit a simple "Contact Us" form just because this newly-allocated pool of mobile phone numbers wasn't present in that old version of `libphonenumber-js` that was used when building the website.
+When choosing between [`.isValid()`](#isvalid-boolean) and [`.isPossible()`](#ispossible-boolean), I'd personally prefer the latter. The rationale is that telephone numbering plans can and sometimes do change, meaning that [`.isValid()`](#isvalid-boolean) function may one day become outdated on a website that isn't actively maintained anymore. Imagine a "promo-site" or a "personal website" being deployed once and then running for years without any maintenance, where a client may be unable to submit a simple "Contact Us" form just because this newly-allocated pool of mobile phone numbers wasn't present in that old version of `libphonenumber-js` that was used when building the website.
 
-Whenever there's a "business requirement" to validate phone number input, I prefer using [`PhoneNumber.isPossible()`](#ispossible-boolean) instead of [`PhoneNumber.isValid()`](#isvalid-boolean), so that it just validates the phone number length and doesn't validate the actual phone number digits. But it doesn't mean that you shouldn't use [`PhoneNumber.isValid()`](#isvalid-boolean) — maybe in your case it would make sense.
+Whenever there's a "business requirement" to validate phone number input, I prefer using [`.isPossible()`](#ispossible-boolean) instead of [`.isValid()`](#isvalid-boolean), so that it just validates the phone number length and doesn't validate the actual phone number digits. But it doesn't mean that you shouldn't use [`.isValid()`](#isvalid-boolean) — maybe in your case it would make sense. Just be warned that by using [`.isValid()`](#isvalid-boolean) in an application or on a website, you volunteer to keep it updated for the rest of its lifespan.
 
 ## React
 
