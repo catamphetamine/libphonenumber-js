@@ -237,26 +237,17 @@ new AsYouType('US').input('2133734') === '(213) 373-4'
 Validates a complete phone number.
 
 ```js
-import {
-  isPossiblePhoneNumber,
-  isValidPhoneNumber,
-  validatePhoneNumberLength
-} from 'libphonenumber-js'
+import { isPossiblePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js'
 
 isPossiblePhoneNumber('8 (800) 555-35-35', 'RU') === true
 isValidPhoneNumber('8 (800) 555-35-35', 'RU') === true
-
-validatePhoneNumberLength('8 (800) 555', 'RU') === 'TOO_SHORT' // Length is invalid
-validatePhoneNumberLength('8 (800) 555-35-35', 'RU') === undefined // Length is valid
 ```
 
 `isPossiblePhoneNumber()` validates phone number length.
 
 `isValidPhoneNumber()` validates both phone number length and phone number digits.
 
-It may seem counter-intuitive but when [choosing between the two](#using-phone-number-validation-feature), I'd personally prefer `isPossiblePhoneNumber()` because its strength is in its weakness. `isValidPhoneNumber()` is a double-edged sword in terms of how strict it is, and when not updated regularly, it could get stale over time and start rejecting freshly-assigned phone number ranges.
-
-As for `validatePhoneNumberLength()`, is just a more detailed version of `isPossiblePhoneNumber()` for those who need it — when the phone number length is invalid, instead of returning just `false`, it returns the actual reason why the phone number length is incorrect: `TOO_SHORT`, `TOO_LONG`, etc.
+[Choosing between the two](#using-phone-number-validation-feature): I'd personally prefer `isPossiblePhoneNumber()` because its strength is in its weakness. `isValidPhoneNumber()` is a double-edged sword in terms of how strict it is, and when not kept up-to-date, it could get stale over time and start rejecting freshly-assigned phone number ranges.
 
 ### Full-text search
 
