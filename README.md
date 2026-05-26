@@ -1975,8 +1975,9 @@ This library reuses Google's metadata. Google periodically publishes a new versi
 
 After Google updates their metadata, this library pulls the updated metadata from Google's repository and publishes a new version of itself on `npm`.
 
-The metadata pulling process is automated through an "autoupdate" script: see `autoupdate.cmd` (Windows) or `autoupdate.sh` (Linux/macOS). The script detects changes to `PhoneNumberMetadata.xml` file in Google `libphonenumber`'s repo and, if there are any changes, it pulls the latest metadata, transforms it, commits the changes to the repository, builds a new version of the package and releases it to `npm`.
+The metadata pulling process is automated by running `metadata:update:job` npm script. <!-- : see `autoupdate.cmd` (Windows) or `autoupdate.sh` (Linux/macOS).  --> The script detects changes to `PhoneNumberMetadata.xml` file in Google `libphonenumber`'s repo and, if there are any changes, it pulls the latest metadata, transforms it, pushes the changes to the repository, builds a new version of the package and publishes it on `npm` using "trusted publishing". The script is run daily via GitLab CI (could be GitHub CI if they weren't [unreliable](#gitHub-repository-status)).
 
+<!--
 I did manage to set up the autoupdate script to run dialy on my Windows machine in an automatic fashion through "Task Scheduler", but then `npm` started requiring "two-factor authentication" in order to publish a package, which requires human intervention, so currently the autoupdate process is kinda semi-automatic.
 
 <details>
@@ -2017,6 +2018,7 @@ How to [fix](https://stackoverflow.com/questions/370030/why-git-cant-remember-my
 </details>
 
 ######
+-->
 
 <!-- So currently, I just run the "autoupdate" script manually from time to time. With this workflow, one can see how the metadata could potentially get a bit stale, in which case just ping me to re-run the autoupdate script, assuming I'm still alive and well. -->
 
@@ -2026,7 +2028,7 @@ Also Google sometimes (extremely rarely) updates their code:
 * [`AsYouTypeFormatter.java`](https://github.com/google/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/AsYouTypeFormatter.java) — is mirrored as `AsYouType` class
 * [`PhoneNumberMatcher.java`](https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberMatcher.java) — is mirrored as `findPhoneNumbersInText()` function
 
-The latest sync-up with Google's code was on Sep 19th, 2025.
+The latest sync-up with Google's code was on May 25th, 2026.
 
 ## Contributing
 

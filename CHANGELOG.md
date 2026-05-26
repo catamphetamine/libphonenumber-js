@@ -69,6 +69,19 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.13.3 / 22.5.2026
+===================
+
+* Updated metadata to version 9.0.31:
+  - Updated alternate formatting data for country calling code(s): 84
+  - Updated phone metadata for region code(s):
+    AI, BO, DZ, ET, GE, GM, IN, TR, UG, VN
+  - Updated short number metadata for region code(s): IT
+  - Updated geocoding data for country calling code(s): 213 (en)
+  - Updated carrier data for country calling code(s):
+    34 (en), 43 (en), 84 (en), 90 (en), 220 (en), 251 (en), 256 (en), 354 (en),
+    591 (en), 1264 (en)
+
 1.13.0 / 08.05.2026
 ===================
 
