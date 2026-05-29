@@ -32,6 +32,23 @@ describe('checkNumberLength', () => {
 	it('should check phone number length (`country` override)', () => {
 		const metadataInstance = new Metadata(metadata)
 		metadataInstance.selectNumberingPlan('US')
+
+		// The country code "US" will be overridden with "CA".
+		//
+		// How to find a suitable override for tests:
+		//
+		// for (const callingCode of Object.keys(metadata.country_calling_codes)) {
+		// 	const countries = metadata.country_calling_codes[callingCode]
+		// 	if (countries.length > 1) {
+		// 		const mainCountry = countries.shift()
+		// 		for (const country of countries) {
+		// 			if (JSON.stringify(metadata.countries[country].possible_lengths) !== JSON.stringify(metadata.countries[mainCountry].possible_lengths)) {
+		// 				console.log(country, 'has different possible lengths from the default country', mainCountry)
+		// 			}
+		// 		}
+		// 	}
+		// }
+
 		// "UAN" phone number type doesn't exist in "US".
 		// Hence, it returns "INVALID_LENGTH".
 		expect(checkNumberLengthForType('2133734253', 'UAN', undefined, metadataInstance)).to.equal('INVALID_LENGTH')
