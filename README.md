@@ -869,24 +869,37 @@ The same approach could be used to implement an `isPossiblePhoneNumberForCountry
 
 ### `validatePhoneNumberLength(input: string, defaultCountry?: string | options?: object): string?`
 
-Checks if `input` phone number length is valid. If it is, then nothing is returned. Otherwise, a rejection reason is returned.
+Checks if `input` phone number length is valid. If it is, nothing is returned. Otherwise, a rejection reason is returned.
 
 <details>
 <summary>Possible rejection reasons</summary>
 
-* `NOT_A_NUMBER` — When the supplied string is not a phone number. For example, when there are no digits: `"abcde"`, `"+"`.
+######
+
+* `NOT_A_NUMBER`
+
+  * When the supplied string is not even a phone number. For example, when there are no digits at all: `"abcde"`, `"+"`.
 
 * `INVALID_COUNTRY`
 
-  * When `defaultCountry` doesn't exist (or isn't supported by this library yet): `parsePhoneNumber('(111) 222-3333', 'XX')`.
-  * When parsing a non-international number without a `defaultCountry`: `parsePhoneNumber('(111) 222-3333')`.
-  * When an international number's country calling code doesn't exist: `parsePhoneNumber('+9991112223333')`.
+  * When the specified `defaultCountry` doesn't exist (or isn't supported by this library yet): `validatePhoneNumberLength('(111) 222-3333', 'XX')`.
+  * When passing a non-international number without specifying a `defaultCountry`: `validatePhoneNumberLength('(111) 222-3333')`.
+  * When an international number includes a non-existing country calling code: `parsePhoneNumber('+9991112223333')`.
 
-* `TOO_SHORT` — When the number is too short. For example, just 1 or 2 digits: `"1"`, `"+12"`.
+* `TOO_SHORT`
 
-* `TOO_LONG` — When the national (significant) number is too long (17 digits max) or when the string being parsed is too long (250 characters max).
+  * When there must be at least 2 national (significant) number digits: `"1"` or `"+12"`.
+  * When the national (significant) number of such length doesn't exist (too short): `+1 213 373 42`.
 
-* `INVALID_LENGTH` — When the national (significant) number is neither too short, nor too long, but somewhere in between and its length is still invalid.
+* `TOO_LONG`
+
+  * When the national (significant) number of such length doesn't exist (too long): `+1 213 373 42 53 00`.
+  * When the national (significant) number digits count exceeds the maximum allowed one (17 digits max).
+  * When the length of the input string exceeds the maximum allowed one (250 characters max).
+
+* `INVALID_LENGTH`
+
+  * When the national (significant) number of such length doesn't exist and it should've been either shorter or longer (both are possible).
 </details>
 
 ######
@@ -981,6 +994,8 @@ asYouType.getTemplate() === 'xx xxx xxx xxxx'
  * `isPossible(): boolean` — Returns `true` if the phone number is "possible". Is just a shortcut for [`getNumber()?.isPossible()`](#ispossible-boolean).
 
  * `isValid(): boolean` — Returns `true` if the phone number is "valid". Is just a shortcut for [`getNumber()?.isValid()`](#isvalid-boolean).
+
+ * `validateLength(): string?` — Validates phone number length. See [`validatePhoneNumberLength()`](#validatephonenumberlengthinput-string-defaultcountry-string--options-object-string).
 
 <details>
 <summary>Legacy API (before version <code>1.6.0</code>)</summary>

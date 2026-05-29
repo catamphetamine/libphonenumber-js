@@ -9,8 +9,8 @@ import getCountryByCallingCode from './getCountryByCallingCode.js'
  * it won't extract national prefix if the resultant number is too short
  * to be a complete number for the selected phone numbering plan.
  * @param  {string} number — Complete phone number digits.
- * @param  {string?} country — Country, if known.
- * @param  {Metadata} metadata — Metadata with a phone numbering plan selected.
+ * @param  {string?} country — Specific country to use instead of the one that is pre-selected in the metadata instance.
+ * @param  {Metadata} metadata — Metadata instance with a selected numbering plan.
  * @return {object} `{ nationalNumber: string, carrierCode: string? }`.
  */
 export default function extractNationalNumber(number, country, metadata) {
@@ -37,7 +37,8 @@ export default function extractNationalNumber(number, country, metadata) {
 			return { nationalNumber: number }
 		}
 		// Check the national (significant) number length after extracting national prefix and carrier code.
-		// Legacy generated metadata (before `1.0.18`) didn't support the "possible lengths" feature.
+		// Legacy generated metadata (before `1.0.18`) didn't support the "possible lengths" feature,
+		// so this `if` will only be executed with newer metadata.
 		if (metadata.numberingPlan.possibleLengths()) {
 			// If an exact `country` is not specified, attempt to detect it from the assumed national number.
 			if (!country) {
@@ -102,6 +103,13 @@ function shouldHaveExtractedNationalPrefix(nationalNumberBefore, nationalNumberA
 	return true
 }
 
+/**
+ * Tells if a given incomplete national number is possible or not.
+ * @param {string} nationalNumber
+ * @param {string?} country — Specific country rather than the one that is pre-selected in the metadata instance.
+ * @param {Metadata} metadata — Metadata instance with a selected numbering plan.
+ * @returns {boolean}
+ */
 function isPossibleIncompleteNationalNumber(nationalNumber, country, metadata) {
 	switch (checkNumberLength(nationalNumber, country, metadata)) {
 		case 'TOO_SHORT':

@@ -14,9 +14,9 @@ export default function validatePhoneNumberLength() {
 	// Parse phone number.
 	try {
 		const phoneNumber = parsePhoneNumberWithError(text, options, metadata)
-		metadata = new Metadata(metadata)
-		metadata.selectNumberingPlan(phoneNumber.countryCallingCode)
-		const result = checkNumberLength(phoneNumber.nationalNumber, phoneNumber.country, metadata)
+		const metadataInstance = new Metadata(metadata)
+		metadataInstance.selectNumberingPlan(phoneNumber.country || phoneNumber.countryCallingCode)
+		const result = checkNumberLength(phoneNumber.nationalNumber, undefined, metadataInstance)
 		if (result !== 'IS_POSSIBLE') {
 			return result
 		}

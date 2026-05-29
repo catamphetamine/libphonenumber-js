@@ -3,19 +3,24 @@ import { VALID_DIGITS } from '../constants.js'
 
 const CAPTURING_DIGIT_PATTERN = new RegExp('([' + VALID_DIGITS + '])')
 
-export default function stripIddPrefix(number, country, callingCode, metadata) {
+export default function stripIddPrefix(number, country, callingCode, metadataJson) {
 	if (!country) {
 		return
 	}
+
+	// Get the IDD prefix pattern.
+	const metadata = new Metadata(metadataJson)
+	metadata.selectNumberingPlan(country || callingCode)
+	const IDDPrefixPattern = new RegExp(metadata.IDDPrefix())
+
 	// Check if the number is IDD-prefixed.
-	const countryMetadata = new Metadata(metadata)
-	countryMetadata.selectNumberingPlan(country, callingCode)
-	const IDDPrefixPattern = new RegExp(countryMetadata.IDDPrefix())
 	if (number.search(IDDPrefixPattern) !== 0) {
 		return
 	}
+
 	// Strip IDD prefix.
 	number = number.slice(number.match(IDDPrefixPattern)[0].length)
+
 	// If there're any digits after an IDD prefix,
 	// then those digits are a country calling code.
 	// Since no country code starts with a `0`,
@@ -26,5 +31,6 @@ export default function stripIddPrefix(number, country, callingCode, metadata) {
 			return
 		}
 	}
+
 	return number
 }

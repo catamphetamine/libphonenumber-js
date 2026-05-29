@@ -154,7 +154,7 @@ export default class AsYouTypeFormatter {
 		//  If so, we should use this instead of any other formatting template
 		//  whose leadingDigitsPattern also matches the input."
 		//
-		if (canFormatCompleteNumber(state.nationalSignificantNumber, state.country, this.metadata)) {
+		if (canFormatCompleteNumber(state.nationalSignificantNumber, this.metadata)) {
 			for (const format of this.matchingFormats) {
 				const formattedCompleteNumber = formatCompleteNumber(
 					state,

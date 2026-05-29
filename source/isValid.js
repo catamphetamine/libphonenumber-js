@@ -36,15 +36,15 @@ import getNumberType from './helpers/getNumberType.js'
  * isValidNumber({ phone: '8005553535', country: 'RU' }, metadata)
  * ```
  */
-export default function isValidNumber(input, options, metadata)
+export default function isValidNumber(input, options, metadataJson)
 {
 	// If assigning the `{}` default value is moved to the arguments above,
 	// code coverage would decrease for some weird reason.
 	options = options || {}
 
-	metadata = new Metadata(metadata)
+	const metadata = new Metadata(metadataJson)
 
-	metadata.selectNumberingPlan(input.country, input.countryCallingCode)
+	metadata.selectNumberingPlan(input.country || input.countryCallingCode)
 
 	// By default, countries only have type regexps when it's required for
 	// distinguishing different countries having the same `countryCallingCode`.

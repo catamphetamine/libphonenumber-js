@@ -94,7 +94,7 @@ function type(something)
 
 function check_number_length(number, type, country)
 {
-	const _metadata = new Metadata(metadata)
-	_metadata.country(country)
-	return checkNumberLengthForType(number, undefined, type, _metadata)
+	const metadataInstance = new Metadata(metadata)
+	metadataInstance.selectNumberingPlan(country)
+	return checkNumberLengthForType(number, type, undefined, metadataInstance)
 }

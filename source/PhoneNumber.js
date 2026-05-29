@@ -2,6 +2,7 @@ import Metadata, { validateMetadata } from './metadata.js'
 import isPossibleNumber from './isPossible.js'
 import isValidNumber from './isValid.js'
 import getNumberType from './helpers/getNumberType.js'
+import getCountryAndCallingCodeFromOneOfThem from './helpers/getCountryAndCallingCodeFromOneOfThem.js'
 import getPossibleCountriesForNumber from './helpers/getPossibleCountriesForNumber.js'
 import extractCountryCallingCode from './helpers/extractCountryCallingCode.js'
 import isObject from './helpers/isObject.js'
@@ -57,7 +58,7 @@ export default class PhoneNumber {
 		validateMetadata(metadata)
 
 		// Initialize properties.
-		const { country, countryCallingCode } = getCountryAndCountryCallingCode(
+		const { country, callingCode: countryCallingCode } = getCountryAndCallingCodeFromOneOfThem(
 			countryOrCountryCallingCode,
 			metadata
 		)
@@ -104,16 +105,29 @@ export default class PhoneNumber {
 		return this.number === phoneNumber.number && this.ext === phoneNumber.ext
 	}
 
-	// This function was originally meant to be an equivalent for `validatePhoneNumberLength()`,
-	// but later it was found out that it doesn't include the possible `TOO_SHORT` result
-	// returned from `parsePhoneNumberWithError()` in the original `validatePhoneNumberLength()`,
-	// so eventually I simply commented out this method from the `PhoneNumber` class
-	// and just left the `validatePhoneNumberLength()` function, even though that one would require
-	// and additional step to also validate the actual country / calling code of the phone number.
+	// `validateLength()` method was originally meant to be an equivalent for `validatePhoneNumberLength()`.
+	//
+	// Later, it became apparent that it's not really a true equivalent.
+	// The reason is that a `PhoneNumber` instance is not created
+	// when the phone number string is too short for it to be considered a valid phone number:
+	// * When there must be at least 2 national (significant) number digits: `"1"`.
+  // * When the country calling code part of an international number is incomplete: `"+12"`.
+	//
+	// So leaving this `validateLength()` method here would suggest a hidden anti-pattern
+	// of using it instead of `validatePhoneNumberLength()` while ignoring
+	// the "too short to be even possible" case from phone number length validation.
+	// And ignoring that case wouldn't make any sense in a real-world application
+	// because it would still be a valid case that should be handled.
+	//
+	// Because of that, this method was eventually commented out in order to not introduce
+	// that kind of an anti-pattern.
+	//
 	// validateLength() {
-	// 	const metadata = new Metadata(this.getMetadata())
-	// 	metadata.selectNumberingPlan(this.countryCallingCode)
-	// 	const result = checkNumberLength(this.nationalNumber, metadata)
+	// 	const result = checkNumberLength(
+	// 		this.nationalNumber,
+	// 		undefined,
+	// 		this.getMetadata()
+	// 	)
 	// 	if (result !== 'IS_POSSIBLE') {
 	// 		return result
 	// 	}
@@ -142,35 +156,6 @@ export default class PhoneNumber {
 
 	getURI(options) {
 		return this.format('RFC3966', options)
-	}
-}
-
-const isCountryCode = (value) => /^[A-Z]{2}$/.test(value)
-
-function getCountryAndCountryCallingCode(countryOrCountryCallingCode, metadataJson) {
-	let country
-	let countryCallingCode
-
-	const metadata = new Metadata(metadataJson)
-	// If country code is passed then derive `countryCallingCode` from it.
-	// Also store the country code as `.country`.
-	if (isCountryCode(countryOrCountryCallingCode)) {
-		country = countryOrCountryCallingCode
-		metadata.selectNumberingPlan(country)
-		countryCallingCode = metadata.countryCallingCode()
-	} else {
-		countryCallingCode = countryOrCountryCallingCode
-		/* istanbul ignore if */
-		if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
-			if (metadata.isNonGeographicCallingCode(countryCallingCode)) {
-				country = '001'
-			}
-		}
-	}
-
-	return {
-		country,
-		countryCallingCode
 	}
 }
 

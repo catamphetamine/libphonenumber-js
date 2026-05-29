@@ -61,15 +61,15 @@ const USE_NON_GEOGRAPHIC_COUNTRY_CODE = false
  *
  * @param  {string} input
  * @param  {object} [options]
- * @param  {object} metadata
+ * @param  {object} metadataJson
  * @return {object|PhoneNumber?} If `options.v2: true` flag is passed, it returns a `PhoneNumber?` instance. Otherwise, returns an object of shape `{ phone: '...', country: '...' }` (or just `{}` if no phone number was parsed).
  */
-export default function parse(text, options, metadata) {
+export default function parse(text, options, metadataJson) {
 	// If assigning the `{}` default value is moved to the arguments above,
 	// code coverage would decrease for some weird reason.
 	options = options || {}
 
-	metadata = new Metadata(metadata)
+	const metadata = new Metadata(metadataJson)
 
 	// Validate `defaultCountry`.
 	if (options.defaultCountry && !metadata.hasCountry(options.defaultCountry)) {
@@ -103,6 +103,9 @@ export default function parse(text, options, metadata) {
 		formattedPhoneNumber,
 		options.defaultCountry,
 		options.defaultCallingCode,
+		// If `country` is returned, its numbering plan will also be selected in `metadata`.
+		// Otherwise, if `countryCallingCode` is returned, its numbering plan will also be selected in `metadata`.
+		// Otherwise, if neither `country` nor `countryCallingCode` are returned, no numbering plan will be selected in `metadata`.
 		metadata
 	)
 
@@ -181,7 +184,7 @@ export default function parse(text, options, metadata) {
 		possible: valid ? true : (
 			options.extended === true &&
 			metadata.possibleLengths() &&
-			isPossibleNumber(nationalNumber, country, metadata) ? true : false
+			isPossibleNumber(nationalNumber, metadata) ? true : false
 		),
 		phone: nationalNumber,
 		ext
@@ -278,7 +281,7 @@ function result(country, nationalNumber, ext) {
  * @param {string} formattedPhoneNumber — Example: "(213) 373-4253".
  * @param {string} [defaultCountry]
  * @param {string} [defaultCallingCode]
- * @param {Metadata} metadata
+ * @param {Metadata} metadata — Metadata instance with no pre-selected numbering plan. If `country` is returned, its numbering plan will also be selected in `metadata`. Otherwise, if `countryCallingCode` is returned, its numbering plan will also be selected in `metadata`. Otherwise, if neither `country` nor `countryCallingCode` are returned, no numbering plan will be selected in `metadata`.
  * @return {object} Returns `{ country: string?, countryCallingCode: string?, nationalNumber: string? }`.
  */
 function parsePhoneNumber(
@@ -287,10 +290,30 @@ function parsePhoneNumber(
 	defaultCallingCode,
 	metadata
 ) {
-	// Extract calling code from phone number.
-	let { countryCallingCodeSource, countryCallingCode, number } = extractCountryCallingCode(
+	// Attempt to extract a calling code from a phone number.
+	// * If the phone number is found to be "international":
+	//   * It will attempt to identify the calling code part of it and whether that part is complete and valid.
+	//     * If the calling code part is complete and valid, it will return two properties:
+	//       that calling code part (without `+`) and the rest of the digits.
+	//     * Otherwise, i.e. if the calling code part is incomplete or invalid,
+	//       it will return an empty object.
+	// * Otherwise, i.e. if the phone number is national, there's no callind code to extract
+	//   so it will just return the originally-passed `number` string as the only property.
+	let {
+		// `countryCallingCodeSource` tells how the returned calling code was extracted (if it was extracted).
+		countryCallingCodeSource,
+		// `countryCallingCode` is the calling code that was extracted from the input phone number string.
+		countryCallingCode,
+		// `number` is the originally passed `number` without the extracted calling code (and without a `+`).
+		// If the calling code is present but incomplete or invalid, both `countryCallingCode` and `number`
+		// will be returned as `undefined`.
+		number
+	} = extractCountryCallingCode(
 		parseIncompletePhoneNumber(formattedPhoneNumber),
 		undefined,
+		// `defaultCountry` and `defaultCallingCode` are only used to detect
+		// if it's an "international" phone number or not. They won't be used
+		// to derive the resulting `countryCallingCode` from them, or anything like that.
 		defaultCountry,
 		defaultCallingCode,
 		metadata.metadata
@@ -307,20 +330,27 @@ function parsePhoneNumber(
 	// Else, if `formattedPhoneNumber` is passed in "national" format,
 	// then `number` is defined and `countryCallingCode` is `undefined`.
 	else if (number && (defaultCountry || defaultCallingCode)) {
-		metadata.selectNumberingPlan(defaultCountry, defaultCallingCode)
 		if (defaultCountry) {
 			country = defaultCountry
+			metadata.selectNumberingPlan(defaultCountry)
+			countryCallingCode = metadata.numberingPlan.callingCode()
 		} else {
+			metadata.selectNumberingPlan(defaultCallingCode)
+			countryCallingCode = defaultCallingCode
 			/* istanbul ignore if */
 			if (USE_NON_GEOGRAPHIC_COUNTRY_CODE) {
-				if (metadata.isNonGeographicCallingCode(defaultCallingCode)) {
+				if (metadata.isNonGeographicCallingCode(countryCallingCode)) {
 					country = '001'
 				}
 			}
 		}
-		countryCallingCode = defaultCallingCode || getCountryCallingCode(defaultCountry, metadata.metadata)
 	}
 	else return {}
+
+	// At this point, `country` could be `undefined` but `countryCallingCode` is always defined.
+	//
+	// Also, if `country` is defined, its numbering plan is selected in `metadata`.
+	// Otherwise, the numering plan for the `countryCallingCode` is selected in `metadata`.
 
 	if (!number) {
 		return {
@@ -334,7 +364,7 @@ function parsePhoneNumber(
 		carrierCode
 	} = extractNationalNumber(
 		parseIncompletePhoneNumber(number),
-		country,
+		undefined,
 		metadata
 	)
 

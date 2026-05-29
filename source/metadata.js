@@ -1,5 +1,6 @@
 import compare from './tools/semver-compare.js'
 import isObject from './helpers/isObject.js'
+import isCallingCode from './helpers/isCallingCode.js'
 
 // Added "possibleLengths" and renamed
 // "country_phone_code_to_countries" to "country_calling_codes".
@@ -13,12 +14,13 @@ const V4 = '1.7.35'
 
 const DEFAULT_EXT_PREFIX = ' ext. '
 
-const CALLING_CODE_REG_EXP = /^\d+$/
-
 /**
  * See: https://gitlab.com/catamphetamine/libphonenumber-js/blob/master/METADATA.md
  */
 export default class Metadata {
+	/**
+	 * @param {object} metadata — Metadata JSON.
+	 */
 	constructor(metadata) {
 		validateMetadata(metadata)
 		this.metadata = metadata
@@ -75,17 +77,35 @@ export default class Metadata {
 		return this.selectNumberingPlan(countryCode)
 	}
 
-	selectNumberingPlan(countryCode, callingCode) {
-		// Supports just passing `callingCode` as the first argument.
-		if (countryCode && CALLING_CODE_REG_EXP.test(countryCode)) {
-			callingCode = countryCode
-			countryCode = null
+	/**
+	 * Selects a telephone numbering plan based on either a country code or a calling code.
+	 * @param {string} argument — Country code or calling code.
+	 * @param {string} legacyArgumentCallingCode — Legacy argument: calling code, if the first argument is not passed.
+	 */
+	selectNumberingPlan(argument, legacyArgumentCallingCode) {
+		let countryCode
+		let callingCode
+		if (argument) {
+			if (isCallingCode(argument)) {
+				callingCode = argument
+			} else {
+				countryCode = argument
+			}
 		}
+		// Previously, the signature of this method was: `.selectNumberingPlan(country, callingCode)`.
+		// And if `country` argument wasn't passed, it looked into the second argument `callingCode`.
+		// Now it's preferred to only pass either `country` or `callingCode` as the first argument.
+		if (legacyArgumentCallingCode) {
+			callingCode = legacyArgumentCallingCode
+		}
+
+		// Select a telephone numbering plan.
 		if (countryCode && countryCode !== '001') {
-			if (!this.hasCountry(countryCode)) {
+			const countryMetadata = this.getCountryMetadata(countryCode)
+			if (!countryMetadata) {
 				throw new Error(`Unknown country: ${countryCode}`)
 			}
-			this.numberingPlan = new NumberingPlan(this.getCountryMetadata(countryCode), this)
+			this.numberingPlan = new NumberingPlan(countryMetadata, this)
 		} else if (callingCode) {
 			if (!this.hasCallingCode(callingCode)) {
 				throw new Error(`Unknown calling code: ${callingCode}`)
@@ -94,6 +114,7 @@ export default class Metadata {
 		} else {
 			this.numberingPlan = undefined
 		}
+
 		return this
 	}
 
@@ -124,6 +145,10 @@ export default class Metadata {
 	}
 
 	getNumberingPlanMetadata(callingCode) {
+		// If a calling code is specified, choose the telephone numbering plan
+		// of the "default" country for this calling code.
+		// For example, if calling code `1` is passed,
+		// the telephone numbering plan of `US` will be selected.
 		const countryCode = this.getCountryCodeForCallingCode(callingCode)
 		if (countryCode) {
 			return this.getCountryMetadata(countryCode)
@@ -232,14 +257,25 @@ class NumberingPlan {
 		return this.metadata[0]
 	}
 
-	// Formatting information for regions which share
-	// a country calling code is contained by only one region
-	// for performance reasons. For example, for NANPA region
-	// ("North American Numbering Plan Administration",
-	//  which includes USA, Canada, Cayman Islands, Bahamas, etc)
-	// it will be contained in the metadata for `US`.
-	getDefaultCountryMetadataForRegion() {
+	// When multiple countries share the same calling code,
+	// all phone number formatting rules are included in the metadata
+	// of the "default" country for that calling code.
+	// Any other countries' metdata doesn't include any formatting rules.
+	// Google developers said that such storage architecture was chosen for performance reasons.
+	//
+	// For example, for NANPA region ("North American Numbering Plan Administration",
+	// which includes USA, Canada, Cayman Islands, Bahamas, etc) all formatting rules
+	// are contained in the metadata of `US` country.
+	//
+	// This is not public API.
+	//
+	_getDefaultCountryMetadataForThisCallingCode() {
 		return this.globalMetadataObject.getNumberingPlanMetadata(this.callingCode())
+	}
+
+	// Deprecated.
+	getDefaultCountryMetadataForRegion() {
+		return this._getDefaultCountryMetadataForThisCallingCode()
 	}
 
 	// Is always present.
@@ -273,7 +309,7 @@ class NumberingPlan {
 	// formats are all stored in the "main" country for that region.
 	// E.g. "RU" and "KZ", "US" and "CA".
 	formats() {
-		const formats = this._getFormats(this.metadata) || this._getFormats(this.getDefaultCountryMetadataForRegion()) || []
+		const formats = this._getFormats(this.metadata) || this._getFormats(this._getDefaultCountryMetadataForThisCallingCode()) || []
 		return formats.map(_ => new Format(_, this))
 	}
 
@@ -289,7 +325,7 @@ class NumberingPlan {
 	// national prefix formatting rule is stored in the "main" country for that region.
 	// E.g. "RU" and "KZ", "US" and "CA".
 	nationalPrefixFormattingRule() {
-		return this._getNationalPrefixFormattingRule(this.metadata) || this._getNationalPrefixFormattingRule(this.getDefaultCountryMetadataForRegion())
+		return this._getNationalPrefixFormattingRule(this.metadata) || this._getNationalPrefixFormattingRule(this._getDefaultCountryMetadataForThisCallingCode())
 	}
 
 	_nationalPrefixForParsing() {
@@ -316,7 +352,7 @@ class NumberingPlan {
 	// E.g. "RU" and "KZ", "US" and "CA".
 	nationalPrefixIsOptionalWhenFormattingInNationalFormat() {
 		return this._getNationalPrefixIsOptionalWhenFormatting(this.metadata) ||
-			this._getNationalPrefixIsOptionalWhenFormatting(this.getDefaultCountryMetadataForRegion())
+			this._getNationalPrefixIsOptionalWhenFormatting(this._getDefaultCountryMetadataForThisCallingCode())
 	}
 
 	leadingDigits() {
@@ -479,8 +515,8 @@ const typeOf = _ => typeof _
  * // Returns " ext. "
  * getExtPrefix("US")
  */
-export function getExtPrefix(country, metadata) {
-	metadata = new Metadata(metadata)
+export function getExtPrefix(country, metadataJson) {
+	const metadata = new Metadata(metadataJson)
 	if (metadata.hasCountry(country)) {
 		return metadata.selectNumberingPlan(country).ext()
 	}
@@ -491,26 +527,39 @@ export function getExtPrefix(country, metadata) {
  * Returns "country calling code" for a country.
  * Throws an error if the country doesn't exist or isn't supported by this library.
  * @param  {string} country
- * @param  {object} metadata
+ * @param  {object} metadataJson
  * @return {string}
  * @example
  * // Returns "44"
  * getCountryCallingCode("GB")
  */
-export function getCountryCallingCode(country, metadata) {
-	metadata = new Metadata(metadata)
+export function getCountryCallingCode(country, metadataJson) {
+	const metadata = new Metadata(metadataJson)
 	if (metadata.hasCountry(country)) {
 		return metadata.selectNumberingPlan(country).countryCallingCode()
 	}
 	throw new Error(`Unknown country: ${country}`)
 }
 
-export function isSupportedCountry(country, metadata) {
-	// metadata = new Metadata(metadata)
+/**
+ * Tells if a country code is supported.
+ * @param  {string} country
+ * @param  {object} metadataJson
+ * @return {boolean}
+ * @example
+ * // Returns `true`
+ * isSupportedCountry("GB")
+ */
+export function isSupportedCountry(country, metadataJson) {
+	// const metadata = new Metadata(metadataJson)
 	// return metadata.hasCountry(country)
-	return metadata.countries.hasOwnProperty(country)
+	return metadataJson.countries.hasOwnProperty(country)
 }
 
+/**
+ * Sets `v1`/`v2`/`v3`/`v4` properties on `this` object.
+ * @param {object} metadata — Metadata JSON
+ */
 function setVersion(metadata) {
 	const { version } = metadata
 	if (typeof version === 'number') {
@@ -530,8 +579,3 @@ function setVersion(metadata) {
 		}
 	}
 }
-
-// const ISO_COUNTRY_CODE = /^[A-Z]{2}$/
-// function isCountryCode(countryCode) {
-// 	return ISO_COUNTRY_CODE.test(countryCodeOrCountryCallingCode)
-// }

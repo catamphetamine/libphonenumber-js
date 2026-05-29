@@ -25,10 +25,10 @@ const DEFAULT_OPTIONS = {
  * @param  {object|PhoneNumber} input — If `options.v2: true` flag is passed, the `input` should be a `PhoneNumber` instance. Otherwise, it should be an object of shape `{ phone: '...', country: '...' }`.
  * @param  {string} format
  * @param  {object} [options]
- * @param  {object} metadata
+ * @param  {object} metadataJson
  * @return {string}
  */
-export default function formatNumber(input, format, options, metadata) {
+export default function formatNumber(input, format, options, metadataJson) {
 	// Apply default options.
 	if (options) {
 		// Using ES6 "rest spread" syntax here didn't work with `babel`/`istanbul`
@@ -43,7 +43,7 @@ export default function formatNumber(input, format, options, metadata) {
 		options = DEFAULT_OPTIONS
 	}
 
-	metadata = new Metadata(metadata)
+	const metadata = new Metadata(metadataJson)
 
 	// Normally, the `input` object is supposed to be a `PhoneNumber` class instance.
 	// Also, according to the `PhoneNumber` class source code, `country` can't be "001".

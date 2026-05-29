@@ -128,6 +128,7 @@ export class AsYouType {
   isInternational(): boolean;
   isPossible(): boolean;
   isValid(): boolean;
+  validateLength(): ValidatePhoneNumberLengthResult;
 }
 
 export class Metadata {

@@ -1,5 +1,6 @@
 import Metadata from './metadata.js'
 import PhoneNumber from './PhoneNumber.js'
+import checkNumberLength from './helpers/checkNumberLength.js'
 import AsYouTypeState from './AsYouTypeState.js'
 import AsYouTypeFormatter, { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter.js'
 import AsYouTypeParser, { extractFormattedDigitsAndPlus } from './AsYouTypeParser.js'
@@ -15,6 +16,9 @@ export default class AsYouType {
 	 * @param {Object} metadata
 	 */
 	constructor(optionsOrDefaultCountry, metadata) {
+		// Metadata instance is created once and stays constant.
+		// This is required because other utility classes such as `AsYouTypeFormatter`
+		// will use this metadata instance "reference" and will assume that it stays constant.
 		this.metadata = new Metadata(metadata)
 		const [defaultCountry, defaultCallingCode] = this.getCountryAndCallingCode(optionsOrDefaultCountry)
 		// `this.defaultCountry` and `this.defaultCallingCode` aren't required to be in sync.
@@ -103,7 +107,7 @@ export default class AsYouType {
 				this.country = country
 			},
 			onCallingCodeChange: (callingCode, country) => {
-				this.metadata.selectNumberingPlan(country, callingCode)
+				this.metadata.selectNumberingPlan(country || callingCode)
 				this.formatter.reset(this.metadata.numberingPlan, this.state)
 				this.parser.reset(this.metadata.numberingPlan)
 			}
@@ -276,13 +280,35 @@ export default class AsYouType {
 	// entered so far based on the country phone code
 	// and the national phone number.
 	determineTheCountry() {
-		this.state.setCountry(getCountryByCallingCode(
+		// Get a more precise country code for this national number.
+		// It is possible that the precise country couldn't be determined
+		// in cases when there're multiple countries sharing the same calling code.
+		// In that case, `country` will be `undefined`.
+		const country = getCountryByCallingCode(
 			this.isInternational() ? this.state.callingCode : this.defaultCallingCode,
 			{
 				nationalNumber: this.state.nationalSignificantNumber,
 				metadata: this.metadata
 			}
-		))
+		)
+		// If the derived country is indeed more precise,
+		// or if no country could be derived for the updated phone number.
+		if (country !== this.state.country) {
+			// Set (or reset) the more precise country.
+			this.state.setCountry(country)
+			// If a more precise country could be derived.
+			if (country) {
+				// Select a more precise telephone numbering plan.
+				// For example, consider that `AsYouType` instance was created with `defaultCountry: "US"` argument.
+				// In that case, the metadata instance will be using "US" metadata.
+				// But then the user could input a Canadian phone number, in which case
+				// the metadata instance should be switched to Canadian telephone numbering plan.
+				// It is required to do that because later `canFormatCompleteNumber()` function will be called,
+				// and that function relies on the precise country being pre-selected in the metadata instance.
+				// Or, for example, `checkNumberLength()` function also relies on same thing.
+				this.metadata.selectNumberingPlan(country)
+			}
+		}
 	}
 
 	/**
@@ -343,18 +369,19 @@ export default class AsYouType {
 			callingCode
 		} = this.state
 
-		// `this._getCountry()` is basically same as `this.state.country`
-		// with the only change that it return `undefined` in case of a
-		// "non-geographic" numbering plan instead of `"001"` "internal use" value.
-		let country = this._getCountry()
-
 		if (!nationalSignificantNumber) {
 			return
 		}
 
-		// `state.country` and `state.callingCode` aren't required to be in sync.
-		// For example, `country` could be `"AR"` and `callingCode` could be `undefined`.
-		// So `country` and `callingCode` are totally independent.
+		// `this._getCountry()` is basically same as `this.state.country`
+		// with the only change that it returns `undefined` in case of a
+		// "non-geographic" numbering plan instead of `"001"` "internal use" value.
+		let country = this._getCountry()
+
+		// Sidenote:
+		// `state.callingCode` and `state.country` are somewhat independent from one another
+		// and there could be situations when one is defined but the other is not.
+		// See the comment in `AsYouTypeState.js` for more info on when that is possible.
 
 		if (!country && !callingCode) {
 			return
@@ -370,26 +397,36 @@ export default class AsYouType {
 		//
 		// Because `AsYouType.getNumber()` method is supposed to be a 1:1
 		// equivalent for `parsePhoneNumber(AsYouType.getNumberValue())`,
-		// then it should also behave accordingly in cases of `country` ambiguity.
+		// it means that it should also behave accordingly in such cases of `country` ambiguity.
 		// That's how users of this library would expect it to behave anyway.
+		//
+		// So here it checks if `state.country` is same as the `defaultCountry`,
+		// and if it is, it attempts to get rid of any potential ambiguity.
 		//
 		if (country) {
 			if (country === this.defaultCountry) {
-				// `state.country` and `state.callingCode` aren't required to be in sync.
-				// For example, `state.country` could be `"AR"` and `state.callingCode` could be `undefined`.
-				// So `state.country` and `state.callingCode` are totally independent.
-				const metadata = new Metadata(this.metadata.metadata)
-				metadata.selectNumberingPlan(country)
-				const callingCode = metadata.numberingPlan.callingCode()
-				const ambiguousCountries = this.metadata.getCountryCodesForCallingCode(callingCode)
-				if (ambiguousCountries.length > 1) {
-					const exactCountry = getCountryByNationalNumber(nationalSignificantNumber, {
-						countries: ambiguousCountries,
-						metadata: this.metadata.metadata
-					})
-					if (exactCountry) {
-						country = exactCountry
-					}
+				// // Create a `Metadata` instance just to get the calling code of the `country`.
+				// const metadata = new Metadata(this.metadata.metadata)
+				// // `state.callingCode` and `state.country` are somewhat independent from one another
+				// // and there could be situations when one is defined but the other is not.
+				// // See the comment in `AsYouTypeState.js` for more info on when that is possible.
+				// // Here, it only passes `state.country` because there's no need to pass `state.callingCode`
+				// // because `state.country` is known to be defined.
+				// metadata.selectNumberingPlan(country)
+				// const countryCallingCode = metadata.numberingPlan.callingCode()
+
+				// Instead of getting `countryCallingCode` value above,
+				// it could simply read it from the existing metadata instance.
+				const countryCallingCode = this.metadata.numberingPlan.callingCode()
+
+				// Attempt to rule out any potential country code ambiguity, if present.
+				const exactCountry = getExactCountryForMultiCountryCallingCode(
+					countryCallingCode,
+					nationalSignificantNumber,
+					this.metadata
+				)
+				if (exactCountry) {
+					country = exactCountry
 				}
 			}
 		}
@@ -433,6 +470,41 @@ export default class AsYouType {
 	}
 
 	/**
+	 * Checks if the phone number length is valid.
+	 * If it is, nothing is returned.
+	 * Otherwise, a rejection reason is returned.
+	 * @return {string?}
+	 */
+	validateLength() {
+		const {
+			digits,
+			nationalSignificantNumber
+		} = this.state
+
+		if (!digits) {
+			return 'NOT_A_NUMBER'
+		}
+
+		if (!this.metadata.numberingPlan) {
+			return 'INVALID_COUNTRY'
+		}
+
+		if (!nationalSignificantNumber) {
+			 return 'TOO_SHORT'
+		}
+
+		// `state.callingCode` and `state.country` are somewhat independent from one another
+		// and there could be situations when one is defined but the other is not.
+		// See the comment in `AsYouTypeState.js` for more info on when that is possible.
+		// Here, it uses both: if `country` is defined then it will use that,
+		// otherwise it will use `callingCode`.
+		const result = checkNumberLength(nationalSignificantNumber, undefined, this.metadata)
+		if (result !== 'IS_POSSIBLE') {
+			return result
+		}
+	}
+
+	/**
 	 * @deprecated
 	 * This method is used in `react-phone-number-input/source/input-control.js`
 	 * in versions before `3.0.16`.
@@ -455,5 +527,14 @@ export default class AsYouType {
 	 */
 	getTemplate() {
 		return this.formatter.getTemplate(this.state) || this.getNonFormattedTemplate() || ''
+	}
+}
+
+// In situations when multiple countries use the same calling code,
+// this function tells what exact country does a given national (significant) number belong to.
+function getExactCountryForMultiCountryCallingCode(callingCode, nationalSignificantNumber, metadata) {
+	const ambiguousCountries = metadata.getCountryCodesForCallingCode(callingCode)
+	if (ambiguousCountries.length > 1) {
+		return getCountryByNationalNumber(nationalSignificantNumber, ambiguousCountries, metadata.metadata)
 	}
 }

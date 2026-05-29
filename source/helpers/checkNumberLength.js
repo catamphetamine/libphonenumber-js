@@ -1,10 +1,27 @@
 import Metadata from '../metadata.js'
 import mergeArrays from './mergeArrays.js'
 
+/**
+ * Checks phone number length against the phone numbering plan selected in metadata.
+ * Optionally, it could be restrained by a specific country.
+ * @param {string} nationalNumber
+ * @param {string?} country — Specific country to use rather than the one that is pre-selected in the metadata instance.
+ * @param {Metadata} metadata — Metadata instance with a selected numbering plan.
+ * @returns {string}
+ */
 export default function checkNumberLength(nationalNumber, country, metadata) {
-	return checkNumberLengthForType(nationalNumber, country, undefined, metadata)
+	return checkNumberLengthForType(nationalNumber, undefined, country, metadata)
 }
 
+/**
+ * Checks phone number length against the phone numbering plan selected in metadata.
+ * Optionally, it could be restrained by a specific phone number type or a specific country.
+ * @param {string} nationalNumber
+ * @param {string?} type — Specific phone number type.
+ * @param {string?} country — Specific country to use instead of the one that is pre-selected in the metadata instance.
+ * @param {Metadata} metadata — Metadata instance with a selected numbering plan.
+ * @returns {string} See the README on `validatePhoneNumberLength()` function, with an addition of a special case: when phone numbers of type `type` aren't possible in the telephone numbering plan, it will return "INVALID_LENGTH".
+ */
 // Checks whether a number is possible for a certain `country` based on the number length.
 //
 // This function is not supported by metadata generated with ancient versions of
@@ -31,11 +48,9 @@ export default function checkNumberLength(nationalNumber, country, metadata) {
 // to check phone number length for that specific `country` rather than the "main" country
 // for the shared "country calling code".
 //
-export function checkNumberLengthForType(nationalNumber, country, type, metadata) {
-	// If the exact `country` is specified, it's no necessarily already selected in `metadata`.
-	// Most likely, in cases when there're multiple countries corresponding to the same
-	// "country calling code", the "main" country for that "country calling code" will be selected.
+export function checkNumberLengthForType(nationalNumber, type, country, metadata) {
 	if (country) {
+		// If a specific `country` is specified, re-create a metadata instance with it.
 		metadata = new Metadata(metadata.metadata)
 		metadata.selectNumberingPlan(country)
 	}
@@ -63,7 +78,7 @@ export function checkNumberLengthForType(nationalNumber, country, type, metadata
 		if (!metadata.type('FIXED_LINE')) {
 			// The rare case has been encountered where no fixedLine data is available
 			// (true for some non-geographic entities), so we just check mobile.
-			return checkNumberLengthForType(nationalNumber, country, 'MOBILE', metadata)
+			return checkNumberLengthForType(nationalNumber, 'MOBILE', country, metadata)
 		}
 
 		const mobile_type = metadata.type('MOBILE')

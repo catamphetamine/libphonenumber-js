@@ -16,7 +16,8 @@ import {
   PhoneNumberType,
   NumberType,
   NumberFormat,
-  NumberingPlan
+  NumberingPlan,
+  ValidatePhoneNumberLengthResult
 } from './types.d.js';
 
 import {
@@ -128,6 +129,7 @@ export class AsYouType {
   isInternational(): boolean;
   isPossible(): boolean;
   isValid(): boolean;
+  validateLength(): ValidatePhoneNumberLengthResult;
 }
 
 export class Metadata {

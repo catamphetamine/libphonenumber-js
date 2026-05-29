@@ -4,19 +4,24 @@ import Metadata from '../metadata.js'
 import { MAX_LENGTH_COUNTRY_CODE } from '../constants.js'
 
 /**
- * Converts a phone number digits (possibly with a `+`)
- * into a calling code and the rest phone number digits.
- * The "rest phone number digits" could include
- * a national prefix, carrier code, and national
- * (significant) number.
+ * Attempts to extract a calling code from a phone number.
+ * * If the phone number is found to be "international":
+ *   * It will attempt to identify the calling code part of it and whether that part is complete and valid.
+ *     * If the calling code part is complete and valid, it will return two properties:
+ *       that calling code part (without `+`) and the rest of the digits.
+ *     * Otherwise, i.e. if the calling code part is incomplete or invalid,
+ *       it will return an empty object.
+ * * Otherwise, i.e. if the phone number is national, there's no callind code to extract
+ *   so it will just return the originally-passed `number` string as the only property.
  * @param  {string} number — Phone number digits (possibly with a `+`).
  * @param  {string} [country] — Country.
  * @param  {string} [defaultCountry] — Default country.
  * @param  {string} [defaultCallingCode] — Default calling code (some phone numbering plans are non-geographic).
- * @param  {object} metadata
- * @return {object} `{ countryCallingCodeSource: string?, countryCallingCode: string?, number: string }`
+ * @param  {object} metadataJson
+ * @return {object} `{ countryCallingCodeSource: string?, countryCallingCode: string?, number: string }`, where `countryCallingCodeSource` tells how the returned calling code was extracted (if it was extracted), `countryCallingCode` is the calling code that was extracted from the input `number` string, and `number` is the originally passed `number` without the extracted calling code (and without a `+`). If the calling code is present but incomplete or invalid, it will return an empty object.
  * @example
  * // Returns `{ countryCallingCode: "1", number: "2133734253" }`.
+ * extractCountryCallingCode('2133734253', 'US', null, null, metadata)
  * extractCountryCallingCode('2133734253', null, 'US', null, metadata)
  * extractCountryCallingCode('2133734253', null, null, '1', metadata)
  * extractCountryCallingCode('+12133734253', null, null, null, metadata)
@@ -27,7 +32,7 @@ export default function extractCountryCallingCode(
 	country,
 	defaultCountry,
 	defaultCallingCode,
-	metadata
+	metadataJson
 ) {
 	if (!number) {
 		return {}
@@ -45,7 +50,7 @@ export default function extractCountryCallingCode(
 	if (number[0] !== '+') {
 		// Convert an "out-of-country" dialing phone number
 		// to a proper international phone number.
-		const numberWithoutIDD = stripIddPrefix(number, country || defaultCountry, defaultCallingCode, metadata)
+		const numberWithoutIDD = stripIddPrefix(number, country || defaultCountry, defaultCallingCode, metadataJson)
 		// If an IDD prefix was stripped then
 		// convert the number to international one
 		// for subsequent parsing.
@@ -66,7 +71,7 @@ export default function extractCountryCallingCode(
 					country,
 					defaultCountry,
 					defaultCallingCode,
-					metadata
+					metadataJson
 				)
 				if (countryCallingCode) {
 					return {
@@ -91,7 +96,7 @@ export default function extractCountryCallingCode(
 		return {}
 	}
 
-	metadata = new Metadata(metadata)
+	const metadata = new Metadata(metadataJson)
 
 	// The thing with country phone codes
 	// is that they are orthogonal to each other

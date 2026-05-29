@@ -11,22 +11,22 @@ import checkNumberLength from './helpers/checkNumberLength.js'
  *
  * @param  {object|PhoneNumber} input — If `options.v2: true` flag is passed, the `input` should be a `PhoneNumber` instance. Otherwise, it should be an object of shape `{ phone: '...', country: '...' }`.
  * @param  {object} [options]
- * @param  {object} metadata
+ * @param  {object} metadataJson
  * @return {string}
  */
-export default function isPossiblePhoneNumber(input, options, metadata) {
+export default function isPossiblePhoneNumber(input, options, metadataJson) {
 	/* istanbul ignore if */
 	if (options === undefined) {
 		options = {}
 	}
 
-	metadata = new Metadata(metadata)
+	const metadata = new Metadata(metadataJson)
 
 	if (options.v2) {
 		if (!input.countryCallingCode) {
 			throw new Error('Invalid phone number object passed')
 		}
-		metadata.selectNumberingPlan(input.countryCallingCode)
+		metadata.selectNumberingPlan(input.country || input.countryCallingCode)
 	} else {
 		if (!input.phone) {
 			return false
@@ -47,7 +47,7 @@ export default function isPossiblePhoneNumber(input, options, metadata) {
 	// Old (legacy) metadata (< 1.0.18) had no "possible length" data.
 	// So `isPossibleNumber()` function is supported only for non-legacy metadata.
 	if (metadata.possibleLengths()) {
-		return isPossibleNumber(input.phone || input.nationalNumber, input.country, metadata)
+		return isPossibleNumber(input.phone || input.nationalNumber, metadata)
 	}
 
 	// There was a bug in versions from `1.7.35` to `1.7.37` of `libphonenumber-js`
@@ -65,8 +65,14 @@ export default function isPossiblePhoneNumber(input, options, metadata) {
 	throw new Error('Missing "possibleLengths" in metadata. Perhaps the metadata has been generated before v1.0.18.');
 }
 
-export function isPossibleNumber(nationalNumber, country, metadata) { //, isInternational) {
-	switch (checkNumberLength(nationalNumber, country, metadata)) {
+/**
+ * Tells if a given national (significant) number is possible
+ * @param {string} nationalNumber
+ * @param {Metadata} metadata = Metadata instance with a pre-selected telephone numbering plan.
+ * @returns {boolean}
+ */
+export function isPossibleNumber(nationalNumber, metadata) {
+	switch (checkNumberLength(nationalNumber, undefined, metadata)) {
 		case 'IS_POSSIBLE':
 			return true
 		// This library ignores "local-only" phone numbers (for simplicity).

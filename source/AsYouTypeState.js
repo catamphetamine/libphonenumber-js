@@ -1,5 +1,20 @@
 // This "state" object simply holds the state of the "AsYouType" parser:
 //
+// Sidenote:
+//   `state.callingCode` and `state.country` are somewhat independent from one another
+//   and there could be situations when one is defined but the other is not.
+//   * Situations when `state.country` would be defined but `state.callingCode` would be `undefined`:
+// 		 * When `defaultCountry` is specified and inputting a phone number not in "international" format.
+//     * When `defaultCountry` is specified and inputting a phone number in "international" format,
+//       but before the `+` character has been input.
+//   * Situations when `state.country` would be `undefined` but `state.callingCode` would be defined:
+//     * When `defaultCountry` is not specified and inputting a phone number in "international" format,
+//       and the "calling code" part is already complete, but multiple countries share this "calling code"
+//       and there's not enough national (significant) number digits yet to determine the exact country.
+//   * In any other sigutations, `state.country` and `state.callingCode` are either both defined or both `undefined`.
+//     * When they're both defined, `state.callingCode` always corresponds to `state.country`.
+//       So both are always consistent in this case.
+//
 // * `country?: string` — The exact country of the phone number, if it could be determined.
 //                        When inputting a phone number in "international" format, it will derive the `country` from "country calling code" and the phone number digits.
 //                        When inputting a phone number in "national" format, it will derive the `country` from `defaultCountry` that was specified when creating the `AsYouType` formatter.
@@ -7,7 +22,6 @@
 // * `callingCode?: string` — "Country calling code" that has been extracted from the input phone number.
 //                        When inputting a phone number in "international" format, it will extract the "country calling code" from the digits that follow the "+" character.
 //                        When inputting a phone number in "national" format, `callingCode` will be `undefined`.
-//                        Sidenote: `state.callingCode` is therefore independent from `state.country` and there could be situations when `state.country` is defined by `state.callingCode` is not — that would be when inputting a phone number not in "international" format.
 // * `digits: string` — Phone number digits that have been input so far, including the "+" character, if present. In case of inputting non-arabic digits, those will be converted to arabic ones.
 // * `international: boolean` — Whether the phone number is being input in "international" format, i.e. with a "+" character.
 // * `missingPlus: boolean` — Whether it's a phone number in "international" format that is missing the leading "+" character for some reason — apparently, Google thinks that it's a common mistake when inputting a phone number.

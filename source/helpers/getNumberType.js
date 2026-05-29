@@ -14,7 +14,7 @@ const NON_FIXED_LINE_PHONE_TYPES = [
 ]
 
 // Finds out national phone number type (fixed line, mobile, etc)
-export default function getNumberType(input, options, metadata)
+export default function getNumberType(input, options, metadataJson)
 {
 	// If assigning the `{}` default value is moved to the arguments above,
 	// code coverage would decrease for some weird reason.
@@ -27,9 +27,9 @@ export default function getNumberType(input, options, metadata)
 		return
 	}
 
-	metadata = new Metadata(metadata)
+	const metadata = new Metadata(metadataJson)
 
-	metadata.selectNumberingPlan(input.country, input.countryCallingCode)
+	metadata.selectNumberingPlan(input.country || input.countryCallingCode)
 
 	const nationalNumber = options.v2 ? input.nationalNumber : input.phone
 

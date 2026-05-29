@@ -15,7 +15,7 @@ const SINGLE_IDD_PREFIX_REG_EXP = /^[\d]+(?:[~\u2053\u223C\uFF5E][\d]+)?$/
 // If the `country` doesn't support IDD calling, it returns `undefined`.
 export default function getIddPrefix(country, callingCode, metadata) {
 	const countryMetadata = new Metadata(metadata)
-	countryMetadata.selectNumberingPlan(country, callingCode)
+	countryMetadata.selectNumberingPlan(country || callingCode)
 	if (countryMetadata.defaultIDDPrefix()) {
 		return countryMetadata.defaultIDDPrefix()
 	}

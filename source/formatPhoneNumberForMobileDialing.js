@@ -22,10 +22,11 @@ const REGION_CODE_FOR_NON_GEO_ENTITY = '001'
  * @param {string} from_country - the region where the call is being placed.
  * @param {boolean} with_formatting - whether the number should be returned with
  *     formatting symbols, such as spaces and dashes.
+ * @param {object} metadataJson
  * @return {string}
  */
-export default function(number, from_country, with_formatting, metadata) {
-	metadata = new Metadata(metadata)
+export default function(number, from_country, with_formatting, metadataJson) {
+	const metadata = new Metadata(metadataJson)
 
 	// Validate `from_country`.
 	if (!metadata.hasCountry(from_country)) {
@@ -70,7 +71,7 @@ export default function(number, from_country, with_formatting, metadata) {
 			metadata.selectNumberingPlan(country)
 
 			if (can_be_internationally_dialled(number) &&
-				checkNumberLength(number.phone, country, metadata) !== 'TOO_SHORT') {
+				checkNumberLength(number.phone, undefined, metadata) !== 'TOO_SHORT') {
 				formatted_number = format(number, 'INTERNATIONAL', metadata.metadata)
 			}
 			else {

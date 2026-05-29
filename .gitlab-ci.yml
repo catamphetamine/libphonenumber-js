@@ -2,21 +2,30 @@ image: node:22
 
 pages:
   script:
-  - npm install
-  - npm run metadata:generate
-  - npm run build
-  - mv ./bundle ./public
-  - cp --recursive ./website/* ./public/
+    - npm install
+    - npm run metadata:generate
+    - npm run build
+    - mv ./bundle ./public
+    - cp --recursive ./website/* ./public/
 
   artifacts:
     paths:
-    - public
+      - public
 
-  only:
-  - master
+  # Does not run on schedule
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" || $CI_COMMIT_BRANCH != "master"
+      when: never # Excludes this job from scheduled pipeline types
+    - when: on_success
 
 update-metadata:
   script:
-  - git checkout master
-  - npm install
-  - npm run metadata:update:job
+    - git checkout master
+    - npm install
+    - npm run metadata:update:job
+
+  # Only runs on schedule
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $TASK_TYPE == "metadata-update"
+      when: always
+    - when: never # Excludes this job from non-scheduled pipeline types

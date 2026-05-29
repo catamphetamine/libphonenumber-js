@@ -18,11 +18,8 @@ export default function getPossibleCountriesForNumber(callingCode, nationalNumbe
 	})
 }
 
-function couldNationalNumberBelongToCountry(nationalNumber, country, metadata) {
-	const _metadata = new Metadata(metadata)
-	_metadata.selectNumberingPlan(country)
-	if (_metadata.numberingPlan.possibleLengths().indexOf(nationalNumber.length) >= 0) {
-		return true
-	}
-	return false
+function couldNationalNumberBelongToCountry(nationalNumber, country, metadataJson) {
+	const metadata = new Metadata(metadataJson)
+	metadata.selectNumberingPlan(country)
+	return metadata.numberingPlan.possibleLengths().indexOf(nationalNumber.length) >= 0
 }

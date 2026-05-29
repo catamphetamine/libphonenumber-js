@@ -7,27 +7,37 @@ import getCountryCallingCode from '../getCountryCallingCode.js'
 /**
  * Sometimes some people incorrectly input international phone numbers
  * without the leading `+`. This function corrects such input.
- * @param  {string} number — Phone number digits.
+ * @param  {string} number — Phone number digits (only digits, no `+`).
  * @param  {string} [country] — Exact country of the phone number.
  * @param  {string} [defaultCountry]
  * @param  {string} [defaultCallingCode]
- * @param  {object} metadata
- * @return {object} `{ countryCallingCode: string?, number: string }`.
+ * @param  {object} metadataJson
+ * @return {object} `{ countryCallingCode: string?, number: string }`, where `countryCallingCode` is the calling code that was extracted from the input `number` string, and `number` is the originally passed `number` without the extracted calling code.
  */
 export default function extractCountryCallingCodeFromInternationalNumberWithoutPlusSign(
 	number,
 	country,
 	defaultCountry,
 	defaultCallingCode,
-	metadata
+	metadataJson
 ) {
+	// Validate arguments.
+	// The `number` is known to be in a non-international form
+	// because there's no leading "+" character.
+	// Therefore, there must be either `country` or `defaultCountry` or `defaultCallingCode`.
+	// Otherwise, there'd be no source for the calling code to search for in the `number`.
+	if (!(country || defaultCountry || defaultCallingCode)) {
+		// There's no source for the calling code to search for in the `number`.
+		return { number }
+	}
+
 	const countryCallingCode = country || defaultCountry
-		? getCountryCallingCode(country || defaultCountry, metadata)
+		? getCountryCallingCode(country || defaultCountry, metadataJson)
 		: defaultCallingCode
 
 	if (number.indexOf(countryCallingCode) === 0) {
-		metadata = new Metadata(metadata)
-		metadata.selectNumberingPlan(country || defaultCountry, countryCallingCode)
+		const metadata = new Metadata(metadataJson)
+		metadata.selectNumberingPlan(country || defaultCountry || defaultCallingCode)
 
 		const possibleShorterNumber = number.slice(countryCallingCode.length)
 
@@ -35,7 +45,7 @@ export default function extractCountryCallingCodeFromInternationalNumberWithoutP
 			nationalNumber: possibleShorterNationalNumber,
 		} = extractNationalNumber(
 			possibleShorterNumber,
-			country,
+			undefined,
 			metadata
 		)
 
@@ -43,7 +53,7 @@ export default function extractCountryCallingCodeFromInternationalNumberWithoutP
 			nationalNumber
 		} = extractNationalNumber(
 			number,
-			country,
+			undefined,
 			metadata
 		)
 
@@ -61,7 +71,7 @@ export default function extractCountryCallingCodeFromInternationalNumberWithoutP
 				matchesEntirely(possibleShorterNationalNumber, metadata.nationalNumberPattern())
 			)
 			||
-			checkNumberLength(nationalNumber, country, metadata) === 'TOO_LONG'
+			checkNumberLength(nationalNumber, undefined, metadata) === 'TOO_LONG'
 		) {
 			return {
 				countryCallingCode,

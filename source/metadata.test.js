@@ -171,6 +171,16 @@ describe('metadata', () => {
 		metaNew.selectNumberingPlan('AU')
 		expect(metaNew.defaultIDDPrefix()).to.equal('0011')
 	})
+
+	it('should support legacy API', () => {
+		const meta = new Metadata(metadataV4)
+		meta.selectNumberingPlan(undefined, '7')
+		expect(meta.numberingPlan.callingCode()).to.equal('7')
+
+		// Deprecated function name: `.numberingPlan.getDefaultCountryMetadataForRegion()`.
+		meta.selectNumberingPlan('CA')
+		expect(meta.numberingPlan.getDefaultCountryMetadataForRegion()).to.equal(metadataV4.countries.US)
+	})
 })
 
 function type(something) {

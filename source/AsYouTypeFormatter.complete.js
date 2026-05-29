@@ -21,8 +21,8 @@ export default function formatCompleteNumber(state, format, {
 	}
 }
 
-export function canFormatCompleteNumber(nationalSignificantNumber, country, metadata) {
-	return checkNumberLength(nationalSignificantNumber, country, metadata) === 'IS_POSSIBLE'
+export function canFormatCompleteNumber(nationalSignificantNumber, metadata) {
+	return checkNumberLength(nationalSignificantNumber, undefined, metadata) === 'IS_POSSIBLE'
 }
 
 function formatNationalNumberWithAndWithoutNationalPrefixFormattingRule(state, format, {

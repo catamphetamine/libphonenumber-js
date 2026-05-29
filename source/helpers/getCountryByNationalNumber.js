@@ -1,14 +1,17 @@
 import Metadata from '../metadata.js'
 import getNumberType from './getNumberType.js'
 
-// Returns the exact country that the `nationalPhoneNumber` belongs to
-// in cases of ambiguity, i.e. when multiple countries share the same "country calling code".
-export default function getCountryByNationalNumber(nationalPhoneNumber, {
-	countries,
-	metadata
-}) {
-	// Re-create `metadata` because it will be selecting a `country`.
-	metadata = new Metadata(metadata)
+/**
+ * Returns the exact country that a given national (significant) number belongs to
+ * in case of ambiguity, i.e. when multiple countries share the same "country calling code".
+ * @param {string} [nationalNumber]
+ * @param {string[]} countries — A list of countries that share the same calling code.
+ * @param {object} metadata — Metadata JSON.
+ * @returns {string?} Returns the exact country this number belongs to, or `undefined` if the exact country couldn't be determined.
+ */
+export default function getCountryByNationalNumber(nationalNumber, countries, metadataJson) {
+	// Create a new `metadata` instance because it will be selecting a `country`.
+	const metadata = new Metadata(metadataJson)
 
 	// const matchingCountries = []
 
@@ -22,14 +25,14 @@ export default function getCountryByNationalNumber(nationalPhoneNumber, {
 		// I'd suppose that "leading digits" patterns are mutually exclusive for different countries
 		// because of the intended use of that feature.
 		if (metadata.leadingDigits()) {
-			if (nationalPhoneNumber &&
-				nationalPhoneNumber.search(metadata.leadingDigits()) === 0) {
+			if (nationalNumber &&
+				nationalNumber.search(metadata.leadingDigits()) === 0) {
 				return country
 			}
 		}
 		// Else perform full validation with all of those
 		// fixed-line/mobile/etc regular expressions.
-		else if (getNumberType({ phone: nationalPhoneNumber, country }, undefined, metadata.metadata)) {
+		else if (getNumberType({ phone: nationalNumber, country }, undefined, metadata.metadata)) {
 			// When multiple countries share the same "country calling code",
 			// type patterns aren't guaranteed to be unique among them.
 			// For example, both `US` and `CA` have the same pattern for `toll_free` numbers.

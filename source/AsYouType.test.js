@@ -1121,6 +1121,79 @@ describe('AsYouType', () => {
 		expect(formatter.input('1 122 222 2222 3')).to.equal('1 1 222 222 2223')
 		expect(formatter.getNumber().nationalNumber).to.equal('2222222223')
 	})
+
+	it('should validate phone number length (international number)', () => {
+		const formatter = new AsYouType()
+		expect(formatter.validateLength()).to.equal('NOT_A_NUMBER')
+
+		formatter.input('+')
+		expect(formatter.validateLength()).to.equal('NOT_A_NUMBER')
+
+		formatter.input('1')
+		expect(formatter.validateLength()).to.equal('TOO_SHORT')
+
+		formatter.input('2')
+		expect(formatter.validateLength()).to.equal('TOO_SHORT')
+
+		formatter.input('13 373 42 5')
+		expect(formatter.validateLength()).to.equal('TOO_SHORT')
+
+		formatter.input('3')
+		expect(formatter.validateLength()).to.equal(undefined)
+
+		formatter.input('0')
+		expect(formatter.validateLength()).to.equal('TOO_LONG')
+
+		formatter.input('000000000000000000000000')
+		expect(formatter.validateLength()).to.equal('TOO_LONG')
+	})
+
+	it('should validate phone number length (national number)', () => {
+		const formatter = new AsYouType('US')
+		expect(formatter.validateLength()).to.equal('NOT_A_NUMBER')
+
+		formatter.input('1')
+		expect(formatter.validateLength()).to.equal('TOO_SHORT')
+
+		formatter.input('2')
+		expect(formatter.validateLength()).to.equal('TOO_SHORT')
+
+		formatter.input('13 373 42 5')
+		expect(formatter.validateLength()).to.equal('TOO_SHORT')
+
+		formatter.input('3')
+		expect(formatter.validateLength()).to.equal(undefined)
+
+		formatter.input('0')
+		expect(formatter.validateLength()).to.equal('TOO_LONG')
+
+		formatter.input('000000000000000000000000')
+		expect(formatter.validateLength()).to.equal('TOO_LONG')
+	})
+
+	it('should validate phone number length (invalid length)', () => {
+		const formatter = new AsYouType('TR')
+
+		formatter.input('444 1 4444')
+		expect(formatter.validateLength()).to.equal('INVALID_LENGTH')
+	})
+
+	it('should validate phone number length (invalid country)', () => {
+		let formatter
+
+		formatter = new AsYouType()
+		formatter.input('4444')
+		expect(formatter.validateLength()).to.equal('INVALID_COUNTRY')
+
+		formatter = new AsYouType('XX')
+		formatter.input('4444')
+		expect(formatter.validateLength()).to.equal('INVALID_COUNTRY')
+
+		console.log('------------------')
+		formatter = new AsYouType()
+		formatter.input('+9991112223333')
+		expect(formatter.validateLength()).to.equal('INVALID_COUNTRY')
+	})
 })
 
 describe('AsYouType.getNumberValue()', () => {
