@@ -87,40 +87,11 @@ export type PhoneNumberType = 'PREMIUM_RATE' | 'TOLL_FREE' | 'SHARED_COST' | 'VO
  */
 export type NumberType = PhoneNumberType | undefined;
 
-// "Tagged" types are used to introduce some degree of type safety when passing in arguments to the functions.
-// https://medium.com/@ethanresnick/advanced-typescript-tagged-types-for-fewer-bugs-and-better-security-24db681d5721
-//
-// For example, if some function returns an `E164Number`, it can only be interpreted as
-// either a `string` or an `E164Number` and it can't mistakenly be interpreted as
-// a `NationalNumber` or an `Extension` or a `CarrierCode` or a `CountryCallingCode`.
-//
-// Example:
-//
-// import type { E164Number, CarrierCode } from 'libphonenumber-js'
-// const number: E164Number = '+78005553535'
-// const carrierCode: CarrierCode = number
-//
-// Shows an error:
-// Type 'E164Number' is not assignable to type 'CarrierCode'.
-//
-// Originally, the `__tag` property was declared optional in order to allow passing
-// a generic `string` in place of a `Tagged` type argument to functions that receive such arguments:
-// that would allow ingesting generic `string` values from an outside source such as a database.
-// Without that, those externally-obtained `string` values would have to be forcefully converted
-// to the `Tagged` type via TypeScript `as` operator which is an anti-pattern.
-//
-// Later, it has been decided to make the `__tag` property non-optional and instead
-// declare the arguments of those functions as `string | Tagged` rather than just `Tagged`:
-// that would still allow ingesting generic `string` values from an outside source
-// and would also make the `Tagged` type more "type safe".
-//
-type Tagged<A, T> = A & { __tag: T };
-
-export type E164Number = Tagged<string, "E164Number">;
-export type NationalNumber = Tagged<string, "NationalNumber">;
-export type Extension = Tagged<string, "Extension">;
-export type CarrierCode = Tagged<string, "CarrierCode">;
-export type CountryCallingCode = Tagged<string, "CountryCallingCode">;
+export type E164Number = string;
+export type NationalNumber = string;
+export type Extension = string;
+export type CarrierCode = string;
+export type CountryCallingCode = string;
 
 type FormatExtension = (formattedNumber: string, extension: Extension, metadata: MetadataJson) => string
 

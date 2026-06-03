@@ -69,6 +69,11 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.13.5 / 03.06.2026
+===================
+
+* Converted any "tagged" types [back](https://gitlab.com/catamphetamine/libphonenumber-js/-/work_items/144#note_3415397139) to simple strings. Originally, some developers lobbied the use of so-called ["tagged"](https://medium.com/@ethanresnick/advanced-typescript-tagged-types-for-fewer-bugs-and-better-security-24db681d5721) types in this package in order to return more "strict" values. My knowledge of TypeScript at that time was limited to just its title, so I naturally succumbed to that influence and merged whatever changes seemed to be consensual between the participants in the issue discussions. Now though I can see how the concept of "tagged" types is redundant and adds nothing, so I decided to revert any "tagged" types back to simple strings.
+
 1.13.3 / 22.5.2026
 ===================
 
