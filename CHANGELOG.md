@@ -69,6 +69,14 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.13.6 / 5.6.2026
+===================
+
+* Updated metadata to version 9.0.32:
+  - Updated phone metadata for region code(s): DZ, JP, NO, SJ, SO, UG
+  - Updated carrier data for country calling code(s):
+    33 (en), 47 (en), 233 (en), 252 (en), 256 (en)
+
 1.13.5 / 03.06.2026
 ===================
 

@@ -56,7 +56,15 @@ if (metadataChanged) {
 		console.log()
 	} else {
 		// Attempt to publish the `npm` package.
-		console.log(exec('npm publish'))
+		//
+		// "The `--provenance` flag is used within a CI/CD environment to publish an npm package
+		//  alongside a verifiable, cryptographic proof (provenance attestation) that links
+		//  the built package directly back to its source repository and specific build instructions.
+		//  This greatly improves supply-chain security by ensuring the public code hasn't been
+		//  tampered with or built from an unverified local machine."
+		//
+		const flags = process.env.GITLAB_CI ? ' --provenance' : ''
+		console.log(exec('npm publish' + flags))
 
 		console.log()
 		console.log('========================================')

@@ -1,4 +1,6 @@
-image: node:22
+# Node 24+ ensures that npm 11.5+ is natively available.
+# The `npm` version must meet the minimum requirements for "trusted publishing".
+image: node:24
 
 pages:
   script:
@@ -12,20 +14,36 @@ pages:
     paths:
       - public
 
-  # Does not run on schedule
+  # Does not run on schedule.
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule" || $CI_COMMIT_BRANCH != "master"
       when: never # Excludes this job from scheduled pipeline types
     - when: on_success
 
 update-metadata:
+  # OIDC ID token that is used for "trusted publishing".
+  id_tokens:
+    NPM_ID_TOKEN:
+      aud: "npm:registry.npmjs.org"
+
+  # (security) Restrict publishing to tagged releases only.
+  # But it did output an error: "jobs:update-metadata config key may not be used with `rules`: only".
+  # only:
+  #  - tags
+
+  before_script:
+    - git config --global user.email "metadata-updater@gay.com"
+    - git config --global user.name "Metadata Updater"
+
   script:
+    # Verify that `npm` version meets the minimum requirements for "trusted publishing".
+    - npm --version
     - git checkout master
     - npm install
     - npm run metadata:update:job
 
-  # Only runs on schedule
+  # Only runs on schedule.
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule" && $TASK_TYPE == "metadata-update"
       when: always
-    - when: never # Excludes this job from non-scheduled pipeline types
+    - when: never # Excludes this job from non-scheduled pipeline types.
