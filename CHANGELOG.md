@@ -69,6 +69,17 @@ And edit the README:
 
 <!-- CHANGELOG START -->
 
+1.13.7 / 18.6.2026
+===================
+
+* Updated metadata to version 9.0.33:
+  - Updated phone metadata for region code(s):
+    BF, KE, MC, MW, NO, SG, SI, UG, VN
+  - Updated geocoding data for country calling code(s): 47 (en)
+  - Updated carrier data for country calling code(s):
+    36 (en), 40 (en), 65 (en), 84 (en), 232 (en), 235 (en), 250 (en), 256 (en),
+    265 (en), 386 (en), 503 (en), 1868 (en)
+
 1.13.6 / 5.6.2026
 ===================
 

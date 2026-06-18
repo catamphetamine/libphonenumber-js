@@ -25,6 +25,8 @@ update-metadata:
   id_tokens:
     NPM_ID_TOKEN:
       aud: "npm:registry.npmjs.org"
+    SIGSTORE_ID_TOKEN:
+      aud: sigstore
 
   # (security) Restrict publishing to tagged releases only.
   # But it did output an error: "jobs:update-metadata config key may not be used with `rules`: only".
