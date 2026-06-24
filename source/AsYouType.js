@@ -4,6 +4,7 @@ import checkNumberLength from './helpers/checkNumberLength.js'
 import AsYouTypeState from './AsYouTypeState.js'
 import AsYouTypeFormatter, { DIGIT_PLACEHOLDER } from './AsYouTypeFormatter.js'
 import AsYouTypeParser, { extractFormattedDigitsAndPlus } from './AsYouTypeParser.js'
+import extractNationalNumberFromPossiblyIncompleteNumber from './helpers/extractNationalNumberFromPossiblyIncompleteNumber.js'
 import getCountryByCallingCode from './helpers/getCountryByCallingCode.js'
 import getCountryByNationalNumber from './helpers/getCountryByNationalNumber.js'
 import isObject from './helpers/isObject.js'
@@ -311,6 +312,41 @@ export default class AsYouType {
 		}
 	}
 
+	// Returns the national (significant) number that should be used when
+	// constructing a `PhoneNumber` or a E.164 value out of the user's input.
+	//
+	// While digits are being input one at a time, `state.nationalSignificantNumber`
+	// is extracted from a partial number, and once `national_prefix_for_parsing`
+	// has matched (and possibly applied a `national_prefix_transform_rule`), the
+	// result is cached and subsequent digits are simply appended to it.
+	// For some numbering plans the `national_prefix_for_parsing` pattern is
+	// end-anchored and matches an intermediate buffer that is itself a complete
+	// national number, which re-injects an area code that was already typed.
+	// For example, for `"VI"` the buffer `"3406934"` matches `"([2357]\d{6})$"`
+	// and gets transformed to `"3403406934"` via `"340$1"`, so further digits
+	// produce a national number with a duplicated area code.
+	// Re-extracting from the full national digits yields the same result as
+	// parsing the complete number in one pass, so it corrects that artifact while
+	// preserving legitimate transforms (such as Argentina's mobile prefix).
+	_getNationalNumber() {
+		const {
+			nationalSignificantNumber,
+			nationalSignificantNumberIsModified
+		} = this.state
+		if (
+			nationalSignificantNumberIsModified &&
+			!this.isInternational() &&
+			this.metadata.hasSelectedNumberingPlan()
+		) {
+			const { nationalNumber } = extractNationalNumberFromPossiblyIncompleteNumber(
+				this.state.getNationalDigits(),
+				this.metadata
+			)
+			return nationalNumber
+		}
+		return nationalSignificantNumber
+	}
+
 	/**
 	 * Returns a E.164 phone number value for the user's input.
 	 *
@@ -333,9 +369,10 @@ export default class AsYouType {
 		const {
 			digits,
 			callingCode,
-			country,
-			nationalSignificantNumber
+			country
 		} = this.state
+
+		const nationalSignificantNumber = this._getNationalNumber()
 
 	 	// Will return `undefined` if no digits have been input.
 		if (!digits) {
@@ -364,10 +401,11 @@ export default class AsYouType {
 	 */
 	getNumber() {
 		const {
-			nationalSignificantNumber,
 			carrierCode,
 			callingCode
 		} = this.state
+
+		const nationalSignificantNumber = this._getNationalNumber()
 
 		if (!nationalSignificantNumber) {
 			return
