@@ -823,6 +823,24 @@ describe('AsYouType', () => {
 		expect(asYouType.input('123')).to.equal('(340) 693-4123')
 	})
 
+	it('should not duplicate area code in the parsed number when typing digit by digit (single-area-code countries)', () => {
+		// https://github.com/catamphetamine/libphonenumber-js/issues/318
+		// The formatted output was already correct, but `getNumber()` used to
+		// return a national number with the area code duplicated, because the
+		// end-anchored `national_prefix_for_parsing` matched an intermediate
+		// 7-digit buffer and prepended the area code that was already typed.
+		for (const [country, input] of [['VI', '3406934123'], ['TT', '8686941234']]) {
+			const asYouType = new AsYouType(country)
+			for (const digit of input) {
+				asYouType.input(digit)
+			}
+			const phoneNumber = asYouType.getNumber()
+			expect(phoneNumber.nationalNumber).to.equal(input)
+			expect(phoneNumber.isValid()).to.equal(true)
+			expect(asYouType.getNumberValue()).to.equal('+1' + input)
+		}
+	})
+
 	it('shouldn\'t throw when passed a non-existent default country', () => {
 		expect(new AsYouType('XX').input('+78005553535')).to.equal('+7 800 555 35 35')
 		expect(new AsYouType('XX').input('88005553535')).to.equal('88005553535')
