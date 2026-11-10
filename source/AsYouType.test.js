@@ -514,19 +514,6 @@ describe('AsYouType', () => {
 	})
 
 	it('should choose between matching formats based on the absence or presence of a national prefix', () => {
-		// The first matching format:
-		// {
-		//    "pattern": "(\\d{2})(\\d{5,6})",
-		//    "leading_digits_patterns": [
-		//       "(?:10|2[0-57-9])[19]",
-		//       "(?:10|2[0-57-9])(?:10|9[56])",
-		//       "(?:10|2[0-57-9])(?:100|9[56])"
-		//    ],
-		//    "national_prefix_formatting_rule": "0$1",
-		//    "format": "$1 $2",
-		//    "domestic_carrier_code_formatting_rule": "$CC $FG"
-		// }
-		//
 		// The second matching format:
 		// {
 		//    "pattern": "(\\d{2})(\\d{4})(\\d{4})",
@@ -542,17 +529,42 @@ describe('AsYouType', () => {
 		// }
 		//
 		const formatter = new AsYouType('CN')
-		// National prefix has been input.
-		// Chooses the first format.
-		expect(formatter.input('01010000')).to.equal('010 10000')
+
+		// The input is `01010000`.
+		// The input contains national prefix `0`.
+		// After the national prefix, there're 7 "significant" digits: `1010000`.
+		//
+		// Chooses format for digits pattern "(\\d{2})(\\d{5,6})" and applies formatting rule "$1 $2"
+		// with "0$1" national prefix formatting rule.
+		//
+		// {
+		//    "pattern": "(\\d{2})(\\d{5,6})",
+		//    "leading_digits_patterns": [
+		//       "(?:10|2[0-57-9])[19]",
+		//       "(?:10|2[0-57-9])(?:10|9[56])",
+		//       "(?:10|2[0-57-9])(?:100|9[56])"
+		//    ],
+		//    "national_prefix_formatting_rule": "0$1",
+		//    "format": "$1 $2",
+		//    "domestic_carrier_code_formatting_rule": "$CC $FG"
+		// }
+		//
+		const formattedNationalSignificantNumber = '10 10000'
+		expect(formatter.input('01010000')).to.equal('0' + formattedNationalSignificantNumber)
+
 		formatter.reset()
-		// No national prefix has been input,
-		// and `national_prefix_for_parsing` not matched.
-		// The first format won't match, because it doesn't have
-		// `"national_prefix_is_optional_when_formatting": true`.
-		// The second format will match, because it does have
-		// `"national_prefix_is_optional_when_formatting": true`.
-		expect(formatter.input('1010000')).to.equal('10 1000 0')
+
+		// The input is `1010000`.
+		// The input contains no national prefix `0`.
+		// There're 7 "significant" digits: `1010000`.
+		//
+		// The previously-matched format doesn't match this time because
+		// `nationalPrefixForParsing` pattern "(1(?:[12]\d|79)\d\d)|0" doesn't match.
+		// In other words, "CN" country as a whole demands some form of a "national prefix"
+		// to be present, and this particular number doesn't have any.
+		// So only formats with `national_prefix_is_optional_when_formatting: true` flag can be used,
+		// and the previously-matchd format doesn't have such flag, so another format will match.
+		expect(formatter.input('1010000')).to.not.equal(formattedNationalSignificantNumber)
 	})
 
 	it('should not accept phone number extensions', () => {

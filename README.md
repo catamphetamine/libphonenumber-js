@@ -1,8 +1,8 @@
-# libphonenumber-js
-
 [![npm version](https://img.shields.io/npm/v/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
 [![npm downloads](https://img.shields.io/npm/dm/libphonenumber-js.svg?style=flat-square)](https://www.npmjs.com/package/libphonenumber-js)
 [![coverage](https://img.shields.io/coveralls/catamphetamine/libphonenumber-js/master.svg?style=flat-square)](https://coveralls.io/r/catamphetamine/libphonenumber-js?branch=master)
+
+# libphonenumber-js
 
 A simpler and smaller rewrite of Google Android's [`libphonenumber`](https://github.com/google/libphonenumber/) library in javascript/typescript.
 
@@ -82,10 +82,10 @@ One part of me was curious about how all this phone number parsing and formattin
 ## Install
 
 ```sh
-npm install libphonenumber-js --save
+npm install libphonenumber-js
 ```
 
-Alternatively, one could include it on a web page [directly](#cdn) via a `<script/>` tag.
+Or include it on a web page [directly](#cdn) via a `<script/>` tag.
 
 ## Use
 

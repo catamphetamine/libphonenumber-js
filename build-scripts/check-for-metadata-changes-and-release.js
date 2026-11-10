@@ -29,7 +29,9 @@ if (metadataChanged) {
 	console.log()
 
 	console.log(exec('npm version patch'))
-	console.log(exec('git push'))
+
+	// `npm` script called "postversion" automatically pushes the changes to git.
+	// console.log(exec('git push && git push --tags'))
 
 	console.log()
 	console.log('========================================')

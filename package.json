@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-js",
-  "version": "1.13.7",
+  "version": "1.13.15",
   "description": "A simpler (and smaller) rewrite of Google Android's libphonenumber library in javascript",
   "main": "index.cjs",
   "module": "index.js",
@@ -150,7 +150,7 @@
     "test": "npm run test--mocha",
     "test--jest": "npm-run-all test:except-exports--jest test:exports--mocha",
     "test:except-exports--jest": "jest",
-    "test--mocha": "mocha --bail \"source/**/*.test.js\" \"test/*.test.js\" \"test/!(exports)/**/*.test.js\"",
+    "test--mocha": "mocha --bail \"source/**/*.test.js\" \"test/!(exports)/**/*.test.js\"",
     "test:exports": "npm run test:exports--mocha",
     "test:exports--mocha": "mocha --bail \"test/exports/**/*.test.js\"",
     "test-coverage": "npm run test-coverage--mocha",
@@ -179,6 +179,7 @@
     "build:modules:modern": "cross-env BABEL_ENV=es6-modern babel ./source --out-dir ./es6-modern --source-maps --ignore test.js",
     "build:bundle": "rollup --config rollup.config.mjs",
     "build": "npm-run-all clean build:modules:copy-typescript-definitions build:modules build:modules:modern build:commonjs build:bundle build:copy-metadata-files-to-subpackage-folders build:copy-examples-files-to-subpackage-folders",
+    "postversion": "git push && git push --tags",
     "prepublishOnly": "npm run metadata:generate && npm run typescript:generate-country-codes-list && crlf --set=LF metadata.*.json && npm-run-all build test test:exports"
   },
   "repository": {

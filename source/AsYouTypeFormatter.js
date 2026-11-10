@@ -1,10 +1,7 @@
 import {
 	DIGIT_PLACEHOLDER,
-	countOccurences,
 	repeat,
 	cutAndStripNonPairedParens,
-	closeNonPairedParens,
-	stripNonPairedParens,
 	populateTemplateWithDigits
 } from './AsYouTypeFormatter.util.js'
 

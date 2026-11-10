@@ -1,6 +1,7 @@
 /**
  * Strips any national prefix (such as 0, 1) present in a
  * (possibly incomplete) number provided.
+ * Also strips a "carrier code", if it's present.
  * "Carrier codes" are only used  in Colombia and Brazil,
  * and only when dialing within those countries from a mobile phone to a fixed line number.
  * Sometimes it won't actually strip national prefix
