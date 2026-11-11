@@ -4,6 +4,7 @@ import { expect } from 'chai'
 import parsePhoneNumber_ from '../parsePhoneNumber.js'
 import PhoneNumber from '../PhoneNumber.js'
 import metadata from '../../metadata.min.json' with { type: 'json' }
+import { isPhoneContextValid } from './extractPhoneContext.js'
 
 function parsePhoneNumber(...parameters) {
 	parameters.push(metadata)
@@ -91,6 +92,18 @@ describe('extractPhoneContext', function() {
 		expectToThrowForInvalidPhoneContext('tel:033316005;phone-context=3phone')
 		expectToThrowForInvalidPhoneContext('tel:033316005;phone-context=a-.nz')
 		expectToThrowForInvalidPhoneContext('tel:033316005;phone-context=a{b}c')
+	})
+
+	it('should validate a phone-context consistently across calls', function() {
+		// The phone-context validation regexes must not be created with the `g`
+		// flag: RegExp#test() on a global regex advances lastIndex, so an anchored
+		// pattern flips the same valid input between valid and invalid on alternate
+		// calls (and leaks state across unrelated numbers). '+1' exercises the
+		// global-number-digits pattern, 'a' the domainname pattern.
+		expect(isPhoneContextValid('+1')).to.equal(true)
+		expect(isPhoneContextValid('+1')).to.equal(true)
+		expect(isPhoneContextValid('a')).to.equal(true)
+		expect(isPhoneContextValid('a')).to.equal(true)
 	})
 })
 

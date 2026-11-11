@@ -30,7 +30,7 @@ const RFC3966_GLOBAL_NUMBER_DIGITS_ =
  * Regular expression of valid global-number-digits for the phone-context
  * parameter, following the syntax defined in RFC3966.
  */
-const RFC3966_GLOBAL_NUMBER_DIGITS_PATTERN_ = new RegExp(RFC3966_GLOBAL_NUMBER_DIGITS_, 'g')
+const RFC3966_GLOBAL_NUMBER_DIGITS_PATTERN_ = new RegExp(RFC3966_GLOBAL_NUMBER_DIGITS_)
 
 // In this port of Google's library, we don't accept alpha characters in phone numbers.
 // const ALPHANUM_ = VALID_ALPHA_ + VALID_DIGITS
@@ -47,7 +47,7 @@ const RFC3966_DOMAINNAME_ = '^(' + RFC3966_DOMAINLABEL_ + '\\.)*' + RFC3966_TOPL
  * Regular expression of valid domainname for the phone-context parameter,
  * following the syntax defined in RFC3966.
  */
-const RFC3966_DOMAINNAME_PATTERN_ = new RegExp(RFC3966_DOMAINNAME_, 'g')
+const RFC3966_DOMAINNAME_PATTERN_ = new RegExp(RFC3966_DOMAINNAME_)
 
 export const RFC3966_PREFIX_ = 'tel:'
 export const RFC3966_PHONE_CONTEXT_ = ';phone-context='
